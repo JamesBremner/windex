@@ -11,21 +11,7 @@ class widget;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-class gui
-{
-public:
-    gui()
-    {
-        registerWindowClass();
-    }
-    virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
-protected:
-    HWND myHandle;
-    void registerGui();
-private:
-    void registerWindowClass();
-};
-
+/// Functions to be called when event occurs
 class eventhandler
 {
 public:
@@ -41,6 +27,31 @@ private:
     std::function<void(void)> myClickFunction;
 };
 
+/// Base class for all gui elements
+class gui
+{
+public:
+    gui()
+    {
+        registerWindowClass();
+    }
+    virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
+
+    eventhandler& events()
+    {
+        return myEvents;
+    }
+protected:
+    HWND myHandle;
+    eventhandler myEvents;
+    void registerGui();
+private:
+    void registerWindowClass();
+};
+
+
+
+/// A top level window
 class window : public gui
 {
 public:
@@ -74,6 +85,7 @@ protected:
     virtual void draw( PAINTSTRUCT& ps ) {}
 };
 
+/// A widget placed inside a window
 class widget : public gui
 {
 public:
@@ -84,11 +96,6 @@ public:
     void show()
     {
         ShowWindow(myHandle,  SW_SHOWDEFAULT);
-    }
-
-    eventhandler& events()
-    {
-        return myEvents;
     }
 
     void move( const std::vector<int>& r )
@@ -106,11 +113,12 @@ protected:
     virtual void draw( PAINTSTRUCT& ps );
 private:
     std::string myText;
-    eventhandler myEvents;
+
 
 
 };
 
+/// A button
 class button : public widget
 {
 public:
@@ -123,6 +131,7 @@ protected:
     virtual void draw( PAINTSTRUCT& ps );
 };
 
+/// A popup with a message
 class msgbox : public window
 {
 public:

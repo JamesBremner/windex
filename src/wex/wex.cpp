@@ -199,7 +199,6 @@ msgbox::msgbox( const std::string& msg )
                 100,100,400,100,false);
     ShowWindow(myHandle,  SW_SHOWDEFAULT);
     RECT rect;
-    //GetWindowRect(myHandle,&rect);
     rect.left = 5;
     rect.top = 5;
     rect.bottom = 50;
