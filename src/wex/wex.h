@@ -11,6 +11,21 @@ class widget;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+class gui
+{
+public:
+    gui()
+    {
+        registerWindowClass();
+    }
+    virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
+protected:
+    HWND myHandle;
+    void registerGui();
+private:
+    void registerWindowClass();
+};
+
 class eventhandler
 {
 public:
@@ -26,7 +41,7 @@ private:
     std::function<void(void)> myClickFunction;
 };
 
-class window
+class window : public gui
 {
 public:
     window();
@@ -53,12 +68,13 @@ public:
 
     bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-private:
-    HWND myHandle;
+protected:
     std::vector< widget* > myWidget;
+
+    virtual void draw( PAINTSTRUCT& ps ) {}
 };
 
-class widget
+class widget : public gui
 {
 public:
     widget( window& parent );
@@ -85,20 +101,36 @@ public:
     {
         myText = txt;
     }
+
+protected:
+    virtual void draw( PAINTSTRUCT& ps );
 private:
-    HWND myHandle;
     std::string myText;
     eventhandler myEvents;
+
+
 };
 
 class button : public widget
 {
-    public:
-        button( window& parent )
+public:
+    button( window& parent )
         : widget( parent )
-        {
+    {
 
-        }
+    }
+protected:
+    virtual void draw( PAINTSTRUCT& ps );
+};
+
+class msgbox : public window
+{
+public:
+    msgbox( const std::string& msg );
+    ~msgbox();
+
+private:
+    std::string myText;
 };
 
 void exec();

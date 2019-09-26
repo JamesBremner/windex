@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include "wex.h"
 
 namespace wex
@@ -13,27 +14,49 @@ void exec()
     }
 }
 
-window * the_top_window;
+std::map< HWND, gui * > mGui;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    if( the_top_window )
+    //std::cout << "WindowProc " << hwnd <<" "<< uMsg << "\n";
+    auto w = mGui.find( hwnd );
+    if( w != mGui.end() )
     {
-        if( the_top_window->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
-            return 0;
-
+        if( w->second )
+        {
+            if( w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
+                return 0;
+        }
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+void gui::registerWindowClass()
+{
+    static bool done = false;
+    if( ! done )
+    {
+        WNDCLASS wc = { };
+        wc.lpfnWndProc   = &WindowProc;
+        wc.hInstance     = NULL;
+        wc.lpszClassName = "windex";
+        RegisterClass(&wc);
+        done = true;
+    }
+}
+
+void gui::registerGui()
+{
+    mGui.insert(std::pair<HWND,gui*>(myHandle,this));
+
+//    std::cout << "registerGui " << mGui.size() <<" "<< myHandle << "\n";
+//    for( auto p : mGui )
+//        std::cout << p.first << " ";
+//    std::cout << "\n";
+}
+
 window::window()
 {
-    WNDCLASS wc = { };
-    wc.lpfnWndProc   = &WindowProc;
-    wc.hInstance     = NULL;
-    wc.lpszClassName = "windex";
-    RegisterClass(&wc);
-
     myHandle = CreateWindowEx(
                    0,                              // Optional window styles.
                    "windex",                     // Window class
@@ -48,12 +71,14 @@ window::window()
                    NULL,  // Instance handle
                    NULL        // Additional application data
                );
-    the_top_window = this;
+    registerGui();
+    std::cout << "window created " << myHandle << "\n";
 }
 
 bool window::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    //std::cout << "WindowMessageHandler\n";
+//    std::cout << "window::WindowMessageHandler "
+//              << myHandle <<" "<< uMsg << "\n";
     if( hwnd == myHandle )
     {
         switch (uMsg)
@@ -68,6 +93,7 @@ bool window::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
             HDC hdc = BeginPaint(myHandle, &ps);
 
             FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1));
+            draw( ps );
 
             EndPaint(myHandle, &ps);
         }
@@ -111,6 +137,7 @@ widget::widget( window& parent )
                    NULL,  // Instance handle
                    NULL        // Additional application data
                );
+    registerGui();
     parent.child( this );
 }
 
@@ -127,11 +154,11 @@ bool widget::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 
         case WM_PAINT:
         {
-            //std::cout << "widget paint\n";
+            std::cout << "widget paint\n";
             PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(myHandle, &ps);
+            BeginPaint(myHandle, &ps);
 
-            DrawText(hdc,myText.c_str(),-1,&ps.rcPaint,0);
+            draw(ps);
 
             EndPaint(myHandle, &ps);
         }
@@ -144,6 +171,51 @@ bool widget::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
     }
     return false;
 
+}
+void widget::draw( PAINTSTRUCT& ps )
+{
+    DrawText(
+        ps.hdc,
+        myText.c_str(),
+        -1,
+        &ps.rcPaint,
+        0);
+}
+void button::draw( PAINTSTRUCT& ps )
+{
+    widget::draw( ps );
+    DrawEdge(
+        ps.hdc,
+        &ps.rcPaint,
+        EDGE_RAISED,
+        BF_RECT
+    );
+}
+
+msgbox::msgbox( const std::string& msg )
+    : myText( msg )
+{
+    MoveWindow( myHandle,
+                100,100,400,100,false);
+    ShowWindow(myHandle,  SW_SHOWDEFAULT);
+    RECT rect;
+    //GetWindowRect(myHandle,&rect);
+    rect.left = 5;
+    rect.top = 5;
+    rect.bottom = 50;
+    rect.right = 100;
+    DrawText(
+        GetDC( myHandle ),
+        myText.c_str(),
+        -1,
+        &rect,
+        DT_TOP|DT_RIGHT);
+}
+msgbox::~msgbox()
+{
+    auto i = mGui.find( myHandle );
+    if( i != mGui.end() )
+        mGui.erase( i );
 }
 
 }
