@@ -14,22 +14,8 @@ void exec()
     }
 }
 
-std::map< HWND, gui * > mGui;
+mgui_t windex::myGui;
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    //std::cout << "WindowProc " << hwnd <<" "<< uMsg << "\n";
-    auto w = mGui.find( hwnd );
-    if( w != mGui.end() )
-    {
-        if( w->second )
-        {
-            if( w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
-                return 0;
-        }
-    }
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
-}
 
 void gui::registerWindowClass()
 {
@@ -37,7 +23,7 @@ void gui::registerWindowClass()
     if( ! done )
     {
         WNDCLASS wc = { };
-        wc.lpfnWndProc   = &WindowProc;
+        wc.lpfnWndProc   = &windex::WindowProc;
         wc.hInstance     = NULL;
         wc.lpszClassName = "windex";
         RegisterClass(&wc);
@@ -45,35 +31,25 @@ void gui::registerWindowClass()
     }
 }
 
-void gui::registerGui()
-{
-    mGui.insert(std::pair<HWND,gui*>(myHandle,this));
-
-//    std::cout << "registerGui " << mGui.size() <<" "<< myHandle << "\n";
-//    for( auto p : mGui )
-//        std::cout << p.first << " ";
-//    std::cout << "\n";
-}
-
-window::window()
+void gui::Create( HWND parent, DWORD style )
 {
     myHandle = CreateWindowEx(
                    0,                              // Optional window styles.
                    "windex",                     // Window class
-                   "windex",    // Window text
-                   WS_OVERLAPPEDWINDOW,            // Window style
+                   "widget",    // Window text
+                   style,            // Window style
 
                    // Size and position
                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 
-                   NULL,       // Parent window
+                   parent,       // Parent window
                    NULL,       // Menu
                    NULL,  // Instance handle
                    NULL        // Additional application data
                );
-    registerGui();
-    std::cout << "window created " << myHandle << "\n";
+//    registerGui();
 }
+
 
 bool window::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -84,7 +60,8 @@ bool window::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
         switch (uMsg)
         {
         case WM_DESTROY:
-            PostQuitMessage(0);
+            if( myfApp )
+                PostQuitMessage(0);
             return true;
 
         case WM_PAINT:
@@ -113,34 +90,6 @@ bool window::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 
 }
 
-
-void window::show()
-{
-    ShowWindow(myHandle,  SW_SHOWDEFAULT);
-    for( auto w : myWidget )
-        w->show();
-}
-
-widget::widget( window& parent )
-{
-    myHandle = CreateWindowEx(
-                   0,                              // Optional window styles.
-                   "windex",                     // Window class
-                   "widget",    // Window text
-                   WS_CHILD,            // Window style
-
-                   // Size and position
-                   CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-
-                   parent.handle(),       // Parent window
-                   NULL,       // Menu
-                   NULL,  // Instance handle
-                   NULL        // Additional application data
-               );
-    registerGui();
-    parent.child( this );
-}
-
 bool widget::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     //std::cout << " widget WindowMessageHandler " << uMsg << "\n";
@@ -149,12 +98,10 @@ bool widget::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
         switch (uMsg)
         {
         case WM_DESTROY:
-            //PostQuitMessage(0);
             return true;
 
         case WM_PAINT:
         {
-            std::cout << "widget paint\n";
             PAINTSTRUCT ps;
             BeginPaint(myHandle, &ps);
 
@@ -170,51 +117,13 @@ bool widget::WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
         }
     }
     return false;
-
-}
-void widget::draw( PAINTSTRUCT& ps )
-{
-    DrawText(
-        ps.hdc,
-        myText.c_str(),
-        -1,
-        &ps.rcPaint,
-        0);
-}
-void button::draw( PAINTSTRUCT& ps )
-{
-    widget::draw( ps );
-    DrawEdge(
-        ps.hdc,
-        &ps.rcPaint,
-        EDGE_RAISED,
-        BF_RECT
-    );
 }
 
-msgbox::msgbox( const std::string& msg )
-    : myText( msg )
+void window::show()
 {
-    MoveWindow( myHandle,
-                100,100,400,100,false);
     ShowWindow(myHandle,  SW_SHOWDEFAULT);
-    RECT rect;
-    rect.left = 5;
-    rect.top = 5;
-    rect.bottom = 50;
-    rect.right = 100;
-    DrawText(
-        GetDC( myHandle ),
-        myText.c_str(),
-        -1,
-        &rect,
-        DT_TOP|DT_RIGHT);
-}
-msgbox::~msgbox()
-{
-    auto i = mGui.find( myHandle );
-    if( i != mGui.end() )
-        mGui.erase( i );
+    for( auto w : myWidget )
+        w->show();
 }
 
 }
