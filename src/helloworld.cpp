@@ -4,10 +4,11 @@
 
 using namespace std;
 
-wex::windex W;
 
 int main()
 {
+    wex::windex& W = wex::windex::get();
+
     wex::window& form = W.MakeWindow();
     form.move({ 50,50,800,800});
     form.text("Hello world from windex");
@@ -19,7 +20,7 @@ int main()
     wex::button& btn = W.MakeButton( form );
     btn.move( {20, 60, 70, 30 } );
     btn.text( "OK" );
-    btn.events().click([]
+    btn.events().click([&W]
     {
         W.MakeMsgBox("button clicked");
     });

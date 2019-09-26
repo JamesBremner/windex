@@ -321,6 +321,13 @@ public:
         wc.lpszClassName = "windex";
         RegisterClass(&wc);
     }
+    /// get reference to windex gui framework ( singleton )
+    static windex& get()
+    {
+        static windex theInstance;
+        return theInstance;
+    }
+
     window& MakeWindow()
     {
         window* w = new window();
@@ -364,11 +371,16 @@ public:
             DispatchMessage(&msg);
         }
     }
+    mgui_t * mgui()
+    {
+        return &myGui;
+    }
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         //std::cout << "WindowProc " << hwnd <<" "<< uMsg << "\n";
-        auto w = myGui.find( hwnd );
-        if( w != myGui.end() )
+        mgui_t* mgui = get().mgui();
+        auto w = mgui->find( hwnd );
+        if( w != mgui->end() )
         {
             if( w->second )
             {
@@ -379,7 +391,7 @@ public:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 private:
-    static mgui_t myGui;
+    mgui_t myGui;
     std::vector< HWND > myDeleteList;
 
     void Add( gui * g )
