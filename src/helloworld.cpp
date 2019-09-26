@@ -21,10 +21,9 @@ int main()
     btn.text( "OK" );
     btn.events().click([]
     {
-        wex::msgbox& m = W.MakeMsgBox("button clicked");
-        //m.show();
+        W.MakeMsgBox("button clicked");
     });
     form.show();
-    wex::exec();
+    W.exec();
     return 0;
 }

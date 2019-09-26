@@ -12,6 +12,7 @@ class gui;
 class widget;
 
 typedef std::map< HWND, gui* > mgui_t;
+typedef std::vector< widget* > children_t;
 
 /// Poll the windows message queue ( never returns )
 void exec();
@@ -41,7 +42,6 @@ public:
     gui()
         : myDeleteList( 0 )
     {
-        registerWindowClass();
     }
     virtual ~gui()
     {
@@ -69,64 +69,66 @@ protected:
     HWND myHandle;
     eventhandler myEvents;
     std::vector< HWND >* myDeleteList;
-    void Create( HWND parent, DWORD style );
-private:
-    void registerWindowClass();
+    void Create( HWND parent, DWORD style )
+    {
+        myHandle = CreateWindowEx(
+                       0,                              // Optional window styles.
+                       "windex",                     // Window class
+                       "widget",    // Window text
+                       style,            // Window style
+
+                       // Size and position
+                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+
+                       parent,       // Parent window
+                       NULL,       // Menu
+                       NULL,  // Instance handle
+                       NULL        // Additional application data
+                   );
+    }
 };
 
-
-
-/// A top level window
-class window : public gui
-{
-public:
-    window()
-        : myfApp( false )
-    {
-        Create( NULL, WS_OVERLAPPEDWINDOW );
-    }
-
-    void show();
-
-    void text( const std::string& txt )
-    {
-        SetWindowText( myHandle, txt.c_str() );
-    }
-    void move( const std::vector<int>& r )
-    {
-        MoveWindow( myHandle,
-                    r[0],r[1],r[2],r[3],false);
-    }
-    void child( widget* w )
-    {
-        myWidget.push_back( w );
-    }
-    void quit()
-    {
-        myfApp = true;
-    }
-
-    bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-protected:
-    std::vector< widget* > myWidget;
-    bool myfApp;                        /// true if app should quit when window destroyed
-
-    virtual void draw( PAINTSTRUCT& ps ) {}
-};
 
 /// A widget placed inside a window
 class widget : public gui
 {
 public:
-    widget( window& parent )
+    widget( HWND parent, children_t& children )
     {
-        Create( parent.handle(), WS_CHILD );
-        parent.child( this );
+        Create( parent, WS_CHILD );
+        children.push_back( this );
     }
 
 
-    bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        //std::cout << " widget WindowMessageHandler " << uMsg << "\n";
+        if( hwnd == myHandle )
+        {
+            switch (uMsg)
+            {
+            case WM_DESTROY:
+                return true;
+
+            case WM_PAINT:
+            {
+                PAINTSTRUCT ps;
+                BeginPaint(myHandle, &ps);
+
+                draw(ps);
+
+                EndPaint(myHandle, &ps);
+            }
+            return true;
+
+            case WM_LBUTTONDOWN:
+                myEvents.onLeftdown();
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     void show()
     {
@@ -161,12 +163,98 @@ private:
 
 };
 
+
+/// A top level window
+class window : public gui
+{
+public:
+    window()
+        : myfApp( false )
+    {
+        Create( NULL, WS_OVERLAPPEDWINDOW );
+    }
+
+    void show()
+    {
+        ShowWindow(myHandle,  SW_SHOWDEFAULT);
+        for( auto w : myWidget )
+            w->show();
+    }
+
+    void text( const std::string& txt )
+    {
+        SetWindowText( myHandle, txt.c_str() );
+    }
+    void move( const std::vector<int>& r )
+    {
+        MoveWindow( myHandle,
+                    r[0],r[1],r[2],r[3],false);
+    }
+    void child( widget* w )
+    {
+        myWidget.push_back( w );
+    }
+    void quit()
+    {
+        myfApp = true;
+    }
+    children_t& children()
+    {
+        return myWidget;
+    }
+
+    bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+//    std::cout << "window::WindowMessageHandler "
+//              << myHandle <<" "<< uMsg << "\n";
+        if( hwnd == myHandle )
+        {
+            switch (uMsg)
+            {
+            case WM_DESTROY:
+                if( myfApp )
+                    PostQuitMessage(0);
+                return true;
+
+            case WM_PAINT:
+            {
+                PAINTSTRUCT ps;
+                HDC hdc = BeginPaint(myHandle, &ps);
+
+                FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1));
+                draw( ps );
+
+                EndPaint(myHandle, &ps);
+            }
+            return true;
+
+            }
+        }
+        else
+        {
+            for( auto w : myWidget )
+            {
+                if( w->WindowMessageHandler( hwnd, uMsg, wParam, lParam ))
+                    return true;
+            }
+        }
+        return false;
+
+    }
+
+protected:
+    std::vector< widget* > myWidget;
+    bool myfApp;                        /// true if app should quit when window destroyed
+
+    virtual void draw( PAINTSTRUCT& ps ) {}
+};
+
 /// A button
 class button : public widget
 {
 public:
-    button( window& parent )
-        : widget( parent )
+    button( HWND parent, children_t& children )
+        : widget( parent, children )
     {
 
     }
@@ -215,8 +303,8 @@ private:
 class label : public widget
 {
 public:
-    label( window& parent )
-        : widget( parent )
+    label( HWND parent, children_t& children )
+        : widget( parent, children )
     {
 
     }
@@ -225,6 +313,14 @@ public:
 class windex
 {
 public:
+    windex()
+    {
+        WNDCLASS wc = { };
+        wc.lpfnWndProc   = &windex::WindowProc;
+        wc.hInstance     = NULL;
+        wc.lpszClassName = "windex";
+        RegisterClass(&wc);
+    }
     window& MakeWindow()
     {
         window* w = new window();
@@ -243,13 +339,13 @@ public:
     }
     label& MakeLabel( window& parent )
     {
-        label* w = new label( parent );
+        label* w = new label( parent.handle(), parent.children() );
         Add( w );
         return *w;
     }
     button& MakeButton( window& parent )
     {
-        button* w = new button( parent );
+        button* w = new button( parent.handle(), parent.children() );
         Add( w );
         return *w;
     }
@@ -258,6 +354,15 @@ public:
         msgbox* w = new msgbox( msg );
         Add( w );
         return *w;
+    }
+    void exec()
+    {
+        MSG msg = { };
+        while (GetMessage(&msg, NULL, 0, 0))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
     }
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
