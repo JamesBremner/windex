@@ -14,11 +14,6 @@ class widget;
 typedef std::map< HWND, gui* > mgui_t;
 typedef std::vector< widget* > children_t;
 
-/// Poll the windows message queue ( never returns )
-void exec();
-
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
 /// Functions to be called when event occurs
 class eventhandler
 {
@@ -47,19 +42,27 @@ public:
     {
         myDeleteList->push_back( myHandle );
     }
+
+    /// No messages are handled by the base class
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         return false;
     }
 
+    /// Get event handler
     eventhandler& events()
     {
         return myEvents;
     }
+
+    /// get window handle
     HWND handle()
     {
         return myHandle;
     }
+
+
+    /// set delete list for when gui is detroyed
     void delete_list( std::vector< HWND >* list )
     {
         myDeleteList = list;
@@ -69,6 +72,8 @@ protected:
     HWND myHandle;
     eventhandler myEvents;
     std::vector< HWND >* myDeleteList;
+
+    /** Create the managed window */
     void Create( HWND parent, DWORD style )
     {
         myHandle = CreateWindowEx(
@@ -93,13 +98,18 @@ protected:
 class widget : public gui
 {
 public:
+
+    /** CTOR
+        @param[in] parent window handle
+        @param[in] children parent's list to add to
+    */
     widget( HWND parent, children_t& children )
     {
         Create( parent, WS_CHILD );
         children.push_back( this );
     }
 
-
+    /// Handle windows messages
     bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         //std::cout << " widget WindowMessageHandler " << uMsg << "\n";
@@ -159,8 +169,6 @@ protected:
 private:
     std::string myText;
 
-
-
 };
 
 
@@ -177,6 +185,8 @@ public:
     void show()
     {
         ShowWindow(myHandle,  SW_SHOWDEFAULT);
+
+        // display the children
         for( auto w : myWidget )
             w->show();
     }
@@ -194,10 +204,13 @@ public:
     {
         myWidget.push_back( w );
     }
+
+    /// Set so that application quits if window is destoryed
     void quit()
     {
         myfApp = true;
     }
+
     children_t& children()
     {
         return myWidget;
@@ -300,6 +313,7 @@ private:
     std::string myText;
 };
 
+/// label
 class label : public widget
 {
 public:
@@ -313,21 +327,22 @@ public:
 class windex
 {
 public:
-    windex()
-    {
-        WNDCLASS wc = { };
-        wc.lpfnWndProc   = &windex::WindowProc;
-        wc.hInstance     = NULL;
-        wc.lpszClassName = "windex";
-        RegisterClass(&wc);
-    }
-    /// get reference to windex gui framework ( singleton )
+
+    /** get reference to windex gui framework ( singleton )
+
+    This creates a singleton instance of the windex class
+    and returns as many references to it as needed.
+
+    The windex ctor should never be called by app code - it is private!
+
+    */
     static windex& get()
     {
         static windex theInstance;
         return theInstance;
     }
 
+    /// get reference to new top level window
     window& MakeWindow()
     {
         window* w = new window();
@@ -344,24 +359,31 @@ public:
 
         return *w;
     }
+
+     /// get reference to new label to be displayed in parent window
     label& MakeLabel( window& parent )
     {
         label* w = new label( parent.handle(), parent.children() );
         Add( w );
         return *w;
     }
+
+     /// get reference to new button to be displayed in parent window
     button& MakeButton( window& parent )
     {
         button* w = new button( parent.handle(), parent.children() );
         Add( w );
         return *w;
     }
+     /// get reference to new popped up message box
     msgbox& MakeMsgBox( const std::string& msg )
     {
         msgbox* w = new msgbox( msg );
         Add( w );
         return *w;
     }
+
+    /// poll the windows message queue
     void exec()
     {
         MSG msg = { };
@@ -371,35 +393,60 @@ public:
             DispatchMessage(&msg);
         }
     }
+
+    /// get map of existing gui elements
     mgui_t * mgui()
     {
         return &myGui;
     }
+
+    /// handle windows messages
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        //std::cout << "WindowProc " << hwnd <<" "<< uMsg << "\n";
+        //find gui element that generated message
         mgui_t* mgui = get().mgui();
         auto w = mgui->find( hwnd );
         if( w != mgui->end() )
         {
             if( w->second )
             {
+                // handle message
                 if( w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
                     return 0;
             }
         }
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
-private:
-    mgui_t myGui;
-    std::vector< HWND > myDeleteList;
 
+private:
+    mgui_t myGui;                       ///< map of existing gui elements
+    std::vector< HWND > myDeleteList;   ///< gui elements that have been deleted but not yet removed from map
+
+    windex()
+    {
+        // register a callback function
+        // to be invoked every time a windex gui element receives a windows message
+        WNDCLASS wc = { };
+        wc.lpfnWndProc   = &windex::WindowProc;
+        wc.hInstance     = NULL;
+        wc.lpszClassName = "windex";
+        RegisterClass(&wc);
+    }
+
+    /// Add new gui element
     void Add( gui * g )
     {
+        // delete any destroyed elements
         Delete();
+
+        // provide reference to delete list, so new gui element can be removed after destruction
         g->delete_list( &myDeleteList );
+
+        // add to existing gui elements
         myGui.insert( std::make_pair( g->handle(), g ));
     }
+
+    /// remove destroyed gui elements
     void Delete()
     {
         for( auto h : myDeleteList )
@@ -408,6 +455,7 @@ private:
             if( i != myGui.end() )
                 myGui.erase( i );
         }
+        myDeleteList.clear();
     }
 
 };
