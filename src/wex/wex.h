@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <thread>
 #include <vector>
 #include <map>
@@ -18,6 +19,11 @@ typedef std::vector< widget* > children_t;
 class eventhandler
 {
 public:
+    eventhandler()
+    {
+        // initialize functions with no-ops
+        click([] {});
+    }
     void onLeftdown()
     {
         myClickFunction();
@@ -74,19 +80,20 @@ protected:
     std::vector< HWND >* myDeleteList;
 
     /** Create the managed window */
-    void Create( HWND parent, DWORD style )
+    void Create( char* window_class, HWND parent,
+                 DWORD style, DWORD exstyle = 0, int id=0 )
     {
         myHandle = CreateWindowEx(
-                       0,                              // Optional window styles.
-                       "windex",                     // Window class
-                       "widget",    // Window text
+                       exstyle,                // Optional window styles.
+                       window_class,     // Window class
+                       "widget",         // Window text
                        style,            // Window style
 
                        // Size and position
                        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 
                        parent,       // Parent window
-                       NULL,       // Menu
+                       (HMENU)id,       // Menu or control id
                        NULL,  // Instance handle
                        NULL        // Additional application data
                    );
@@ -103,9 +110,16 @@ public:
         @param[in] parent window handle
         @param[in] children parent's list to add to
     */
-    widget( HWND parent, children_t& children )
+    widget(
+        HWND parent,
+        children_t& children,
+        char* window_class = "windex",
+        unsigned long style = WS_CHILD,
+        unsigned long exstyle = 0 )
+        : myParent( parent )
     {
-        Create( parent, WS_CHILD );
+        myID = NewID();
+        Create( window_class, parent, style, exstyle, myID );
         children.push_back( this );
     }
 
@@ -134,6 +148,10 @@ public:
             case WM_LBUTTONDOWN:
                 myEvents.onLeftdown();
                 return true;
+
+            case WM_COMMAND:
+                std::cout << "command\n";
+                return true;
             }
         }
         return false;
@@ -155,8 +173,20 @@ public:
     {
         myText = txt;
     }
+    int id()
+    {
+        return myID;
+    }
+
+    virtual void command( WORD cmd )
+    {
+    }
 
 protected:
+
+    int myID;
+    HWND myParent;
+
     virtual void draw( PAINTSTRUCT& ps )
     {
         DrawText(
@@ -166,9 +196,18 @@ protected:
             &ps.rcPaint,
             0);
     }
+
 private:
     std::string myText;
 
+
+
+    int NewID()
+    {
+        static int lastID = 0;
+        lastID++;
+        return lastID;
+    }
 };
 
 
@@ -179,7 +218,7 @@ public:
     window()
         : myfApp( false )
     {
-        Create( NULL, WS_OVERLAPPEDWINDOW );
+        Create( "windex", NULL, WS_OVERLAPPEDWINDOW );
     }
 
     void show()
@@ -216,6 +255,16 @@ public:
         return myWidget;
     }
 
+    widget* find( int id )
+    {
+        for( auto w : myWidget )
+        {
+            if ( w->id() == id )
+                return w;
+        }
+        return nullptr;
+    }
+
     bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
 //    std::cout << "window::WindowMessageHandler "
@@ -240,6 +289,15 @@ public:
                 EndPaint(myHandle, &ps);
             }
             return true;
+
+            case WM_COMMAND:
+                //std::cout << "window <- command "<< LOWORD(wParam) <<" " << HIWORD(wParam)<< "\n";
+
+                // send notification to widget with ID
+                auto w = find( LOWORD(wParam) );
+                if( w )
+                    w->command( HIWORD( wParam ));
+                return true;
 
             }
         }
@@ -267,7 +325,7 @@ class button : public widget
 {
 public:
     button( HWND parent, children_t& children )
-        : widget( parent, children )
+        : widget( parent, children, "windex" )
     {
 
     }
@@ -306,6 +364,44 @@ public:
         : widget( parent, children )
     {
 
+    }
+};
+/// User can enter a string
+class editbox : public widget
+{
+public:
+    editbox( HWND parent, children_t& children )
+        : widget( parent, children, "Edit",
+                  WS_CHILD | ES_LEFT | WS_BORDER | WS_VISIBLE,
+                  WS_EX_CLIENTEDGE )
+    {
+
+    }
+    void command( WORD cmd )
+    {
+        //std::cout << "editbox command " << cmd << "\n";
+        if( cmd == EN_KILLFOCUS )
+        {
+            //std::cout << "done\n";
+        }
+    }
+    void text( const std::string& t )
+    {
+        SetDlgItemText(
+                       myParent,
+                       myID,
+                       t.c_str() );
+    }
+    std::string text()
+    {
+        char buf[1000];
+        GetDlgItemText(
+            myParent,
+            myID,
+            buf,
+            999
+        );
+        return std::string( buf );
     }
 };
 
@@ -349,6 +445,13 @@ public:
     label& MakeLabel( window& parent )
     {
         label* w = new label( parent.handle(), parent.children() );
+        Add( w );
+        return *w;
+    }
+
+    editbox& MakeEditbox( window& parent )
+    {
+        editbox* w = new editbox( parent.handle(), parent.children() );
         Add( w );
         return *w;
     }
