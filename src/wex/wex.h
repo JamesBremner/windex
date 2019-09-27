@@ -286,31 +286,16 @@ protected:
 };
 
 /// A popup with a message
-class msgbox : public window
+class msgbox
 {
 public:
-    msgbox( const std::string& msg )
-        : myText( msg )
+    msgbox( gui& parent, const std::string& msg )
     {
-        SetWindowText( myHandle, "Message" );
-        ShowWindow(myHandle,  SW_SHOWDEFAULT);
-        MoveWindow( myHandle,
-                    100,100,400,100,true);
+        MessageBox(parent.handle(),
+                   msg.c_str(),
+                   "Message",
+                   MB_OK);
     }
-    void draw( PAINTSTRUCT& ps)
-    {
-        ps.rcPaint.left += 5;
-        ps.rcPaint.top += 5;
-        DrawText(
-            GetDC( myHandle ),
-            myText.c_str(),
-            -1,
-            &ps.rcPaint,
-            0 );
-    }
-
-private:
-    std::string myText;
 };
 
 /// label
@@ -360,7 +345,7 @@ public:
         return *w;
     }
 
-     /// get reference to new label to be displayed in parent window
+    /// get reference to new label to be displayed in parent window
     label& MakeLabel( window& parent )
     {
         label* w = new label( parent.handle(), parent.children() );
@@ -368,17 +353,10 @@ public:
         return *w;
     }
 
-     /// get reference to new button to be displayed in parent window
+    /// get reference to new button to be displayed in parent window
     button& MakeButton( window& parent )
     {
         button* w = new button( parent.handle(), parent.children() );
-        Add( w );
-        return *w;
-    }
-     /// get reference to new popped up message box
-    msgbox& MakeMsgBox( const std::string& msg )
-    {
-        msgbox* w = new msgbox( msg );
         Add( w );
         return *w;
     }

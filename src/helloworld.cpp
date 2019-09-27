@@ -23,9 +23,9 @@ int main()
     btn.text( "OK" );
 
     // popup a message box when button is clicked
-    btn.events().click([&W]
+    btn.events().click([&form]
     {
-        W.MakeMsgBox("button clicked");
+        wex::msgbox(form,"button clicked");
     });
 
     // show the application
