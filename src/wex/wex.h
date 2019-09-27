@@ -219,6 +219,15 @@ public:
         : myfApp( false )
     {
         Create( "windex", NULL, WS_OVERLAPPEDWINDOW );
+
+        // Assume that the first window created is the application window
+        // quit the application of it is destroyed
+        static bool appdone = false;
+        if( ! appdone )
+        {
+            myfApp = true;
+            appdone = true;
+        }
     }
 
     void show()
@@ -242,12 +251,6 @@ public:
     void child( widget* w )
     {
         myWidget.push_back( w );
-    }
-
-    /// Set so that application quits if window is destoryed
-    void quit()
-    {
-        myfApp = true;
     }
 
     children_t& children()
@@ -377,14 +380,17 @@ public:
     {
 
     }
-    void command( WORD cmd )
+    /// editbox generated a notification - nop
+    void notification( WORD ntf )
     {
-        //std::cout << "editbox command " << cmd << "\n";
-        if( cmd == EN_KILLFOCUS )
+        //std::cout << "editbox notification " << ntf << "\n";
+        if( ntf == EN_KILLFOCUS )
         {
             //std::cout << "done\n";
         }
     }
+
+    // change text in textbox
     void text( const std::string& t )
     {
         SetDlgItemText(
@@ -392,6 +398,8 @@ public:
                        myID,
                        t.c_str() );
     }
+
+    // get text in textbox
     std::string text()
     {
         char buf[1000];
@@ -428,38 +436,16 @@ public:
     {
         window* w = new window();
         Add( w );
-
-        // Assume that the first window created is the application window
-        // quit the application of it is destroyed
-        static bool appdone = false;
-        if( ! appdone )
-        {
-            w->quit();
-            appdone = true;
-        }
-
         return *w;
     }
 
-    /// get reference to new label to be displayed in parent window
-    label& MakeLabel( window& parent )
+    /** get reference to new widget of type T
+        @param[in] parent reference to parent window
+    */
+    template <class T>
+    T& make( window& parent )
     {
-        label* w = new label( parent.handle(), parent.children() );
-        Add( w );
-        return *w;
-    }
-
-    editbox& MakeEditbox( window& parent )
-    {
-        editbox* w = new editbox( parent.handle(), parent.children() );
-        Add( w );
-        return *w;
-    }
-
-    /// get reference to new button to be displayed in parent window
-    button& MakeButton( window& parent )
-    {
-        button* w = new button( parent.handle(), parent.children() );
+        T* w = new T( parent.handle(), parent.children() );
         Add( w );
         return *w;
     }
