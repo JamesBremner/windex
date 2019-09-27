@@ -34,7 +34,6 @@
 			<Add directory="../../src/wex" />
 		</Compiler>
 		<Unit filename="../../src/helloworld.cpp" />
-		<Unit filename="../../src/wex/wex.cpp" />
 		<Unit filename="../../src/wex/wex.h" />
 		<Extensions>
 			<code_completion />
