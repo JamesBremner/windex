@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="windex" />
+		<Option title="propertygrid" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc_v83" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../bin/windex" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../bin/propertygrid" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc_v83" />
@@ -16,7 +16,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="../bin/windex" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../bin/propertygrid" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc_v83" />
@@ -31,15 +31,13 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="../../src/wex" />
 		</Compiler>
-		<Unit filename="../../src/helloworld.cpp" />
-		<Unit filename="../../src/wex/propertygrid.h" />
-		<Unit filename="../../src/wex/wex.h" />
+		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
+			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -160,7 +160,7 @@ public:
 
     void show()
     {
-        ShowWindow(myHandle,  SW_SHOWDEFAULT);
+        ShowWindow(myHandle, SW_SHOWDEFAULT);
     }
 
     void move( const std::vector<int>& r )
