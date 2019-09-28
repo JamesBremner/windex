@@ -15,8 +15,10 @@ int main()
     form.move({ 50,50,400,400});
     form.text("A windex property grid");
 
-    wex::property prop( form, "test", "46" );
-    prop.move({50,50,300,30});
+    wex::propertyGrid pg( form );
+    pg.labelWidth( 50 );
+    pg.string( "test1", "72" );
+    pg.string( "test2", "4600" );
 
     // show the application
     form.show();

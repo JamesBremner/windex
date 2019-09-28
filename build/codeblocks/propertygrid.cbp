@@ -33,6 +33,7 @@
 			<Add option="-fexceptions" />
 			<Add directory="../../include" />
 		</Compiler>
+		<Unit filename="../../include/propertygrid.h" />
 		<Unit filename="../../src/propertygrid.cpp" />
 		<Extensions>
 			<code_completion />
