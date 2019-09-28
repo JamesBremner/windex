@@ -2,7 +2,7 @@
  
 A header only modern c++ wrapper for the windows API.
 
-Implements simple versions of toplevel window, label, button, textbox and messagebox.
+Implements simple versions of toplevel window, label, button, textbox, messagebox and propertyGrid.
 
 Here is the hello world code:
 
