@@ -31,8 +31,9 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add directory="../../include" />
 		</Compiler>
-		<Unit filename="main.cpp" />
+		<Unit filename="../../src/propertygrid.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

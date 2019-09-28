@@ -31,7 +31,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="../../src/wex" />
+			<Add directory="../../include" />
 		</Compiler>
 		<Unit filename="../../src/helloworld.cpp" />
 		<Unit filename="../../src/wex/propertygrid.h" />
