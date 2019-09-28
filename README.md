@@ -24,23 +24,23 @@ int main()
     form.text("Hello world from windex");
 
     // display labels
-    label& lbA = W.MakeLabel( form );
+    label& lbA = W.make<label>( form );
     lbA.move( {20, 20, 100, 30 } );
     lbA.text("A:");
-    label& lbB = W.MakeLabel( form );
+    label& lbB = W.make<label>( form );
     lbB.move( {20, 60, 100, 30 } );
     lbB.text("B:");
 
     // display textboxes
-    editbox& edit1 = W.MakeEditbox( form );
+    editbox& edit1 = W.make<editbox>( form );
     edit1.move( {80, 20, 100, 30 } );
     edit1.text( "type value");
-    editbox& edit2 = W.MakeEditbox( form );
+    editbox& edit2 = W.make<editbox>( form );
     edit2.move( {80, 60, 100, 30 } );
     edit2.text( "type value");
 
     // display a button
-    button& btn = W.MakeButton( form );
+    button& btn = W.make<button>( form );
     btn.move( {20, 100, 150, 30 } );
     btn.text( "Show values entered" );
 
@@ -68,5 +68,12 @@ int main()
     return 0;
 }
 
-
 ```
+
+# Build
+
+No separate build step is required. since this is a header only library.  
+
+Add `"include "wex.h";` to application source files that use windex and add the `include` folder to the compiler search directories.
+
+This avoids all the challenging configuration management problems that can result from trying to maintain a separate library build, when the library build and application build use different compilers or compiler options.
