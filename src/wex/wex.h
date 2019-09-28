@@ -79,12 +79,21 @@ protected:
     eventhandler myEvents;
     std::vector< HWND >* myDeleteList;
 
-    /** Create the managed window */
-    void Create( char* window_class, HWND parent,
-                 DWORD style, DWORD exstyle = 0, int id=0 )
+    /** Create the managed window
+        @param[in] parent handle of parent window
+        @param[in] window_class controls which callback function handles window messages
+        @param[in] style
+        @param[in] exstyle
+        @param[in] id identifies which control generated notification
+     */
+    void Create(
+        HWND parent,
+        const char* window_class,
+        DWORD style, DWORD exstyle = 0,
+        int id=0 )
     {
         myHandle = CreateWindowEx(
-                       exstyle,                // Optional window styles.
+                       exstyle,          // Optional window styles.
                        window_class,     // Window class
                        "widget",         // Window text
                        style,            // Window style
@@ -93,7 +102,7 @@ protected:
                        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 
                        parent,       // Parent window
-                       (HMENU)id,       // Menu or control id
+                       reinterpret_cast<HMENU>( id ),       // Menu or control id
                        NULL,  // Instance handle
                        NULL        // Additional application data
                    );
@@ -113,13 +122,13 @@ public:
     widget(
         HWND parent,
         children_t& children,
-        char* window_class = "windex",
+        const char* window_class = "windex",
         unsigned long style = WS_CHILD,
         unsigned long exstyle = 0 )
         : myParent( parent )
     {
         myID = NewID();
-        Create( window_class, parent, style, exstyle, myID );
+        Create( parent, window_class, style, exstyle, myID );
         children.push_back( this );
     }
 
@@ -218,7 +227,7 @@ public:
     window()
         : myfApp( false )
     {
-        Create( "windex", NULL, WS_OVERLAPPEDWINDOW );
+        Create( NULL, "windex", WS_OVERLAPPEDWINDOW );
 
         // Assume that the first window created is the application window
         // quit the application of it is destroyed
@@ -394,9 +403,9 @@ public:
     void text( const std::string& t )
     {
         SetDlgItemText(
-                       myParent,
-                       myID,
-                       t.c_str() );
+            myParent,
+            myID,
+            t.c_str() );
     }
 
     // get text in textbox
