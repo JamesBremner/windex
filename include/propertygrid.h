@@ -2,6 +2,7 @@
 #include "wex.h"
 namespace wex
 {
+/// A name value pair
 class property
 {
 public:
@@ -35,6 +36,14 @@ public:
     {
         myLabel.bgcolor( color );
     }
+    const std::string& name() const
+    {
+        return myName;
+    }
+    const std::string& value() const
+    {
+        return myValue;
+    }
 private:
     std::string myName;
     std::string myValue;
@@ -43,6 +52,7 @@ private:
     wex::editbox& myEditbox;
     int myLabelWidth;
 };
+/// A grid of properties
 class propertyGrid
 {
 public:
@@ -68,6 +78,12 @@ public:
                     myWidth, myHeight } );
         myProperty.push_back( P );
     }
+    void move( const std::vector<int>& r )
+    {
+        myX = r[0];
+        myY = r[1];
+        myWidth = r[2];
+    }
     void labelWidth( int w )
     {
         myLabelWidth = w;
@@ -75,6 +91,26 @@ public:
     void bgcolor( int color )
     {
         myBGColor = color;
+    }
+
+    /// get pointer to property with name
+    property* find( const std::string& name )
+    {
+        for( auto& p : myProperty )
+        {
+            if( p.name() == name )
+                return &p;
+        }
+        return nullptr;
+    }
+
+    /// get value of property with name
+    const std::string& value( const std::string& name )
+    {
+        property* p = find( name );
+        if( ! p )
+            return "";
+        return p->value();
     }
 private:
     std::vector< property > myProperty;
