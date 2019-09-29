@@ -41,12 +41,28 @@ class gui
 {
 public:
     gui()
-        : myDeleteList( 0 )
+        : myBGColor( 0xC8C8C8 )
+        , myBGBrush( CreateSolidBrush( myBGColor ))
+        , myDeleteList( 0 )
     {
     }
     virtual ~gui()
     {
         myDeleteList->push_back( myHandle );
+    }
+
+    /** Change background color
+    @param[in] color eg 0x0000FF
+    */
+    void bgcolor( int color )
+    {
+        myBGColor = color;
+        DeleteObject( myBGBrush);
+        myBGBrush = CreateSolidBrush( color );
+    }
+    int bgcolor() const
+    {
+        return myBGColor;
     }
 
     /// No messages are handled by the base class
@@ -77,6 +93,8 @@ public:
 protected:
     HWND myHandle;
     eventhandler myEvents;
+    int myBGColor;
+    HBRUSH myBGBrush;
     std::vector< HWND >* myDeleteList;
 
     /** Create the managed window
@@ -107,6 +125,8 @@ protected:
                        NULL        // Additional application data
                    );
     }
+
+
 };
 
 
@@ -130,6 +150,7 @@ public:
         myID = NewID();
         Create( parent, window_class, style, exstyle, myID );
         children.push_back( this );
+
     }
 
     /// Handle windows messages
@@ -143,11 +164,20 @@ public:
             case WM_DESTROY:
                 return true;
 
+            case WM_ERASEBKGND:
+            {
+                RECT rc;
+                GetWindowRect(hwnd, &rc);
+                GetClientRect(hwnd,&rc );
+                //FillRect((HDC)wParam, &rc, myBGBrush );
+                return true;
+            }
+
             case WM_PAINT:
             {
                 PAINTSTRUCT ps;
                 BeginPaint(myHandle, &ps);
-
+                FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
                 draw(ps);
 
                 EndPaint(myHandle, &ps);
@@ -198,6 +228,9 @@ protected:
 
     virtual void draw( PAINTSTRUCT& ps )
     {
+        SetBkColor(
+            ps.hdc,
+            myBGColor );
         DrawText(
             ps.hdc,
             myText.c_str(),
@@ -290,12 +323,20 @@ public:
                     PostQuitMessage(0);
                 return true;
 
+            case WM_ERASEBKGND:
+            {
+                RECT rc;
+                GetWindowRect(hwnd, &rc);
+                FillRect((HDC)wParam, &rc, myBGBrush );
+                return true;
+            }
+
             case WM_PAINT:
             {
                 PAINTSTRUCT ps;
                 HDC hdc = BeginPaint(myHandle, &ps);
 
-                FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1));
+                FillRect(hdc, &ps.rcPaint, myBGBrush );
                 draw( ps );
 
                 EndPaint(myHandle, &ps);
@@ -337,7 +378,7 @@ class button : public widget
 {
 public:
     button( HWND parent, children_t& children )
-        : widget( parent, children, "windex" )
+        : widget( parent, children )
     {
 
     }
@@ -455,6 +496,10 @@ public:
     T& make( window& parent )
     {
         T* w = new T( parent.handle(), parent.children() );
+
+        // inhertit background color from parent
+        w->bgcolor( parent.bgcolor() );
+
         Add( w );
         return *w;
     }
@@ -506,6 +551,7 @@ private:
         wc.lpfnWndProc   = &windex::WindowProc;
         wc.hInstance     = NULL;
         wc.lpszClassName = "windex";
+        wc.hbrBackground = CreateSolidBrush(0xc8c8c8);
         RegisterClass(&wc);
     }
 

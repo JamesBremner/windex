@@ -33,6 +33,9 @@
 			<Add option="-fexceptions" />
 			<Add directory="../../include" />
 		</Compiler>
+		<Linker>
+			<Add library="gdi32" />
+		</Linker>
 		<Unit filename="../../src/helloworld.cpp" />
 		<Unit filename="../../src/wex/propertygrid.h" />
 		<Unit filename="../../src/wex/wex.h" />

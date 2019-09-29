@@ -31,6 +31,10 @@ public:
     {
         myLabelWidth = w;
     }
+    void bgcolor( int color )
+    {
+        myLabel.bgcolor( color );
+    }
 private:
     std::string myName;
     std::string myValue;
@@ -49,6 +53,7 @@ public:
         , myLabelWidth( 100 )
         , myX( 10 )
         , myY( 10 )
+        , myBGColor( 0xc8c8c8)
     {
 
     }
@@ -58,6 +63,7 @@ public:
     {
         property P( myParent, name, value );
         P.labelWidth( myLabelWidth );
+        P.bgcolor( myBGColor );
         P.move( { myX, myY+(int)myProperty.size() * myHeight,
                     myWidth, myHeight } );
         myProperty.push_back( P );
@@ -66,6 +72,10 @@ public:
     {
         myLabelWidth = w;
     }
+    void bgcolor( int color )
+    {
+        myBGColor = color;
+    }
 private:
     std::vector< property > myProperty;
     window& myParent;
@@ -73,5 +83,6 @@ private:
     int myWidth;
     int myLabelWidth;
     int myX, myY;
+    int myBGColor;
 };
 }

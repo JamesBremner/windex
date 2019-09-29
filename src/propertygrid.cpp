@@ -17,6 +17,7 @@ int main()
 
     wex::propertyGrid pg( form );
     pg.labelWidth( 50 );
+    pg.bgcolor( 0xFFA0A0 );
     pg.string( "test1", "72" );
     pg.string( "test2", "4600" );
 
