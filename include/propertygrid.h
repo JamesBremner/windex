@@ -1,4 +1,4 @@
-#include <memory>
+#pragma once
 #include "wex.h"
 namespace wex
 {
@@ -108,8 +108,10 @@ public:
     const std::string& value( const std::string& name )
     {
         property* p = find( name );
-        if( ! p )
-            return "";
+        if( ! p ) {
+            static std::string null;
+            return null;
+        }
         return p->value();
     }
 private:

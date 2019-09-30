@@ -281,6 +281,18 @@ public:
             w->show();
     }
 
+    void showModal()
+    {
+        show();
+
+        MSG msg = { };
+        while (GetMessage(&msg, NULL, 0, 0))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
+
     void text( const std::string& txt )
     {
         SetWindowText( myHandle, txt.c_str() );
@@ -579,7 +591,6 @@ private:
         }
         myDeleteList.clear();
     }
-
 };
 
 }
