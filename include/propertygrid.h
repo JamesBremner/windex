@@ -22,7 +22,10 @@ public:
     }
     void move( const std::vector<int>& r )
     {
-        myLabel.move( r );
+        std::vector<int> rl( r );
+        rl[2] = myLabelWidth;
+        myLabel.move( rl );
+
         std::vector<int> re( r );
         re[0] += myLabelWidth;
         re[2] -= myLabelWidth;
@@ -40,9 +43,9 @@ public:
     {
         return myName;
     }
-    const std::string& value() const
+    const std::string value() const
     {
-        return myValue;
+        return myEditbox.text();
     }
 private:
     std::string myName;
@@ -105,7 +108,7 @@ public:
     }
 
     /// get value of property with name
-    const std::string& value( const std::string& name )
+    const std::string value( const std::string& name )
     {
         property* p = find( name );
         if( ! p ) {

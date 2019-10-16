@@ -156,7 +156,7 @@ public:
     /// Handle windows messages
     bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        //std::cout << " widget WindowMessageHandler " << uMsg << "\n";
+        //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
         if( hwnd == myHandle )
         {
             switch (uMsg)
@@ -445,7 +445,7 @@ public:
     /// editbox generated a notification - nop
     void notification( WORD ntf )
     {
-        //std::cout << "editbox notification " << ntf << "\n";
+       //std::cout << "editbox notification " << ntf << "\n";
         if( ntf == EN_KILLFOCUS )
         {
             //std::cout << "done\n";
@@ -465,6 +465,7 @@ public:
     std::string text()
     {
         char buf[1000];
+        buf[0] = '\0';
         GetDlgItemText(
             myParent,
             myID,

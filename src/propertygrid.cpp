@@ -38,13 +38,13 @@ int main()
         msgbox(
             form,
             msg );
-
-           window& popup = W.MakeWindow();
-           popup.text("popup");
-           label l = W.make<label>( popup );
-            l.move( {20, 20, 100, 30 } );
-           l.text( "test");
-           popup.showModal();
+//
+//           window& popup = W.MakeWindow();
+//           popup.text("popup");
+//           label l = W.make<label>( popup );
+//            l.move( {20, 20, 100, 30 } );
+//           l.text( "test");
+//           popup.showModal();
 
 //        wex::inputbox* ibox = new wex::inputbox( form );
 //        ibox->modal();
