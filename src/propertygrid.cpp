@@ -33,16 +33,18 @@ int main()
     btn.events().click([&]
     {
         std::string msg =
-        "A is " + pg.value("A") +
-        ", B is " + pg.value("B");
-
-        window& popup = W.MakeWindow();
-        popup.move( { 100,50, 300, 200 } );
-        popup.text("popup");
-        label& l = W.make<label>( popup );
-        l.move( {20, 50, 150, 30 } );
-        l.text( msg );
-        popup.showModal();
+            "A is " + pg.value("A") +
+            ", B is " + pg.value("B");
+        msgbox(
+            form,
+            msg );
+//
+//           window& popup = W.MakeWindow();
+//           popup.text("popup");
+//           label l = W.make<label>( popup );
+//            l.move( {20, 20, 100, 30 } );
+//           l.text( "test");
+//           popup.showModal();
 
     });
 
