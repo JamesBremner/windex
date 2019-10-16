@@ -15,6 +15,16 @@ class widget;
 typedef std::map< HWND, gui* > mgui_t;
 typedef std::vector< widget* > children_t;
 
+void MessageLoop()
+{
+    MSG msg = { };
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+}
+
 /// Functions to be called when event occurs
 class eventhandler
 {
@@ -64,6 +74,10 @@ public:
     {
         return myBGColor;
     }
+    void text( const std::string& text )
+    {
+        myText = text;
+    }
 
     /// No messages are handled by the base class
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -96,6 +110,7 @@ protected:
     int myBGColor;
     HBRUSH myBGBrush;
     std::vector< HWND >* myDeleteList;
+    std::string myText;
 
     /** Create the managed window
         @param[in] parent handle of parent window
@@ -125,8 +140,6 @@ protected:
                        NULL        // Additional application data
                    );
     }
-
-
 };
 
 
@@ -150,7 +163,7 @@ public:
         myID = NewID();
         Create( parent, window_class, style, exstyle, myID );
         children.push_back( this );
-
+        text("not set");
     }
 
     /// Handle windows messages
@@ -208,10 +221,6 @@ public:
                     r[0],r[1],r[2],r[3],false);
     }
 
-    void text( const std::string& txt )
-    {
-        myText = txt;
-    }
     int id()
     {
         return myID;
@@ -240,9 +249,6 @@ protected:
     }
 
 private:
-    std::string myText;
-
-
 
     int NewID()
     {
@@ -259,6 +265,7 @@ class window : public gui
 public:
     window()
         : myfApp( false )
+        , myfModal( false )
     {
         Create( NULL, "windex", WS_OVERLAPPEDWINDOW );
 
@@ -283,18 +290,22 @@ public:
 
     void showModal()
     {
+        std::cout << "modal " << myHandle << "\n";
+        myfModal = true;
         show();
-
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+            if( ! myfModal )
+                break;
         }
     }
 
     void text( const std::string& txt )
     {
+        gui::text( txt );
         SetWindowText( myHandle, txt.c_str() );
     }
     void move( const std::vector<int>& r )
@@ -324,8 +335,8 @@ public:
 
     bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-//    std::cout << "window::WindowMessageHandler "
-//              << myHandle <<" "<< uMsg << "\n";
+    std::cout << "window::WindowMessageHandler "
+              << myText <<" "<< myHandle <<" "<< uMsg << "\n";
         if( hwnd == myHandle )
         {
             switch (uMsg)
@@ -334,6 +345,10 @@ public:
                 if( myfApp )
                     PostQuitMessage(0);
                 return true;
+
+            case WM_NCDESTROY:
+                myfModal = false;
+                return false;
 
             case WM_ERASEBKGND:
             {
@@ -381,6 +396,7 @@ public:
 protected:
     std::vector< widget* > myWidget;
     bool myfApp;                        /// true if app should quit when window destroyed
+    bool myfModal;
 
     virtual void draw( PAINTSTRUCT& ps ) {}
 };
@@ -519,12 +535,7 @@ public:
     /// poll the windows message queue
     void exec()
     {
-        MSG msg = { };
-        while (GetMessage(&msg, NULL, 0, 0))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
+        MessageLoop();
     }
 
     /// get map of existing gui elements
@@ -551,6 +562,19 @@ public:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 
+    /// Add new gui element
+    void Add( gui * g )
+    {
+        // delete any destroyed elements
+        Delete();
+
+        // provide reference to delete list, so new gui element can be removed after destruction
+        g->delete_list( &myDeleteList );
+
+        // add to existing gui elements
+        myGui.insert( std::make_pair( g->handle(), g ));
+    }
+
 private:
     mgui_t myGui;                       ///< map of existing gui elements
     std::vector< HWND > myDeleteList;   ///< gui elements that have been deleted but not yet removed from map
@@ -565,19 +589,6 @@ private:
         wc.lpszClassName = "windex";
         wc.hbrBackground = CreateSolidBrush(0xc8c8c8);
         RegisterClass(&wc);
-    }
-
-    /// Add new gui element
-    void Add( gui * g )
-    {
-        // delete any destroyed elements
-        Delete();
-
-        // provide reference to delete list, so new gui element can be removed after destruction
-        g->delete_list( &myDeleteList );
-
-        // add to existing gui elements
-        myGui.insert( std::make_pair( g->handle(), g ));
     }
 
     /// remove destroyed gui elements
