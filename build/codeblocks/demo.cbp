@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="windex" />
+		<Option title="demo" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc_v83" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../bin/windex" prefix_auto="1" extension_auto="1" />
+				<Option output="../bin/demo" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc_v83" />
@@ -36,9 +36,10 @@
 		<Linker>
 			<Add library="gdi32" />
 		</Linker>
-		<Unit filename="../../src/helloworld.cpp" />
-		<Unit filename="../../src/wex/propertygrid.h" />
-		<Unit filename="../../src/wex/wex.h" />
+		<Unit filename="../../demo/demo.cpp" />
+		<Unit filename="../../include/inputbox.h" />
+		<Unit filename="../../include/propertygrid.h" />
+		<Unit filename="../../include/wex.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
