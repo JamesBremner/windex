@@ -16,11 +16,16 @@ public:
         myGrid.bgcolor( 0xFFA0A0 );
         myOKButton.move( { 100,200, 50, 40 } );
         myOKButton.text("OK");
-        myOKButton.events().click([this]{
-                                  std::cout << "destroying inputbox " << myHandle << "\n";
-                                  myfModal = false;
-                                  DestroyWindow(myHandle);
-                                  });
+        myOKButton.events().click([this]
+        {
+            //std::cout << "destroying inputbox " << myHandle << "\n";
+
+            // before destroying the window extract values from gui into property attributes
+            myGrid.saveValues();
+
+            myfModal = false;
+            DestroyWindow(myHandle);
+        });
     }
     void Add(
         const std::string& name,
@@ -37,10 +42,11 @@ public:
     {
         showModal();
     }
-
+    /// get value saved in proprty attribute
     std::string value( const std::string& name )
     {
-        return myGrid.value( name );
+        auto p = myGrid.find( name );
+        return p->savedValue();
     }
 private:
     propertyGrid myGrid;

@@ -45,7 +45,20 @@ public:
     }
     const std::string value() const
     {
+        //std::string v = myEditbox.text();
         return myEditbox.text();
+    }
+
+    // copy value from gui into myValue attribute
+    void saveValue()
+    {
+        myValue = myEditbox.text();
+    }
+
+    // get myValue attribute
+    const std::string savedValue() const
+    {
+        return myValue;
     }
 private:
     std::string myName;
@@ -107,15 +120,26 @@ public:
         return nullptr;
     }
 
-    /// get value of property with name
+    /// get value in editbox of property with name
     const std::string value( const std::string& name )
     {
+        std::cout << "PG value " << name << "\n";
         property* p = find( name );
         if( ! p ) {
             static std::string null;
             return null;
         }
+        std::string v = p->value();
         return p->value();
+    }
+
+    /// save values in all property textboxes in the property's myValue attribute
+    void saveValues()
+    {
+        for( auto& p : myProperty )
+        {
+            p.saveValue();
+        }
     }
 private:
     std::vector< property > myProperty;

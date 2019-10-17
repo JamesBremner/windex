@@ -78,6 +78,10 @@ public:
     {
         myText = text;
     }
+    std::string text()
+    {
+        return myText;
+    }
 
     /// No messages are handled by the base class
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -290,7 +294,7 @@ public:
 
     void showModal()
     {
-        std::cout << "modal " << myHandle << "\n";
+        //std::cout << "modal " << myHandle << "\n";
         myfModal = true;
         show();
         MSG msg = { };
@@ -335,8 +339,8 @@ public:
 
     bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-    std::cout << "window::WindowMessageHandler "
-              << myText <<" "<< myHandle <<" "<< uMsg << "\n";
+//    std::cout << "window::WindowMessageHandler "
+//              << myText <<" "<< myHandle <<" "<< uMsg << "\n";
         if( hwnd == myHandle )
         {
             switch (uMsg)
@@ -461,10 +465,10 @@ public:
     /// editbox generated a notification - nop
     void notification( WORD ntf )
     {
-       //std::cout << "editbox notification " << ntf << "\n";
+       std::cout << "editbox notification " << ntf << "\n";
         if( ntf == EN_KILLFOCUS )
         {
-            //std::cout << "done\n";
+            std::cout << "done\n";
         }
     }
 
@@ -482,7 +486,7 @@ public:
     {
         char buf[1000];
         buf[0] = '\0';
-        GetDlgItemText(
+        int len = GetDlgItemText(
             myParent,
             myID,
             buf,
@@ -526,7 +530,7 @@ public:
     {
         T* w = new T( parent.handle(), parent.children() );
 
-        // inhertit background color from parent
+        // inherit background color from parent
         w->bgcolor( parent.bgcolor() );
 
         Add( w );
