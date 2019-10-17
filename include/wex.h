@@ -504,7 +504,7 @@ public:
                   CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
-    void Add( const std::string& s )
+    void add( const std::string& s )
     {
         SendMessageA(
             handle(),
@@ -531,6 +531,13 @@ public:
             (WPARAM) i,
             (LPARAM) buf);
         return std::string( buf );
+    }
+    int count()
+    {
+        return SendMessage(
+                   handle(),
+                   (UINT)CB_GETCOUNT,
+                   (WPARAM) 0, (LPARAM) 0);
     }
 };
 

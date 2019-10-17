@@ -22,6 +22,7 @@ int main()
     pg.bgcolor( 0xFFA0A0 );
     pg.string( "A", "72" );
     pg.string( "B", "4600" );
+    pg.choice( "Choose", { "X", "Y", "Z"} );
 
     // display a button
     button& btn = W.make<button>( form );
@@ -34,7 +35,8 @@ int main()
     {
         std::string msg =
             "A is " + pg.value("A") +
-            ", B is " + pg.value("B");
+            ", B is " + pg.value("B") +
+            ", choice is " + pg.value("Choose");
         msgbox(
             form,
             msg );

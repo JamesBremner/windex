@@ -15,10 +15,31 @@ public:
         , W( windex::get())
         , myLabel( W.make<label>(parent) )
         , myEditbox( W.make<editbox>(parent) )
+        , myCombobox( W.make<combobox>(parent) )
         , myLabelWidth( 100 )
+        , myType( eType::string )
     {
         myLabel.text( myName );
         myEditbox.text( myValue );
+    }
+    property(
+        window& parent,
+        const std::string& name,
+        const std::vector< std::string >& value )
+        : myName( name )
+        , myValue( "" )
+        , W( windex::get())
+        , myLabel( W.make<label>(parent) )
+        , myEditbox( W.make<editbox>(parent) )
+        , myCombobox( W.make<combobox>(parent) )
+        , myLabelWidth( 100 )
+        , myType( eType::choice )
+    {
+        myLabel.text( myName );
+        for( auto& t : value )
+        {
+            myCombobox.add( t );
+        }
     }
     void move( const std::vector<int>& r )
     {
@@ -29,7 +50,16 @@ public:
         std::vector<int> re( r );
         re[0] += myLabelWidth;
         re[2] -= myLabelWidth;
-        myEditbox.move( re );
+        switch( myType )
+        {
+        case eType::string:
+            myEditbox.move( re );
+            break;
+        case eType::choice:
+            re[3] *= myCombobox.count();
+            myCombobox.move( re );
+            break;
+        }
     }
     void labelWidth( int w )
     {
@@ -45,14 +75,28 @@ public:
     }
     const std::string value() const
     {
-        //std::string v = myEditbox.text();
-        return myEditbox.text();
+        switch( myType )
+        {
+        case eType::string:
+            return myEditbox.text();
+
+        case eType::choice:
+            return myCombobox.SelectedText();
+        }
     }
 
     // copy value from gui into myValue attribute
     void saveValue()
     {
-        myValue = myEditbox.text();
+        switch( myType )
+        {
+        case eType::string:
+            myValue = myEditbox.text();
+            break;
+        case eType::choice:
+            myValue = myCombobox.SelectedText();
+            break;
+        }
     }
 
     // get myValue attribute
@@ -66,7 +110,14 @@ private:
     wex::windex& W;
     wex::label& myLabel;
     wex::editbox& myEditbox;
+    wex::combobox& myCombobox;
     int myLabelWidth;
+    enum class eType
+    {
+        string,
+        choice
+    }
+    myType;
 };
 /// A grid of properties
 class propertyGrid
@@ -91,7 +142,22 @@ public:
         P.labelWidth( myLabelWidth );
         P.bgcolor( myBGColor );
         P.move( { myX, myY+(int)myProperty.size() * myHeight,
-                    myWidth, myHeight } );
+                  myWidth, myHeight
+                } );
+        myProperty.push_back( P );
+    }
+    void choice(
+        const std::string& name,
+        const std::vector< std::string >& choice )
+    {
+        property P( myParent, name, choice );
+        P.labelWidth( myLabelWidth );
+        P.bgcolor( myBGColor );
+        P.move(
+        {
+            myX, myY+(int)myProperty.size() * myHeight,
+            myWidth, myHeight
+        } );
         myProperty.push_back( P );
     }
     void move( const std::vector<int>& r )
@@ -125,7 +191,8 @@ public:
     {
         std::cout << "PG value " << name << "\n";
         property* p = find( name );
-        if( ! p ) {
+        if( ! p )
+        {
             static std::string null;
             return null;
         }
