@@ -244,11 +244,14 @@ protected:
         SetBkColor(
             ps.hdc,
             myBGColor );
+        RECT r( ps.rcPaint );
+        r.left += 1;
+        r.top  += 1;
         DrawText(
             ps.hdc,
             myText.c_str(),
             -1,
-            &ps.rcPaint,
+            &r,
             0);
     }
 

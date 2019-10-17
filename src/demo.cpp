@@ -118,8 +118,7 @@ void PGDemo()
             msg );
     });
 
-    // show the application
-    form.show();
+    form.showModal();
 
 }
 
