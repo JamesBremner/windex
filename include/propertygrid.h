@@ -15,7 +15,7 @@ public:
         , W( windex::get())
         , myLabel( W.make<label>(parent) )
         , myEditbox( W.make<editbox>(parent) )
-        , myCombobox( W.make<combobox>(parent) )
+        , myCombobox( W.make<choice>(parent) )
         , myLabelWidth( 100 )
         , myType( eType::string )
     {
@@ -31,7 +31,7 @@ public:
         , W( windex::get())
         , myLabel( W.make<label>(parent) )
         , myEditbox( W.make<editbox>(parent) )
-        , myCombobox( W.make<combobox>(parent) )
+        , myCombobox( W.make<choice>(parent) )
         , myLabelWidth( 100 )
         , myType( eType::choice )
     {
@@ -83,6 +83,7 @@ public:
         case eType::choice:
             return myCombobox.SelectedText();
         }
+        return std::string("");
     }
 
     // copy value from gui into myValue attribute
@@ -110,7 +111,7 @@ private:
     wex::windex& W;
     wex::label& myLabel;
     wex::editbox& myEditbox;
-    wex::combobox& myCombobox;
+    wex::choice& myCombobox;
     int myLabelWidth;
     enum class eType
     {

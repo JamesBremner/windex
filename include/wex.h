@@ -496,10 +496,10 @@ public:
     }
 };
 
-class combobox : public widget
+class choice : public widget
 {
 public:
-    combobox( HWND parent, children_t& children )
+    choice( HWND parent, children_t& children )
         : widget( parent, children, "Combobox",
                   CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {

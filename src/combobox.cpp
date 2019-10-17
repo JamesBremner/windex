@@ -17,10 +17,10 @@ int main()
     form.text("A windex combobox");
 
     // display combobox
-    combobox& cb = W.make<combobox>( form );
+    choice& cb = W.make<choice>( form );
     cb.move({20, 50, 150, 130 });
-    cb.Add("Alpha");
-    cb.Add("Beta");
+    cb.add("Alpha");
+    cb.add("Beta");
 
     // display a button
     button& btn = W.make<button>( form );

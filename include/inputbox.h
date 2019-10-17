@@ -27,16 +27,18 @@ public:
             DestroyWindow(myHandle);
         });
     }
-    void Add(
+    void add(
         const std::string& name,
         const std::string& def )
     {
         myGrid.string( name, def );
     }
-//    void Show()
-//    {
-//
-//    }
+    void choice(
+        const std::string& name,
+        const std::vector<std::string>& choice )
+    {
+        myGrid.choice( name, choice );
+    }
 
     void modal()
     {

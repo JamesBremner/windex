@@ -25,13 +25,15 @@ int main()
     btn.events().click([&]
     {
         wex::inputbox ib( form );
-        ib.Add("A","72");
-        ib.Add("B","4600");
+        ib.add("A","72");
+        ib.add("B","4600");
+        ib.choice("Choose", { "X", "Y"} );
         ib.showModal();
 
         std::string msg =
         "A is " + ib.value("A") +
-        ", B is " + ib.value("B");
+        ", B is " + ib.value("B") +
+        ", choice is " + ib.value("Choose");
         msgbox(
             form,
             msg );
