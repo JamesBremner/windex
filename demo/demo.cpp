@@ -119,7 +119,6 @@ void PGDemo()
     });
 
     form.showModal();
-
 }
 
 void InputboxDemo()
@@ -150,7 +149,6 @@ void InputboxDemo()
     form.show();
 
 }
-
 int main()
 {
     // reference the windex gui framework
@@ -189,6 +187,16 @@ int main()
     btnib.events().click([]
     {
         InputboxDemo();
+    });
+
+    button& btnfb = W.make<button>( form );
+    btnfb.move( {20, 230, 150, 30 } );
+    btnfb.text( "Filebox" );
+    btnfb.events().click([&]
+    {
+        filebox fb( form );
+        msgbox( form,
+               fb.path() );
     });
 
     // show the application
