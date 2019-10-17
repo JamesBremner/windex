@@ -465,7 +465,7 @@ public:
     /// editbox generated a notification - nop
     void notification( WORD ntf )
     {
-       std::cout << "editbox notification " << ntf << "\n";
+        std::cout << "editbox notification " << ntf << "\n";
         if( ntf == EN_KILLFOCUS )
         {
             std::cout << "done\n";
@@ -486,12 +486,50 @@ public:
     {
         char buf[1000];
         buf[0] = '\0';
-        int len = GetDlgItemText(
+        GetDlgItemText(
             myParent,
             myID,
             buf,
             999
         );
+        return std::string( buf );
+    }
+};
+
+class combobox : public widget
+{
+public:
+    combobox( HWND parent, children_t& children )
+        : widget( parent, children, "Combobox",
+                  CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+    {
+    }
+    void Add( const std::string& s )
+    {
+        SendMessageA(
+            handle(),
+            (UINT) CB_ADDSTRING,
+            (WPARAM) 0,
+            (LPARAM) s.c_str());
+    }
+    int SelectedIndex()
+    {
+        return SendMessage(
+                   handle(),
+                   (UINT) CB_GETCURSEL,
+                   (WPARAM) 0, (LPARAM) 0);
+    }
+    std::string SelectedText()
+    {
+        int i = SelectedIndex();
+        if( i < 0 )
+            return std::string("");
+        char buf[256];
+        SendMessage(
+            handle(),
+            (UINT) CB_GETLBTEXT,
+            (WPARAM) i,
+            (LPARAM) buf);
         return std::string( buf );
     }
 };
