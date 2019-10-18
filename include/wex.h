@@ -436,9 +436,8 @@ class radiobutton : public widget
 public:
     radiobutton( HWND parent, children_t& children )
         : widget( parent, children, "button",
-                 WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
+                  WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
     {
-        std::cout << "rb construct " << parent <<" "<< myID << "\n";
     }
     void text( const std::string& t )
     {
@@ -449,7 +448,29 @@ public:
     }
     bool isChecked()
     {
-        std::cout << "is rb checked "  << myParent <<" "<< myID << "\n";
+        return ( IsDlgButtonChecked(
+                     myParent,
+                     myID ) == BST_CHECKED );
+    }
+};
+
+class checkbox : public widget
+{
+public:
+    checkbox( HWND parent, children_t& children )
+        : widget( parent, children, "button",
+                  WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX )
+    {
+    }
+    void text( const std::string& t )
+    {
+        myText = t;
+        SetWindowText(
+            myHandle,
+            t.c_str() );
+    }
+    bool isChecked()
+    {
         return ( IsDlgButtonChecked(
                      myParent,
                      myID ) == BST_CHECKED );

@@ -197,6 +197,53 @@ void RBDemo()
     form.show();
 
 }
+
+void CBDemo()
+{
+    // reference the windex gui framework
+    windex& W = windex::get();
+
+    // construct top level window
+    window& form = W.MakeWindow();
+    form.move({ 50,50,400,400});
+    form.text("A windex radiobutton");
+
+    checkbox& rb1 = W.make<checkbox>(form);
+    rb1.move( {20,20,100,30} );
+    rb1.text("Alpha");
+    checkbox& rb2 = W.make<checkbox>(form);
+    rb2.move( {20,60,100,30} );
+    rb2.text("Beta");
+    checkbox& rb3 = W.make<checkbox>(form);
+    rb3.move( {20,100,100,30} );
+    rb3.text("Gamma");
+
+    // display a button
+    button& btn = W.make<button>( form );
+    btn.move( {20, 150, 150, 30 } );
+    btn.text( "Show values entered" );
+
+    // popup a message box when button is clicked
+    // showing the values entered
+    btn.events().click([&]
+    {
+        std::string msg;
+        if( rb1.isChecked() )
+            msg += "Alpha ";
+        if( rb2.isChecked() )
+            msg += " Beta ";
+        if( rb3.isChecked() )
+            msg += " Gamma ";
+        msg += " are checked";
+        msgbox(
+            form,
+            msg );
+    });
+
+    // show the application
+    form.show();
+
+}
 int main()
 {
     // reference the windex gui framework
@@ -204,7 +251,7 @@ int main()
 
     // construct top level application window
     window& form = W.MakeWindow();
-    form.move({ 50,50,400,400});
+    form.move({ 50,50,400,500});
     form.text("Windex demos");
 
     // display a button
@@ -254,6 +301,15 @@ int main()
     {
         RBDemo();
     });
+
+    button& btncb = W.make<button>( form );
+    btncb.move( {20, 330, 150, 30 } );
+    btncb.text( "Checkbox" );
+    btncb.events().click([&]
+    {
+        CBDemo();
+    });
+
     // show the application
     form.show();
 
