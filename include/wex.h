@@ -77,6 +77,7 @@ public:
     void text( const std::string& text )
     {
         myText = text;
+        SetWindowText( myHandle, text.c_str() );
     }
     std::string text()
     {
@@ -310,11 +311,6 @@ public:
         }
     }
 
-    void text( const std::string& txt )
-    {
-        gui::text( txt );
-        SetWindowText( myHandle, txt.c_str() );
-    }
     void move( const std::vector<int>& r )
     {
         MoveWindow( myHandle,
@@ -439,13 +435,6 @@ public:
                   WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
     {
     }
-    void text( const std::string& t )
-    {
-        myText = t;
-        SetWindowText(
-            myHandle,
-            t.c_str() );
-    }
     bool isChecked()
     {
         return ( IsDlgButtonChecked(
@@ -461,13 +450,6 @@ public:
         : widget( parent, children, "button",
                   WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX )
     {
-    }
-    void text( const std::string& t )
-    {
-        myText = t;
-        SetWindowText(
-            myHandle,
-            t.c_str() );
     }
     bool isChecked()
     {

@@ -206,7 +206,7 @@ void CBDemo()
     // construct top level window
     window& form = W.MakeWindow();
     form.move({ 50,50,400,400});
-    form.text("A windex radiobutton");
+    form.text("A windex checkbox");
 
     checkbox& rb1 = W.make<checkbox>(form);
     rb1.move( {20,20,100,30} );
