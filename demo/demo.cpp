@@ -256,8 +256,9 @@ void PanelDemo()
     form.text("Panel demo");
 
     // construct panel
-    panel& pnl = W.make<panel>( form );
+    groupbox& pnl = W.make<groupbox>( form );
     pnl.move({ 100,100,200,200} );
+    pnl.text("test");
 
     // display labels
     label& lbA = W.make<label>( pnl );
@@ -277,32 +278,37 @@ int main()
 
     // construct top level application window
     window& form = W.MakeWindow();
-    form.move({ 50,50,400,500});
+    form.move({ 50,50,400,400});
     form.text("Windex demos");
 
+    // construct layout to arrange buttons in a grid
+    layout& l = W.make<layout>( form );
+    l.move( {20,20,400,300} );
+    l.grid( 2 );
+
     // display a button
-    button& btnhello = W.make<button>( form );
-    btnhello.move( {20, 30, 150, 30 } );
+    button& btnhello = W.make<button>( l );
+    btnhello.move( {20, 30, 0,0 } );
     btnhello.text( "Label and Editbox" );
     btnhello.events().click([]
     {
         helloworld();
     });
-    button& btnchoice = W.make<button>( form );
-    btnchoice.move( {20, 80, 150, 30 } );
+    button& btnchoice = W.make<button>( l );
+    btnchoice.move( {20, 80, 0,0 } );
     btnchoice.text( "Choice" );
     btnchoice.events().click([]
     {
         choiceDemo();
     });
-    button& btnpg = W.make<button>( form );
-    btnpg.move( {20, 130, 150, 30 } );
+    button& btnpg = W.make<button>( l );
+    btnpg.move( {20, 130, 0,0 } );
     btnpg.text( "Property Grid" );
     btnpg.events().click([]
     {
         PGDemo();
     });
-    button& btnib = W.make<button>( form );
+    button& btnib = W.make<button>( l );
     btnib.move( {20, 180, 150, 30 } );
     btnib.text( "Inputbox" );
     btnib.events().click([]
@@ -310,7 +316,7 @@ int main()
         InputboxDemo();
     });
 
-    button& btnfb = W.make<button>( form );
+    button& btnfb = W.make<button>( l );
     btnfb.move( {20, 230, 150, 30 } );
     btnfb.text( "Filebox" );
     btnfb.events().click([&]
@@ -320,7 +326,7 @@ int main()
                 fb.path() );
     });
 
-    button& btnrb = W.make<button>( form );
+    button& btnrb = W.make<button>( l );
     btnrb.move( {20, 280, 150, 30 } );
     btnrb.text( "Radiobutton" );
     btnrb.events().click([&]
@@ -328,7 +334,7 @@ int main()
         RBDemo();
     });
 
-    button& btncb = W.make<button>( form );
+    button& btncb = W.make<button>( l );
     btncb.move( {20, 330, 150, 30 } );
     btncb.text( "Checkbox" );
     btncb.events().click([&]
@@ -336,7 +342,7 @@ int main()
         CBDemo();
     });
 
-    button& btnpanel = W.make<button>( form );
+    button& btnpanel = W.make<button>( l );
     btnpanel.move( {20, 380, 150, 30 } );
     btnpanel.text( "Panel" );
     btnpanel.events().click([&]

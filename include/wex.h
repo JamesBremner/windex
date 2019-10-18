@@ -93,6 +93,7 @@ public:
     virtual void show() = 0;
     virtual int id() = 0;
     virtual void child( gui* c ) = 0;
+    virtual void move( const std::vector<int>& r ) = 0;
 
     /// Get event handler
     eventhandler& events()
@@ -449,6 +450,76 @@ protected:
     std::vector< gui* > myWidget;
 };
 
+/// A panel displaying a title and box around contents
+class groupbox : public panel
+{
+public:
+    groupbox( gui* parent )
+        : panel( parent )
+    {
+
+    }
+    virtual void draw( PAINTSTRUCT& ps )
+    {
+        widget::draw( ps );
+        DrawEdge(
+            ps.hdc,
+            &ps.rcPaint,
+            EDGE_BUMP,
+            BF_RECT
+        );
+        RECT r { 0, 0, 50, 25 };
+        DrawText(
+            ps.hdc,
+            myText.c_str(),
+            myText.length(),
+            &r,
+            0
+        );
+    }
+};
+
+class layout : public panel
+{
+public:
+    layout( gui* parent )
+        : panel( parent )
+    {
+
+    }
+    void grid( int cols )
+    {
+        myColCount = cols;
+    }
+    void show()
+    {
+        ShowWindow(myHandle,  SW_SHOWDEFAULT);
+
+        RECT r;
+        GetClientRect(myHandle, &r );
+        int colwidth = (r.right - r.left) / myColCount;
+        int rowheight = ( r.bottom - r.top ) / ( myWidget.size() / myColCount );
+
+        // display the children laid out in a grid
+        int colcount = 0;
+        int rowcount = 0;
+        for( auto w : myWidget ) {
+            RECT wr;
+            GetClientRect( w->handle(), &wr );
+            w->move( { wr.left+colcount*colwidth, wr.top+rowcount*rowheight, wr.right-wr.left, wr.bottom-wr.top } );
+            w->show();
+
+            colcount++;
+            if( colcount >= myColCount ) {
+                colcount = 0;
+                rowcount++;
+            }
+        }
+    }
+private:
+    int myColCount;
+};
+
 /// A button
 class button : public widget
 {
@@ -768,4 +839,5 @@ public:
 private:
     std::string myfname;
 };
+
 }
