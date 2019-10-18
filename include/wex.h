@@ -431,6 +431,31 @@ protected:
     }
 };
 
+class radiobutton : public widget
+{
+public:
+    radiobutton( HWND parent, children_t& children )
+        : widget( parent, children, "button",
+                 WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
+    {
+        std::cout << "rb construct " << parent <<" "<< myID << "\n";
+    }
+    void text( const std::string& t )
+    {
+        myText = t;
+        SetWindowText(
+            myHandle,
+            t.c_str() );
+    }
+    bool isChecked()
+    {
+        std::cout << "is rb checked "  << myParent <<" "<< myID << "\n";
+        return ( IsDlgButtonChecked(
+                     myParent,
+                     myID ) == BST_CHECKED );
+    }
+};
+
 /// A popup with a message
 class msgbox
 {
@@ -683,7 +708,8 @@ public:
 
 // Display the Open dialog box.
 
-        if (GetOpenFileName(&ofn)==TRUE) {
+        if (GetOpenFileName(&ofn)==TRUE)
+        {
             myfname = ofn.lpstrFile;
         }
     }

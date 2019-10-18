@@ -149,6 +149,54 @@ void InputboxDemo()
     form.show();
 
 }
+void RBDemo()
+{
+    // reference the windex gui framework
+    windex& W = windex::get();
+
+    // construct top level window
+    window& form = W.MakeWindow();
+    form.move({ 50,50,400,400});
+    form.text("A windex radiobutton");
+
+    radiobutton& rb1 = W.make<radiobutton>(form);
+    rb1.move( {20,20,100,30} );
+    rb1.text("Alpha");
+    radiobutton& rb2 = W.make<radiobutton>(form);
+    rb2.move( {20,60,100,30} );
+    rb2.text("Beta");
+    radiobutton& rb3 = W.make<radiobutton>(form);
+    rb3.move( {20,100,100,30} );
+    rb3.text("Gamma");
+
+    // display a button
+    button& btn = W.make<button>( form );
+    btn.move( {20, 150, 150, 30 } );
+    btn.text( "Show values entered" );
+
+    // popup a message box when button is clicked
+    // showing the values entered
+    btn.events().click([&]
+    {
+        std::string msg;
+        if( rb1.isChecked() )
+            msg = "Alpha";
+        else if( rb2.isChecked() )
+            msg = "Beta";
+        else if( rb3.isChecked() )
+            msg = "Gamma";
+        else
+            msg = "Nothing";
+        msg += " is checked";
+        msgbox(
+            form,
+            msg );
+    });
+
+    // show the application
+    form.show();
+
+}
 int main()
 {
     // reference the windex gui framework
@@ -196,9 +244,16 @@ int main()
     {
         filebox fb( form );
         msgbox( form,
-               fb.path() );
+                fb.path() );
     });
 
+    button& btnrb = W.make<button>( form );
+    btnrb.move( {20, 280, 150, 30 } );
+    btnrb.text( "Radiobutton" );
+    btnrb.events().click([&]
+    {
+        RBDemo();
+    });
     // show the application
     form.show();
 
