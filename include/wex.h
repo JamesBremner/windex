@@ -92,6 +92,7 @@ public:
 
     virtual void show() = 0;
     virtual int id() = 0;
+    virtual void child( gui* c ) = 0;
 
     /// Get event handler
     eventhandler& events()
@@ -161,16 +162,15 @@ public:
         @param[in] children parent's list to add to
     */
     widget(
-        HWND parent,
-        children_t& children,
+        gui* parent,
         const char* window_class = "windex",
         unsigned long style = WS_CHILD,
         unsigned long exstyle = 0 )
-        : myParent( parent )
+        : myParent( parent->handle() )
     {
         myID = NewID();
-        Create( parent, window_class, style, exstyle, myID );
-        children.push_back( this );
+        Create( parent->handle(), window_class, style, exstyle, myID );
+        parent->child( this );
         text("not set");
     }
 
@@ -236,6 +236,11 @@ public:
 
     virtual void command( WORD cmd )
     {
+    }
+
+    void child( gui* c )
+    {
+        throw std::runtime_error("windex widget cannot hold children");
     }
 
 protected:
@@ -321,7 +326,7 @@ public:
     }
 
     // register child on this window
-    void child( widget* w )
+    void child( gui* w )
     {
         myWidget.push_back( w );
     }
@@ -415,12 +420,12 @@ protected:
 };
 
 
-/// A button
+/// A child window that can contain widgets
 class panel : public widget
 {
 public:
-    panel( HWND parent, children_t& children )
-        : widget( parent, children )
+    panel( gui* parent )
+        : widget( parent )
     {
         text("");
     }
@@ -428,7 +433,7 @@ public:
     {
         return myWidget;
     }
-    void child( widget* w )
+    void child( gui* w )
     {
         myWidget.push_back( w );
     }
@@ -448,8 +453,8 @@ protected:
 class button : public widget
 {
 public:
-    button( HWND parent, children_t& children )
-        : widget( parent, children )
+    button( gui* parent )
+        : widget( parent )
     {
 
     }
@@ -470,8 +475,8 @@ protected:
 class radiobutton : public widget
 {
 public:
-    radiobutton( HWND parent, children_t& children )
-        : widget( parent, children, "button",
+    radiobutton( gui* parent )
+        : widget( parent, "button",
                   WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
     {
     }
@@ -486,8 +491,8 @@ public:
 class checkbox : public widget
 {
 public:
-    checkbox( HWND parent, children_t& children )
-        : widget( parent, children, "button",
+    checkbox( gui* parent )
+        : widget( parent, "button",
                   WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX )
     {
     }
@@ -516,8 +521,8 @@ public:
 class label : public widget
 {
 public:
-    label( HWND parent, children_t& children )
-        : widget( parent, children )
+    label( gui* parent )
+        : widget( parent )
     {
 
     }
@@ -526,8 +531,8 @@ public:
 class editbox : public widget
 {
 public:
-    editbox( HWND parent, children_t& children )
-        : widget( parent, children, "Edit",
+    editbox( gui* parent )
+        : widget( parent, "Edit",
                   WS_CHILD | ES_LEFT | WS_BORDER | WS_VISIBLE,
                   WS_EX_CLIENTEDGE )
     {
@@ -570,8 +575,8 @@ public:
 class choice : public widget
 {
 public:
-    choice( HWND parent, children_t& children )
-        : widget( parent, children, "Combobox",
+    choice( gui* parent )
+        : widget( parent, "Combobox",
                   CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
@@ -644,7 +649,7 @@ public:
     template <class T, class W>
     T& make( W& parent )
     {
-        T* w = new T( parent.handle(), parent.children() );
+        T* w = new T( (gui*)&parent );
 
         // inherit background color from parent
         w->bgcolor( parent.bgcolor() );
