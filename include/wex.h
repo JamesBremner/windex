@@ -93,7 +93,39 @@ public:
     virtual void show() = 0;
     virtual int id() = 0;
     virtual void child( gui* c ) = 0;
-    virtual void move( const std::vector<int>& r ) = 0;
+
+    /** Move the window
+        @param[in] r specify location and size
+        if r contains 4 values, then { x, y, width, height }
+        if r contains 2 values, then if move true ( x, y } keep current size
+        if r contains 2 values, then if move false ( width height } keep current location
+    */
+    void move( const std::vector<int>& r, bool move = true )
+    {
+        switch( r.size() )
+        {
+        case 4:
+            MoveWindow( myHandle,
+                        r[0],r[1],r[2],r[3],false);
+            break;
+        case 2:
+        {
+            RECT rect;
+            GetClientRect( myHandle, &rect );
+            if( move )
+                MoveWindow( myHandle,
+                            r[0],r[1],rect.right-rect.left,rect.bottom-rect.top,
+                            false );
+            else
+                MoveWindow( myHandle,
+                            rect.left, rect.top, r[0], r[1],
+                            false );
+            break;
+        }
+        default:
+            throw std::runtime_error( "windex move bad parameter" );
+        }
+    }
 
     /// Get event handler
     eventhandler& events()
@@ -224,12 +256,6 @@ public:
         ShowWindow(myHandle, SW_SHOWDEFAULT);
     }
 
-    void move( const std::vector<int>& r )
-    {
-        MoveWindow( myHandle,
-                    r[0],r[1],r[2],r[3],false);
-    }
-
     int id()
     {
         return myID;
@@ -318,12 +344,6 @@ public:
             if( ! myfModal )
                 break;
         }
-    }
-
-    void move( const std::vector<int>& r )
-    {
-        MoveWindow( myHandle,
-                    r[0],r[1],r[2],r[3],false);
     }
 
     // register child on this window
@@ -503,14 +523,14 @@ public:
         // display the children laid out in a grid
         int colcount = 0;
         int rowcount = 0;
-        for( auto w : myWidget ) {
-            RECT wr;
-            GetClientRect( w->handle(), &wr );
-            w->move( { wr.left+colcount*colwidth, wr.top+rowcount*rowheight, wr.right-wr.left, wr.bottom-wr.top } );
+        for( auto w : myWidget )
+        {
+            w->move( { colcount*colwidth, rowcount*rowheight } );
             w->show();
 
             colcount++;
-            if( colcount >= myColCount ) {
+            if( colcount >= myColCount )
+            {
                 colcount = 0;
                 rowcount++;
             }

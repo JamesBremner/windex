@@ -288,28 +288,28 @@ int main()
 
     // display a button
     button& btnhello = W.make<button>( l );
-    btnhello.move( {20, 30, 0,0 } );
+    btnhello.move( { 150, 30 }, false );
     btnhello.text( "Label and Editbox" );
     btnhello.events().click([]
     {
         helloworld();
     });
     button& btnchoice = W.make<button>( l );
-    btnchoice.move( {20, 80, 0,0 } );
+    btnchoice.move(  { 150, 30 }, false );
     btnchoice.text( "Choice" );
     btnchoice.events().click([]
     {
         choiceDemo();
     });
     button& btnpg = W.make<button>( l );
-    btnpg.move( {20, 130, 0,0 } );
+    btnpg.move(  { 150, 30 }, false );
     btnpg.text( "Property Grid" );
     btnpg.events().click([]
     {
         PGDemo();
     });
     button& btnib = W.make<button>( l );
-    btnib.move( {20, 180, 150, 30 } );
+    btnib.move(  { 150, 30 }, false );
     btnib.text( "Inputbox" );
     btnib.events().click([]
     {
@@ -317,7 +317,7 @@ int main()
     });
 
     button& btnfb = W.make<button>( l );
-    btnfb.move( {20, 230, 150, 30 } );
+    btnfb.move(  { 150, 30 }, false );
     btnfb.text( "Filebox" );
     btnfb.events().click([&]
     {
@@ -327,7 +327,7 @@ int main()
     });
 
     button& btnrb = W.make<button>( l );
-    btnrb.move( {20, 280, 150, 30 } );
+    btnrb.move(  { 150, 30 }, false );
     btnrb.text( "Radiobutton" );
     btnrb.events().click([&]
     {
