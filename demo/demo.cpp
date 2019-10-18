@@ -244,6 +244,32 @@ void CBDemo()
     form.show();
 
 }
+
+void PanelDemo()
+{
+    // reference the windex gui framework
+    windex& W = windex::get();
+
+    // construct top level window
+    window& form = W.MakeWindow();
+    form.move({ 50,50,400,400});
+    form.text("Panel demo");
+
+    // construct panel
+    panel& pnl = W.make<panel>( form );
+    pnl.move({ 100,100,200,200} );
+
+    // display labels
+    label& lbA = W.make<label>( pnl );
+    lbA.move( {20, 20, 50, 30 } );
+    lbA.text("A:");
+    label& lbB = W.make<label>( pnl );
+    lbB.move( {20, 60, 50, 30 } );
+    lbB.text("B:");
+
+     form.show();
+}
+
 int main()
 {
     // reference the windex gui framework
@@ -308,6 +334,14 @@ int main()
     btncb.events().click([&]
     {
         CBDemo();
+    });
+
+    button& btnpanel = W.make<button>( form );
+    btnpanel.move( {20, 380, 150, 30 } );
+    btnpanel.text( "Panel" );
+    btnpanel.events().click([&]
+    {
+        PanelDemo();
     });
 
     // show the application

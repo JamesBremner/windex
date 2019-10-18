@@ -13,7 +13,7 @@ class gui;
 class widget;
 
 typedef std::map< HWND, gui* > mgui_t;
-typedef std::vector< widget* > children_t;
+typedef std::vector< gui* > children_t;
 
 void MessageLoop()
 {
@@ -89,6 +89,9 @@ public:
     {
         return false;
     }
+
+    virtual void show() = 0;
+    virtual int id() = 0;
 
     /// Get event handler
     eventhandler& events()
@@ -316,6 +319,8 @@ public:
         MoveWindow( myHandle,
                     r[0],r[1],r[2],r[3],false);
     }
+
+    // register child on this window
     void child( widget* w )
     {
         myWidget.push_back( w );
@@ -331,7 +336,7 @@ public:
         for( auto w : myWidget )
         {
             if ( w->id() == id )
-                return w;
+                return (widget*)w;
         }
         return nullptr;
     }
@@ -396,12 +401,47 @@ public:
 
     }
 
+    int id()
+    {
+        return -1;
+    }
+
 protected:
-    std::vector< widget* > myWidget;
+    std::vector< gui* > myWidget;
     bool myfApp;                        /// true if app should quit when window destroyed
     bool myfModal;
 
     virtual void draw( PAINTSTRUCT& ps ) {}
+};
+
+
+/// A button
+class panel : public widget
+{
+public:
+    panel( HWND parent, children_t& children )
+        : widget( parent, children )
+    {
+        text("");
+    }
+    children_t& children()
+    {
+        return myWidget;
+    }
+    void child( widget* w )
+    {
+        myWidget.push_back( w );
+    }
+    void show()
+    {
+        ShowWindow(myHandle,  SW_SHOWDEFAULT);
+
+        // display the children
+        for( auto w : myWidget )
+            w->show();
+    }
+protected:
+    std::vector< gui* > myWidget;
 };
 
 /// A button
@@ -601,8 +641,8 @@ public:
     /** get reference to new widget of type T
         @param[in] parent reference to parent window
     */
-    template <class T>
-    T& make( window& parent )
+    template <class T, class W>
+    T& make( W& parent )
     {
         T* w = new T( parent.handle(), parent.children() );
 
