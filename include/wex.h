@@ -571,6 +571,25 @@ public:
                   WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
     {
     }
+    /** Make first radiobutton in a group
+
+    Clicking any radiobutton in a group will set that button
+    and clear the other buttons in the group
+    without effecting buttons in other groups.
+
+    This must be called for the first radiobutton of the first group
+    if there will be more than one group.
+
+    This must be called before constructing the other buttons in the group.
+    */
+    void first()
+    {
+        SetWindowLongPtr(
+            myHandle,
+            GWL_STYLE,
+            (LONG_PTR)WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP );
+    }
+
     bool isChecked()
     {
         return ( IsDlgButtonChecked(
@@ -734,8 +753,8 @@ public:
         return *w;
     }
 
-    /** get reference to new widget of type T
-        @param[in] parent reference to parent window
+    /** get reference to new widget or window of type T
+        @param[in] parent reference to parent window or widget
     */
     template <class T, class W>
     T& make( W& parent )
@@ -859,5 +878,7 @@ public:
 private:
     std::string myfname;
 };
+
+
 
 }
