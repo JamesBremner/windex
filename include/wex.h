@@ -33,17 +33,27 @@ public:
     {
         // initialize functions with no-ops
         click([] {});
+        draw([](PAINTSTRUCT& ps) {});
     }
     void onLeftdown()
     {
         myClickFunction();
     }
+    void onDraw( PAINTSTRUCT& ps )
+    {
+        myDrawFunction( ps );
+    }
     void click( std::function<void(void)> f )
     {
         myClickFunction = f;
     }
+    void draw( std::function<void(PAINTSTRUCT& ps)> f )
+    {
+        myDrawFunction = f;
+    }
 private:
     std::function<void(void)> myClickFunction;
+    std::function<void(PAINTSTRUCT& ps)> myDrawFunction;
 };
 
 /// Base class for all gui elements
@@ -289,6 +299,8 @@ protected:
             -1,
             &r,
             0);
+
+        myEvents.onDraw( ps );
     }
 
 private:
@@ -437,7 +449,10 @@ protected:
     bool myfApp;                        /// true if app should quit when window destroyed
     bool myfModal;
 
-    virtual void draw( PAINTSTRUCT& ps ) {}
+    virtual void draw( PAINTSTRUCT& ps )
+    {
+        myEvents.onDraw( ps );
+    }
 };
 
 
@@ -518,7 +533,7 @@ public:
         RECT r;
         GetClientRect(myHandle, &r );
         int colwidth = (r.right - r.left) / myColCount;
-        int rowheight = ( r.bottom - r.top ) / ( myWidget.size() / myColCount );
+        int rowheight = ( r.bottom - r.top ) / ( ( myWidget.size() + 1 ) / myColCount );
 
         // display the children laid out in a grid
         int colcount = 0;
@@ -879,6 +894,61 @@ private:
     std::string myfname;
 };
 
+class shapes
+{
+public:
+    shapes( HDC hdc )
+        : myHDC( hdc )
+    {
 
+    }
+    /** Set color for drawings
+    @param[in] color
+    */
+    void color( int r, int g, int b )
+    {
+        SelectObject(myHDC, CreatePen(PS_SOLID,1,RGB(r,g,b)));
+    }
+    void line( const std::vector<int>& v )
+    {
+        MoveToEx(
+            myHDC,
+            v[0],
+            v[1],
+            NULL
+        );
+        LineTo(
+            myHDC,
+            v[2],
+            v[3] );
+    }
+    void rectangle( const std::vector<int>& v )
+    {
+        MoveToEx(
+            myHDC,
+            v[0],
+            v[1],
+            NULL
+        );
+        LineTo(
+            myHDC,
+            v[0]+v[2],
+            v[1] );
+        LineTo(
+            myHDC,
+            v[0]+v[2],
+            v[1]+v[3] );
+        LineTo(
+            myHDC,
+            v[0],
+            v[1]+v[3] );
+        LineTo(
+            myHDC,
+            v[0],
+            v[1] );
+    }
+private:
+    HDC myHDC;
+};
 
 }

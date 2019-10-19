@@ -82,6 +82,28 @@ void choiceDemo()
     form.show();
 }
 
+void drawDemo()
+{
+    // reference the windex gui framework
+    windex& W = windex::get();
+
+    // construct top level  window
+    window& form = W.MakeWindow();
+    form.move({ 50,50,400,400});
+    form.text("A windex draw demo");
+
+    form.events().draw([]( PAINTSTRUCT& ps )
+    {
+        shapes S( ps.hdc );
+        S.color( 255, 0, 0 );
+        S.line( { 10,10, 50,50 } );
+        S.color( 255,255,255 );
+        S.rectangle( { 20,20,20,20});
+    });
+
+    form.show();
+}
+
 void PGDemo()
 {
     // reference the windex gui framework
@@ -282,7 +304,7 @@ void PanelDemo()
     lbB.move( {20, 60, 50, 30 } );
     lbB.text("B:");
 
-     form.show();
+    form.show();
 }
 
 int main()
@@ -292,12 +314,12 @@ int main()
 
     // construct top level application window
     window& form = W.MakeWindow();
-    form.move({ 50,50,400,400});
+    form.move({ 50,50,400,500});
     form.text("Windex demos");
 
     // construct layout to arrange buttons in a grid
     layout& l = W.make<layout>( form );
-    l.move( {20,20,400,300} );
+    l.move( {20,20,400,400} );
     l.grid( 2 );
 
     // display a button
@@ -363,6 +385,15 @@ int main()
     {
         PanelDemo();
     });
+
+    button& btndraw = W.make<button>( l );
+    btndraw.move(  { 150, 30 }, false );
+    btndraw.text( "Draw" );
+    btndraw.events().click([&]
+    {
+        drawDemo();
+    });
+
 
     // show the application
     form.show();
