@@ -124,9 +124,27 @@ void PGDemo()
     pg.category("Strings");
     pg.string( "A", "72" );
     pg.string( "B", "4600" );
+    pg.string( "A", "72" );
+    pg.string( "B", "4600" );
+    pg.string( "B", "4600" );
+    pg.string( "B", "4600" );
+    pg.string( "B", "4600" );
+    pg.string( "B", "4600" );
+    pg.string( "B", "4600" );
+    pg.string( "B", "4600" );
+    pg.string( "B", "4600" );
+    pg.string( "B", "4600" );
+    pg.string( "X", "4600" );
+    pg.string( "Y", "4600" );
+    pg.string( "Z", "4600" );
     pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
+
+    form.events().resize([&](int w, int h)
+    {
+        pg.update();
+    });
 
     // display a button
     button& btn = W.make<button>( form );

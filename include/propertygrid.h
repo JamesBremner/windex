@@ -109,6 +109,10 @@ public:
     {
         myLabel.bgcolor( color );
     }
+    void update()
+    {
+        myLabel.update();
+    }
     const std::string& name() const
     {
         return myName;
@@ -230,6 +234,11 @@ public:
     void bgcolor( int color )
     {
         myBGColor = color;
+    }
+    void update()
+    {
+        for( auto& p : myProperty )
+            p.update();
     }
 
     /// get pointer to property with name

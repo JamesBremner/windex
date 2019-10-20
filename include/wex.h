@@ -34,6 +34,7 @@ public:
         // initialize functions with no-ops
         click([] {});
         draw([](PAINTSTRUCT& ps) {});
+        resize([](int w, int h) {});
     }
     void onLeftdown()
     {
@@ -43,6 +44,10 @@ public:
     {
         myDrawFunction( ps );
     }
+    void onResize( int w, int h )
+    {
+        myResizeFunction( w, h );
+    }
     void click( std::function<void(void)> f )
     {
         myClickFunction = f;
@@ -51,9 +56,14 @@ public:
     {
         myDrawFunction = f;
     }
+    void resize( std::function<void(int w, int h)> f )
+    {
+        myResizeFunction = f;
+    }
 private:
     std::function<void(void)> myClickFunction;
     std::function<void(PAINTSTRUCT& ps)> myDrawFunction;
+    std::function<void(int w, int h)> myResizeFunction;
 };
 
 /// Base class for all gui elements
@@ -265,6 +275,11 @@ public:
     {
         ShowWindow(myHandle, SW_SHOWDEFAULT);
     }
+    void update()
+    {
+        InvalidateRect(myHandle,NULL,true);
+        UpdateWindow(myHandle);
+    }
 
     int id()
     {
@@ -415,6 +430,14 @@ public:
                 EndPaint(myHandle, &ps);
             }
             return true;
+
+            case WM_SIZE:
+                if( wParam == SIZE_RESTORED)
+                {
+                    myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
+                    return true;
+                }
+                return false;
 
             case WM_COMMAND:
                 //std::cout << "window <- command "<< LOWORD(wParam) <<" " << HIWORD(wParam)<< "\n";
