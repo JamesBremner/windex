@@ -621,6 +621,20 @@ public:
                   WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX )
     {
     }
+    void size( int s )
+    {
+        SetWindowPos(
+            myHandle,
+            0,0,0,s,s,
+            SWP_NOMOVE | SWP_NOZORDER );
+    }
+    void check( bool f = true )
+    {
+        CheckDlgButton(
+            myParent,
+            myID,
+            (int)f );
+    }
     bool isChecked()
     {
         return ( IsDlgButtonChecked(

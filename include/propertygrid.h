@@ -16,11 +16,31 @@ public:
         , myLabel( W.make<label>(parent) )
         , myEditbox( W.make<editbox>(parent) )
         , myCombobox( W.make<choice>(parent) )
+        , myCheckbox( W.make<checkbox>(parent) )
         , myLabelWidth( 100 )
         , myType( eType::string )
     {
         myLabel.text( myName );
         myEditbox.text( myValue );
+    }
+    property(
+        window& parent,
+        const std::string& name,
+        bool value )
+        : myName( name )
+        , myValue( std::to_string((int)value ))
+        , W( windex::get())
+        , myLabel( W.make<label>(parent) )
+        , myEditbox( W.make<editbox>(parent) )
+        , myCombobox( W.make<choice>(parent) )
+        , myCheckbox( W.make<checkbox>(parent) )
+        , myLabelWidth( 100 )
+        , myType( eType::check )
+    {
+        myLabel.text( myName );
+        myCheckbox.check( value );
+        myCheckbox.text("");
+        myCheckbox.size( 20 );
     }
     property(
         window& parent,
@@ -32,6 +52,7 @@ public:
         , myLabel( W.make<label>(parent) )
         , myEditbox( W.make<editbox>(parent) )
         , myCombobox( W.make<choice>(parent) )
+        , myCheckbox( W.make<checkbox>(parent) )
         , myLabelWidth( 100 )
         , myType( eType::choice )
     {
@@ -59,6 +80,9 @@ public:
             re[3] *= myCombobox.count();
             myCombobox.move( re );
             break;
+        case eType::check:
+            myCheckbox.move( re );
+            break;
         }
     }
     void labelWidth( int w )
@@ -82,6 +106,10 @@ public:
 
         case eType::choice:
             return myCombobox.SelectedText();
+
+        case eType::check:
+            return std::to_string( (int) myCheckbox.isChecked() );
+            break;
         }
         return std::string("");
     }
@@ -96,6 +124,9 @@ public:
             break;
         case eType::choice:
             myValue = myCombobox.SelectedText();
+            break;
+        case eType::check:
+            myValue = std::to_string( (int) myCheckbox.isChecked() );
             break;
         }
     }
@@ -112,11 +143,13 @@ private:
     wex::label& myLabel;
     wex::editbox& myEditbox;
     wex::choice& myCombobox;
+    wex::checkbox& myCheckbox;
     int myLabelWidth;
     enum class eType
     {
         string,
-        choice
+        choice,
+        check
     }
     myType;
 };
@@ -152,6 +185,20 @@ public:
         const std::vector< std::string >& choice )
     {
         property P( myParent, name, choice );
+        P.labelWidth( myLabelWidth );
+        P.bgcolor( myBGColor );
+        P.move(
+        {
+            myX, myY+(int)myProperty.size() * myHeight,
+            myWidth, myHeight
+        } );
+        myProperty.push_back( P );
+    }
+     void check(
+        const std::string& name,
+        bool f )
+    {
+        property P( myParent, name, f );
         P.labelWidth( myLabelWidth );
         P.bgcolor( myBGColor );
         P.move(

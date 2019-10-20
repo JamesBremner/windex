@@ -121,10 +121,11 @@ void PGDemo()
     pg.string( "A", "72" );
     pg.string( "B", "4600" );
     pg.choice( "Choose", { "X", "Y", "Z"} );
+    pg.check( "Enable", false );
 
     // display a button
     button& btn = W.make<button>( form );
-    btn.move( {20, 150, 150, 30 } );
+    btn.move( {20, 180, 150, 30 } );
     btn.text( "Show values entered" );
 
     // popup a message box when button is clicked
@@ -134,7 +135,12 @@ void PGDemo()
         std::string msg =
         "A is " + pg.value("A") +
         ", B is " + pg.value("B") +
-        ", choice is " + pg.value("Choose");
+        ", choice is " + pg.value("Choose") +
+        ", enabled is ";
+        if( pg.value("Enable") == "1" )
+            msg += "true";
+        else
+            msg += "false";
         msgbox(
             form,
             msg );
