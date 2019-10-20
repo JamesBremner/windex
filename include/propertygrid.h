@@ -173,40 +173,21 @@ public:
         const std::string& value )
     {
         property P( myParent, name, value );
-        P.labelWidth( myLabelWidth );
-        P.bgcolor( myBGColor );
-        P.move( { myX, myY+(int)myProperty.size() * myHeight,
-                  myWidth, myHeight
-                } );
-        myProperty.push_back( P );
+        CommonConstruction( P );
     }
     void choice(
         const std::string& name,
         const std::vector< std::string >& choice )
     {
         property P( myParent, name, choice );
-        P.labelWidth( myLabelWidth );
-        P.bgcolor( myBGColor );
-        P.move(
-        {
-            myX, myY+(int)myProperty.size() * myHeight,
-            myWidth, myHeight
-        } );
-        myProperty.push_back( P );
+        CommonConstruction( P );
     }
-     void check(
+    void check(
         const std::string& name,
         bool f )
     {
         property P( myParent, name, f );
-        P.labelWidth( myLabelWidth );
-        P.bgcolor( myBGColor );
-        P.move(
-        {
-            myX, myY+(int)myProperty.size() * myHeight,
-            myWidth, myHeight
-        } );
-        myProperty.push_back( P );
+        CommonConstruction( P );
     }
     void move( const std::vector<int>& r )
     {
@@ -264,5 +245,17 @@ private:
     int myLabelWidth;
     int myX, myY;
     int myBGColor;
+
+    void CommonConstruction( property& P )
+    {
+        P.labelWidth( myLabelWidth );
+        P.bgcolor( myBGColor );
+        P.move(
+        {
+            myX, myY+(int)myProperty.size() * myHeight,
+            myWidth, myHeight
+        } );
+        myProperty.push_back( P );
+    }
 };
 }
