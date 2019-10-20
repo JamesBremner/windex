@@ -62,6 +62,19 @@ public:
             myCombobox.add( t );
         }
     }
+    property(
+        window& parent,
+        const std::string& name )
+        : myName( name )
+        , W( windex::get())
+        , myLabel( W.make<label>(parent) )
+        , myEditbox( W.make<editbox>(parent) )
+        , myCombobox( W.make<choice>(parent) )
+        , myCheckbox( W.make<checkbox>(parent) )
+        , myType( eType::category )
+    {
+        myLabel.text( myName );
+    }
     void move( const std::vector<int>& r )
     {
         std::vector<int> rl( r );
@@ -82,6 +95,9 @@ public:
             break;
         case eType::check:
             myCheckbox.move( re );
+            break;
+        case eType::category:
+            myLabel.move( r );
             break;
         }
     }
@@ -110,6 +126,9 @@ public:
         case eType::check:
             return std::to_string( (int) myCheckbox.isChecked() );
             break;
+
+        case eType::category:
+            break;
         }
         return std::string("");
     }
@@ -127,6 +146,8 @@ public:
             break;
         case eType::check:
             myValue = std::to_string( (int) myCheckbox.isChecked() );
+            break;
+        case eType::category:
             break;
         }
     }
@@ -149,7 +170,8 @@ private:
     {
         string,
         choice,
-        check
+        check,
+        category
     }
     myType;
 };
@@ -187,6 +209,12 @@ public:
         bool f )
     {
         property P( myParent, name, f );
+        CommonConstruction( P );
+    }
+    void category(
+        const std::string& name )
+    {
+        property P( myParent, name );
         CommonConstruction( P );
     }
     void move( const std::vector<int>& r )

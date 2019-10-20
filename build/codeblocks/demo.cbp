@@ -35,6 +35,7 @@
 		</Compiler>
 		<Linker>
 			<Add library="gdi32" />
+			<Add library="comdlg32" />
 		</Linker>
 		<Unit filename="../../demo/demo.cpp" />
 		<Unit filename="../../include/inputbox.h" />

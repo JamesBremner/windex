@@ -114,18 +114,23 @@ void PGDemo()
     form.move({ 50,50,400,400});
     form.text("A windex property grid");
 
+    // construct propertygrid
     propertyGrid pg( form );
     pg.move( { 50,50, 200, 0});
     pg.labelWidth( 50 );
     pg.bgcolor( 0xFFA0A0 );
+
+    // add properties
+    pg.category("Strings");
     pg.string( "A", "72" );
     pg.string( "B", "4600" );
+    pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
 
     // display a button
     button& btn = W.make<button>( form );
-    btn.move( {20, 180, 150, 30 } );
+    btn.move( {20, 250, 150, 30 } );
     btn.text( "Show values entered" );
 
     // popup a message box when button is clicked
