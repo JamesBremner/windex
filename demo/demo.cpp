@@ -143,6 +143,8 @@ void PGDemo()
 
     form.events().resize([&](int w, int h)
     {
+        // window containing propertyGrid has been resized
+        // ensure that every visible label is completely redrawn
         pg.update();
     });
 

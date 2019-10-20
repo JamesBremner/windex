@@ -113,6 +113,8 @@ public:
     {
         myLabel.update();
     }
+
+    /// force label to redraw
     const std::string& name() const
     {
         return myName;
@@ -235,6 +237,8 @@ public:
     {
         myBGColor = color;
     }
+
+    /// force every property to redraw its label
     void update()
     {
         for( auto& p : myProperty )

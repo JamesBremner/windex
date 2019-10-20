@@ -275,6 +275,8 @@ public:
     {
         ShowWindow(myHandle, SW_SHOWDEFAULT);
     }
+
+    /// force widget to redraw completely
     void update()
     {
         InvalidateRect(myHandle,NULL,true);
