@@ -276,7 +276,7 @@ void CBDemo()
     form.text("A windex checkbox");
 
     checkbox& rb1 = W.make<checkbox>(form);
-    rb1.move( {20,20,100,30} );
+    rb1.move( {20,20,100,20} );
     rb1.text("Alpha");
     checkbox& rb2 = W.make<checkbox>(form);
     rb2.move( {20,60,100,30} );

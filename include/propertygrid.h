@@ -40,7 +40,6 @@ public:
         myLabel.text( myName );
         myCheckbox.check( value );
         myCheckbox.text("");
-        myCheckbox.size( 20 );
     }
     property(
         window& parent,

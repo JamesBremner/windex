@@ -66,6 +66,73 @@ private:
     std::function<void(int w, int h)> myResizeFunction;
 };
 
+class shapes
+{
+public:
+    shapes( HDC hdc )
+        : myHDC( hdc )
+        , myPenThick( 1 )
+    {
+
+    }
+    /** Set color for drawings
+    @param[in] color
+    */
+    void color( int r, int g, int b )
+    {
+        SelectObject(myHDC, CreatePen(
+                         PS_SOLID,
+                         myPenThick,
+                         RGB(r,g,b)));
+    }
+    void penThick( int t )
+    {
+        myPenThick = t;
+        color( 0, 0, 0 );
+    }
+    void line( const std::vector<int>& v )
+    {
+        MoveToEx(
+            myHDC,
+            v[0],
+            v[1],
+            NULL
+        );
+        LineTo(
+            myHDC,
+            v[2],
+            v[3] );
+    }
+    void rectangle( const std::vector<int>& v )
+    {
+        MoveToEx(
+            myHDC,
+            v[0],
+            v[1],
+            NULL
+        );
+        LineTo(
+            myHDC,
+            v[0]+v[2],
+            v[1] );
+        LineTo(
+            myHDC,
+            v[0]+v[2],
+            v[1]+v[3] );
+        LineTo(
+            myHDC,
+            v[0],
+            v[1]+v[3] );
+        LineTo(
+            myHDC,
+            v[0],
+            v[1] );
+    }
+private:
+    HDC myHDC;
+    int myPenThick;
+};
+
 /// Base class for all gui elements
 class gui
 {
@@ -637,35 +704,67 @@ public:
                      myID ) == BST_CHECKED );
     }
 };
+/** User can toggle true/false value by clicking
 
+This draws a custom checkbox that expands with the height of the widget ( set by move() )
+( The native checkbox is very small and its size cannot be changed )
+
+This uses the click event to toggle the value and redraw.  If application
+code needs handle click event, then it must have the following in its handler
+<pre>
+    check( ! IsChecked() );
+    update();
+</pre>
+*/
 class checkbox : public widget
 {
 public:
     checkbox( gui* parent )
-        : widget( parent, "button",
-                  WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX )
+        : widget( parent )
+        , myValue( false )
     {
-    }
-    void size( int s )
-    {
-        SetWindowPos(
-            myHandle,
-            0,0,0,s,s,
-            SWP_NOMOVE | SWP_NOZORDER );
+        // toggle the boolean value when clicked
+        events().click([this]
+        {
+            myValue = ! myValue;
+            update();
+        });
     }
     void check( bool f = true )
     {
-        CheckDlgButton(
-            myParent,
-            myID,
-            (int)f );
+        myValue = f;
     }
     bool isChecked()
     {
-        return ( IsDlgButtonChecked(
-                     myParent,
-                     myID ) == BST_CHECKED );
+        return ( myValue );
     }
+    virtual void draw( PAINTSTRUCT& ps )
+    {
+        SetBkColor(
+            ps.hdc,
+            myBGColor );
+        RECT r( ps.rcPaint );
+        int cbg = r.bottom-r.top-2;
+        r.left += cbg+2;
+        r.top  += 1;
+        DrawText(
+            ps.hdc,
+            myText.c_str(),
+            -1,
+            &r,
+            0);
+        shapes S( ps.hdc );
+        S.rectangle( { 0,0, cbg, cbg} );
+        if( myValue )
+        {
+            S.penThick( 3 );
+            S.line( {2,cbg/2,cbg/2-2,cbg-2} );
+            S.line( {cbg/2,cbg-4,cbg-4,4} );
+            S.penThick( 1 );
+        }
+    }
+private:
+    bool myValue;
 };
 
 /// A popup with a message
@@ -932,62 +1031,5 @@ public:
 private:
     std::string myfname;
 };
-
-class shapes
-{
-public:
-    shapes( HDC hdc )
-        : myHDC( hdc )
-    {
-
-    }
-    /** Set color for drawings
-    @param[in] color
-    */
-    void color( int r, int g, int b )
-    {
-        SelectObject(myHDC, CreatePen(PS_SOLID,1,RGB(r,g,b)));
-    }
-    void line( const std::vector<int>& v )
-    {
-        MoveToEx(
-            myHDC,
-            v[0],
-            v[1],
-            NULL
-        );
-        LineTo(
-            myHDC,
-            v[2],
-            v[3] );
-    }
-    void rectangle( const std::vector<int>& v )
-    {
-        MoveToEx(
-            myHDC,
-            v[0],
-            v[1],
-            NULL
-        );
-        LineTo(
-            myHDC,
-            v[0]+v[2],
-            v[1] );
-        LineTo(
-            myHDC,
-            v[0]+v[2],
-            v[1]+v[3] );
-        LineTo(
-            myHDC,
-            v[0],
-            v[1]+v[3] );
-        LineTo(
-            myHDC,
-            v[0],
-            v[1] );
-    }
-private:
-    HDC myHDC;
-};
-
 }
+
