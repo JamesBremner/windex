@@ -108,9 +108,17 @@ public:
     {
         myLabel.bgcolor( color );
     }
+    /** Update ( redraw ) property child widgets
+
+    Some widgets update nicely when the window containing the property grid resizes
+    Others, most significantly labels, do not.  So application code should
+    handle containing window resizes by calling propertyGrid::update()
+    which will call this method on all properties.
+    */
     void update()
     {
         myLabel.update();
+        myCheckbox.update();
     }
 
     /// force label to redraw
