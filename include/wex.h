@@ -73,17 +73,29 @@ public:
         : myHDC( hdc )
         , myPenThick( 1 )
     {
+        hPen = CreatePen(
+                   PS_SOLID,
+                   myPenThick,
+                   RGB(0,0,0));
+        hPenOld =  SelectObject(myHDC, hPen);
 
+    }
+    ~shapes()
+    {
+        HGDIOBJ pen = SelectObject(myHDC, hPenOld);
+        DeleteObject( pen );
     }
     /** Set color for drawings
     @param[in] color
     */
     void color( int r, int g, int b )
     {
-        SelectObject(myHDC, CreatePen(
-                         PS_SOLID,
-                         myPenThick,
-                         RGB(r,g,b)));
+        hPen = CreatePen(
+                   PS_SOLID,
+                   myPenThick,
+                   RGB(r,g,b));
+        HGDIOBJ pen = SelectObject(myHDC, hPen);
+        DeleteObject( pen );
     }
     void penThick( int t )
     {
@@ -131,6 +143,8 @@ public:
 private:
     HDC myHDC;
     int myPenThick;
+    HGDIOBJ hPen;
+    HGDIOBJ hPenOld;
 };
 
 /// Base class for all gui elements
