@@ -35,6 +35,8 @@ public:
         click([] {});
         draw([](PAINTSTRUCT& ps) {});
         resize([](int w, int h) {});
+        scrollH([](int c) {});
+        scrollV([](int c) {});
     }
     void onLeftdown()
     {
@@ -48,6 +50,15 @@ public:
     {
         myResizeFunction( w, h );
     }
+    void onScrollH( int code )
+    {
+        myScrollHFunction( code );
+    }
+    void onScrollV( int code )
+    {
+        myScrollVFunction( code );
+    }
+    // register event handlers
     void click( std::function<void(void)> f )
     {
         myClickFunction = f;
@@ -60,10 +71,21 @@ public:
     {
         myResizeFunction = f;
     }
+    void scrollH( std::function<void(int code)> f )
+    {
+        myScrollHFunction = f;
+    }
+    void scrollV( std::function<void(int code)> f )
+    {
+        myScrollVFunction = f;
+    }
 private:
     std::function<void(void)> myClickFunction;
     std::function<void(PAINTSTRUCT& ps)> myDrawFunction;
     std::function<void(int w, int h)> myResizeFunction;
+    std::function<void(int code)> myScrollHFunction;
+    std::function<void(int code)> myScrollVFunction;
+
 };
 
 class shapes
@@ -194,6 +216,7 @@ public:
     virtual void show() = 0;
     virtual int id() = 0;
     virtual void child( gui* c ) = 0;
+    virtual void update() {}
 
     /** Move the window
         @param[in] r specify location and size
@@ -431,7 +454,78 @@ public:
             appdone = true;
         }
     }
+    /// Add scrollbars
+    void scroll()
+    {
+        // change window style to have scrollbars
+        SetWindowLongPtr(
+            myHandle,
+            GWL_STYLE,
+            (LONG_PTR)WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL );
 
+        // Set the scrolling range and page size
+        SCROLLINFO si;
+        si.cbSize = sizeof(si);
+        si.fMask  = SIF_RANGE | SIF_PAGE;
+        si.nMin   = 0;
+        si.nMax   = 100;
+        si.nPage  = 10;
+        SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
+        SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
+
+        // horizontal scroll handler
+        events().scrollH([this](int code)
+        {
+            SCROLLINFO si;
+            si.cbSize = sizeof(si);
+            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+            if( ! GetScrollInfo (myHandle, SB_HORZ, &si) )
+                return;
+            int oldPos = scrollMove( si, code );
+
+            si.fMask = SIF_POS;
+            SetScrollInfo (myHandle, SB_HORZ, &si, TRUE);
+            GetScrollInfo (myHandle, SB_CTL, &si);
+
+            RECT rect;
+            GetClientRect(myHandle, &rect);
+            int xs = (oldPos - si.nPos) * (rect.right-rect.left) / 100;
+            ScrollWindow(
+                myHandle,
+                xs,
+                0, NULL, NULL);
+
+            for( auto& w : myWidget )
+                w->update();
+        });
+
+        // vertical scroll handler
+        events().scrollV([this](int code)
+        {
+            SCROLLINFO si;
+            si.cbSize = sizeof(si);
+            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+            if( ! GetScrollInfo (myHandle, SB_VERT, &si) )
+                return;
+
+            int oldPos = scrollMove( si, code );
+
+            si.fMask = SIF_POS;
+            SetScrollInfo (myHandle, SB_VERT, &si, TRUE);
+            GetScrollInfo (myHandle, SB_VERT, &si);
+            RECT rect;
+            GetClientRect(myHandle, &rect);
+            int ys = (oldPos - si.nPos) * rect.bottom / 100;
+            ScrollWindow(
+                myHandle,
+                0,
+                ys, NULL, NULL);
+
+            for( auto& w : myWidget )
+                w->update();
+        });
+
+    }
     void show()
     {
         ShowWindow(myHandle,  SW_SHOWDEFAULT);
@@ -524,13 +618,20 @@ public:
 
             case WM_COMMAND:
                 //std::cout << "window <- command "<< LOWORD(wParam) <<" " << HIWORD(wParam)<< "\n";
-
+            {
                 // send notification to widget with ID
                 auto w = find( LOWORD(wParam) );
                 if( w )
                     w->command( HIWORD( wParam ));
-                return true;
+            }
+            return true;
 
+            case WM_HSCROLL:
+                myEvents.onScrollH( LOWORD (wParam) );
+                return false;
+            case WM_VSCROLL:
+                myEvents.onScrollV( LOWORD (wParam) );
+                return false;
             }
         }
         else
@@ -558,6 +659,39 @@ protected:
     virtual void draw( PAINTSTRUCT& ps )
     {
         myEvents.onDraw( ps );
+    }
+
+    int scrollMove( SCROLLINFO& si, int code )
+    {
+        int oldPos = si.nPos;
+        switch( code )
+        {
+        // User clicked the left arrow.
+        case SB_LINELEFT:
+            si.nPos -= 1;
+            break;
+
+        // User clicked the right arrow.
+        case SB_LINERIGHT:
+            si.nPos += 1;
+            break;
+
+        // User clicked the scroll bar shaft left of the scroll box.
+        case SB_PAGELEFT:
+            si.nPos -= si.nPage;
+            break;
+
+        // User clicked the scroll bar shaft right of the scroll box.
+        case SB_PAGERIGHT:
+            si.nPos += si.nPage;
+            break;
+
+        // User dragged the scroll box.
+        case SB_THUMBTRACK:
+            si.nPos = si.nTrackPos;
+            break;
+        }
+        return oldPos;
     }
 };
 
@@ -1045,5 +1179,6 @@ public:
 private:
     std::string myfname;
 };
+
 }
 

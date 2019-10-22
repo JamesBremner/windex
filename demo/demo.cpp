@@ -338,6 +338,28 @@ void PanelDemo()
     form.show();
 }
 
+void ScrollDemo()
+{
+    // reference the windex gui framework
+    windex& W = windex::get();
+
+    // construct top level window
+    window& form = W.MakeWindow();
+    form.scroll();
+    form.move({ 50,50,400,400});
+    form.text("Scroll demo");
+
+    // display labels
+    label& lbA = W.make<label>( form );
+    lbA.move( {20, 20, 500, 30 } );
+    lbA.text("AXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    label& lbB = W.make<label>( form );
+    lbB.move( {20, 460, 500, 30 } );
+    lbB.text("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");;\
+
+    form.show();
+}
+
 int main()
 {
     // reference the windex gui framework
@@ -423,6 +445,14 @@ int main()
     btndraw.events().click([&]
     {
         drawDemo();
+    });
+
+    button& btnscroll = W.make<button>( l );
+    btnscroll.move(  { 150, 30 }, false );
+    btnscroll.text( "Scroll" );
+    btnscroll.events().click([&]
+    {
+        ScrollDemo();
     });
 
 
