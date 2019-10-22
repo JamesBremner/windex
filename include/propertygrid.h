@@ -7,7 +7,7 @@ class property
 {
 public:
     property(
-        window& parent,
+        gui& parent,
         const std::string& name,
         const std::string& value )
         : myName( name )
@@ -24,7 +24,7 @@ public:
         myEditbox.text( myValue );
     }
     property(
-        window& parent,
+        gui& parent,
         const std::string& name,
         bool value )
         : myName( name )
@@ -42,7 +42,7 @@ public:
         myCheckbox.text("");
     }
     property(
-        window& parent,
+        gui& parent,
         const std::string& name,
         const std::vector< std::string >& value )
         : myName( name )
@@ -62,7 +62,7 @@ public:
         }
     }
     property(
-        window& parent,
+        gui& parent,
         const std::string& name )
         : myName( name )
         , W( windex::get())
@@ -192,7 +192,7 @@ private:
 class propertyGrid
 {
 public:
-    propertyGrid( window& parent )
+    propertyGrid( gui& parent )
         : myParent( parent )
         , myHeight( 30 )
         , myWidth( 300 )
@@ -287,7 +287,7 @@ public:
     }
 private:
     std::vector< property > myProperty;
-    window& myParent;
+    gui& myParent;
     int myHeight;               // height of a single property
     int myWidth;
     int myLabelWidth;

@@ -1,10 +1,10 @@
 #include "propertygrid.h"
 namespace wex
 {
-class inputbox : public window
+class inputbox : public gui
 {
 public:
-    inputbox( window& parent )
+    inputbox( gui& parent )
         : myGrid( propertyGrid( *this ))
         , myOKButton( windex::get().make<button>(*this) )
     {

@@ -173,15 +173,56 @@ private:
 class gui
 {
 public:
+    /// Construct top level with no parent
     gui()
-        : myBGColor( 0xC8C8C8 )
+        : myParent( NULL )
+        , myBGColor( 0xC8C8C8 )
         , myBGBrush( CreateSolidBrush( myBGColor ))
         , myDeleteList( 0 )
+        , myfApp( false )
+        , myfModal( false )
     {
+        myID = NewID();
+        Create(NULL,"windex",WS_OVERLAPPEDWINDOW);
+    }
+    /// Construct of a parent
+    gui(
+        gui* parent,
+        const char* window_class = "windex",
+        unsigned long style = WS_CHILD,
+        unsigned long exstyle = 0 )
+        : myParent( parent->handle() )
+        , myfApp( false )
+        , myfModal( false )
+    {
+        myID = NewID();
+        Create( parent->handle(), window_class, style, exstyle, myID );
+        parent->child( this );
+        text("not set");
     }
     virtual ~gui()
     {
         myDeleteList->push_back( myHandle );
+    }
+
+    // register child on this window
+    void child( gui* w )
+    {
+        myChild.push_back( w );
+    }
+    children_t& children()
+    {
+        return myChild;
+    }
+
+    gui* find( int id )
+    {
+        for( auto w : myChild )
+        {
+            if ( w->id() == id )
+                return (gui*)w;
+        }
+        return nullptr;
     }
 
     /** Change background color
@@ -192,6 +233,10 @@ public:
         myBGColor = color;
         DeleteObject( myBGBrush);
         myBGBrush = CreateSolidBrush( color );
+    }
+    int id()
+    {
+        return myID;
     }
     int bgcolor() const
     {
@@ -206,17 +251,183 @@ public:
     {
         return myText;
     }
+        /// Add scrollbars
+    void scroll()
+    {
+        // change window style to have scrollbars
+        SetWindowLongPtr(
+            myHandle,
+            GWL_STYLE,
+            (LONG_PTR)WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL );
+
+        // Set the scrolling range and page size
+        SCROLLINFO si;
+        si.cbSize = sizeof(si);
+        si.fMask  = SIF_RANGE | SIF_PAGE;
+        si.nMin   = 0;
+        si.nMax   = 100;
+        si.nPage  = 10;
+        SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
+        SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
+
+        // horizontal scroll handler
+        events().scrollH([this](int code)
+        {
+            SCROLLINFO si;
+            si.cbSize = sizeof(si);
+            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+            if( ! GetScrollInfo (myHandle, SB_HORZ, &si) )
+                return;
+            int oldPos = scrollMove( si, code );
+
+            si.fMask = SIF_POS;
+            SetScrollInfo (myHandle, SB_HORZ, &si, TRUE);
+            GetScrollInfo (myHandle, SB_CTL, &si);
+
+            RECT rect;
+            GetClientRect(myHandle, &rect);
+            int xs = (oldPos - si.nPos) * (rect.right-rect.left) / 100;
+            ScrollWindow(
+                myHandle,
+                xs,
+                0, NULL, NULL);
+
+            for( auto& w : myChild )
+                w->update();
+        });
+
+        // vertical scroll handler
+        events().scrollV([this](int code)
+        {
+            SCROLLINFO si;
+            si.cbSize = sizeof(si);
+            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+            if( ! GetScrollInfo (myHandle, SB_VERT, &si) )
+                return;
+
+            int oldPos = scrollMove( si, code );
+
+            si.fMask = SIF_POS;
+            SetScrollInfo (myHandle, SB_VERT, &si, TRUE);
+            GetScrollInfo (myHandle, SB_VERT, &si);
+            RECT rect;
+            GetClientRect(myHandle, &rect);
+            int ys = (oldPos - si.nPos) * rect.bottom / 100;
+            ScrollWindow(
+                myHandle,
+                0,
+                ys, NULL, NULL);
+
+            for( auto& w : myChild )
+                w->update();
+        });
+
+    }
+
 
     /// No messages are handled by the base class
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
+        //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
+        if( hwnd == myHandle )
+        {
+            switch (uMsg)
+            {
+            case WM_DESTROY:
+                // if this is the appliction window
+                // then quit application when destroyed
+                if( myfApp )
+                    PostQuitMessage(0);
+                return true;
+                return true;
+
+            case WM_NCDESTROY:
+                // all the children are gone
+                // so a modal display can close
+                myfModal = false;
+                return false;
+
+            case WM_ERASEBKGND:
+            {
+                if( ! myParent )
+                {
+                    RECT rc;
+                    GetWindowRect(hwnd, &rc);
+                    FillRect((HDC)wParam, &rc, myBGBrush );
+                    return true;
+                }
+//                RECT rc;
+//                GetWindowRect(hwnd, &rc);
+//                GetClientRect(hwnd,&rc );
+//                //FillRect((HDC)wParam, &rc, myBGBrush );
+                return true;
+            }
+
+            case WM_PAINT:
+            {
+                PAINTSTRUCT ps;
+                BeginPaint(myHandle, &ps);
+                FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
+                draw(ps);
+
+                EndPaint(myHandle, &ps);
+            }
+            return true;
+
+            case WM_LBUTTONDOWN:
+                myEvents.onLeftdown();
+                return true;
+
+            case WM_SIZE:
+                if( wParam == SIZE_RESTORED)
+                {
+                    myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
+                    return true;
+                }
+                return false;
+        }
+        }
+        else
+        {
+            for( auto w : myChild )
+            {
+                if( w->WindowMessageHandler( hwnd, uMsg, wParam, lParam ))
+                    return true;
+            }
+        }
+
         return false;
     }
 
-    virtual void show() = 0;
-    virtual int id() = 0;
-    virtual void child( gui* c ) = 0;
-    virtual void update() {}
+    virtual void show()
+    {
+        ShowWindow(myHandle, SW_SHOWDEFAULT);
+        // display any children
+        for( auto w : myChild )
+            w->show();
+    }
+
+    void showModal()
+    {
+        //std::cout << "modal " << myHandle << "\n";
+        myfModal = true;
+        show();
+        MSG msg = { };
+        while (GetMessage(&msg, NULL, 0, 0))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            if( ! myfModal )
+                break;
+        }
+    }
+
+    /// force widget to redraw completely
+    void update()
+    {
+        InvalidateRect(myHandle,NULL,true);
+        UpdateWindow(myHandle);
+    }
 
     /** Move the window
         @param[in] r specify location and size
@@ -272,11 +483,16 @@ public:
 
 protected:
     HWND myHandle;
+    HWND myParent;
     eventhandler myEvents;
     int myBGColor;
     HBRUSH myBGBrush;
     std::vector< HWND >* myDeleteList;
     std::string myText;
+    int myID;
+    std::vector< gui* > myChild;
+    bool myfApp;                        /// true if app should quit when window destroyed
+    bool myfModal;
 
     /** Create the managed window
         @param[in] parent handle of parent window
@@ -306,362 +522,32 @@ protected:
                        NULL        // Additional application data
                    );
     }
-};
-
-
-/// A widget placed inside a window
-class widget : public gui
-{
-public:
-
-    /** CTOR
-        @param[in] parent window handle
-        @param[in] children parent's list to add to
-    */
-    widget(
-        gui* parent,
-        const char* window_class = "windex",
-        unsigned long style = WS_CHILD,
-        unsigned long exstyle = 0 )
-        : myParent( parent->handle() )
-    {
-        myID = NewID();
-        Create( parent->handle(), window_class, style, exstyle, myID );
-        parent->child( this );
-        text("not set");
-    }
-
-    /// Handle windows messages
-    bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
-        if( hwnd == myHandle )
-        {
-            switch (uMsg)
-            {
-            case WM_DESTROY:
-                return true;
-
-            case WM_ERASEBKGND:
-            {
-                RECT rc;
-                GetWindowRect(hwnd, &rc);
-                GetClientRect(hwnd,&rc );
-                //FillRect((HDC)wParam, &rc, myBGBrush );
-                return true;
-            }
-
-            case WM_PAINT:
-            {
-                PAINTSTRUCT ps;
-                BeginPaint(myHandle, &ps);
-                FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
-                draw(ps);
-
-                EndPaint(myHandle, &ps);
-            }
-            return true;
-
-            case WM_LBUTTONDOWN:
-                myEvents.onLeftdown();
-                return true;
-
-            case WM_COMMAND:
-                std::cout << "command\n";
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    void show()
-    {
-        ShowWindow(myHandle, SW_SHOWDEFAULT);
-    }
-
-    /// force widget to redraw completely
-    void update()
-    {
-        InvalidateRect(myHandle,NULL,true);
-        UpdateWindow(myHandle);
-    }
-
-    int id()
-    {
-        return myID;
-    }
-
-    virtual void command( WORD cmd )
-    {
-    }
-
-    void child( gui* c )
-    {
-        throw std::runtime_error("windex widget cannot hold children");
-    }
-
-protected:
-
-    int myID;
-    HWND myParent;
-
     virtual void draw( PAINTSTRUCT& ps )
     {
         SetBkColor(
             ps.hdc,
             myBGColor );
-        RECT r( ps.rcPaint );
-        r.left += 1;
-        r.top  += 1;
-        DrawText(
-            ps.hdc,
-            myText.c_str(),
-            -1,
-            &r,
-            0);
-
+        if( myParent )
+        {
+            RECT r( ps.rcPaint );
+            r.left += 1;
+            r.top  += 1;
+            DrawText(
+                ps.hdc,
+                myText.c_str(),
+                -1,
+                &r,
+                0);
+        }
         myEvents.onDraw( ps );
     }
-
-private:
-
     int NewID()
     {
         static int lastID = 0;
         lastID++;
         return lastID;
     }
-};
-
-
-/// A top level window
-class window : public gui
-{
-public:
-    window()
-        : myfApp( false )
-        , myfModal( false )
-    {
-        Create( NULL, "windex", WS_OVERLAPPEDWINDOW );
-
-        // Assume that the first window created is the application window
-        // quit the application of it is destroyed
-        static bool appdone = false;
-        if( ! appdone )
-        {
-            myfApp = true;
-            appdone = true;
-        }
-    }
-    /// Add scrollbars
-    void scroll()
-    {
-        // change window style to have scrollbars
-        SetWindowLongPtr(
-            myHandle,
-            GWL_STYLE,
-            (LONG_PTR)WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL );
-
-        // Set the scrolling range and page size
-        SCROLLINFO si;
-        si.cbSize = sizeof(si);
-        si.fMask  = SIF_RANGE | SIF_PAGE;
-        si.nMin   = 0;
-        si.nMax   = 100;
-        si.nPage  = 10;
-        SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
-        SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
-
-        // horizontal scroll handler
-        events().scrollH([this](int code)
-        {
-            SCROLLINFO si;
-            si.cbSize = sizeof(si);
-            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
-            if( ! GetScrollInfo (myHandle, SB_HORZ, &si) )
-                return;
-            int oldPos = scrollMove( si, code );
-
-            si.fMask = SIF_POS;
-            SetScrollInfo (myHandle, SB_HORZ, &si, TRUE);
-            GetScrollInfo (myHandle, SB_CTL, &si);
-
-            RECT rect;
-            GetClientRect(myHandle, &rect);
-            int xs = (oldPos - si.nPos) * (rect.right-rect.left) / 100;
-            ScrollWindow(
-                myHandle,
-                xs,
-                0, NULL, NULL);
-
-            for( auto& w : myWidget )
-                w->update();
-        });
-
-        // vertical scroll handler
-        events().scrollV([this](int code)
-        {
-            SCROLLINFO si;
-            si.cbSize = sizeof(si);
-            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
-            if( ! GetScrollInfo (myHandle, SB_VERT, &si) )
-                return;
-
-            int oldPos = scrollMove( si, code );
-
-            si.fMask = SIF_POS;
-            SetScrollInfo (myHandle, SB_VERT, &si, TRUE);
-            GetScrollInfo (myHandle, SB_VERT, &si);
-            RECT rect;
-            GetClientRect(myHandle, &rect);
-            int ys = (oldPos - si.nPos) * rect.bottom / 100;
-            ScrollWindow(
-                myHandle,
-                0,
-                ys, NULL, NULL);
-
-            for( auto& w : myWidget )
-                w->update();
-        });
-
-    }
-    void show()
-    {
-        ShowWindow(myHandle,  SW_SHOWDEFAULT);
-
-        // display the children
-        for( auto w : myWidget )
-            w->show();
-    }
-
-    void showModal()
-    {
-        //std::cout << "modal " << myHandle << "\n";
-        myfModal = true;
-        show();
-        MSG msg = { };
-        while (GetMessage(&msg, NULL, 0, 0))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-            if( ! myfModal )
-                break;
-        }
-    }
-
-    // register child on this window
-    void child( gui* w )
-    {
-        myWidget.push_back( w );
-    }
-
-    children_t& children()
-    {
-        return myWidget;
-    }
-
-    widget* find( int id )
-    {
-        for( auto w : myWidget )
-        {
-            if ( w->id() == id )
-                return (widget*)w;
-        }
-        return nullptr;
-    }
-
-    bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-//    std::cout << "window::WindowMessageHandler "
-//              << myText <<" "<< myHandle <<" "<< uMsg << "\n";
-        if( hwnd == myHandle )
-        {
-            switch (uMsg)
-            {
-            case WM_DESTROY:
-                if( myfApp )
-                    PostQuitMessage(0);
-                return true;
-
-            case WM_NCDESTROY:
-                myfModal = false;
-                return false;
-
-            case WM_ERASEBKGND:
-            {
-                RECT rc;
-                GetWindowRect(hwnd, &rc);
-                FillRect((HDC)wParam, &rc, myBGBrush );
-                return true;
-            }
-
-            case WM_PAINT:
-            {
-                PAINTSTRUCT ps;
-                HDC hdc = BeginPaint(myHandle, &ps);
-
-                FillRect(hdc, &ps.rcPaint, myBGBrush );
-                draw( ps );
-
-                EndPaint(myHandle, &ps);
-            }
-            return true;
-
-            case WM_SIZE:
-                if( wParam == SIZE_RESTORED)
-                {
-                    myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
-                    return true;
-                }
-                return false;
-
-            case WM_COMMAND:
-                //std::cout << "window <- command "<< LOWORD(wParam) <<" " << HIWORD(wParam)<< "\n";
-            {
-                // send notification to widget with ID
-                auto w = find( LOWORD(wParam) );
-                if( w )
-                    w->command( HIWORD( wParam ));
-            }
-            return true;
-
-            case WM_HSCROLL:
-                myEvents.onScrollH( LOWORD (wParam) );
-                return false;
-            case WM_VSCROLL:
-                myEvents.onScrollV( LOWORD (wParam) );
-                return false;
-            }
-        }
-        else
-        {
-            for( auto w : myWidget )
-            {
-                if( w->WindowMessageHandler( hwnd, uMsg, wParam, lParam ))
-                    return true;
-            }
-        }
-        return false;
-
-    }
-
-    int id()
-    {
-        return -1;
-    }
-
-protected:
-    std::vector< gui* > myWidget;
-    bool myfApp;                        /// true if app should quit when window destroyed
-    bool myfModal;
-
-    virtual void draw( PAINTSTRUCT& ps )
-    {
-        myEvents.onDraw( ps );
-    }
-
-    int scrollMove( SCROLLINFO& si, int code )
+        int scrollMove( SCROLLINFO& si, int code )
     {
         int oldPos = si.nPos;
         switch( code )
@@ -693,36 +579,318 @@ protected:
         }
         return oldPos;
     }
+
 };
 
 
+///// A widget placed inside a window
+//class widget : public gui
+//{
+//public:
+//
+//    /** CTOR
+//        @param[in] parent window handle
+//        @param[in] children parent's list to add to
+//    */
+//    widget(
+//        gui* parent,
+//        const char* window_class = "windex",
+//        unsigned long style = WS_CHILD,
+//        unsigned long exstyle = 0 )
+//        : myParent( parent->handle() )
+//    {
+//
+//        Create( parent->handle(), window_class, style, exstyle, myID );
+//        parent->child( this );
+//        text("not set");
+//    }
+//
+////    /// Handle windows messages
+////    bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+////    {
+////        //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
+////        if( hwnd == myHandle )
+////        {
+////            switch (uMsg)
+////            {
+////            case WM_DESTROY:
+////                return true;
+////
+////            case WM_ERASEBKGND:
+////            {
+////                RECT rc;
+////                GetWindowRect(hwnd, &rc);
+////                GetClientRect(hwnd,&rc );
+////                //FillRect((HDC)wParam, &rc, myBGBrush );
+////                return true;
+////            }
+////
+////            case WM_PAINT:
+////            {
+////                PAINTSTRUCT ps;
+////                BeginPaint(myHandle, &ps);
+////                FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
+////                draw(ps);
+////
+////                EndPaint(myHandle, &ps);
+////            }
+////            return true;
+////
+////            case WM_LBUTTONDOWN:
+////                myEvents.onLeftdown();
+////                return true;
+////
+////            case WM_COMMAND:
+////                std::cout << "command\n";
+////                return true;
+////            }
+////        }
+////        return false;
+////    }
+////
+//
+//
+//
+//
+//
+//
+//
+////    virtual void command( WORD cmd )
+////    {
+////    }
+//
+////    void child( gui* c )
+////    {
+////        throw std::runtime_error("windex widget cannot hold children");
+////    }
+//
+//protected:
+//
+//
+//    HWND myParent;
+//
+//
+//
+//private:
+//
+//
+//};
+
+
+///// A top level window
+//class window : public gui
+//{
+//public:
+//    window()
+//    {
+//        Create( NULL, "windex", WS_OVERLAPPEDWINDOW );
+//
+//        // Assume that the first window created is the application window
+//        // quit the application of it is destroyed
+//        static bool appdone = false;
+//        if( ! appdone )
+//        {
+//            myfApp = true;
+//            appdone = true;
+//        }
+//    }
+//    /// Add scrollbars
+//    void scroll()
+//    {
+//        // change window style to have scrollbars
+//        SetWindowLongPtr(
+//            myHandle,
+//            GWL_STYLE,
+//            (LONG_PTR)WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL );
+//
+//        // Set the scrolling range and page size
+//        SCROLLINFO si;
+//        si.cbSize = sizeof(si);
+//        si.fMask  = SIF_RANGE | SIF_PAGE;
+//        si.nMin   = 0;
+//        si.nMax   = 100;
+//        si.nPage  = 10;
+//        SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
+//        SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
+//
+//        // horizontal scroll handler
+//        events().scrollH([this](int code)
+//        {
+//            SCROLLINFO si;
+//            si.cbSize = sizeof(si);
+//            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+//            if( ! GetScrollInfo (myHandle, SB_HORZ, &si) )
+//                return;
+//            int oldPos = scrollMove( si, code );
+//
+//            si.fMask = SIF_POS;
+//            SetScrollInfo (myHandle, SB_HORZ, &si, TRUE);
+//            GetScrollInfo (myHandle, SB_CTL, &si);
+//
+//            RECT rect;
+//            GetClientRect(myHandle, &rect);
+//            int xs = (oldPos - si.nPos) * (rect.right-rect.left) / 100;
+//            ScrollWindow(
+//                myHandle,
+//                xs,
+//                0, NULL, NULL);
+//
+//            for( auto& w : myChild )
+//                w->update();
+//        });
+//
+//        // vertical scroll handler
+//        events().scrollV([this](int code)
+//        {
+//            SCROLLINFO si;
+//            si.cbSize = sizeof(si);
+//            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+//            if( ! GetScrollInfo (myHandle, SB_VERT, &si) )
+//                return;
+//
+//            int oldPos = scrollMove( si, code );
+//
+//            si.fMask = SIF_POS;
+//            SetScrollInfo (myHandle, SB_VERT, &si, TRUE);
+//            GetScrollInfo (myHandle, SB_VERT, &si);
+//            RECT rect;
+//            GetClientRect(myHandle, &rect);
+//            int ys = (oldPos - si.nPos) * rect.bottom / 100;
+//            ScrollWindow(
+//                myHandle,
+//                0,
+//                ys, NULL, NULL);
+//
+//            for( auto& w : myChild )
+//                w->update();
+//        });
+//
+//    }
+//
+////    bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+////    {
+//////    std::cout << "window::WindowMessageHandler "
+//////              << myText <<" "<< myHandle <<" "<< uMsg << "\n";
+////        if( hwnd == myHandle )
+////        {
+////            switch (uMsg)
+////            {
+////            case WM_DESTROY:
+////                if( myfApp )
+////                    PostQuitMessage(0);
+////                return true;
+////
+////            case WM_NCDESTROY:
+////                myfModal = false;
+////                return false;
+////
+////            case WM_ERASEBKGND:
+////            {
+////                RECT rc;
+////                GetWindowRect(hwnd, &rc);
+////                FillRect((HDC)wParam, &rc, myBGBrush );
+////                return true;
+////            }
+////
+////            case WM_PAINT:
+////            {
+////                PAINTSTRUCT ps;
+////                HDC hdc = BeginPaint(myHandle, &ps);
+////
+////                FillRect(hdc, &ps.rcPaint, myBGBrush );
+////                draw( ps );
+////
+////                EndPaint(myHandle, &ps);
+////            }
+////            return true;
+////
+////            case WM_SIZE:
+////                if( wParam == SIZE_RESTORED)
+////                {
+////                    myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
+////                    return true;
+////                }
+////                return false;
+////
+//////            case WM_COMMAND:
+//////                //std::cout << "window <- command "<< LOWORD(wParam) <<" " << HIWORD(wParam)<< "\n";
+//////            {
+//////                // send notification to widget with ID
+//////                auto w = find( LOWORD(wParam) );
+//////                if( w )
+//////                    w->command( HIWORD( wParam ));
+//////            }
+////                return true;
+////
+////            case WM_HSCROLL:
+////                myEvents.onScrollH( LOWORD (wParam) );
+////                return false;
+////            case WM_VSCROLL:
+////                myEvents.onScrollV( LOWORD (wParam) );
+////                return false;
+////            }
+////        }
+////        else
+////        {
+////            for( auto w : myChild )
+////            {
+////                if( w->WindowMessageHandler( hwnd, uMsg, wParam, lParam ))
+////                    return true;
+////            }
+////        }
+////        return false;
+////
+////    }
+//
+//protected:
+//    //std::vector< gui* > myWidget;
+//
+//
+//    int scrollMove( SCROLLINFO& si, int code )
+//    {
+//        int oldPos = si.nPos;
+//        switch( code )
+//        {
+//        // User clicked the left arrow.
+//        case SB_LINELEFT:
+//            si.nPos -= 1;
+//            break;
+//
+//        // User clicked the right arrow.
+//        case SB_LINERIGHT:
+//            si.nPos += 1;
+//            break;
+//
+//        // User clicked the scroll bar shaft left of the scroll box.
+//        case SB_PAGELEFT:
+//            si.nPos -= si.nPage;
+//            break;
+//
+//        // User clicked the scroll bar shaft right of the scroll box.
+//        case SB_PAGERIGHT:
+//            si.nPos += si.nPage;
+//            break;
+//
+//        // User dragged the scroll box.
+//        case SB_THUMBTRACK:
+//            si.nPos = si.nTrackPos;
+//            break;
+//        }
+//        return oldPos;
+//    }
+//
+//};
+//
+
 /// A child window that can contain widgets
-class panel : public widget
+class panel : public gui
 {
 public:
     panel( gui* parent )
-        : widget( parent )
+        : gui( parent )
     {
         text("");
     }
-    children_t& children()
-    {
-        return myWidget;
-    }
-    void child( gui* w )
-    {
-        myWidget.push_back( w );
-    }
-    void show()
-    {
-        ShowWindow(myHandle,  SW_SHOWDEFAULT);
-
-        // display the children
-        for( auto w : myWidget )
-            w->show();
-    }
-protected:
-    std::vector< gui* > myWidget;
 };
 
 /// A panel displaying a title and box around contents
@@ -736,7 +904,7 @@ public:
     }
     virtual void draw( PAINTSTRUCT& ps )
     {
-        widget::draw( ps );
+        gui::draw( ps );
         DrawEdge(
             ps.hdc,
             &ps.rcPaint,
@@ -773,12 +941,12 @@ public:
         RECT r;
         GetClientRect(myHandle, &r );
         int colwidth = (r.right - r.left) / myColCount;
-        int rowheight = ( r.bottom - r.top ) / ( ( myWidget.size() + 1 ) / myColCount );
+        int rowheight = ( r.bottom - r.top ) / ( ( myChild.size() + 1 ) / myColCount );
 
         // display the children laid out in a grid
         int colcount = 0;
         int rowcount = 0;
-        for( auto w : myWidget )
+        for( auto w : myChild )
         {
             w->move( { colcount*colwidth, rowcount*rowheight } );
             w->show();
@@ -796,11 +964,11 @@ private:
 };
 
 /// A button
-class button : public widget
+class button : public gui
 {
 public:
     button( gui* parent )
-        : widget( parent )
+        : gui( parent )
     {
 
     }
@@ -808,7 +976,7 @@ protected:
     /// draw - label inside rectangle
     virtual void draw( PAINTSTRUCT& ps )
     {
-        widget::draw( ps );
+        gui::draw( ps );
         DrawEdge(
             ps.hdc,
             &ps.rcPaint,
@@ -818,12 +986,12 @@ protected:
     }
 };
 
-class radiobutton : public widget
+class radiobutton : public gui
 {
 public:
     radiobutton( gui* parent )
-        : widget( parent, "button",
-                  WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
+        : gui( parent, "button",
+               WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
     {
     }
     /** Make first radiobutton in a group
@@ -864,11 +1032,11 @@ code needs handle click event, then it must have the following in its handler
     update();
 </pre>
 */
-class checkbox : public widget
+class checkbox : public gui
 {
 public:
     checkbox( gui* parent )
-        : widget( parent )
+        : gui( parent )
         , myValue( false )
     {
         // toggle the boolean value when clicked
@@ -929,23 +1097,23 @@ public:
 };
 
 /// label
-class label : public widget
+class label : public gui
 {
 public:
     label( gui* parent )
-        : widget( parent )
+        : gui( parent )
     {
 
     }
 };
 /// User can enter a string
-class editbox : public widget
+class editbox : public gui
 {
 public:
     editbox( gui* parent )
-        : widget( parent, "Edit",
-                  WS_CHILD | ES_LEFT | WS_BORDER | WS_VISIBLE,
-                  WS_EX_CLIENTEDGE )
+        : gui( parent, "Edit",
+               WS_CHILD | ES_LEFT | WS_BORDER | WS_VISIBLE,
+               WS_EX_CLIENTEDGE )
     {
 
     }
@@ -983,12 +1151,12 @@ public:
     }
 };
 
-class choice : public widget
+class choice : public gui
 {
 public:
     choice( gui* parent )
-        : widget( parent, "Combobox",
-                  CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+        : gui( parent, "Combobox",
+               CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
     void add( const std::string& s )
@@ -1047,9 +1215,9 @@ public:
     }
 
     /// get reference to new top level window
-    window& MakeWindow()
+    gui& MakeWindow()
     {
-        window* w = new window();
+        gui* w = new gui();
         Add( w );
         return *w;
     }
@@ -1144,7 +1312,7 @@ private:
 class filebox
 {
 public:
-    filebox( window& parent )
+    filebox( gui& parent )
     {
         OPENFILENAME ofn;       // common dialog box structure
         char szFile[260];       // buffer for file name

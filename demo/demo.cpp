@@ -11,7 +11,7 @@ void helloworld()
     windex& W = windex::get();
 
     // construct top level window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.move({ 50,50,400,400});
     form.text("Label and Editbox demo");
 
@@ -58,7 +58,7 @@ void choiceDemo()
     windex& W = windex::get();
 
     // construct top level  window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.move({ 50,50,400,400});
     form.text("A windex combobox");
 
@@ -88,7 +88,7 @@ void drawDemo()
     windex& W = windex::get();
 
     // construct top level  window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.move({ 50,50,400,400});
     form.text("A windex draw demo");
 
@@ -110,7 +110,7 @@ void PGDemo()
     windex& W = windex::get();
 
     // construct top level window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.move({ 50,50,400,400});
     form.text("A windex property grid");
 
@@ -180,7 +180,7 @@ void InputboxDemo()
     windex& W = windex::get();
 
     // construct top level window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.move({ 50,50,400,400});
     form.text("A windex inputbox");
 
@@ -208,7 +208,7 @@ void RBDemo()
     windex& W = windex::get();
 
     // construct top level window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.move({ 50,50,400,400});
     form.text("A windex radiobutton");
 
@@ -271,7 +271,7 @@ void CBDemo()
     windex& W = windex::get();
 
     // construct top level window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.move({ 50,50,400,400});
     form.text("A windex checkbox");
 
@@ -318,7 +318,7 @@ void PanelDemo()
     windex& W = windex::get();
 
     // construct top level window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.move({ 50,50,400,400});
     form.text("Panel demo");
 
@@ -344,7 +344,7 @@ void ScrollDemo()
     windex& W = windex::get();
 
     // construct top level window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.scroll();
     form.move({ 50,50,400,400});
     form.text("Scroll demo");
@@ -366,7 +366,7 @@ int main()
     windex& W = windex::get();
 
     // construct top level application window
-    window& form = W.MakeWindow();
+    gui& form = W.MakeWindow();
     form.move({ 50,50,400,500});
     form.text("Windex demos");
 
