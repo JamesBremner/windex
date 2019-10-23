@@ -299,7 +299,7 @@ private:
 
         scrollRange(
             myWidth,
-            (int)myProperty.size() * myHeight);
+            ((int)myProperty.size()+1) * myHeight);
     }
 };
 }
