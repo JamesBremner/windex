@@ -116,7 +116,7 @@ void PGDemo()
 
     // construct propertygrid
     propertyGrid& pg = W.make<propertyGrid>( form );
-    pg.move( { 50,50, 200, 200});
+    pg.move( { 10,10, 200, 200});
     pg.labelWidth( 50 );
     pg.bgcolor( 0xFFA0A0 );
 
@@ -124,19 +124,19 @@ void PGDemo()
     pg.category("Strings");
     pg.string( "A", "72" );
     pg.string( "B", "4600" );
-    pg.string( "A", "72" );
-    pg.string( "B", "4600" );
-    pg.string( "B", "4600" );
-    pg.string( "B", "4600" );
-    pg.string( "B", "4600" );
-    pg.string( "B", "4600" );
-    pg.string( "B", "4600" );
-    pg.string( "B", "4600" );
-    pg.string( "B", "4600" );
-    pg.string( "B", "4600" );
-    pg.string( "X", "4600" );
-    pg.string( "Y", "4600" );
-    pg.string( "Z", "4600" );
+    pg.string( "C", "72" );
+    pg.string( "D", "4600" );
+    pg.string( "E", "4600" );
+    pg.string( "F", "4600" );
+    pg.string( "G", "4600" );
+    pg.string( "H", "4600" );
+    pg.string( "I", "4600" );
+    pg.string( "J", "4600" );
+    pg.string( "K", "4600" );
+    pg.string( "L", "4600" );
+    pg.string( "M", "4600" );
+    pg.string( "N", "4600" );
+    pg.string( "O", "4600" );
     pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
@@ -347,6 +347,7 @@ void ScrollDemo()
     gui& form = W.MakeWindow();
     form.scroll();
     form.move({ 50,50,400,400});
+    form.scrollRange(600,600);
     form.text("Scroll demo");
 
     // display labels

@@ -278,6 +278,7 @@ public:
             p.saveValue();
         }
     }
+
 private:
     std::vector< property > myProperty;
     int myHeight;               // height of a single property
@@ -295,6 +296,10 @@ private:
             myWidth, myHeight
         } );
         myProperty.push_back( P );
+
+        scrollRange(
+            myWidth,
+            (int)myProperty.size() * myHeight);
     }
 };
 }

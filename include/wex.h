@@ -260,15 +260,8 @@ public:
             GWL_STYLE,
             GetWindowLongPtr( myHandle, GWL_STYLE) | WS_HSCROLL | WS_VSCROLL );
 
-        // Set the scrolling range and page size
-        SCROLLINFO si;
-        si.cbSize = sizeof(si);
-        si.fMask  = SIF_RANGE | SIF_PAGE;
-        si.nMin   = 0;
-        si.nMax   = 100;
-        si.nPage  = 10;
-        SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
-        SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
+        // Set the scrolling range and page size to defaaults
+        scrollRange( 100, 100 );
 
         // horizontal scroll handler
         events().scrollH([this](int code)
@@ -278,6 +271,7 @@ public:
             si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
             if( ! GetScrollInfo (myHandle, SB_HORZ, &si) )
                 return;
+
             int oldPos = scrollMove( si, code );
 
             si.fMask = SIF_POS;
@@ -286,7 +280,8 @@ public:
 
             RECT rect;
             GetClientRect(myHandle, &rect);
-            int xs = (oldPos - si.nPos) * (rect.right-rect.left) / 100;
+            int xs = oldPos - si.nPos;
+            //std::cout << "scrollH " << xs <<" "<< oldPos <<" "<< si.nPos << "\n";
             ScrollWindow(
                 myHandle,
                 xs,
@@ -312,7 +307,8 @@ public:
             GetScrollInfo (myHandle, SB_VERT, &si);
             RECT rect;
             GetClientRect(myHandle, &rect);
-            int ys = (oldPos - si.nPos) * rect.bottom / 100;
+            int ys = oldPos - si.nPos;
+            //std::cout << "scroll " << ys <<" "<< oldPos <<" "<< si.nPos << "\n";
             ScrollWindow(
                 myHandle,
                 0,
@@ -323,7 +319,37 @@ public:
         });
 
     }
+    /** Set the scrolling range
+        @param[in] width of the underlying window to be scrolled over
+        @param[in] height of the underlying window to be scrolled over
 
+        This sets how far scrolling can move horixonatally and vertically.
+        The width and height should be set to the maximum locations
+        to be shown when scrolled to the limits.
+
+        This should be called again if the window size changes.
+    */
+    void scrollRange( int width, int height )
+    {
+        RECT r;
+        GetClientRect(myHandle,&r);
+        int xmax = width - r.right;
+        if( xmax < 0 )
+            xmax = 0;
+        int ymax = height - r.bottom;
+        if( ymax < 0 )
+            ymax = 0;
+        SCROLLINFO si;
+        si.cbSize = sizeof(si);
+        si.fMask  = SIF_RANGE | SIF_PAGE;
+        si.nMin   = 0;
+        si.nMax   = ymax;
+        si.nPage  = ymax/10;
+        SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
+        si.nMax   = xmax;
+        si.nPage  = xmax/10;
+        SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
+    }
 
     /// No messages are handled by the base class
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -408,7 +434,7 @@ public:
 
     virtual void show()
     {
-        std::cout << "show " << myText <<" "<< myHandle <<" "<< myChild.size() << "\n"; ;
+        //std::cout << "show " << myText <<" "<< myHandle <<" "<< myChild.size() << "\n"; ;
         ShowWindow(myHandle, SW_SHOWDEFAULT);
         // display any children
         for( auto w : myChild )
