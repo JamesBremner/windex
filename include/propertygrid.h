@@ -7,16 +7,16 @@ class property
 {
 public:
     property(
-        gui& parent,
+        gui* parent,
         const std::string& name,
         const std::string& value )
         : myName( name )
         , myValue( value )
         , W( windex::get())
-        , myLabel( W.make<label>(parent) )
-        , myEditbox( W.make<editbox>(parent) )
-        , myCombobox( W.make<choice>(parent) )
-        , myCheckbox( W.make<checkbox>(parent) )
+        , myLabel( W.make<label>(*parent) )
+        , myEditbox( W.make<editbox>(*parent) )
+        , myCombobox( W.make<choice>(*parent) )
+        , myCheckbox( W.make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::string )
     {
@@ -24,16 +24,16 @@ public:
         myEditbox.text( myValue );
     }
     property(
-        gui& parent,
+        gui* parent,
         const std::string& name,
         bool value )
         : myName( name )
         , myValue( std::to_string((int)value ))
         , W( windex::get())
-        , myLabel( W.make<label>(parent) )
-        , myEditbox( W.make<editbox>(parent) )
-        , myCombobox( W.make<choice>(parent) )
-        , myCheckbox( W.make<checkbox>(parent) )
+        , myLabel( W.make<label>(*parent) )
+        , myEditbox( W.make<editbox>(*parent) )
+        , myCombobox( W.make<choice>(*parent) )
+        , myCheckbox( W.make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::check )
     {
@@ -42,16 +42,16 @@ public:
         myCheckbox.text("");
     }
     property(
-        gui& parent,
+        gui* parent,
         const std::string& name,
         const std::vector< std::string >& value )
         : myName( name )
         , myValue( "" )
         , W( windex::get())
-        , myLabel( W.make<label>(parent) )
-        , myEditbox( W.make<editbox>(parent) )
-        , myCombobox( W.make<choice>(parent) )
-        , myCheckbox( W.make<checkbox>(parent) )
+        , myLabel( W.make<label>(*parent) )
+        , myEditbox( W.make<editbox>(*parent) )
+        , myCombobox( W.make<choice>(*parent) )
+        , myCheckbox( W.make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::choice )
     {
@@ -62,14 +62,14 @@ public:
         }
     }
     property(
-        gui& parent,
+        gui* parent,
         const std::string& name )
         : myName( name )
         , W( windex::get())
-        , myLabel( W.make<label>(parent) )
-        , myEditbox( W.make<editbox>(parent) )
-        , myCombobox( W.make<choice>(parent) )
-        , myCheckbox( W.make<checkbox>(parent) )
+        , myLabel( W.make<label>(*parent) )
+        , myEditbox( W.make<editbox>(*parent) )
+        , myCombobox( W.make<choice>(*parent) )
+        , myCheckbox( W.make<checkbox>(*parent) )
         , myType( eType::category )
     {
         myLabel.text( myName );
@@ -189,60 +189,53 @@ private:
     myType;
 };
 /// A grid of properties
-class propertyGrid
+class propertyGrid : public gui
 {
 public:
-    propertyGrid( gui& parent )
-        : myParent( parent )
+    propertyGrid( gui* parent )
+        : gui( parent )
         , myHeight( 30 )
         , myWidth( 300 )
         , myLabelWidth( 100 )
-        , myX( 10 )
-        , myY( 10 )
         , myBGColor( 0xc8c8c8)
     {
-
+        scroll();
     }
     void string(
         const std::string& name,
         const std::string& value )
     {
-        property P( myParent, name, value );
+        property P( this, name, value );
         CommonConstruction( P );
     }
     void choice(
         const std::string& name,
         const std::vector< std::string >& choice )
     {
-        property P( myParent, name, choice );
+        property P( this, name, choice );
         CommonConstruction( P );
     }
     void check(
         const std::string& name,
         bool f )
     {
-        property P( myParent, name, f );
+        property P( this, name, f );
         CommonConstruction( P );
     }
     void category(
         const std::string& name )
     {
-        property P( myParent, name );
+        property P( this, name );
         CommonConstruction( P );
     }
     void move( const std::vector<int>& r )
     {
-        myX = r[0];
-        myY = r[1];
+        gui::move( r );
         myWidth = r[2];
     }
     void labelWidth( int w )
     {
         myLabelWidth = w;
-    }
-    void bgcolor( int color )
-    {
-        myBGColor = color;
     }
 
     /// force every property to redraw its label
@@ -287,11 +280,9 @@ public:
     }
 private:
     std::vector< property > myProperty;
-    gui& myParent;
     int myHeight;               // height of a single property
     int myWidth;
     int myLabelWidth;
-    int myX, myY;
     int myBGColor;
 
     void CommonConstruction( property& P )
@@ -300,7 +291,7 @@ private:
         P.bgcolor( myBGColor );
         P.move(
         {
-            myX, myY+(int)myProperty.size() * myHeight,
+            0, (int)myProperty.size() * myHeight,
             myWidth, myHeight
         } );
         myProperty.push_back( P );
