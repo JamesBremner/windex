@@ -32,15 +32,15 @@ public:
     eventhandler()
     {
         // initialize functions with no-ops
-        click([] {});
+        click([] {return false;});
         draw([](PAINTSTRUCT& ps) {});
         resize([](int w, int h) {});
         scrollH([](int c) {});
         scrollV([](int c) {});
     }
-    void onLeftdown()
+    bool onLeftdown()
     {
-        myClickFunction();
+        return myClickFunction();
     }
     void onDraw( PAINTSTRUCT& ps )
     {
@@ -59,7 +59,7 @@ public:
         myScrollVFunction( code );
     }
     // register event handlers
-    void click( std::function<void(void)> f )
+    void click( std::function<bool(void)> f )
     {
         myClickFunction = f;
     }
@@ -80,7 +80,7 @@ public:
         myScrollVFunction = f;
     }
 private:
-    std::function<void(void)> myClickFunction;
+    std::function<bool(void)> myClickFunction;
     std::function<void(PAINTSTRUCT& ps)> myDrawFunction;
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
@@ -191,14 +191,14 @@ public:
         const char* window_class = "windex",
         unsigned long style = WS_CHILD,
         unsigned long exstyle = 0 )
-        : myParent( parent->handle() )
+        : myParent( parent )
         , myfApp( false )
         , myfModal( false )
     {
         myID = NewID();
         Create( parent->handle(), window_class, style, exstyle, myID );
         parent->child( this );
-        text("Property Grid");
+        text("???"+std::to_string(myID));
     }
     virtual ~gui()
     {
@@ -247,7 +247,7 @@ public:
         myText = text;
         SetWindowText( myHandle, text.c_str() );
     }
-    std::string text()
+    std::string text() const
     {
         return myText;
     }
@@ -351,7 +351,6 @@ public:
         SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
     }
 
-    /// No messages are handled by the base class
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
@@ -401,8 +400,17 @@ public:
             return true;
 
             case WM_LBUTTONDOWN:
-                myEvents.onLeftdown();
-                return true;
+                if( myEvents.onLeftdown() )
+                    return true;
+                // the event was not completely handled, maybe the parent can look after it
+                if( myParent )
+                {
+                    if( myParent->WindowMessageHandler(
+                                myParent->handle(),
+                                uMsg, wParam, lParam ))
+                        return true;
+                }
+                break;
 
             case WM_SIZE:
                 if( wParam == SIZE_RESTORED)
@@ -419,6 +427,7 @@ public:
                 myEvents.onScrollV( LOWORD (wParam) );
                 return true;
             }
+
         }
         else
         {
@@ -432,13 +441,16 @@ public:
         return false;
     }
 
-    virtual void show()
+    virtual void show( bool f = true )
     {
+        int cmd = SW_SHOWDEFAULT;
+        if( ! f )
+            cmd = SW_HIDE;
         //std::cout << "show " << myText <<" "<< myHandle <<" "<< myChild.size() << "\n"; ;
-        ShowWindow(myHandle, SW_SHOWDEFAULT);
+        ShowWindow(myHandle, cmd);
         // display any children
         for( auto w : myChild )
-            w->show();
+            w->show( f );
     }
 
     void showModal()
@@ -516,7 +528,7 @@ public:
 
 protected:
     HWND myHandle;
-    HWND myParent;
+    gui* myParent;
     eventhandler myEvents;
     int myBGColor;
     HBRUSH myBGBrush;
@@ -668,7 +680,7 @@ public:
     {
         myColCount = cols;
     }
-    void show()
+    void show( bool f = true )
     {
         ShowWindow(myHandle,  SW_SHOWDEFAULT);
 
@@ -750,7 +762,7 @@ public:
     bool isChecked()
     {
         return ( IsDlgButtonChecked(
-                     myParent,
+                     myParent->handle(),
                      myID ) == BST_CHECKED );
     }
 };
@@ -768,9 +780,15 @@ code needs handle click event, then it must have the following in its handler
 */
 class checkbox : public gui
 {
+    enum class eType
+    {
+        check,
+        plus
+    } myType;
 public:
     checkbox( gui* parent )
         : gui( parent )
+        , myType( eType::check )
         , myValue( false )
     {
         // toggle the boolean value when clicked
@@ -778,7 +796,17 @@ public:
         {
             myValue = ! myValue;
             update();
+            //myClickFunction();
+            return false;
         });
+    }
+    /// set type to plus, useful to indicate expanded or collapsed property categories
+    void plus( bool f = true )
+    {
+        if( f )
+            myType = eType::plus;
+        else
+            myType = eType::check;
     }
     void check( bool f = true )
     {
@@ -805,16 +833,31 @@ public:
             0);
         shapes S( ps.hdc );
         S.rectangle( { 0,0, cbg, cbg} );
-        if( myValue )
+        S.penThick( 3 );
+        switch( myType )
         {
-            S.penThick( 3 );
-            S.line( {2,cbg/2,cbg/2-2,cbg-2} );
-            S.line( {cbg/2,cbg-4,cbg-4,4} );
-            S.penThick( 1 );
+        case eType::check:
+            if( myValue )
+            {
+                S.line( {2,cbg/2,cbg/2-2,cbg-2} );
+                S.line( {cbg/2,cbg-4,cbg-4,4} );
+            }
+            break;
+        case eType::plus:
+            S.line( { 2,cbg/2, cbg-2,cbg/2} );
+            if( myValue )
+                S.line( { cbg/2,2,cbg/2,cbg-2} );
+            break;
         }
+        S.penThick( 1 );
+    }
+    void clickFunction( std::function<void(void)> f )
+    {
+        myClickFunction = f;
     }
 private:
     bool myValue;
+    std::function<void(void)> myClickFunction;
 };
 
 /// A popup with a message
@@ -865,7 +908,7 @@ public:
     void text( const std::string& t )
     {
         SetDlgItemText(
-            myParent,
+            myParent->handle(),
             myID,
             t.c_str() );
     }
@@ -876,7 +919,7 @@ public:
         char buf[1000];
         buf[0] = '\0';
         GetDlgItemText(
-            myParent,
+            myParent->handle(),
             myID,
             buf,
             999

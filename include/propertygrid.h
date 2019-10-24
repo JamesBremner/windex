@@ -2,6 +2,8 @@
 #include "wex.h"
 namespace wex
 {
+class propertyGrid;
+
 /// A name value pair
 class property
 {
@@ -17,6 +19,7 @@ public:
         , myEditbox( W.make<editbox>(*parent) )
         , myCombobox( W.make<choice>(*parent) )
         , myCheckbox( W.make<checkbox>(*parent) )
+        , myCategoryExpanded( W.make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::string )
     {
@@ -34,6 +37,7 @@ public:
         , myEditbox( W.make<editbox>(*parent) )
         , myCombobox( W.make<choice>(*parent) )
         , myCheckbox( W.make<checkbox>(*parent) )
+        , myCategoryExpanded( W.make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::check )
     {
@@ -52,6 +56,7 @@ public:
         , myEditbox( W.make<editbox>(*parent) )
         , myCombobox( W.make<choice>(*parent) )
         , myCheckbox( W.make<checkbox>(*parent) )
+        , myCategoryExpanded( W.make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::choice )
     {
@@ -61,6 +66,7 @@ public:
             myCombobox.add( t );
         }
     }
+    /// construct a category
     property(
         gui* parent,
         const std::string& name )
@@ -70,9 +76,12 @@ public:
         , myEditbox( W.make<editbox>(*parent) )
         , myCombobox( W.make<choice>(*parent) )
         , myCheckbox( W.make<checkbox>(*parent) )
+        , myCategoryExpanded( W.make<checkbox>(*parent) )
         , myType( eType::category )
     {
-        myLabel.text( myName );
+        myCategoryExpanded.text( myName );
+        myCategoryExpanded.plus();
+        myCategoryExpanded.check();
     }
     void move( const std::vector<int>& r )
     {
@@ -86,6 +95,7 @@ public:
         switch( myType )
         {
         case eType::string:
+            myCategoryExpanded.move({0,0,0,0});
             myEditbox.move( re );
             break;
         case eType::choice:
@@ -96,7 +106,8 @@ public:
             myCheckbox.move( re );
             break;
         case eType::category:
-            myLabel.move( r );
+            myLabel.move({0,0,0,0});        // keep unused label out of the way
+            myCategoryExpanded.move( r );
             break;
         }
     }
@@ -107,6 +118,26 @@ public:
     void bgcolor( int color )
     {
         myLabel.bgcolor( color );
+    }
+    void show( bool f = true )
+    {
+        myLabel.show( f );
+        switch( myType )
+        {
+        case eType::string:
+            myEditbox.show( f );
+            break;
+        case eType::choice:
+            myCombobox.show( f );
+            break;
+        case eType::check:
+            myCheckbox.show( f );
+            break;
+        case eType::category:
+            myLabel.show( false );        // keep unused label out of the way
+            myCategoryExpanded.show( f );
+            break;
+        }
     }
     /** Update ( redraw ) property child widgets
 
@@ -119,9 +150,9 @@ public:
     {
         myLabel.update();
         myCheckbox.update();
+        myCategoryExpanded.update();
     }
 
-    /// force label to redraw
     const std::string& name() const
     {
         return myName;
@@ -170,6 +201,21 @@ public:
     {
         return myValue;
     }
+
+    bool isCategory() const
+    {
+        return myType == eType::category;
+    }
+    bool isExpanded() const
+    {
+        if( ! isCategory() )
+            return false;
+        return myCategoryExpanded.isChecked();
+    }
+    void expand( bool f )
+    {
+        myCategoryExpanded.check( f );
+    }
 private:
     std::string myName;
     std::string myValue;
@@ -178,6 +224,7 @@ private:
     wex::editbox& myEditbox;
     wex::choice& myCombobox;
     wex::checkbox& myCheckbox;
+    wex::checkbox& myCategoryExpanded;
     int myLabelWidth;
     enum class eType
     {
@@ -194,12 +241,19 @@ class propertyGrid : public gui
 public:
     propertyGrid( gui* parent )
         : gui( parent )
-        , myHeight( 30 )
+        , myHeight( 25 )
         , myWidth( 300 )
         , myLabelWidth( 100 )
         , myBGColor( 0xc8c8c8)
     {
+        text("PG");
         scroll();
+
+        events().click([this]
+        {
+            visible();
+            return true;
+        });
     }
     void string(
         const std::string& name,
@@ -227,6 +281,21 @@ public:
     {
         property P( this, name );
         CommonConstruction( P );
+    }
+    void expand(
+        const std::string name,
+        bool fexpand = true )
+    {
+        for( auto& p : myProperty )
+        {
+            if( p.name() == name &&
+                    p.isCategory() )
+            {
+               p.expand( fexpand );
+               visible();
+               return;
+            }
+        }
     }
     void move( const std::vector<int>& r )
     {
@@ -279,6 +348,14 @@ public:
         }
     }
 
+    int propHeight() const
+    {
+        return myHeight;
+    }
+    int width() const
+    {
+        return myWidth;
+    }
 private:
     std::vector< property > myProperty;
     int myHeight;               // height of a single property
@@ -290,16 +367,53 @@ private:
     {
         P.labelWidth( myLabelWidth );
         P.bgcolor( myBGColor );
-        P.move(
-        {
-            0, (int)myProperty.size() * myHeight,
-            myWidth, myHeight
-        } );
+//        P.move(
+//        {
+//            0, (int)myProperty.size() * myHeight,
+//            myWidth, myHeight
+//        } );
         myProperty.push_back( P );
 
         scrollRange(
             myWidth,
             ((int)myProperty.size()+1) * myHeight);
+
+        visible();
+    }
+    /** Show properties when category is expanded or collapsed
+    */
+    void visible(  )
+    {
+        bool expanded = true;
+        int index = 0;
+        for( auto& P : myProperty)
+        {
+            if( P.isCategory() )
+            {
+                //std::cout << "cat " << P.name()  << " at " << index << "\n";
+                P.move( { 0, index * myHeight, myWidth, 2 * myHeight } );     // category always visible
+                P.show();
+                index += 2;             // display takes two rows
+                expanded = P.isExpanded();       // control visibility of contained properties
+            }
+            else if( expanded )
+            {
+                //std::cout << "show " << P.name() <<" at "<< index << "\n";
+                P.move( { 0, index * myHeight, myWidth, myHeight } );     // property is visible
+                P.show();
+                index++;                // displays in one row
+            }
+            else
+            {
+                //std::cout << "hide " << P.name() << "\n";
+                P.move( { 0,0,0,0 });    // invisible property
+                P.show( false );
+            }
+        }
+        scrollRange(
+            myWidth,
+            index * myHeight);
+        update();
     }
 };
 }

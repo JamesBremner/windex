@@ -25,6 +25,7 @@ public:
 
             myfModal = false;
             DestroyWindow(myHandle);
+            return true;
         });
     }
     void add(
