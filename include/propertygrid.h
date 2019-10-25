@@ -384,6 +384,14 @@ private:
     */
     void visible(  )
     {
+        for( auto& P : myProperty)
+            P.show( false );
+
+//        RedrawWindow(
+//                     myHandle,
+//                     NULL, NULL,
+//                     RDW_ERASE | RDW_ERASENOW | RDW_ALLCHILDREN );
+
         bool expanded = true;
         int index = 0;
         for( auto& P : myProperty)

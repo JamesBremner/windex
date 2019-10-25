@@ -32,7 +32,7 @@ class eventhandler
 {
 public:
     eventhandler()
-    : myfClickPropogate( false )
+        : myfClickPropogate( false )
     {
         // initialize functions with no-ops
         click([] {});
@@ -62,19 +62,25 @@ public:
     {
         myScrollVFunction( code );
     }
-    // register event handlers
-    void click( std::function<void(void)> f )
+    /////////////////////////// register event handlers /////////////////////
+
+    /** register click event handler
+        @param[in] f the function to call when user clicks on gui in order to process event
+        @param[in] propogate specify that event should propogate to parent window after processing, default is false
+    */
+    void click(
+        std::function<void(void)> f,
+        bool propogate = false )
     {
         myClickFunction = f;
+        myfClickPropogate = propogate;
     }
-    /** Specify if click event should be propogated to parent window after processing
-        By default, processing of an event ends when the event handler returns
-        If this is called then after the event is processed, it is propogated on to the parent window.
-    */
+    /// specify that event should propogate to parent window after currently registered click event handler runs
     void clickPropogate( bool f = true)
     {
         myfClickPropogate = f;
     }
+
     void draw( std::function<void(PAINTSTRUCT& ps)> f )
     {
         myDrawFunction = f;
@@ -386,11 +392,11 @@ public:
             {
 //                if( ! myParent )
 //                {
-                    RECT rc;
-                    GetWindowRect(hwnd, &rc);
-                    FillRect((HDC)wParam, &rc, myBGBrush );
-                    return true;
- //               }
+                RECT rc;
+                GetWindowRect(hwnd, &rc);
+                FillRect((HDC)wParam, &rc, myBGBrush );
+                return true;
+//               }
 //                RECT rc;
 //                GetWindowRect(hwnd, &rc);
 //                GetClientRect(hwnd,&rc );
@@ -595,6 +601,12 @@ protected:
         }
         myEvents.onDraw( ps );
     }
+
+    /** Create new, unique ID for gui element
+
+    The first ID will be 1, and is assumed to be the application window
+    which causes the application to quit when destroyed
+    */
     int NewID()
     {
         static int lastID = 0;
