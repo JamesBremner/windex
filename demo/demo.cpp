@@ -7,32 +7,29 @@ using namespace wex;
 
 void helloworld()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
-
     // construct top level window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.move({ 50,50,400,400});
     form.text("Label and Editbox demo");
 
     // display labels
-    label& lbA = W.make<label>( form );
+    label& lbA = wex::make<label>( form );
     lbA.move( {20, 20, 100, 30 } );
     lbA.text("A:");
-    label& lbB = W.make<label>( form );
+    label& lbB = wex::make<label>( form );
     lbB.move( {20, 60, 100, 30 } );
     lbB.text("B:");
 
     // display textboxes
-    editbox& edit1 = W.make<editbox>( form );
+    editbox& edit1 = wex::make<editbox>( form );
     edit1.move( {80, 20, 100, 30 } );
     edit1.text( "type value");
-    editbox& edit2 = W.make<editbox>( form );
+    editbox& edit2 = wex::make<editbox>( form );
     edit2.move( {80, 60, 100, 30 } );
     edit2.text( "type value");
 
     // display a button
-    button& btn = W.make<button>( form );
+    button& btn = wex::make<button>( form );
     btn.move( {20, 100, 150, 30 } );
     btn.text( "Show values entered" );
 
@@ -54,22 +51,19 @@ void helloworld()
 
 void choiceDemo()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
-
     // construct top level  window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex combobox");
 
     // display combobox
-    choice& cb = W.make<choice>( form );
+    choice& cb = wex::make<choice>( form );
     cb.move({20, 50, 150, 130 });
     cb.add("Alpha");
     cb.add("Beta");
 
     // display a button
-    button& btn = W.make<button>( form );
+    button& btn = wex::make<button>( form );
     btn.move( {20, 150, 150, 30 } );
     btn.text( "Show values selected" );
     btn.events().click([&]
@@ -84,11 +78,9 @@ void choiceDemo()
 
 void drawDemo()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
 
     // construct top level  window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex draw demo");
 
@@ -106,16 +98,13 @@ void drawDemo()
 
 void PGDemo()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
-
     // construct top level window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex property grid");
 
     // construct propertygrid
-    propertyGrid& pg = W.make<propertyGrid>( form );
+    propertyGrid& pg = wex::make<propertyGrid>( form );
     pg.move( { 10,10, 200, 200});
     pg.labelWidth( 50 );
     pg.bgcolor( 0xFFA0A0 );
@@ -150,7 +139,7 @@ void PGDemo()
     });
 
     // display a button
-    button& btn = W.make<button>( form );
+    button& btn = wex::make<button>( form );
     btn.move( {20, 250, 150, 30 } );
     btn.text( "Show values entered" );
 
@@ -177,11 +166,8 @@ void PGDemo()
 
 void InputboxDemo()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
-
     // construct top level window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex inputbox");
 
@@ -205,40 +191,37 @@ void InputboxDemo()
 }
 void RBDemo()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
-
     // construct top level window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex radiobutton");
 
     // first group of radiobuttons
-    radiobutton& rb1 = W.make<radiobutton>(form);
+    radiobutton& rb1 = wex::make<radiobutton>(form);
     rb1.first();
     rb1.move( {20,20,100,30} );
     rb1.text("Alpha");
-    radiobutton& rb2 = W.make<radiobutton>(form);
+    radiobutton& rb2 = wex::make<radiobutton>(form);
     rb2.move( {20,60,100,30} );
     rb2.text("Beta");
-    radiobutton& rb3 = W.make<radiobutton>(form);
+    radiobutton& rb3 = wex::make<radiobutton>(form);
     rb3.move( {20,100,100,30} );
     rb3.text("Gamma");
 
     // second group of radio buttons
-    radiobutton& rb4 = W.make<radiobutton>(form);
+    radiobutton& rb4 = wex::make<radiobutton>(form);
     rb4.first();
     rb4.move( {150,20,100,30} );
     rb4.text("X");
-    radiobutton& rb5 = W.make<radiobutton>(form);
+    radiobutton& rb5 = wex::make<radiobutton>(form);
     rb5.move( {150,60,100,30} );
     rb5.text("Y");
-    radiobutton& rb6 = W.make<radiobutton>(form);
+    radiobutton& rb6 = wex::make<radiobutton>(form);
     rb6.move( {150,100,100,30} );
     rb6.text("Z");
 
     // display a button
-    button& btn = W.make<button>( form );
+    button& btn = wex::make<button>( form );
     btn.move( {20, 150, 150, 30 } );
     btn.text( "Show values entered" );
 
@@ -268,27 +251,24 @@ void RBDemo()
 
 void CBDemo()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
-
     // construct top level window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex checkbox");
 
-    checkbox& rb1 = W.make<checkbox>(form);
+    checkbox& rb1 = wex::make<checkbox>(form);
     rb1.move( {20,20,100,20} );
     rb1.text("Alpha");
-    checkbox& rb2 = W.make<checkbox>(form);
+    checkbox& rb2 = wex::make<checkbox>(form);
     rb2.plus();
     rb2.move( {20,60,100,30} );
     rb2.text("Beta");
-    checkbox& rb3 = W.make<checkbox>(form);
+    checkbox& rb3 = wex::make<checkbox>(form);
     rb3.move( {20,100,100,30} );
     rb3.text("Gamma");
 
     // display a button
-    button& btn = W.make<button>( form );
+    button& btn = wex::make<button>( form );
     btn.move( {20, 150, 150, 30 } );
     btn.text( "Show values entered" );
 
@@ -316,24 +296,21 @@ void CBDemo()
 
 void PanelDemo()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
-
     // construct top level window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.move({ 50,50,400,400});
     form.text("Panel demo");
 
     // construct panel
-    groupbox& pnl = W.make<groupbox>( form );
+    groupbox& pnl = wex::make<groupbox>( form );
     pnl.move({ 100,100,200,200} );
     pnl.text("test");
 
     // display labels
-    label& lbA = W.make<label>( pnl );
+    label& lbA = wex::make<label>( pnl );
     lbA.move( {20, 20, 50, 30 } );
     lbA.text("A:");
-    label& lbB = W.make<label>( pnl );
+    label& lbB = wex::make<label>( pnl );
     lbB.move( {20, 60, 50, 30 } );
     lbB.text("B:");
 
@@ -342,21 +319,18 @@ void PanelDemo()
 
 void ScrollDemo()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
-
     // construct top level window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.scroll();
     form.move({ 50,50,400,400});
     form.scrollRange(600,600);
     form.text("Scroll demo");
 
     // display labels
-    label& lbA = W.make<label>( form );
+    label& lbA = wex::make<label>( form );
     lbA.move( {20, 20, 500, 30 } );
     lbA.text("AXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    label& lbB = W.make<label>( form );
+    label& lbB = wex::make<label>( form );
     lbB.move( {20, 460, 500, 30 } );
     lbB.text("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");;\
 
@@ -365,42 +339,40 @@ void ScrollDemo()
 
 int main()
 {
-    // reference the windex gui framework
-    windex& W = windex::get();
 
     // construct top level application window
-    gui& form = W.MakeWindow();
+    gui& form = wex::topWindow();
     form.move({ 50,50,400,500});
     form.text("Windex demos");
 
     // construct layout to arrange buttons in a grid
-    layout& l = W.make<layout>( form );
+    layout& l = wex::make<layout>( form );
     l.move( {20,20,400,400} );
     l.grid( 2 );
 
     // display a button
-    button& btnhello = W.make<button>( l );
+    button& btnhello = wex::make<button>( l );
     btnhello.move( { 150, 30 }, false );
     btnhello.text( "Label and Editbox" );
     btnhello.events().click([]
     {
         helloworld();
     });
-    button& btnchoice = W.make<button>( l );
+    button& btnchoice = wex::make<button>( l );
     btnchoice.move(  { 150, 30 }, false );
     btnchoice.text( "Choice" );
     btnchoice.events().click([]
     {
         choiceDemo();
     });
-    button& btnpg = W.make<button>( l );
+    button& btnpg = wex::make<button>( l );
     btnpg.move(  { 150, 30 }, false );
     btnpg.text( "Property Grid" );
     btnpg.events().click([]
     {
         PGDemo();
     });
-    button& btnib = W.make<button>( l );
+    button& btnib = wex::make<button>( l );
     btnib.move(  { 150, 30 }, false );
     btnib.text( "Inputbox" );
     btnib.events().click([]
@@ -408,7 +380,7 @@ int main()
         InputboxDemo();
     });
 
-    button& btnfb = W.make<button>( l );
+    button& btnfb = wex::make<button>( l );
     btnfb.move(  { 150, 30 }, false );
     btnfb.text( "Filebox" );
     btnfb.events().click([&]
@@ -418,7 +390,7 @@ int main()
                 fb.path() );
     });
 
-    button& btnrb = W.make<button>( l );
+    button& btnrb = wex::make<button>( l );
     btnrb.move(  { 150, 30 }, false );
     btnrb.text( "Radiobutton" );
     btnrb.events().click([&]
@@ -426,7 +398,7 @@ int main()
         RBDemo();
     });
 
-    button& btncb = W.make<button>( l );
+    button& btncb = wex::make<button>( l );
     btncb.move( {20, 330, 150, 30 } );
     btncb.text( "Checkbox" );
     btncb.events().click([&]
@@ -434,7 +406,7 @@ int main()
         CBDemo();
     });
 
-    button& btnpanel = W.make<button>( l );
+    button& btnpanel =wex::make<button>( l );
     btnpanel.move( {20, 380, 150, 30 } );
     btnpanel.text( "Panel" );
     btnpanel.events().click([&]
@@ -442,7 +414,7 @@ int main()
         PanelDemo();
     });
 
-    button& btndraw = W.make<button>( l );
+    button& btndraw = wex::make<button>( l );
     btndraw.move(  { 150, 30 }, false );
     btndraw.text( "Draw" );
     btndraw.events().click([&]
@@ -450,7 +422,7 @@ int main()
         drawDemo();
     });
 
-    button& btnscroll = W.make<button>( l );
+    button& btnscroll = wex::make<button>( l );
     btnscroll.move(  { 150, 30 }, false );
     btnscroll.text( "Scroll" );
     btnscroll.events().click([&]
@@ -466,7 +438,7 @@ int main()
     //Blocks execution for dispatching user
     //input until the form is closed.
 
-    W.exec();
+    wex::run();
 
     return 0;
 }

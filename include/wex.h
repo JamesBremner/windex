@@ -15,7 +15,7 @@ class widget;
 typedef std::map< HWND, gui* > mgui_t;
 typedef std::vector< gui* > children_t;
 
-void MessageLoop()
+void run()
 {
     MSG msg = { };
     while (GetMessage(&msg, NULL, 0, 0))
@@ -1027,12 +1027,6 @@ public:
         return *w;
     }
 
-    /// poll the windows message queue
-    void exec()
-    {
-        MessageLoop();
-    }
-
     /// get map of existing gui elements
     mgui_t * mgui()
     {
@@ -1137,6 +1131,21 @@ public:
 private:
     std::string myfname;
 };
+
+/// Construct a top level window ( first call constructs application window )
+gui & topWindow()
+{
+    return windex::get().MakeWindow();
+}
+
+/** Construct widget
+        @param[in] parent reference to parent window or widget
+*/
+template <class T, class W>
+T& make( W& parent )
+{
+    return windex::get().make<T>(parent);
+}
 
 }
 

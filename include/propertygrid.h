@@ -15,11 +15,11 @@ public:
         : myName( name )
         , myValue( value )
         , W( windex::get())
-        , myLabel( W.make<label>(*parent) )
-        , myEditbox( W.make<editbox>(*parent) )
-        , myCombobox( W.make<choice>(*parent) )
-        , myCheckbox( W.make<checkbox>(*parent) )
-        , myCategoryExpanded( W.make<checkbox>(*parent) )
+        , myLabel( wex::make<label>(*parent) )
+        , myEditbox( wex::make<editbox>(*parent) )
+        , myCombobox( wex::make<choice>(*parent) )
+        , myCheckbox( wex::make<checkbox>(*parent) )
+        , myCategoryExpanded( wex::make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::string )
     {
@@ -33,11 +33,11 @@ public:
         : myName( name )
         , myValue( std::to_string((int)value ))
         , W( windex::get())
-        , myLabel( W.make<label>(*parent) )
-        , myEditbox( W.make<editbox>(*parent) )
-        , myCombobox( W.make<choice>(*parent) )
-        , myCheckbox( W.make<checkbox>(*parent) )
-        , myCategoryExpanded( W.make<checkbox>(*parent) )
+        , myLabel( wex::make<label>(*parent) )
+        , myEditbox( wex::make<editbox>(*parent) )
+        , myCombobox( wex::make<choice>(*parent) )
+        , myCheckbox( wex::make<checkbox>(*parent) )
+        , myCategoryExpanded( wex::make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::check )
     {
@@ -52,11 +52,11 @@ public:
         : myName( name )
         , myValue( "" )
         , W( windex::get())
-        , myLabel( W.make<label>(*parent) )
-        , myEditbox( W.make<editbox>(*parent) )
-        , myCombobox( W.make<choice>(*parent) )
-        , myCheckbox( W.make<checkbox>(*parent) )
-        , myCategoryExpanded( W.make<checkbox>(*parent) )
+        , myLabel( wex::make<label>(*parent) )
+        , myEditbox( wex::make<editbox>(*parent) )
+        , myCombobox( wex::make<choice>(*parent) )
+        , myCheckbox( wex::make<checkbox>(*parent) )
+        , myCategoryExpanded( wex::make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::choice )
     {
@@ -72,11 +72,11 @@ public:
         const std::string& name )
         : myName( name )
         , W( windex::get())
-        , myLabel( W.make<label>(*parent) )
-        , myEditbox( W.make<editbox>(*parent) )
-        , myCombobox( W.make<choice>(*parent) )
-        , myCheckbox( W.make<checkbox>(*parent) )
-        , myCategoryExpanded( W.make<checkbox>(*parent) )
+        , myLabel( wex::make<label>(*parent) )
+        , myEditbox( wex::make<editbox>(*parent) )
+        , myCombobox( wex::make<choice>(*parent) )
+        , myCheckbox( wex::make<checkbox>(*parent) )
+        , myCategoryExpanded( wex::make<checkbox>(*parent) )
         , myType( eType::category )
     {
         myCategoryExpanded.text( myName );
@@ -384,16 +384,13 @@ private:
     */
     void visible(  )
     {
+        // hide all the properties
         for( auto& P : myProperty)
             P.show( false );
 
-//        RedrawWindow(
-//                     myHandle,
-//                     NULL, NULL,
-//                     RDW_ERASE | RDW_ERASENOW | RDW_ALLCHILDREN );
-
-        bool expanded = true;
-        int index = 0;
+        // show properties in expanded categories
+        bool expanded = true;       /// true if current category is expanded
+        int index = 0;              /// number of property heights displayed so far
         for( auto& P : myProperty)
         {
             if( P.isCategory() )
