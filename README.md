@@ -15,16 +15,13 @@ int main()
 {
     using namespace wex;
 
-    // reference the windex gui framework
-    windex& W = windex::get();
-
     // construct top level application window
-    window& form = W.MakeWindow();
+    window& form = wex::topWindow();
     form.move({ 50,50,400,400});
     form.text("Hello world from windex");
 
     // display labels
-    label& lbA = W.make<label>( form );
+    label& lbA =wex::make<label>( form );
     lbA.move( {20, 20, 100, 30 } );
     lbA.text("A:");
     label& lbB = W.make<label>( form );
@@ -32,15 +29,15 @@ int main()
     lbB.text("B:");
 
     // display textboxes
-    editbox& edit1 = W.make<editbox>( form );
+    editbox& edit1 = wex::make<editbox>( form );
     edit1.move( {80, 20, 100, 30 } );
     edit1.text( "type value");
-    editbox& edit2 = W.make<editbox>( form );
+    editbox& edit2 = wex::make<editbox>( form );
     edit2.move( {80, 60, 100, 30 } );
     edit2.text( "type value");
 
     // display a button
-    button& btn = W.make<button>( form );
+    button& btn = wex::make<button>( form );
     btn.move( {20, 100, 150, 30 } );
     btn.text( "Show values entered" );
 
@@ -60,10 +57,7 @@ int main()
     form.show();
 
     //Pass the control of the application to the windows message queue.
-    //Blocks execution for dispatching user
-    //input until the form is closed.
-
-    W.exec();
+    wex::run()
 
     return 0;
 }
