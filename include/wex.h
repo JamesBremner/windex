@@ -181,6 +181,17 @@ public:
             v[0],
             v[1] );
     }
+    void text(
+        const std::string& t,
+        RECT& r )
+    {
+        DrawText(
+            myHDC,
+            t.c_str(),
+            -1,
+            &r,
+            DT_NOCLIP);
+    }
 private:
     HDC myHDC;
     int myPenThick;
