@@ -110,8 +110,8 @@ private:
 class shapes
 {
 public:
-    shapes( HDC hdc )
-        : myHDC( hdc )
+    shapes( PAINTSTRUCT& ps )
+        : myHDC( ps.hdc )
         , myPenThick( 1 )
     {
         hPen = CreatePen(
@@ -844,7 +844,7 @@ public:
             -1,
             &r,
             0);
-        shapes S( ps.hdc );
+        shapes S( ps );
         S.rectangle( { 0,0, cbg, cbg} );
         S.penThick( 3 );
         switch( myType )

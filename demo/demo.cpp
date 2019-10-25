@@ -86,7 +86,7 @@ void drawDemo()
 
     form.events().draw([]( PAINTSTRUCT& ps )
     {
-        shapes S( ps.hdc );
+        shapes S( ps );
         S.color( 255, 0, 0 );
         S.line( { 10,10, 50,50 } );
         S.color( 255,255,255 );
