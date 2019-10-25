@@ -25,14 +25,17 @@ void MessageLoop()
     }
 }
 
-/// Functions to be called when event occurs
+/** Functions to be called when event occurs
+
+*/
 class eventhandler
 {
 public:
     eventhandler()
+    : myfClickPropogate( false )
     {
         // initialize functions with no-ops
-        click([] {return false;});
+        click([] {});
         draw([](PAINTSTRUCT& ps) {});
         resize([](int w, int h) {});
         scrollH([](int c) {});
@@ -40,7 +43,8 @@ public:
     }
     bool onLeftdown()
     {
-        return myClickFunction();
+        myClickFunction();
+        return ! myfClickPropogate;
     }
     void onDraw( PAINTSTRUCT& ps )
     {
@@ -59,9 +63,17 @@ public:
         myScrollVFunction( code );
     }
     // register event handlers
-    void click( std::function<bool(void)> f )
+    void click( std::function<void(void)> f )
     {
         myClickFunction = f;
+    }
+    /** Specify if click event should be propogated to parent window after processing
+        By default, processing of an event ends when the event handler returns
+        If this is called then after the event is processed, it is propogated on to the parent window.
+    */
+    void clickPropogate( bool f = true)
+    {
+        myfClickPropogate = f;
     }
     void draw( std::function<void(PAINTSTRUCT& ps)> f )
     {
@@ -80,7 +92,8 @@ public:
         myScrollVFunction = f;
     }
 private:
-    std::function<bool(void)> myClickFunction;
+    bool myfClickPropogate;
+    std::function<void(void)> myClickFunction;
     std::function<void(PAINTSTRUCT& ps)> myDrawFunction;
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
@@ -179,7 +192,6 @@ public:
         , myBGColor( 0xC8C8C8 )
         , myBGBrush( CreateSolidBrush( myBGColor ))
         , myDeleteList( 0 )
-        , myfApp( false )
         , myfModal( false )
     {
         myID = NewID();
@@ -192,8 +204,6 @@ public:
         unsigned long style = WS_CHILD,
         unsigned long exstyle = 0 )
         : myParent( parent )
-        , myfApp( false )
-        , myfModal( false )
     {
         myID = NewID();
         Create( parent->handle(), window_class, style, exstyle, myID );
@@ -361,7 +371,7 @@ public:
             case WM_DESTROY:
                 // if this is the appliction window
                 // then quit application when destroyed
-                if( myfApp )
+                if( myID == 1 )
                     PostQuitMessage(0);
                 return true;
                 return true;
@@ -374,13 +384,13 @@ public:
 
             case WM_ERASEBKGND:
             {
-                if( ! myParent )
-                {
+//                if( ! myParent )
+//                {
                     RECT rc;
                     GetWindowRect(hwnd, &rc);
                     FillRect((HDC)wParam, &rc, myBGBrush );
                     return true;
-                }
+ //               }
 //                RECT rc;
 //                GetWindowRect(hwnd, &rc);
 //                GetClientRect(hwnd,&rc );
@@ -536,7 +546,6 @@ protected:
     std::string myText;
     int myID;
     std::vector< gui* > myChild;
-    bool myfApp;                        /// true if app should quit when window destroyed
     bool myfModal;
 
     /** Create the managed window
@@ -771,12 +780,6 @@ public:
 This draws a custom checkbox that expands with the height of the widget ( set by move() )
 ( The native checkbox is very small and its size cannot be changed )
 
-This uses the click event to toggle the value and redraw.  If application
-code needs handle click event, then it must have the following in its handler
-<pre>
-    check( ! IsChecked() );
-    update();
-</pre>
 */
 class checkbox : public gui
 {
@@ -796,8 +799,6 @@ public:
         {
             myValue = ! myValue;
             update();
-            //myClickFunction();
-            return false;
         });
     }
     /// set type to plus, useful to indicate expanded or collapsed property categories

@@ -47,7 +47,6 @@ void helloworld()
         msgbox(
             form,
             msg );
-        return true;
     });
 
     form.show();
@@ -78,7 +77,6 @@ void choiceDemo()
         msgbox(
             form,
             cb.SelectedText() );
-            return true;
     });
 
     form.show();
@@ -172,7 +170,6 @@ void PGDemo()
         msgbox(
             form,
             msg );
-            return true;
     });
 
     form.showModal();
@@ -262,7 +259,6 @@ void RBDemo()
         msgbox(
             form,
             msg );
-            return true;
     });
 
     // show the application
@@ -311,7 +307,6 @@ void CBDemo()
         msgbox(
             form,
             msg );
-            return true;
     });
 
     // show the application
@@ -390,7 +385,6 @@ int main()
     btnhello.events().click([]
     {
         helloworld();
-        return true;
     });
     button& btnchoice = W.make<button>( l );
     btnchoice.move(  { 150, 30 }, false );
@@ -398,7 +392,6 @@ int main()
     btnchoice.events().click([]
     {
         choiceDemo();
-        return true;
     });
     button& btnpg = W.make<button>( l );
     btnpg.move(  { 150, 30 }, false );
@@ -406,7 +399,6 @@ int main()
     btnpg.events().click([]
     {
         PGDemo();
-        return true;
     });
     button& btnib = W.make<button>( l );
     btnib.move(  { 150, 30 }, false );
@@ -414,7 +406,6 @@ int main()
     btnib.events().click([]
     {
         InputboxDemo();
-        return true;
     });
 
     button& btnfb = W.make<button>( l );
@@ -425,7 +416,6 @@ int main()
         filebox fb( form );
         msgbox( form,
                 fb.path() );
-                return true;
     });
 
     button& btnrb = W.make<button>( l );
@@ -434,7 +424,6 @@ int main()
     btnrb.events().click([&]
     {
         RBDemo();
-        return true;
     });
 
     button& btncb = W.make<button>( l );
@@ -443,7 +432,6 @@ int main()
     btncb.events().click([&]
     {
         CBDemo();
-        return true;
     });
 
     button& btnpanel = W.make<button>( l );
@@ -452,7 +440,6 @@ int main()
     btnpanel.events().click([&]
     {
         PanelDemo();
-        return true;
     });
 
     button& btndraw = W.make<button>( l );
@@ -461,7 +448,6 @@ int main()
     btndraw.events().click([&]
     {
         drawDemo();
-        return true;
     });
 
     button& btnscroll = W.make<button>( l );
@@ -470,7 +456,6 @@ int main()
     btnscroll.events().click([&]
     {
         ScrollDemo();
-        return true;
     });
 
 

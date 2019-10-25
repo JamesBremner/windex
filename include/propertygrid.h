@@ -82,6 +82,7 @@ public:
         myCategoryExpanded.text( myName );
         myCategoryExpanded.plus();
         myCategoryExpanded.check();
+        myCategoryExpanded.events().clickPropogate();
     }
     void move( const std::vector<int>& r )
     {
@@ -252,7 +253,6 @@ public:
         events().click([this]
         {
             visible();
-            return true;
         });
     }
     void string(
