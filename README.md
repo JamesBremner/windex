@@ -17,3 +17,7 @@ Complete [sample code](https://github.com/JamesBremner/windex/wiki/hello-world) 
 # Application Programming Guide
 
 [Reference documentation](https://github.com/JamesBremner/windex/wiki) for the classes and methods used to create a GUI application using windex.
+
+# Demo & test
+
+An application to demonstrate and test the windex features is included.  The source is in the demo folder, and a code::blocks project to build it in build/codeblocks.
