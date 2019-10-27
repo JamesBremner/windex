@@ -62,6 +62,14 @@ public:
     {
         myScrollVFunction( code );
     }
+    void onMenuCommand( int id )
+    {
+        auto fp = myMapMenuFunction.find( id );
+        if( fp != myMapMenuFunction.end() )
+        {
+            fp->second();
+        }
+    }
     /////////////////////////// register event handlers /////////////////////
 
     /** register click event handler
@@ -97,6 +105,16 @@ public:
     {
         myScrollVFunction = f;
     }
+    /** Register function to run when menu item clicked
+        @param[in] id
+        @param[in] f function to run when menu item with id is clicked
+    */
+    void menuCommand(
+        int id,
+        std::function<void(void)> f )
+    {
+        myMapMenuFunction.insert( std::make_pair( id, f ));
+    }
 private:
     bool myfClickPropogate;
     std::function<void(void)> myClickFunction;
@@ -104,7 +122,7 @@ private:
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
     std::function<void(int code)> myScrollVFunction;
-
+    std::map< int, std::function<void(void)> > myMapMenuFunction;
 };
 
 class shapes
@@ -455,8 +473,7 @@ public:
                 return true;
 
             case WM_COMMAND:
-                std::cout << "command " << wParam << "\n";
-                MenuFunctionRun( wParam );
+                events().onMenuCommand( wParam );
                 return true;
             }
 
@@ -557,21 +574,8 @@ public:
     {
         myDeleteList = list;
     }
-    void MenuFunctionInsert(
-        int id,
-        std::function<void(void)> f
-    )
-    {
-        myMapMenuFunction.insert( std::make_pair( id, f ));
-    }
-    void MenuFunctionRun( int id )
-    {
-        auto fp = myMapMenuFunction.find( id );
-        if( fp != myMapMenuFunction.end() )
-        {
-            fp->second();
-        }
-    }
+
+
 
 protected:
     HWND myHandle;
@@ -584,7 +588,7 @@ protected:
     int myID;
     std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
     bool myfModal;                          ///< true if element is being shown as modal
-    std::map< int, std::function<void(void)> > myMapMenuFunction;
+
 
     /** Create the managed window
         @param[in] parent handle of parent window
@@ -1195,7 +1199,7 @@ public:
         myf.push_back( f );
 
         // store function to run when menu item click in menubar
-        myParent.MenuFunctionInsert( itemID, f );
+        myParent.events().menuCommand( itemID, f );
     }
     void popup(
         int x, int y
