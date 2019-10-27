@@ -453,6 +453,11 @@ public:
             case WM_VSCROLL:
                 myEvents.onScrollV( LOWORD (wParam) );
                 return true;
+
+            case WM_COMMAND:
+                std::cout << "command " << wParam << "\n";
+                MenuFunctionRun( wParam );
+                return true;
             }
 
         }
@@ -552,6 +557,21 @@ public:
     {
         myDeleteList = list;
     }
+    void MenuFunctionInsert(
+        int id,
+        std::function<void(void)> f
+    )
+    {
+        myMapMenuFunction.insert( std::make_pair( id, f ));
+    }
+    void MenuFunctionRun( int id )
+    {
+        auto fp = myMapMenuFunction.find( id );
+        if( fp != myMapMenuFunction.end() )
+        {
+            fp->second();
+        }
+    }
 
 protected:
     HWND myHandle;
@@ -562,8 +582,9 @@ protected:
     std::vector< HWND >* myDeleteList;
     std::string myText;
     int myID;
-    std::vector< gui* > myChild;
-    bool myfModal;
+    std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
+    bool myfModal;                          ///< true if element is being shown as modal
+    std::map< int, std::function<void(void)> > myMapMenuFunction;
 
     /** Create the managed window
         @param[in] parent handle of parent window
@@ -1146,25 +1167,37 @@ private:
 class menu
 {
 public:
-    menu()
+    menu( gui& parent )
         : myM( CreatePopupMenu() )
+        , myParent( parent )
     {
 
     }
+    /** Append menu item
+        @param[in] title
+        @param[in] f function to be run when menu item clicked
+    */
     void append(
         const std::string& title,
-        const std::function<void(void)>& f = {})
+        const std::function<void(void)>& f = []{})
     {
-        int itemID = myf.size()+1;
+        // calculate unique id for menu item
+        int itemID = NewID();
+
+        // add item to menu
         AppendMenu(
             myM,
             0,
-            itemID++,
+            itemID,
             title.c_str());
+
+        // store function to run when menu item clicked in popup
         myf.push_back( f );
+
+        // store function to run when menu item click in menubar
+        myParent.MenuFunctionInsert( itemID, f );
     }
     void popup(
-        gui& parent,
         int x, int y
     )
     {
@@ -1174,15 +1207,57 @@ public:
                     TPM_RETURNCMD,
                     x, y,
                     0,
-                    parent.handle(),
+                    myParent.handle(),
                     NULL    );
         // if user clicked item, execute associated function
         if( i )
             myf[i-1]();
     }
+    HMENU handle()
+    {
+        return myM;
+    }
 private:
     HMENU myM;
     std::vector< std::function<void(void)> > myf;
+    gui& myParent;
+
+    int NewID()
+    {
+        static int lastID = 0;
+        lastID++;
+        return lastID;
+    }
+};
+
+class menubar
+{
+public:
+    menubar( gui& parent )
+        : myParent( parent )
+        , myM( CreateMenu() )
+    {
+        // attach menu to window
+        SetMenu( parent.handle(), myM );
+    }
+    /** Append menu to menubar
+        @param[in] title
+        @param[in] m menu that drops down when title clicked
+    */
+    void append(
+        const std::string& title,
+        menu& m )
+    {
+        AppendMenu(
+            myM,
+            MF_POPUP,
+            (UINT_PTR)m.handle(),
+            title.c_str());
+        DrawMenuBar( myParent.handle() );
+    }
+private:
+    gui& myParent;
+    HMENU myM;
 };
 
 /// Construct a top level window ( first call constructs application window )

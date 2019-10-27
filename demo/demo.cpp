@@ -345,24 +345,38 @@ void MenuDemo()
     form.move({ 50,50,400,400});
     form.text("Menu demo");
 
-    int clicked = -1;
+    menubar mb( form );
 
-    menu m;
-    m.append("test",[&]
-    {
-        clicked = 1;
-    });
-    m.append("second",[&]
-    {
-        clicked = 2;
-    });
-    m.append("third",[&]
-    {
-        clicked = 3;
-    });
-    m.popup( form, 200,200 );
+    menu f( form );
+    f.append("open",[&]
+             {
+                 msgbox(form,"File open");
+             });
+    f.append("save");
+    mb.append("File", f );
+    menu e( form );
+    e.append("change");
+    mb.append("Edit", e );
 
-    msgbox( form,std::string("item ") + std::to_string(clicked) + " clicked");
+
+//    int clicked = -1;
+//
+//    menu m;
+//    m.append("test",[&]
+//    {
+//        clicked = 1;
+//    });
+//    m.append("second",[&]
+//    {
+//        clicked = 2;
+//    });
+//    m.append("third",[&]
+//    {
+//        clicked = 3;
+//    });
+//    m.popup( form, 200,200 );
+//
+//    msgbox( form,std::string("item ") + std::to_string(clicked) + " clicked");
 
     form.show();
 }
