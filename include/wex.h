@@ -1143,6 +1143,48 @@ private:
     std::string myfname;
 };
 
+class menu
+{
+public:
+    menu()
+        : myM( CreatePopupMenu() )
+    {
+
+    }
+    void append(
+        const std::string& title,
+        const std::function<void(void)>& f = {})
+    {
+        int itemID = myf.size()+1;
+        AppendMenu(
+            myM,
+            0,
+            itemID++,
+            title.c_str());
+        myf.push_back( f );
+    }
+    void popup(
+        gui& parent,
+        int x, int y
+    )
+    {
+        // display menu
+        int i = TrackPopupMenu(
+                    myM,
+                    TPM_RETURNCMD,
+                    x, y,
+                    0,
+                    parent.handle(),
+                    NULL    );
+        // if user clicked item, execute associated function
+        if( i )
+            myf[i-1]();
+    }
+private:
+    HMENU myM;
+    std::vector< std::function<void(void)> > myf;
+};
+
 /// Construct a top level window ( first call constructs application window )
 gui & topWindow()
 {

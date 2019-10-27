@@ -332,7 +332,37 @@ void ScrollDemo()
     lbA.text("AXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     label& lbB = wex::make<label>( form );
     lbB.move( {20, 460, 500, 30 } );
-    lbB.text("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");;\
+    lbB.text("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");;
+    \
+
+    form.show();
+}
+
+void MenuDemo()
+{
+    // construct top level window
+    gui& form = wex::topWindow();
+    form.move({ 50,50,400,400});
+    form.text("Menu demo");
+
+    int clicked = -1;
+
+    menu m;
+    m.append("test",[&]
+    {
+        clicked = 1;
+    });
+    m.append("second",[&]
+    {
+        clicked = 2;
+    });
+    m.append("third",[&]
+    {
+        clicked = 3;
+    });
+    m.popup( form, 200,200 );
+
+    msgbox( form,std::string("item ") + std::to_string(clicked) + " clicked");
 
     form.show();
 }
@@ -430,6 +460,13 @@ int main()
         ScrollDemo();
     });
 
+    button& btnmenu = wex::make<button>( l );
+    btnmenu.move(  { 150, 30 }, false );
+    btnmenu.text( "Menu" );
+    btnmenu.events().click([&]
+    {
+        MenuDemo();
+    });
 
     // show the application
     form.show();
