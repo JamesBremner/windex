@@ -1069,21 +1069,34 @@ public:
         return &myGui;
     }
 
-    /// handle windows messages
-    static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    /** Find gui element that is managing a window
+        param[in] hwnd window handle
+        @return pointer to gui element, or NULL
+    */
+    static gui* findGui( HWND hwnd )
     {
-        //find gui element that generated message
         mgui_t* mgui = get().mgui();
         auto w = mgui->find( hwnd );
-        if( w != mgui->end() )
+        if( w == mgui->end() )
+                return NULL;
+        return w->second;
+    }
+
+    /* handle window messages
+
+    All messages to windows created by windex come here.
+    The messages are passed on to be handled by the gui element for the window they are directed to
+    */
+    static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        gui* g = findGui( hwnd );
+        if( g )
         {
-            if( w->second )
-            {
-                // handle message
-                if( w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
-                    return 0;
-            }
+            if( g->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
+                return 0;
         }
+
+        // run default message processing
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 
@@ -1245,7 +1258,7 @@ public:
         SetMenu( parent.handle(), myM );
     }
     /** Append menu to menubar
-        @param[in] title
+        @param[in] title that appears in the menubar
         @param[in] m menu that drops down when title clicked
     */
     void append(
