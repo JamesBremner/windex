@@ -37,6 +37,7 @@ public:
         scrollH([](int c) {});
         scrollV([](int c) {});
         mouseMove([](sMouse& m){});
+        mouseWheel([](int dist){});
     }
     bool onLeftdown()
     {
@@ -79,6 +80,10 @@ public:
 
         myMouseMoveFunction( m );
     }
+    void onMouseWheel( int dist )
+    {
+        myMouseWheelFunction( dist );
+    }
     /////////////////////////// register event handlers /////////////////////
 
     /** register click event handler
@@ -92,7 +97,7 @@ public:
         myClickFunction = f;
         myfClickPropogate = propogate;
     }
-    /// specify that event should propogate to parent window after currently registered click event handler runs
+    /// specify that click event should propogate to parent window after currently registered click event handler runs
     void clickPropogate( bool f = true)
     {
         myfClickPropogate = f;
@@ -128,6 +133,10 @@ public:
     {
         myMouseMoveFunction = f;
     }
+    void mouseWheel( std::function<void(int dist)> f )
+    {
+        myMouseWheelFunction = f;
+    }
 private:
     bool myfClickPropogate;
     std::function<void(void)> myClickFunction;
@@ -137,6 +146,7 @@ private:
     std::function<void(int code)> myScrollVFunction;
     std::map< int, std::function<void(void)> > myMapMenuFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
+    std::function<void(int dist)> myMouseWheelFunction;
 };
 
 class shapes
@@ -504,6 +514,15 @@ public:
 
             case WM_MOUSEMOVE:
                 myEvents.onMouseMove( wParam, lParam );
+                break;
+
+            case WM_MOUSEWHEEL:
+                {
+                int d = HIWORD(wParam);
+                if( d > 0xEFFF)
+                    d = -120;
+                myEvents.onMouseWheel( d );
+                }
                 break;
 
             case WM_SIZE:
