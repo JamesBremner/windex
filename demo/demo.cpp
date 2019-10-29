@@ -8,7 +8,7 @@ using namespace wex;
 void helloworld()
 {
     // construct top level window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
     form.text("Label and Editbox demo");
 
@@ -52,7 +52,7 @@ void helloworld()
 void choiceDemo()
 {
     // construct top level  window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex combobox");
 
@@ -80,7 +80,7 @@ void drawDemo()
 {
 
     // construct top level  window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex draw demo");
 
@@ -99,7 +99,7 @@ void drawDemo()
 void PGDemo()
 {
     // construct top level window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex property grid");
 
@@ -167,7 +167,7 @@ void PGDemo()
 void InputboxDemo()
 {
     // construct top level window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex inputbox");
 
@@ -192,7 +192,7 @@ void InputboxDemo()
 void RBDemo()
 {
     // construct top level window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex radiobutton");
 
@@ -252,7 +252,7 @@ void RBDemo()
 void CBDemo()
 {
     // construct top level window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
     form.text("A windex checkbox");
 
@@ -297,7 +297,7 @@ void CBDemo()
 void PanelDemo()
 {
     // construct top level window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
     form.text("Panel demo");
 
@@ -320,7 +320,7 @@ void PanelDemo()
 void ScrollDemo()
 {
     // construct top level window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.scroll();
     form.move({ 50,50,400,400});
     form.scrollRange(600,600);
@@ -341,7 +341,7 @@ void ScrollDemo()
 void MenuDemo()
 {
     // construct top level window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
     form.text("Menu demo");
 
@@ -385,7 +385,7 @@ int main()
 {
 
     // construct top level application window
-    gui& form = wex::topWindow();
+    gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,500});
     form.text("Windex demos");
 
@@ -489,7 +489,7 @@ int main()
     //Blocks execution for dispatching user
     //input until the form is closed.
 
-    wex::run();
+    form.run();
 
     return 0;
 }
