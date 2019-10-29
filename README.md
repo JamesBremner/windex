@@ -20,8 +20,14 @@ Complete [sample code](https://github.com/JamesBremner/windex/wiki/hello-world) 
 
 # Apps using windex
 
-## Demo & test
+## Demo & Test
 
 An application to demonstrate and test the windex features is included.  The source is in the demo folder, and a code::blocks project to build it in build/codeblocks.
 
-<img src="https://github.com/JamesBremner/windex/blob/master/doc/demo.png" alt="propertygrid"></a>
+<img src="https://github.com/JamesBremner/windex/blob/master/doc/demo.png" alt="demo"></a>
+
+## DXF File Viewer
+
+<img src="https://github.com/JamesBremner/windex/blob/master/doc/gears.png" alt="gears"></a>
+
+https://github.com/JamesBremner/DXF_Viewer
