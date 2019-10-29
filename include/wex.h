@@ -10,11 +10,15 @@ namespace wex
 {
 
 class gui;
-class widget;
 
 typedef std::map< HWND, gui* > mgui_t;
 typedef std::vector< gui* > children_t;
-
+struct  sMouse
+{
+    int x;
+    int y;
+    bool left;
+};
 
 
 /** Functions to be called when event occurs
@@ -32,6 +36,7 @@ public:
         resize([](int w, int h) {});
         scrollH([](int c) {});
         scrollV([](int c) {});
+        mouseMove([](sMouse& m){});
     }
     bool onLeftdown()
     {
@@ -61,6 +66,18 @@ public:
         {
             fp->second();
         }
+    }
+    void onMouseMove( WPARAM wParam, LPARAM lParam )
+    {
+        sMouse m;
+
+//        m.x = GET_X_LPARAM(lParam);
+//        m.y = GET_Y_LPARAM(lParam);
+        m.x = LOWORD(lParam);
+        m.y = HIWORD(lParam);
+        m.left = ( wParam == MK_LBUTTON );
+
+        myMouseMoveFunction( m );
     }
     /////////////////////////// register event handlers /////////////////////
 
@@ -107,6 +124,10 @@ public:
     {
         myMapMenuFunction.insert( std::make_pair( id, f ));
     }
+    void mouseMove( std::function<void(sMouse& m)> f )
+    {
+        myMouseMoveFunction = f;
+    }
 private:
     bool myfClickPropogate;
     std::function<void(void)> myClickFunction;
@@ -115,6 +136,7 @@ private:
     std::function<void(int code)> myScrollHFunction;
     std::function<void(int code)> myScrollVFunction;
     std::map< int, std::function<void(void)> > myMapMenuFunction;
+    std::function<void(sMouse& m)> myMouseMoveFunction;
 };
 
 class shapes
@@ -394,15 +416,30 @@ public:
         SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
     }
 
-    void run()
-{
-    MSG msg = { };
-    while (GetMessage(&msg, NULL, 0, 0))
+    /** Get mouse position in window client area
+        @return pair containing x and y positions
+    */
+    std::pair<int,int> getMousePosition()
     {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        POINT p;
+        GetCursorPos( &p );
+        if( ! ScreenToClient( myHandle, &p ) )
+        {
+            p.x = -1;
+            p.y = -1;
+        }
+        return std::make_pair( (int)p.x, (int)p.y );
     }
-}
+
+    void run()
+    {
+        MSG msg = { };
+        while (GetMessage(&msg, NULL, 0, 0))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -463,6 +500,10 @@ public:
                                 uMsg, wParam, lParam ))
                         return true;
                 }
+                break;
+
+            case WM_MOUSEMOVE:
+                myEvents.onMouseMove( wParam, lParam );
                 break;
 
             case WM_SIZE:
@@ -1050,9 +1091,9 @@ public:
 
     /// Construct a top level window ( first call constructs application window )
     static gui & topWindow()
-{
-    return get().MakeWindow();
-}
+    {
+        return get().MakeWindow();
+    }
 
     /// get reference to new top level window
     gui& MakeWindow()
@@ -1092,7 +1133,7 @@ public:
         mgui_t* mgui = get().mgui();
         auto w = mgui->find( hwnd );
         if( w == mgui->end() )
-                return NULL;
+            return NULL;
         return w->second;
     }
 
@@ -1210,7 +1251,7 @@ public:
     */
     void append(
         const std::string& title,
-        const std::function<void(void)>& f = []{})
+        const std::function<void(void)>& f = [] {})
     {
         // calculate unique id for menu item
         int itemID = NewID();
