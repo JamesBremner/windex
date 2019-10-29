@@ -91,6 +91,8 @@ void drawDemo()
         S.line( { 10,10, 50,50 } );
         S.color( 255,255,255 );
         S.rectangle( { 20,20,20,20});
+        S.color( 255,255,0 );
+        S.text( "test", {50,50,50,25} );
     });
 
     form.show();

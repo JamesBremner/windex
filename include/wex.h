@@ -147,6 +147,7 @@ public:
                    RGB(r,g,b));
         HGDIOBJ pen = SelectObject(myHDC, hPen);
         DeleteObject( pen );
+        SetTextColor( myHDC,  RGB(r,g,b));
     }
     void penThick( int t )
     {
