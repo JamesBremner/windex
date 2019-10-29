@@ -15,15 +15,7 @@ class widget;
 typedef std::map< HWND, gui* > mgui_t;
 typedef std::vector< gui* > children_t;
 
-void run()
-{
-    MSG msg = { };
-    while (GetMessage(&msg, NULL, 0, 0))
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-}
+
 
 /** Functions to be called when event occurs
 
@@ -201,13 +193,18 @@ public:
     }
     void text(
         const std::string& t,
-        RECT& r )
+        const std::vector<int>& v )
     {
+        RECT rc;
+        rc.left = v[0];
+        rc.top  = v[1];
+        rc.right = v[0]+ v[2];
+        rc.bottom = v[1]+v[3];
         DrawText(
             myHDC,
             t.c_str(),
             -1,
-            &r,
+            &rc,
             DT_NOCLIP);
     }
 private:
@@ -395,6 +392,16 @@ public:
         si.nPage  = xmax/10;
         SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
     }
+
+    void run()
+{
+    MSG msg = { };
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+}
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -1040,6 +1047,12 @@ public:
         return theInstance;
     }
 
+    /// Construct a top level window ( first call constructs application window )
+    static gui & topWindow()
+{
+    return get().MakeWindow();
+}
+
     /// get reference to new top level window
     gui& MakeWindow()
     {
@@ -1277,11 +1290,7 @@ private:
     HMENU myM;
 };
 
-/// Construct a top level window ( first call constructs application window )
-gui & topWindow()
-{
-    return windex::get().MakeWindow();
-}
+
 
 /** Construct widget
         @param[in] parent reference to parent window or widget
