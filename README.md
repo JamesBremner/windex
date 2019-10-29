@@ -28,6 +28,6 @@ An application to demonstrate and test the windex features is included.  The sou
 
 ## DXF File Viewer
 
-<img src="https://github.com/JamesBremner/windex/blob/master/doc/gears.png" alt="gears"></a>
+<img src="https://github.com/JamesBremner/windex/blob/master/doc/gears.PNG" alt="gears"></a>
 
 https://github.com/JamesBremner/DXF_Viewer
