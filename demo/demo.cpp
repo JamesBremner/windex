@@ -93,6 +93,9 @@ void drawDemo()
         S.rectangle( { 20,20,20,20});
         S.color( 255,255,0 );
         S.text( "test", {50,50,50,25} );
+        S.color(0,0,255);
+        S.circle( 100,100,40);
+        S.arc( 100,100,30, 0, 90 );
     });
 
     form.show();

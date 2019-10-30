@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 #include <functional>
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <windows.h>
 
 namespace wex
@@ -13,6 +15,8 @@ class gui;
 
 typedef std::map< HWND, gui* > mgui_t;
 typedef std::vector< gui* > children_t;
+
+/// A structure containing the mouse status for event handlers
 struct  sMouse
 {
     int x;
@@ -21,9 +25,7 @@ struct  sMouse
 };
 
 
-/** Functions to be called when event occurs
-
-*/
+/// A class where application code can register functions to be called when an event occurs
 class eventhandler
 {
 public:
@@ -36,8 +38,8 @@ public:
         resize([](int w, int h) {});
         scrollH([](int c) {});
         scrollV([](int c) {});
-        mouseMove([](sMouse& m){});
-        mouseWheel([](int dist){});
+        mouseMove([](sMouse& m) {});
+        mouseWheel([](int dist) {});
     }
     bool onLeftdown()
     {
@@ -149,6 +151,31 @@ private:
     std::function<void(int dist)> myMouseWheelFunction;
 };
 
+/** @brief A class that offers application code methods to draw on a window.
+
+<pre>
+    // construct top level  window
+    gui& form = wex::windex::topWindow();
+    form.move({ 50,50,400,400});
+    form.text("A windex draw demo");
+
+    form.events().draw([]( PAINTSTRUCT& ps )
+    {
+        shapes S( ps );
+        S.color( 255, 0, 0 );
+        S.line( { 10,10, 50,50 } );
+        S.color( 255,255,255 );
+        S.rectangle( { 20,20,20,20});
+        S.color( 255,255,0 );
+        S.text( "test", {50,50,50,25} );
+        S.color(0,0,255);
+        S.circle( 100,100,40);
+        S.arc( 100,100,30, 0, 90 );
+    });
+
+    form.show();
+</pre>
+*/
 class shapes
 {
 public:
@@ -169,7 +196,9 @@ public:
         DeleteObject( pen );
     }
     /** Set color for drawings
-    @param[in] color
+    @param[in] r red 0-255
+    @param[in] g green 0-255
+    @param[in] b blue 0-255
     */
     void color( int r, int g, int b )
     {
@@ -181,11 +210,14 @@ public:
         DeleteObject( pen );
         SetTextColor( myHDC,  RGB(r,g,b));
     }
+    /// Set pen thickness in pixels
     void penThick( int t )
     {
         myPenThick = t;
-        color( 0, 0, 0 );
     }
+    /** Draw line between two points
+        @param[in] v vector with x1, y1, x2, y2
+    */
     void line( const std::vector<int>& v )
     {
         MoveToEx(
@@ -199,6 +231,9 @@ public:
             v[2],
             v[3] );
     }
+    /** Draw rectangle
+        @param[in] v vector with left, top, width height
+    */
     void rectangle( const std::vector<int>& v )
     {
         MoveToEx(
@@ -224,6 +259,39 @@ public:
             v[0],
             v[1] );
     }
+    /** Draw Arc of circle
+
+    @param[in] x for center, pixels 0 at left of window
+    @param[in] y for center, pixels 0 at top of window
+    @param[in] r radius, pixels
+    @param[in] sa start angle degrees anti-clockwise from 3 o'clock
+    @param[in] se end angle degrees anti-clockwise from 3 o'clock
+    */
+    void arc(
+        int x, int y, double r,
+        double sa, double ea )
+    {
+        int xl =round( x-r );
+        int yt =round( y-r );
+        int xr =round( x+r );
+        int yb =round( y+r );
+        int xs =round( x + r * cos(sa * M_PI/180) );
+        int ys =round( y + r * sin(sa * M_PI/180) );
+        int xe =round( x + r * cos(ea * M_PI/180) );
+        int ye =round( y + r * sin(ea * M_PI/180) );
+        Arc(
+            myHDC,
+            xl,yt,xr,yb,xs,ys,xe,ye );
+    }
+    /** Draw circle
+    @param[in] x0 x for center, pixels 0 at left of window
+    @param[in] y0 y for center, pixels 0 at left of window
+    @param[in] r radius, pixels
+    */
+    void circle( int x0, int y0, double r )
+    {
+        arc( x0, y0, r, 0, 0 );
+    }
     void text(
         const std::string& t,
         const std::vector<int>& v )
@@ -247,7 +315,7 @@ private:
     HGDIOBJ hPenOld;
 };
 
-/// Base class for all gui elements
+/// The base class for all windex gui elements
 class gui
 {
 public:
@@ -517,13 +585,13 @@ public:
                 break;
 
             case WM_MOUSEWHEEL:
-                {
+            {
                 int d = HIWORD(wParam);
                 if( d > 0xEFFF)
                     d = -120;
                 myEvents.onMouseWheel( d );
-                }
-                break;
+            }
+            break;
 
             case WM_SIZE:
                 if( wParam == SIZE_RESTORED)
@@ -793,6 +861,7 @@ public:
     }
 };
 
+/// A panel which arrarnges the widgets it contains in a grid
 class layout : public panel
 {
 public:
@@ -834,7 +903,7 @@ private:
     int myColCount;
 };
 
-/// A button
+/// A widget that user can click to start an action.
 class button : public gui
 {
 public:
@@ -856,7 +925,7 @@ protected:
         );
     }
 };
-
+/// A widget that user can click to select one of an exclusive set of options
 class radiobutton : public gui
 {
 public:
@@ -891,7 +960,7 @@ public:
                      myID ) == BST_CHECKED );
     }
 };
-/** User can toggle true/false value by clicking
+/** @brief A widget that user can click to toggle a true/false value
 
 This draws a custom checkbox that expands with the height of the widget ( set by move() )
 ( The native checkbox is very small and its size cannot be changed )
@@ -990,7 +1059,7 @@ public:
     }
 };
 
-/// label
+/// A widget that displays a string.
 class label : public gui
 {
 public:
@@ -1000,7 +1069,7 @@ public:
 
     }
 };
-/// User can enter a string
+/// A widget where user can enter a string.
 class editbox : public gui
 {
 public:
@@ -1045,6 +1114,7 @@ public:
     }
 };
 
+/// A widget where user can choose from a dropdown list of strings
 class choice : public gui
 {
 public:
@@ -1089,7 +1159,7 @@ public:
                    (WPARAM) 0, (LPARAM) 0);
     }
 };
-
+/// A class containing a database of the current gui elements
 class windex
 {
 public:
@@ -1216,6 +1286,7 @@ private:
     }
 };
 
+/// A popup window where used can browse folders and select a file
 class filebox
 {
 public:
@@ -1255,6 +1326,7 @@ private:
     std::string myfname;
 };
 
+/// A drop down list of options that user can click to start an action
 class menu
 {
 public:
@@ -1321,6 +1393,7 @@ private:
     }
 };
 
+/// A widget that displays across top of a window and contains a number of dropdown menues.
 class menubar
 {
 public:

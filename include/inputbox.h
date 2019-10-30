@@ -1,6 +1,8 @@
 #include "propertygrid.h"
 namespace wex
 {
+
+/// A popup window where user can edit a set of values
 class inputbox : public gui
 {
 public:
