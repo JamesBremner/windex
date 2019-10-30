@@ -16,7 +16,7 @@ Complete [sample code](https://github.com/JamesBremner/windex/wiki/hello-world) 
 
 # Application Programming Guide
 
-[Reference documentation](https://github.com/JamesBremner/windex/wiki) for the classes and methods used to create a GUI application using windex.
+[Reference documentation](https://jamesbremner.github.io/windex/hierarchy.html) for the classes and methods used to create a GUI application using windex.
 
 # Apps using windex
 
