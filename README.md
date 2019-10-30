@@ -4,11 +4,11 @@ A header only modern c++ wrapper for the windows API.
 
 # Build
 
-No separate build step is required. since this is a header only library.  
+No separate build step is required. since this is a header only library.  This avoids all the challenging configuration management problems that can result from trying to maintain a separate library build, when the library build and application build use different compilers or compiler options.  
 
-Add `"include "wex.h";` to application source files that use windex and add the `include` folder to the compiler search directories.
-
-This avoids all the challenging configuration management problems that can result from trying to maintain a separate library build, when the library build and application build use different compilers or compiler options.
+ - Add `"include "wex.h";` to application source files that use windex.
+ - Add the `include` folder to the compiler search directories.
+ - Add the windows library gdi32 to the linker command
 
 # Hello World
 
