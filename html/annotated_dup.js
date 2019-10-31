@@ -1,6 +1,12 @@
 var annotated_dup =
 [
     [ "wex", null, [
+      [ "plot", null, [
+        [ "axis", "classwex_1_1plot_1_1axis.html", "classwex_1_1plot_1_1axis" ],
+        [ "plot", "classwex_1_1plot_1_1plot.html", "classwex_1_1plot_1_1plot" ],
+        [ "scale", "classwex_1_1plot_1_1scale.html", "classwex_1_1plot_1_1scale" ],
+        [ "trace", "classwex_1_1plot_1_1trace.html", "classwex_1_1plot_1_1trace" ]
+      ] ],
       [ "button", "classwex_1_1button.html", "classwex_1_1button" ],
       [ "checkbox", "classwex_1_1checkbox.html", "classwex_1_1checkbox" ],
       [ "choice", "classwex_1_1choice.html", "classwex_1_1choice" ],

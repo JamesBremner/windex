@@ -1,5 +1,10 @@
-C:/Users/James/code/windex/include/wex.h:668: warning: The following parameters of wex::gui::move(const std::vector< int > &r, bool move=true) are not documented:
+C:/Users/James/code/windex/include/wex.h:672: warning: The following parameters of wex::gui::move(const std::vector< int > &r, bool move=true) are not documented:
   parameter 'move'
-C:/Users/James/code/windex/include/wex.h:262: warning: argument 'se' of command @param is not found in the argument list of wex::shapes::arc(int x, int y, double r, double sa, double ea)
-C:/Users/James/code/windex/include/wex.h:270: warning: The following parameters of wex::shapes::arc(int x, int y, double r, double sa, double ea) are not documented:
+C:/Users/James/code/windex/include/wex.h:266: warning: argument 'se' of command @param is not found in the argument list of wex::shapes::arc(int x, int y, double r, double sa, double ea)
+C:/Users/James/code/windex/include/wex.h:274: warning: The following parameters of wex::shapes::arc(int x, int y, double r, double sa, double ea) are not documented:
   parameter 'ea'
+C:/Users/James/code/windex/include/plot2d.h:341: warning: expected whitespace after [ command
+C:/Users/James/code/windex/include/plot2d.h:343: warning: The following parameters of wex::plot::axis::axis(gui &p, bool xaxis=false) are not documented:
+  parameter 'xaxis'
+C:/Users/James/code/windex/include/plot2d.h:493: warning: explicit link request to 'include' could not be resolved
+C:/Users/James/code/windex/include/plot2d.h:494: warning: explicit link request to 'include' could not be resolved

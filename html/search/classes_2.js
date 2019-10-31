@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['editbox',['editbox',['../classwex_1_1editbox.html',1,'wex']]],
-  ['eventhandler',['eventhandler',['../classwex_1_1eventhandler.html',1,'wex']]]
+  ['checkbox',['checkbox',['../classwex_1_1checkbox.html',1,'wex']]],
+  ['choice',['choice',['../classwex_1_1choice.html',1,'wex']]]
 ];

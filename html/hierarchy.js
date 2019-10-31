@@ -1,5 +1,6 @@
 var hierarchy =
 [
+    [ "wex::plot::axis", "classwex_1_1plot_1_1axis.html", null ],
     [ "wex::eventhandler", "classwex_1_1eventhandler.html", null ],
     [ "wex::filebox", "classwex_1_1filebox.html", null ],
     [ "wex::gui", "classwex_1_1gui.html", [
@@ -13,6 +14,7 @@ var hierarchy =
         [ "wex::groupbox", "classwex_1_1groupbox.html", null ],
         [ "wex::layout", "classwex_1_1layout.html", null ]
       ] ],
+      [ "wex::plot::plot", "classwex_1_1plot_1_1plot.html", null ],
       [ "wex::propertyGrid", "classwex_1_1property_grid.html", null ],
       [ "wex::radiobutton", "classwex_1_1radiobutton.html", null ]
     ] ],
@@ -20,7 +22,9 @@ var hierarchy =
     [ "wex::menubar", "classwex_1_1menubar.html", null ],
     [ "wex::msgbox", "classwex_1_1msgbox.html", null ],
     [ "wex::property", "classwex_1_1property.html", null ],
+    [ "wex::plot::scale", "classwex_1_1plot_1_1scale.html", null ],
     [ "wex::shapes", "classwex_1_1shapes.html", null ],
     [ "wex::sMouse", "structwex_1_1s_mouse.html", null ],
+    [ "wex::plot::trace", "classwex_1_1plot_1_1trace.html", null ],
     [ "wex::windex", "classwex_1_1windex.html", null ]
 ];
