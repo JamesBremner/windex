@@ -512,7 +512,16 @@ public:
         }
         return std::make_pair( (int)p.x, (int)p.y );
     }
+    /** Run the windows message loop
 
+    This waits for events to occur
+    and runs the requested event handler when they do.
+
+    It does not return until the application window
+    ( that is the first top level window created )
+    is closed
+
+    */
     void run()
     {
         MSG msg = { };
@@ -665,35 +674,43 @@ public:
 
     /** Move the window
         @param[in] r specify location and size
-        if r contains 4 values, then { x, y, width, height }
-        if r contains 2 values, then if move true ( x, y } keep current size
-        if r contains 2 values, then if move false ( width height } keep current location
+        r contains 4 values, { x, y, width, height }
     */
-    void move( const std::vector<int>& r, bool move = true )
+    void move( const std::vector<int>& r )
     {
-        switch( r.size() )
-        {
-        case 4:
-            MoveWindow( myHandle,
-                        r[0],r[1],r[2],r[3],false);
-            break;
-        case 2:
-        {
-            RECT rect;
-            GetClientRect( myHandle, &rect );
-            if( move )
-                MoveWindow( myHandle,
-                            r[0],r[1],rect.right-rect.left,rect.bottom-rect.top,
-                            false );
-            else
-                MoveWindow( myHandle,
-                            rect.left, rect.top, r[0], r[1],
-                            false );
-            break;
-        }
-        default:
-            throw std::runtime_error( "windex move bad parameter" );
-        }
+        if( r.size() != 4 )
+            return;
+        MoveWindow( myHandle,
+                    r[0],r[1],r[2],r[3],false);
+    }
+    /** Change size without moving top left corner
+        @param[in] w width
+        @param[in] h height
+    */
+    void size( int w, int h )
+    {
+        RECT rect;
+        GetClientRect( myHandle, &rect );
+        MoveWindow( myHandle,
+                    rect.left, rect.top, w, h,
+                    false );
+    }
+    /** Change position without changing size
+        @param[in] x left
+        @param[in] y top
+    */
+    void move( int x, int y )
+    {
+        RECT rect;
+        GetClientRect( myHandle, &rect );
+        MoveWindow( myHandle,
+                    x,y,rect.right-rect.left,rect.bottom-rect.top,
+                    false );
+    }
+    void move( int x, int y, int w, int h )
+    {
+        MoveWindow( myHandle,
+                    x, y, w, h, false);
     }
 
     /// Get event handler
@@ -871,9 +888,21 @@ class layout : public panel
 public:
     layout( gui* parent )
         : panel( parent )
+        , myColCount( 2 )
     {
 
     }
+    /** Specify number of cols to use for layout.
+
+    The child windows will be laid out in the specified number of columns
+    with the required number of rows to show them all.
+
+    The space between columns and rows will be adjusted so that
+    all child windows will be visible.
+
+    The size of the child windows will not be altered.
+
+    */
     void grid( int cols )
     {
         myColCount = cols;
@@ -892,7 +921,7 @@ public:
         int rowcount = 0;
         for( auto w : myChild )
         {
-            w->move( { colcount*colwidth, rowcount*rowheight } );
+            w->move( colcount*colwidth, rowcount*rowheight );
             w->show();
 
             colcount++;
@@ -1188,13 +1217,7 @@ public:
         return get().MakeWindow();
     }
 
-    /// get reference to new top level window
-    gui& MakeWindow()
-    {
-        gui* w = new gui();
-        Add( w );
-        return *w;
-    }
+
 
     /** get reference to new widget or window of type T
         @param[in] parent reference to parent window or widget
@@ -1275,6 +1298,14 @@ private:
         wc.lpszClassName = "windex";
         wc.hbrBackground = CreateSolidBrush(0xc8c8c8);
         RegisterClass(&wc);
+    }
+
+    /// get reference to new top level window
+    gui& MakeWindow()
+    {
+        gui* w = new gui();
+        Add( w );
+        return *w;
     }
 
     /// remove destroyed gui elements

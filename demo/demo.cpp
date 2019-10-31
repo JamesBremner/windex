@@ -400,7 +400,7 @@ void PlotDemo()
         // resize plot when form resizes
         fm.events().resize([&](int w, int h )
         {
-            thePlot.move( {30,30,w,h} );
+            thePlot.size( w, h );
             thePlot.update();
         });
 
@@ -441,28 +441,28 @@ int main()
 
     // display a button
     button& btnhello = wex::make<button>( l );
-    btnhello.move( { 150, 30 }, false );
+    btnhello.size( 150, 30 );
     btnhello.text( "Label and Editbox" );
     btnhello.events().click([]
     {
         helloworld();
     });
     button& btnchoice = wex::make<button>( l );
-    btnchoice.move(  { 150, 30 }, false );
+    btnchoice.size(  150, 30 );
     btnchoice.text( "Choice" );
     btnchoice.events().click([]
     {
         choiceDemo();
     });
     button& btnpg = wex::make<button>( l );
-    btnpg.move(  { 150, 30 }, false );
+    btnpg.size(  150, 30 );
     btnpg.text( "Property Grid" );
     btnpg.events().click([]
     {
         PGDemo();
     });
     button& btnib = wex::make<button>( l );
-    btnib.move(  { 150, 30 }, false );
+    btnib.size(  150, 30 );
     btnib.text( "Inputbox" );
     btnib.events().click([]
     {
@@ -470,7 +470,7 @@ int main()
     });
 
     button& btnfb = wex::make<button>( l );
-    btnfb.move(  { 150, 30 }, false );
+    btnfb.size(  150, 30 );
     btnfb.text( "Filebox" );
     btnfb.events().click([&]
     {
@@ -480,7 +480,7 @@ int main()
     });
 
     button& btnrb = wex::make<button>( l );
-    btnrb.move(  { 150, 30 }, false );
+    btnrb.size( 150, 30 );
     btnrb.text( "Radiobutton" );
     btnrb.events().click([&]
     {
@@ -488,7 +488,7 @@ int main()
     });
 
     button& btncb = wex::make<button>( l );
-    btncb.move( {20, 330, 150, 30 } );
+    btncb.size( 150, 30 );
     btncb.text( "Checkbox" );
     btncb.events().click([&]
     {
@@ -496,7 +496,7 @@ int main()
     });
 
     button& btnpanel =wex::make<button>( l );
-    btnpanel.move( {20, 380, 150, 30 } );
+    btnpanel.size( 150, 30 );
     btnpanel.text( "Panel" );
     btnpanel.events().click([&]
     {
@@ -504,7 +504,7 @@ int main()
     });
 
     button& btndraw = wex::make<button>( l );
-    btndraw.move(  { 150, 30 }, false );
+    btndraw.size( 150, 30 );
     btndraw.text( "Draw" );
     btndraw.events().click([&]
     {
@@ -512,7 +512,7 @@ int main()
     });
 
     button& btnscroll = wex::make<button>( l );
-    btnscroll.move(  { 150, 30 }, false );
+    btnscroll.size( 150, 30 );
     btnscroll.text( "Scroll" );
     btnscroll.events().click([&]
     {
@@ -520,7 +520,7 @@ int main()
     });
 
     button& btnmenu = wex::make<button>( l );
-    btnmenu.move(  { 150, 30 }, false );
+    btnmenu.size(  150, 30 );
     btnmenu.text( "Menu" );
     btnmenu.events().click([&]
     {
@@ -528,7 +528,7 @@ int main()
     });
 
     button& btnplot = wex::make<button>( l );
-    btnplot.move(  { 150, 30 }, false );
+    btnplot.size(  150, 30 );
     btnplot.text( "Plot" );
     btnplot.events().click([&]
     {
