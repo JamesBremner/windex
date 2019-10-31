@@ -202,13 +202,17 @@ public:
     */
     void color( int r, int g, int b )
     {
+        color( RGB(r,g,b) );
+    }
+    void color( int c )
+    {
         hPen = CreatePen(
                    PS_SOLID,
                    myPenThick,
-                   RGB(r,g,b));
+                   c);
         HGDIOBJ pen = SelectObject(myHDC, hPen);
         DeleteObject( pen );
-        SetTextColor( myHDC,  RGB(r,g,b));
+        SetTextColor( myHDC,  c);
     }
     /// Set pen thickness in pixels
     void penThick( int t )
