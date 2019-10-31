@@ -5,7 +5,7 @@ namespace wex
 namespace plot
 {
 class plot;
-
+/// @cond
 /// Plot dimensions
 class scale
 {
@@ -60,6 +60,7 @@ private:
     int myYOffset;
     int myXMin, myXMax, myYMin, myYMax;
 };
+    /// @endcond
 /** \brief Single trace to be plotted
 
     Application code shouild not attempt to construct a trace
@@ -327,6 +328,7 @@ private:
 
 
 };
+    /// @cond
 /** \brief Draw decorated vertical line on LHS of plot for Y-axis
 
     This class is internal and none of its methods should be
@@ -474,7 +476,7 @@ private:
     bool myfGrid;
     bool myfX;              // true for x-axis
 };
-
+    /// @endcond
 
 /** \brief Draw a 2D plot
 
