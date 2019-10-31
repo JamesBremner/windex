@@ -390,11 +390,11 @@ void MenuDemo()
 void PlotDemo()
 {
         wex::gui& fm = wex::windex::topWindow();
-        fm.move( {50,50,1200,600} );
+        fm.move( 50,50,1200,600 );
 
         // construct plot to be drawn on form
         wex::plot::plot& thePlot = wex::make<wex::plot::plot>( fm );
-        thePlot.move( {30,30,1200,600});
+        thePlot.move( 30,30,1200,600);
         //thePlot.Grid( true );
 
         // resize plot when form resizes

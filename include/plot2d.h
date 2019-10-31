@@ -60,7 +60,7 @@ private:
     int myYOffset;
     int myXMin, myXMax, myYMin, myYMax;
 };
-    /// @endcond
+/// @endcond
 /** \brief Single trace to be plotted
 
     Application code shouild not attempt to construct a trace
@@ -328,7 +328,7 @@ private:
 
 
 };
-    /// @cond
+/// @cond
 /** \brief Draw decorated vertical line on LHS of plot for Y-axis
 
     This class is internal and none of its methods should be
@@ -344,22 +344,8 @@ public:
     */
     axis( gui& p, bool xaxis = false )
         : myfGrid( false )
-        , myLabelMin( wex::make<label>(p) )
-        , myLabelMax( wex::make<label>(p) )
-        , myLabelZero( wex::make<label>(p) )
         , myfX( xaxis )
     {
-        myLabelMin.move( { 10, 10, 50, 15 } );
-        myLabelMin.bgcolor( 0xC8C8C8 );
-        myLabelMin.text("test");
-        myLabelMin.show();
-        myLabelMax.move( { 10, 10, 50, 15 } );
-        myLabelMax.bgcolor( 0xC8C8C8 );
-        myLabelMax.text("test");
-        myLabelMax.show();
-        myLabelZero.move( { 0,0,0,0 } );
-        myLabelZero.bgcolor( 0xC8C8C8 );
-        myLabelZero.text("ZERO");
     }
 
     /// draw
@@ -379,13 +365,10 @@ public:
                 mx = scale::get().maxY();
             }
             int ymn_px = scale::get().Y2Pixel( mn );
-            myLabelMin.text(std::to_string(mn));
-            myLabelMin.move( {5,  ymn_px} );
-
+            S.text( std::to_string((int)mn), { 5,ymn_px,50,15});
 
             int ymx_px = scale::get().Y2Pixel( mx );
-            myLabelMax.text(std::to_string( mx ));
-            myLabelMax.move( { 5,   ymx_px - 15 } );
+            S.text( std::to_string((int)mx), { 5,ymx_px,50,15});
 
             S.line( { 2, ymn_px,
                       2, ymx_px
@@ -397,8 +380,7 @@ public:
                          5, ymx_px
                         });
                 int y0_px = scale::get().Y2Pixel( 0 );
-                myLabelZero.move( {5,   y0_px - 15 } );
-                myLabelZero.show();
+                S.text( "0", { 5, y0_px - 15, 50,15 } );
                 S.line( {2, y0_px,
                          tick_length, y0_px
                         });
@@ -415,8 +397,6 @@ public:
             }
             else
             {
-                myLabelZero.show(false);
-                myLabelZero.move({0,0,0,0});
                 int yinc = ( ymn_px - ymx_px ) / 4;
                 for( int ky = 0; ky < 4; ky++ )
                 {
@@ -436,7 +416,7 @@ public:
         else
         {
             // x-axis
-            int ypos = ps.rcPaint.bottom - 15;
+            int ypos = ps.rcPaint.bottom - 20;
 
             double mn = 10 * (scale::get().minX() / 10 );
             double mx = 10 * ( scale::get().maxX() / 10 );
@@ -446,22 +426,18 @@ public:
                 mx = scale::get().maxX();
             }
             int xmn_px = scale::get().X2Pixel( mn );
-            myLabelMin.text(std::to_string(mn));
-            myLabelMin.move( {xmn_px, ypos+3} );
+            S.text( std::to_string((int)mn), {xmn_px, ypos+3, 50,15});
 
             int xmx_px = scale::get().X2Pixel( mx );
-            myLabelMax.text(std::to_string( mx ));
-            myLabelMax.move( {xmx_px - 15, ypos+ 3} );
+            S.text( std::to_string((int)mx), {xmx_px, ypos+3, 50,15});
 
             S.line( { xmn_px, ypos,
                       xmx_px, ypos
                     });
         }
 
-        myLabelMin.update();
-        myLabelMax.update();
-        myLabelZero.update();
     }
+
 
 
     void Grid( bool f )
@@ -470,13 +446,10 @@ public:
     }
 
 private:
-    label& myLabelMin;
-    label& myLabelMax;
-    label& myLabelZero;
     bool myfGrid;
     bool myfX;              // true for x-axis
 };
-    /// @endcond
+/// @endcond
 
 /** \brief Draw a 2D plot
 
