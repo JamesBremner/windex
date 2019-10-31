@@ -512,7 +512,7 @@ public:
         }
         return std::make_pair( (int)p.x, (int)p.y );
     }
-    /** Run the windows message loop
+    /** \brief Run the windows message loop
 
     This waits for events to occur
     and runs the requested event handler when they do.

@@ -5,5 +5,6 @@ var searchData=
   ['scrollrange',['scrollRange',['../classwex_1_1gui.html#a2fb2b8257083205b0969be452e5db9cc',1,'wex::gui']]],
   ['set',['set',['../classwex_1_1plot_1_1trace.html#aa94bc7ee5d49169d4e63ad07dd319ffe',1,'wex::plot::trace']]],
   ['shapes',['shapes',['../classwex_1_1shapes.html',1,'wex']]],
+  ['size',['size',['../classwex_1_1gui.html#a4e86a5cbef36f92585b08ff500cd250e',1,'wex::gui']]],
   ['smouse',['sMouse',['../structwex_1_1s_mouse.html',1,'wex']]]
 ];
