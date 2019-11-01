@@ -119,7 +119,14 @@ public:
         An exception is thrown when this is called
         for a trace that is not real time type.
     */
-    void add( double y );
+    void add( double y )
+    {
+        if( myType != eType::realtime )
+            throw std::runtime_error("nanaplot error: realtime data added to non realtime trace");
+        myY[ myRealTimeNext++ ] = y;
+        if( myRealTimeNext >= (int)myY.size() )
+            myRealTimeNext = 0;
+    }
 
     /** \brief add point to scatter trace
         @param[in] x location

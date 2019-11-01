@@ -451,14 +451,24 @@ void PlotDemo()
     btnTime.text("Real Time");
     btnTime.events().click([&]
     {
-        fm.events().timer([]
+        // construct plot trace
+        // displaying 100 points before they scroll off the plot
+        plot::trace& t1 = thePlot.AddRealTimeTrace( 100 );
+
+        // plot in blue
+        t1.color( 0xFF0000 );
+
+        // create timer handler to provide new data regularly
+        fm.events().timer([&]
         {
-            std::cout << "timer\n";
+            static int p = 0;
+            t1.add( 10 * sin( p++ / 10.0 ) );
+            thePlot.update();
         });
         SetTimer(
             fm.handle(),             // handle to  window
             1,            // timer identifier
-            1000,                 // 1-second interval
+            10,                 //  interval ms
             (TIMERPROC) NULL);     // no timer callback
     });
 
