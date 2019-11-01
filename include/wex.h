@@ -1170,6 +1170,7 @@ public:
                CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
+    /// Add an option
     void add( const std::string& s )
     {
         SendMessageA(
@@ -1178,6 +1179,25 @@ public:
             (WPARAM) 0,
             (LPARAM) s.c_str());
     }
+    /// Clear all options
+    void clear()
+    {
+        SendMessage(
+            handle(),
+            CB_RESETCONTENT,
+            (WPARAM)0, (LPARAM)0);
+    }
+    /** Select by index
+        @param[in] i index of item to selecct, -1 clears selection
+    */
+    void Select( int i )
+    {
+        SendMessage(
+            handle(),
+            CB_SETCURSEL,
+            (WPARAM)i, (LPARAM)0);
+    }
+    /// get index of selected item
     int SelectedIndex()
     {
         return SendMessage(
@@ -1185,6 +1205,7 @@ public:
                    (UINT) CB_GETCURSEL,
                    (WPARAM) 0, (LPARAM) 0);
     }
+    /// get text of selected item
     std::string SelectedText()
     {
         int i = SelectedIndex();
@@ -1198,6 +1219,7 @@ public:
             (LPARAM) buf);
         return std::string( buf );
     }
+    /// get count of items
     int count()
     {
         return SendMessage(

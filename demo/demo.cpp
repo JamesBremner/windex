@@ -394,7 +394,15 @@ void PlotDemo()
 
     // construct plot to be drawn on form
     wex::plot::plot& thePlot = wex::make<wex::plot::plot>( fm );
+    thePlot.bgcolor( 0 );
     //thePlot.Grid( true );
+    // resize plot when form resizes
+    fm.events().resize([&](int w, int h )
+    {
+        thePlot.size( w-100, h-200 );
+        thePlot.move( 30, 100 );
+        thePlot.update();
+    });
 
     wex::button& btnStatic = wex::make<wex::button>(fm);
     btnStatic.move(100,10,50,20);
@@ -435,14 +443,6 @@ void PlotDemo()
         {
             t2.add( 10 * x[k], y[k] );
         }
-        thePlot.update();
-    });
-
-    // resize plot when form resizes
-    fm.events().resize([&](int w, int h )
-    {
-        thePlot.size( w-100, h-200 );
-        thePlot.move( 30, 100 );
         thePlot.update();
     });
 

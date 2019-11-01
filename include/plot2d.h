@@ -357,6 +357,7 @@ public:
     axis( gui& p, bool xaxis = false )
         : myfGrid( false )
         , myfX( xaxis )
+        , myParent( p )
     {
     }
 
@@ -366,7 +367,7 @@ public:
         const int tick_length = 10;
 
         shapes S( ps );
-        S.color( 0 );
+        S.color( 0xFFFFFF - myParent.bgcolor() );
         if( ! myfX )
         {
             double mn = 10 * ( scale::get().minY() / 10 );
@@ -460,6 +461,7 @@ public:
 private:
     bool myfGrid;
     bool myfX;              // true for x-axis
+    gui& myParent;
 };
 /// @endcond
 
