@@ -40,7 +40,7 @@ public:
         scrollV([](int c) {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
-        timer([]{});
+        timer([] {});
     }
     bool onLeftdown()
     {
@@ -1473,7 +1473,18 @@ private:
     HMENU myM;
 };
 
-
+class timer
+{
+public:
+    timer( gui& g, int intervalmsecs )
+    {
+        SetTimer(
+            g.handle(),             // handle to  window
+            1,            // timer identifier
+            intervalmsecs,                 //  interval ms
+            (TIMERPROC) NULL);     // no timer callback
+    }
+};
 
 /** Construct widget
         @param[in] parent reference to parent window or widget

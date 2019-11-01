@@ -271,8 +271,8 @@ private:
                 // draw line from previous to this data point
                 S.line(
                 {
-                    prevX, prev,
-                    x, ys
+                    (int)prevX, (int)prev,
+                    (int)x, (int)ys
                 });
 //                   myColor);
 
@@ -322,7 +322,7 @@ private:
                 }
                 // draw line from previous to this data point
                 S.line(
-                { prevX, prev, x, y } );
+                { (int)prevX, (int)prev, (int)x, (int)y } );
 
                 prevX = x;;
                 prev = y;

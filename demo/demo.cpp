@@ -465,11 +465,7 @@ void PlotDemo()
             t1.add( 10 * sin( p++ / 10.0 ) );
             thePlot.update();
         });
-        SetTimer(
-            fm.handle(),             // handle to  window
-            1,            // timer identifier
-            10,                 //  interval ms
-            (TIMERPROC) NULL);     // no timer callback
+        timer t( fm, 10 );
     });
 
     fm.show();
