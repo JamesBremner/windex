@@ -355,9 +355,9 @@ void MenuDemo()
 
     menu f( form );
     f.append("open",[&]
-             {
-                 msgbox(form,"File open");
-             });
+    {
+        msgbox(form,"File open");
+    });
     f.append("save");
     mb.append("File", f );
     menu e( form );
@@ -389,21 +389,18 @@ void MenuDemo()
 
 void PlotDemo()
 {
-        wex::gui& fm = wex::windex::topWindow();
-        fm.move( 50,50,1200,600 );
+    wex::gui& fm = wex::windex::topWindow();
+    fm.move( 50,50,1200,600 );
 
-        // construct plot to be drawn on form
-        wex::plot::plot& thePlot = wex::make<wex::plot::plot>( fm );
-        thePlot.move( 30,30,1200,600);
-        //thePlot.Grid( true );
+    // construct plot to be drawn on form
+    wex::plot::plot& thePlot = wex::make<wex::plot::plot>( fm );
+    //thePlot.Grid( true );
 
-        // resize plot when form resizes
-        fm.events().resize([&](int w, int h )
-        {
-            thePlot.size( w, h );
-            thePlot.update();
-        });
-
+    wex::button& btnStatic = wex::make<wex::button>(fm);
+    btnStatic.move(100,10,50,20);
+    btnStatic.text("Static");
+    btnStatic.events().click([&]
+                             {
         // construct plot traces
         wex::plot::trace& t1 = thePlot.AddStaticTrace();
         wex::plot::trace& t2 = thePlot.AddStaticTrace();
@@ -422,8 +419,34 @@ void PlotDemo()
         // plot in red
         t2.color( 0xFF0000 );
 
-        // show and run
-        fm.show();
+        thePlot.update();
+    });
+
+    wex::button& btnScatter = wex::make<wex::button>(fm);
+    btnScatter.move(200,10,50,20);
+    btnScatter.text("Scatter");
+    btnScatter.events().click([&]
+    {
+        std::vector< double > x { 0, 1, 2, 3, 4 };
+        std::vector< double > y {  100, 50, -100, 50, 200 };
+        plot::trace& t2 = thePlot.AddScatterTrace();
+        t2.color( 0xFF0000 );
+        for( int k = 0; k < (int)x.size(); k++ )
+        {
+            t2.add( 10 * x[k], y[k] );
+        }
+        thePlot.update();
+    });
+
+    // resize plot when form resizes
+    fm.events().resize([&](int w, int h )
+    {
+        thePlot.size( w-100, h-200 );
+        thePlot.move( 30, 100 );
+        thePlot.update();
+    });
+
+    fm.show();
 }
 
 int main()

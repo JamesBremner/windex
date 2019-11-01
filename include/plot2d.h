@@ -129,8 +129,13 @@ public:
         for a trace that is not scatter type
     */
 
-    void add( double x, double y );
-
+    void add( double x, double y )
+    {
+        if( myType != eType::scatter )
+            throw std::runtime_error("nanaplot error: point data added to non scatter type trace");
+        myX.push_back( x );
+        myY.push_back( y );
+    }
     /// set color
     void color( int clr )
     {
@@ -597,7 +602,15 @@ public:
           box around each point.
         Specify x AND y locations for each point.
     */
-    trace& AddScatterTrace();
+    trace& AddScatterTrace()
+    {
+        trace * t = new trace();
+        t->Plot( this );
+        t->scatter();
+        myTrace.push_back( t );
+        return *t;
+    }
+
 
     /** \brief Enable display of grid markings */
     void Grid( bool enable )
@@ -642,6 +655,7 @@ private:
     */
     void CalcScale( int w, int h )
     {
+        //std::cout << "Plot::CalcScale " << w << " " << h << "\n";
         w *= 0.9;
         h *= 0.95;
 
