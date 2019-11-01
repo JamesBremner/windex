@@ -40,6 +40,7 @@ public:
         scrollV([](int c) {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
+        timer([]{});
     }
     bool onLeftdown()
     {
@@ -85,6 +86,10 @@ public:
     void onMouseWheel( int dist )
     {
         myMouseWheelFunction( dist );
+    }
+    void onTimer()
+    {
+        myTimerFunction();
     }
     /////////////////////////// register event handlers /////////////////////
 
@@ -139,6 +144,10 @@ public:
     {
         myMouseWheelFunction = f;
     }
+    void timer( std::function<void(void)> f )
+    {
+        myTimerFunction = f;
+    }
 private:
     bool myfClickPropogate;
     std::function<void(void)> myClickFunction;
@@ -149,6 +158,7 @@ private:
     std::map< int, std::function<void(void)> > myMapMenuFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
+    std::function<void(void)> myTimerFunction;
 };
 
 /** @brief A class that offers application code methods to draw on a window.
@@ -623,6 +633,10 @@ public:
 
             case WM_COMMAND:
                 events().onMenuCommand( wParam );
+                return true;
+
+            case WM_TIMER:
+                events().onTimer();
                 return true;
             }
 

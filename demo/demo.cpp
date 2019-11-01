@@ -400,7 +400,7 @@ void PlotDemo()
     btnStatic.move(100,10,50,20);
     btnStatic.text("Static");
     btnStatic.events().click([&]
-                             {
+    {
         // construct plot traces
         wex::plot::trace& t1 = thePlot.AddStaticTrace();
         wex::plot::trace& t2 = thePlot.AddStaticTrace();
@@ -444,6 +444,22 @@ void PlotDemo()
         thePlot.size( w-100, h-200 );
         thePlot.move( 30, 100 );
         thePlot.update();
+    });
+
+    wex::button& btnTime = wex::make<wex::button>(fm);
+    btnTime.move(300,10,100,20);
+    btnTime.text("Real Time");
+    btnTime.events().click([&]
+    {
+        fm.events().timer([]
+        {
+            std::cout << "timer\n";
+        });
+        SetTimer(
+            fm.handle(),             // handle to  window
+            1,            // timer identifier
+            1000,                 // 1-second interval
+            (TIMERPROC) NULL);     // no timer callback
     });
 
     fm.show();
