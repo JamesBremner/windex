@@ -952,33 +952,51 @@ public:
     {
         myColCount = cols;
     }
+    /** Specify column widths.
+        @param[in] vw vector of widths for each column
+    */
+    void colWidths( const std::vector<int>& vw )
+    {
+        myWidths = vw;
+    }
     void show( bool f = true )
     {
         ShowWindow(myHandle,  SW_SHOWDEFAULT);
 
         RECT r;
         GetClientRect(myHandle, &r );
-        int colwidth = (r.right - r.left) / myColCount;
+        if( ! myWidths.size() ) {
+            // col widths not specified, default to all the same width to fill panel
+            int colwidth = (r.right - r.left) / myColCount;
+            for( int k = 0; k < myColCount; k++ )
+            {
+                myWidths.push_back( colwidth );
+            }
+        }
         int rowheight = ( r.bottom - r.top ) / ( ( myChild.size() + 1 ) / myColCount );
 
         // display the children laid out in a grid
         int colcount = 0;
         int rowcount = 0;
+        int y = 0;
         for( auto w : myChild )
         {
-            w->move( colcount*colwidth, rowcount*rowheight );
+            w->move( y, rowcount*rowheight );
             w->show();
 
+            y += myWidths[colcount];
             colcount++;
             if( colcount >= myColCount )
             {
                 colcount = 0;
+                y = 0;
                 rowcount++;
             }
         }
     }
 private:
     int myColCount;
+    std::vector<int> myWidths;
 };
 
 /// A widget that user can click to start an action.
