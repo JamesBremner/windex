@@ -40,6 +40,7 @@ public:
         scrollV([](int c) {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
+        timer([] {});
     }
     bool onLeftdown()
     {
@@ -85,6 +86,10 @@ public:
     void onMouseWheel( int dist )
     {
         myMouseWheelFunction( dist );
+    }
+    void onTimer()
+    {
+        myTimerFunction();
     }
     /////////////////////////// register event handlers /////////////////////
 
@@ -139,6 +144,10 @@ public:
     {
         myMouseWheelFunction = f;
     }
+    void timer( std::function<void(void)> f )
+    {
+        myTimerFunction = f;
+    }
 private:
     bool myfClickPropogate;
     std::function<void(void)> myClickFunction;
@@ -149,6 +158,7 @@ private:
     std::map< int, std::function<void(void)> > myMapMenuFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
+    std::function<void(void)> myTimerFunction;
 };
 
 /** @brief A class that offers application code methods to draw on a window.
@@ -581,6 +591,7 @@ public:
             return true;
 
             case WM_LBUTTONDOWN:
+            case WM_RBUTTONDOWN:
                 if( myEvents.onLeftdown() )
                     return true;
                 // the event was not completely handled, maybe the parent can look after it
@@ -623,6 +634,10 @@ public:
 
             case WM_COMMAND:
                 events().onMenuCommand( wParam );
+                return true;
+
+            case WM_TIMER:
+                events().onTimer();
                 return true;
             }
 
@@ -1156,6 +1171,7 @@ public:
                CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
+    /// Add an option
     void add( const std::string& s )
     {
         SendMessageA(
@@ -1164,6 +1180,25 @@ public:
             (WPARAM) 0,
             (LPARAM) s.c_str());
     }
+    /// Clear all options
+    void clear()
+    {
+        SendMessage(
+            handle(),
+            CB_RESETCONTENT,
+            (WPARAM)0, (LPARAM)0);
+    }
+    /** Select by index
+        @param[in] i index of item to selecct, -1 clears selection
+    */
+    void Select( int i )
+    {
+        SendMessage(
+            handle(),
+            CB_SETCURSEL,
+            (WPARAM)i, (LPARAM)0);
+    }
+    /// get index of selected item
     int SelectedIndex()
     {
         return SendMessage(
@@ -1171,6 +1206,7 @@ public:
                    (UINT) CB_GETCURSEL,
                    (WPARAM) 0, (LPARAM) 0);
     }
+    /// get text of selected item
     std::string SelectedText()
     {
         int i = SelectedIndex();
@@ -1184,6 +1220,7 @@ public:
             (LPARAM) buf);
         return std::string( buf );
     }
+    /// get count of items
     int count()
     {
         return SendMessage(
@@ -1361,7 +1398,37 @@ private:
     std::string myfname;
 };
 
-/// A drop down list of options that user can click to start an action
+/** A drop down list of options that user can click to start an action.
+
+<pre>
+    // construct top level window
+    gui& form = wex::windex::topWindow();
+    form.move({ 50,50,400,400});
+    form.text("Menu demo");
+
+     int clicked = -1;
+
+    menu m;
+    m.append("test",[&]
+    {
+        clicked = 1;
+    });
+    m.append("second",[&]
+    {
+        clicked = 2;
+    });
+    m.append("third",[&]
+    {
+        clicked = 3;
+    });
+    m.popup( form, 200,200 );
+
+    msgbox( form,std::string("item ") + std::to_string(clicked) + " clicked");
+
+    form.show();
+</pre>
+
+*/
 class menu
 {
 public:
@@ -1371,7 +1438,7 @@ public:
     {
 
     }
-    /** Append menu item
+    /** Append menu item.
         @param[in] title
         @param[in] f function to be run when menu item clicked
     */
@@ -1379,22 +1446,24 @@ public:
         const std::string& title,
         const std::function<void(void)>& f = [] {})
     {
-        // calculate unique id for menu item
-        int itemID = NewID();
-
         // add item to menu
+        auto mi = myf.size();
         AppendMenu(
             myM,
             0,
-            itemID,
+            mi,
             title.c_str());
 
         // store function to run when menu item clicked in popup
         myf.push_back( f );
 
         // store function to run when menu item click in menubar
-        myParent.events().menuCommand( itemID, f );
+        myParent.events().menuCommand( mi, f );
     }
+    /** Popup menu and run user selection.
+        @param[in] x location
+        @param[in] y location
+    */
     void popup(
         int x, int y
     )
@@ -1408,8 +1477,8 @@ public:
                     myParent.handle(),
                     NULL    );
         // if user clicked item, execute associated function
-        if( i )
-            myf[i-1]();
+        if( 0 <= i && i < myf.size() )
+            myf[i]();
     }
     HMENU handle()
     {
@@ -1419,13 +1488,6 @@ private:
     HMENU myM;
     std::vector< std::function<void(void)> > myf;
     gui& myParent;
-
-    int NewID()
-    {
-        static int lastID = 0;
-        lastID++;
-        return lastID;
-    }
 };
 
 /// A widget that displays across top of a window and contains a number of dropdown menues.
@@ -1459,7 +1521,18 @@ private:
     HMENU myM;
 };
 
-
+class timer
+{
+public:
+    timer( gui& g, int intervalmsecs )
+    {
+        SetTimer(
+            g.handle(),             // handle to  window
+            1,            // timer identifier
+            intervalmsecs,                 //  interval ms
+            (TIMERPROC) NULL);     // no timer callback
+    }
+};
 
 /** Construct widget
         @param[in] parent reference to parent window or widget
