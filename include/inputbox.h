@@ -13,7 +13,7 @@ public:
         windex::get().Add( this );
         text("inputbox");
         move({100,100,300,300});
-        myGrid.move( { 50,50, 200, 30});
+        myGrid.move( { 50,50, 200, 60});
         myGrid.labelWidth( 50 );
         myGrid.bgcolor( 0xFFA0A0 );
         myOKButton.move( { 100,200, 50, 40 } );

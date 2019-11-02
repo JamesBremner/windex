@@ -22,6 +22,8 @@ struct  sMouse
     int x;
     int y;
     bool left;
+    bool right;
+    bool shift;
 };
 
 
@@ -40,12 +42,17 @@ public:
         scrollV([](int c) {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
+        mouseUp([] {});
         timer([] {});
     }
     bool onLeftdown()
     {
         myClickFunction();
         return ! myfClickPropogate;
+    }
+    void onMouseUp()
+    {
+        myMouseUpFunction();
     }
     void onDraw( PAINTSTRUCT& ps )
     {
@@ -144,6 +151,10 @@ public:
     {
         myMouseWheelFunction = f;
     }
+    void mouseUp( std::function<void(void)> f )
+    {
+        myMouseUpFunction = f;
+    }
     void timer( std::function<void(void)> f )
     {
         myTimerFunction = f;
@@ -159,6 +170,7 @@ private:
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
     std::function<void(void)> myTimerFunction;
+    std::function<void(void)> myMouseUpFunction;
 };
 
 /** @brief A class that offers application code methods to draw on a window.
@@ -223,6 +235,12 @@ public:
         HGDIOBJ pen = SelectObject(myHDC, hPen);
         DeleteObject( pen );
         SetTextColor( myHDC,  c);
+    }
+    void bgcolor( int c )
+    {
+        SetBkColor(
+            myHDC,
+            c );
     }
     /// Set pen thickness in pixels
     void penThick( int t )
@@ -359,7 +377,8 @@ public:
     }
     virtual ~gui()
     {
-        myDeleteList->push_back( myHandle );
+        if( myDeleteList )
+            myDeleteList->push_back( myHandle );
     }
 
     // register child on this window
@@ -508,19 +527,25 @@ public:
         SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
     }
 
-    /** Get mouse position in window client area
-        @return pair containing x and y positions
+    /** Get mouse status
+        @return sMouse structure containing x and y positions, etx
     */
-    std::pair<int,int> getMousePosition()
+    sMouse getMouseStatus()
     {
+        sMouse m;
         POINT p;
         GetCursorPos( &p );
         if( ! ScreenToClient( myHandle, &p ) )
         {
-            p.x = -1;
-            p.y = -1;
+            m.x = -1;
+            m.y = -1;
         }
-        return std::make_pair( (int)p.x, (int)p.y );
+        m.x = p.x;
+        m.y = p.y;
+        m.left = (GetKeyState(VK_LBUTTON) < 0);
+        m.right = (GetKeyState(VK_RBUTTON) < 0);
+        m.shift = (GetKeyState(VK_SHIFT) < 0);
+        return m;
     }
     /** Run the windows message loop
 
@@ -603,6 +628,11 @@ public:
                         return true;
                 }
                 break;
+
+            case WM_LBUTTONUP:
+            case WM_RBUTTONUP:
+                myEvents.onMouseUp();
+                return true;
 
             case WM_MOUSEMOVE:
                 myEvents.onMouseMove( wParam, lParam );
