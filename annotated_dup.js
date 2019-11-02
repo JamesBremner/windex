@@ -25,6 +25,7 @@ var annotated_dup =
       [ "radiobutton", "classwex_1_1radiobutton.html", "classwex_1_1radiobutton" ],
       [ "shapes", "classwex_1_1shapes.html", "classwex_1_1shapes" ],
       [ "sMouse", "structwex_1_1s_mouse.html", "structwex_1_1s_mouse" ],
+      [ "timer", "classwex_1_1timer.html", "classwex_1_1timer" ],
       [ "windex", "classwex_1_1windex.html", "classwex_1_1windex" ]
     ] ]
 ];

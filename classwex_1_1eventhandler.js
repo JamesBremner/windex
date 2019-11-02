@@ -15,7 +15,9 @@ var classwex_1_1eventhandler =
     [ "onResize", "classwex_1_1eventhandler.html#a8b61d28eff5fe5ed5b71ace77eb92f52", null ],
     [ "onScrollH", "classwex_1_1eventhandler.html#aac35a20115554d04d73ae3577b5a6461", null ],
     [ "onScrollV", "classwex_1_1eventhandler.html#a78012aaeeca31417a62630a2b60f9189", null ],
+    [ "onTimer", "classwex_1_1eventhandler.html#aa406e6fc5c80ecdb118f4d633d8fa17b", null ],
     [ "resize", "classwex_1_1eventhandler.html#a1db594a6413ea3f7baecdefdfe77062a", null ],
     [ "scrollH", "classwex_1_1eventhandler.html#a401f6f46352fbe1dcfcdfee310d517d6", null ],
-    [ "scrollV", "classwex_1_1eventhandler.html#a468d9a350d9693ba4d2b31bb9aca83f4", null ]
+    [ "scrollV", "classwex_1_1eventhandler.html#a468d9a350d9693ba4d2b31bb9aca83f4", null ],
+    [ "timer", "classwex_1_1eventhandler.html#ab7fe9057fc93928e16f59a5be21ac977", null ]
 ];

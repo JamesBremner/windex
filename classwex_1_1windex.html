@@ -98,6 +98,7 @@ $(document).ready(function(){initNavTree('classwex_1_1windex.html','');});
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa7155d08e1a56044de371c6913c7bd57"><td class="memTemplParams" colspan="2">template&lt;class T , class W &gt; </td></tr>
 <tr class="memitem:aa7155d08e1a56044de371c6913c7bd57"><td class="memTemplItemLeft" align="right" valign="top">T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwex_1_1windex.html#aa7155d08e1a56044de371c6913c7bd57">make</a> (W &amp;parent)</td></tr>
+<tr class="memdesc:aa7155d08e1a56044de371c6913c7bd57"><td class="mdescLeft">&#160;</td><td class="mdescRight">get reference to new widget or window of type T  <a href="#aa7155d08e1a56044de371c6913c7bd57">More...</a><br /></td></tr>
 <tr class="separator:aa7155d08e1a56044de371c6913c7bd57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21cf3bc12b1633a759f3d7c687dd35ed"><td class="memItemLeft" align="right" valign="top"><a id="a21cf3bc12b1633a759f3d7c687dd35ed"></a>
 mgui_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1windex.html#a21cf3bc12b1633a759f3d7c687dd35ed">mgui</a> ()</td></tr>
@@ -111,12 +112,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a1399a141f4efa2f0522b14363f014eed"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classwex_1_1windex.html">windex</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1windex.html#a1399a141f4efa2f0522b14363f014eed">get</a> ()</td></tr>
+<tr class="memdesc:a1399a141f4efa2f0522b14363f014eed"><td class="mdescLeft">&#160;</td><td class="mdescRight">get reference to windex gui framework ( singleton )  <a href="#a1399a141f4efa2f0522b14363f014eed">More...</a><br /></td></tr>
 <tr class="separator:a1399a141f4efa2f0522b14363f014eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fe976f60057ae85f1034c12559336eb"><td class="memItemLeft" align="right" valign="top"><a id="a5fe976f60057ae85f1034c12559336eb"></a>
 static <a class="el" href="classwex_1_1gui.html">gui</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1windex.html#a5fe976f60057ae85f1034c12559336eb">topWindow</a> ()</td></tr>
 <tr class="memdesc:a5fe976f60057ae85f1034c12559336eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a top level window ( first call constructs application window ) <br /></td></tr>
 <tr class="separator:a5fe976f60057ae85f1034c12559336eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaca2d45f386aba74cedf1737cca4d9cd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classwex_1_1gui.html">gui</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1windex.html#aaca2d45f386aba74cedf1737cca4d9cd">findGui</a> (HWND hwnd)</td></tr>
+<tr class="memdesc:aaca2d45f386aba74cedf1737cca4d9cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find gui element that is managing a window param[in] hwnd window handle.  <a href="#aaca2d45f386aba74cedf1737cca4d9cd">More...</a><br /></td></tr>
 <tr class="separator:aaca2d45f386aba74cedf1737cca4d9cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3bbed0ea21536f113874e981994519d"><td class="memItemLeft" align="right" valign="top"><a id="af3bbed0ea21536f113874e981994519d"></a>
 static LRESULT CALLBACK&#160;</td><td class="memItemRight" valign="bottom"><b>WindowProc</b> (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)</td></tr>
@@ -148,7 +151,9 @@ static LRESULT CALLBACK&#160;</td><td class="memItemRight" valign="bottom"><b>Wi
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Find gui element that is managing a window param[in] hwnd window handle </p><dl class="section return"><dt>Returns</dt><dd>pointer to gui element, or NULL </dd></dl>
+
+<p>Find gui element that is managing a window param[in] hwnd window handle. </p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to gui element, or NULL </dd></dl>
 
 </div>
 </div>
@@ -174,7 +179,8 @@ static LRESULT CALLBACK&#160;</td><td class="memItemRight" valign="bottom"><b>Wi
   </tr>
 </table>
 </div><div class="memdoc">
-<p>get reference to windex gui framework ( singleton )</p>
+
+<p>get reference to windex gui framework ( singleton ) </p>
 <p>This creates a singleton instance of the windex class and returns as many references to it as needed.</p>
 <p>The windex ctor should never be called by app code - it is private! </p>
 
@@ -205,7 +211,9 @@ template&lt;class T , class W &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>get reference to new widget or window of type T </p><dl class="params"><dt>Parameters</dt><dd>
+
+<p>get reference to new widget or window of type T </p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">parent</td><td>reference to parent window or widget </td></tr>
   </table>
@@ -223,7 +231,7 @@ template&lt;class T , class W &gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1windex.html">windex</a></li>
-    <li class="footer">Generated on Thu Oct 31 2019 14:05:09 for windex by
+    <li class="footer">Generated on Sat Nov 2 2019 11:20:29 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>
