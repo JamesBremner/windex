@@ -202,28 +202,37 @@ void RBDemo()
     form.move({ 50,50,400,400});
     form.text("A windex radiobutton");
 
+    wex::panel& P = wex::make<wex::panel>( form );
+    P.move( 5, 5, 350,350 );
+
+    // use laypout to atomatically arrange buttons in columns
+    wex::layout& L = wex::make<wex::layout>(P);
+    L.move( 50, 50 ,300,300);
+    L.grid( 2 );                // specify 2 columns
+    L.colfirst();               // specify column first order
+
     // first group of radiobuttons
-    radiobutton& rb1 = wex::make<radiobutton>(form);
-    rb1.first();
+    radiobutton& rb1 = wex::make<radiobutton>(L);
+    rb1.first();                // first in group of interacting buttons
     rb1.move( {20,20,100,30} );
     rb1.text("Alpha");
-    radiobutton& rb2 = wex::make<radiobutton>(form);
+    radiobutton& rb2 = wex::make<radiobutton>(L);
     rb2.move( {20,60,100,30} );
     rb2.text("Beta");
-    radiobutton& rb3 = wex::make<radiobutton>(form);
+    radiobutton& rb3 = wex::make<radiobutton>(L);
     rb3.move( {20,100,100,30} );
     rb3.text("Gamma");
 
     // second group of radio buttons
-    radiobutton& rb4 = wex::make<radiobutton>(form);
-    rb4.first();
-    rb4.move( {150,20,100,30} );
+    radiobutton& rb4 = wex::make<radiobutton>(L);
+    rb4.first();                // first in group of interacting buttons
+    rb4.size( 100,30 );
     rb4.text("X");
-    radiobutton& rb5 = wex::make<radiobutton>(form);
-    rb5.move( {150,60,100,30} );
+    radiobutton& rb5 = wex::make<radiobutton>(L);
+    rb5.size( 100,30 );
     rb5.text("Y");
-    radiobutton& rb6 = wex::make<radiobutton>(form);
-    rb6.move( {150,100,100,30} );
+    radiobutton& rb6 = wex::make<radiobutton>(L);
+    rb6.size( 100,30 );
     rb6.text("Z");
 
     // display a button

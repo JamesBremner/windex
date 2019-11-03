@@ -934,6 +934,7 @@ public:
     layout( gui* parent )
         : panel( parent )
         , myColCount( 2 )
+        , myfColFirst( false )
     {
 
     }
@@ -959,13 +960,37 @@ public:
     {
         myWidths = vw;
     }
+    /** Specify that widgets should be added to fill columns first
+        @param[in] f column first flag, defaault true
+
+        By default ( if this method is not called ) rows are filled first
+
+        <pre>
+         1    2
+         3    4
+         5    6
+         </pre>
+
+         In column first, the widgets are added like this
+
+         <pre>
+         1    4
+         2    5
+         3    6
+    */
+    void colfirst( bool f = true )
+    {
+        myfColFirst = f;
+    }
     void show( bool f = true )
     {
+        std::cout << "layout show " << myChild.size() << "\n";
         ShowWindow(myHandle,  SW_SHOWDEFAULT);
 
         RECT r;
         GetClientRect(myHandle, &r );
-        if( ! myWidths.size() ) {
+        if( ! myWidths.size() )
+        {
             // col widths not specified, default to all the same width to fill panel
             int colwidth = (r.right - r.left) / myColCount;
             for( int k = 0; k < myColCount; k++ )
@@ -973,30 +998,52 @@ public:
                 myWidths.push_back( colwidth );
             }
         }
-        int rowheight = ( r.bottom - r.top ) / ( ( myChild.size() + 1 ) / myColCount );
+        //int rowheight = ( r.bottom - r.top ) / ( ( myChild.size() + 1 ) / myColCount );
+        int rowheight = 25;
 
         // display the children laid out in a grid
         int colcount = 0;
         int rowcount = 0;
-        int y = 0;
-        for( auto w : myChild )
-        {
-            w->move( y, rowcount*rowheight );
-            w->show();
+        int x = 0;
 
-            y += myWidths[colcount];
-            colcount++;
-            if( colcount >= myColCount )
+        if( ! myfColFirst )
+        {
+            for( auto w : myChild )
             {
-                colcount = 0;
-                y = 0;
+                w->move( x, rowcount*rowheight );
+                w->show();
+
+                x += myWidths[colcount];
+                colcount++;
+                if( colcount >= myColCount )
+                {
+                    colcount = 0;
+                    x = 0;
+                    rowcount++;
+                }
+            }
+        }
+        else
+        {
+            for( auto w : myChild )
+            {
+                w->move( x, rowcount * rowheight );
+                w->show();
                 rowcount++;
+                if( rowcount >= myChild.size() / myColCount )
+                {
+                    rowcount = 0;
+                    x += myWidths[colcount];
+                    colcount++;
+                }
             }
         }
     }
+
 private:
     int myColCount;
     std::vector<int> myWidths;
+    bool myfColFirst;               // true if columns should be filled first
 };
 
 /// A widget that user can click to start an action.
