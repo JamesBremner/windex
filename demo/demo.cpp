@@ -202,11 +202,11 @@ void RBDemo()
     form.move({ 50,50,400,400});
     form.text("A windex radiobutton");
 
-    wex::panel& P = wex::make<wex::panel>( form );
-    P.move( 5, 5, 350,350 );
+    //wex::panel& P = wex::make<wex::panel>( form );
+    //P.move( 5, 5, 350,350 );
 
     // use laypout to atomatically arrange buttons in columns
-    wex::layout& L = wex::make<wex::layout>(P);
+    wex::layout& L = wex::make<wex::layout>(form  );
     L.move( 50, 50 ,300,300);
     L.grid( 2 );                // specify 2 columns
     L.colfirst();               // specify column first order

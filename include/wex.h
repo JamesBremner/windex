@@ -1073,34 +1073,94 @@ class radiobutton : public gui
 {
 public:
     radiobutton( gui* parent )
-        : gui( parent, "button",
-               WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
+        : gui( parent )
+        , myValue( false )
     {
+        // Add to current group
+        group().back().push_back( this );
+        myGroup = group().size()-1;
+
+        // toggle the boolean value when clicked
+        events().click([this]
+        {
+            // set all buttons in group false
+            for( auto b : group()[ myGroup ] )
+            {
+                b->myValue = false;
+                b->update();
+            }
+            // set this button true
+            myValue = true;
+            update();
+        });
     }
-    /** Make first radiobutton in a group
-
-    Clicking any radiobutton in a group will set that button
-    and clear the other buttons in the group
-    without effecting buttons in other groups.
-
-    This must be called for the first radiobutton of the first group
-    if there will be more than one group.
-
-    This must be called before constructing the other buttons in the group.
-    */
+    /// Make this button first of a new group
     void first()
     {
-        SetWindowLongPtr(
-            myHandle,
-            GWL_STYLE,
-            (LONG_PTR)WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP );
-    }
+        // if this is the first button of the first group, nothing more needed
+        if( group().size() == 1 && group().back().size() == 1 )
+            return;
 
+        // remove from end of previous group
+        group().back().erase( group().back().end()-1 );
+
+        // construct new group
+        std::vector< radiobutton * > g;
+        group().push_back( g );
+
+        // add to new group
+        group().back().push_back( this );
+
+        // remmenber which group button belongs to
+        myGroup = group().size() - 1;
+    }
     bool isChecked()
     {
-        return ( IsDlgButtonChecked(
-                     myParent->handle(),
-                     myID ) == BST_CHECKED );
+        return myValue;
+    }
+
+    virtual void draw( PAINTSTRUCT& ps )
+    {
+        SetBkColor(
+            ps.hdc,
+            myBGColor );
+        RECT r( ps.rcPaint );
+        r.left += 20;
+        shapes S( ps );
+
+        DrawText(
+            ps.hdc,
+            myText.c_str(),
+            -1,
+            &r,
+            0);
+        if( ! myValue )
+        {
+            S.circle( 10, 10, 5 );
+        }
+        else
+        {
+            SelectObject(ps.hdc, GetStockObject(BLACK_BRUSH));
+            Ellipse( ps.hdc, 5, 5, 15, 15 );
+        }
+    }
+private:
+    bool myValue;
+    int myGroup;            /// index of group button belongs to
+
+    /// get reference to radiobutton groups
+    std::vector< std::vector< radiobutton * > > & group()
+    {
+        static std::vector< std::vector< radiobutton * > > theGroups;
+        static bool fGroupInit = false;
+        if( ! fGroupInit )
+        {
+            // create first group
+            fGroupInit = true;
+            std::vector< radiobutton * > g;
+            theGroups.push_back( g );
+        }
+        return theGroups;
     }
 };
 /** @brief A widget that user can click to toggle a true/false value
@@ -1415,6 +1475,7 @@ public:
         // add to existing gui elements
         myGui.insert( std::make_pair( g->handle(), g ));
     }
+
 
 private:
     mgui_t myGui;                       ///< map of existing gui elements
