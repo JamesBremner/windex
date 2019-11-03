@@ -36,6 +36,7 @@ public:
     {
         // initialize functions with no-ops
         click([] {});
+        clickWex([] {});
         draw([](PAINTSTRUCT& ps) {});
         resize([](int w, int h) {});
         scrollH([](int c) {});
@@ -47,7 +48,8 @@ public:
     }
     bool onLeftdown()
     {
-        myClickFunction();
+        myClickFunWex();
+        myClickFunctionApp();
         return ! myfClickPropogate;
     }
     void onMouseUp()
@@ -108,8 +110,12 @@ public:
         std::function<void(void)> f,
         bool propogate = false )
     {
-        myClickFunction = f;
+        myClickFunctionApp = f;
         myfClickPropogate = propogate;
+    }
+    void clickWex( std::function<void(void)> f )
+    {
+        myClickFunWex = f;
     }
     /// specify that click event should propogate to parent window after currently registered click event handler runs
     void clickPropogate( bool f = true)
@@ -161,7 +167,9 @@ public:
     }
 private:
     bool myfClickPropogate;
-    std::function<void(void)> myClickFunction;
+
+    // event handlers registered by application code
+    std::function<void(void)> myClickFunctionApp;
     std::function<void(PAINTSTRUCT& ps)> myDrawFunction;
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
@@ -171,6 +179,9 @@ private:
     std::function<void(int dist)> myMouseWheelFunction;
     std::function<void(void)> myTimerFunction;
     std::function<void(void)> myMouseUpFunction;
+
+    // event handlers registered by windex class
+    std::function<void(void)> myClickFunWex;
 };
 
 /** @brief A class that offers application code methods to draw on a window.
@@ -232,9 +243,12 @@ public:
                    PS_SOLID,
                    myPenThick,
                    c);
-        HGDIOBJ pen = SelectObject(myHDC, hPen);
-        DeleteObject( pen );
+        HGDIOBJ old = SelectObject(myHDC, hPen);
+        DeleteObject( old );
         SetTextColor( myHDC,  c);
+        HBRUSH brush = CreateSolidBrush( c );
+        old = SelectObject(myHDC, brush );
+        DeleteObject( old );
     }
     void bgcolor( int c )
     {
@@ -617,6 +631,7 @@ public:
 
             case WM_LBUTTONDOWN:
             case WM_RBUTTONDOWN:
+                //std::cout << "click on " << myText << "\n";
                 if( myEvents.onLeftdown() )
                     return true;
                 // the event was not completely handled, maybe the parent can look after it
@@ -1030,7 +1045,7 @@ public:
                 w->move( x, rowcount * rowheight );
                 w->show();
                 rowcount++;
-                if( rowcount >= myChild.size() / myColCount )
+                if( rowcount >= (int)myChild.size() / myColCount )
                 {
                     rowcount = 0;
                     x += myWidths[colcount];
@@ -1081,7 +1096,7 @@ public:
         myGroup = group().size()-1;
 
         // toggle the boolean value when clicked
-        events().click([this]
+        events().clickWex([this]
         {
             // set all buttons in group false
             for( auto b : group()[ myGroup ] )
@@ -1183,7 +1198,7 @@ public:
         , myValue( false )
     {
         // toggle the boolean value when clicked
-        events().click([this]
+        events().clickWex([this]
         {
             myValue = ! myValue;
             update();
@@ -1223,6 +1238,7 @@ public:
         shapes S( ps );
         S.rectangle( { 0,0, cbg, cbg} );
         S.penThick( 3 );
+        S.color( 0 );
         switch( myType )
         {
         case eType::check:
@@ -1633,7 +1649,7 @@ public:
                     myParent.handle(),
                     NULL    );
         // if user clicked item, execute associated function
-        if( 0 <= i && i < myf.size() )
+        if( 0 <= i && i < (int)myf.size() )
             myf[i]();
     }
     HMENU handle()
