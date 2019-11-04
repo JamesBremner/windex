@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <functional>
+#include <algorithm>
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <windows.h>
@@ -1095,7 +1096,7 @@ public:
         group().back().push_back( this );
         myGroup = group().size()-1;
 
-        // toggle the boolean value when clicked
+        // set the boolean value when clicked
         events().clickWex([this]
         {
             // set all buttons in group false
@@ -1109,25 +1110,60 @@ public:
             update();
         });
     }
-    /// Make this button first of a new group
+    /** Make this button first of a new group
+
+    The other buttons in a group will become false when one is clicked
+    but buttons in different groups will not be changed.
+
+    All succeeding buttons,
+    those that were constructed after this button and remain in the same group,
+    are also moved to the new group.
+
+    */
     void first()
     {
-        // if this is the first button of the first group, nothing more needed
-        if( group().size() == 1 && group().back().size() == 1 )
-            return;
+        // find button in its group
+        auto this_it = std::find(
+                           group()[myGroup].begin(),
+                           group()[myGroup].end(),
+                           this );
 
-        // remove from end of previous group
-        group().back().erase( group().back().end()-1 );
+        if( this_it == group()[myGroup].end() )
+            throw std::runtime_error("wex::radiobutton::first error in group");
+
+        // if button is first in group, nothing is needed
+        if( this_it == group()[myGroup].begin() )
+            return;
 
         // construct new group
         std::vector< radiobutton * > g;
         group().push_back( g );
 
-        // add to new group
-        group().back().push_back( this );
+        // copy button and following buttons in same group to new group
+        for(
+            auto it = this_it;
+            it != group()[myGroup].end();
+            it++ )
+        {
+            group().back().push_back( *it );
+        }
 
-        // remmenber which group button belongs to
-        myGroup = group().size() - 1;
+        // erase from old group
+        group()[myGroup].erase(
+            this_it,
+            group()[myGroup].end() );
+
+        // tell buttons that were moved about their new group
+        for( auto b : group().back() )
+            b->myGroup = group().size() - 1;
+
+//        std::cout << "< first\n";
+//        for( int kg=0; kg< group().size(); kg++ )
+//        {
+//            for( auto b : group()[kg] )
+//                std::cout << b->id() << " , " << b->text() << " ";
+//            std::cout << "\n";
+//        }
     }
     bool isChecked()
     {
