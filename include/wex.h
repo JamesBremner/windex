@@ -1000,7 +1000,7 @@ public:
     }
     void show( bool f = true )
     {
-        std::cout << "layout show " << myChild.size() << "\n";
+        //std::cout << "layout show " << myChild.size() << "\n";
         ShowWindow(myHandle,  SW_SHOWDEFAULT);
 
         RECT r;
@@ -1076,8 +1076,8 @@ public:
     void image( const std::string& fname )
     {
         myBitmap  = (HBITMAP)LoadImage(
-                      NULL, fname.c_str(), IMAGE_BITMAP,
-                      0, 0, LR_LOADFROMFILE);
+                        NULL, fname.c_str(), IMAGE_BITMAP,
+                        0, 0, LR_LOADFROMFILE);
     }
 protected:
     HBITMAP myBitmap;
@@ -1191,9 +1191,27 @@ public:
 //            std::cout << "\n";
 //        }
     }
+
+    /// true if checked
     bool isChecked()
     {
         return myValue;
+    }
+
+    /// set value true( default ) or false
+    void check( bool f = true )
+    {
+        if( f )
+        {
+            // set all buttons in group false
+            for( auto b : group()[ myGroup ] )
+            {
+                b->myValue = false;
+                b->update();
+            }
+        }
+        myValue = f;
+        update();
     }
 
     virtual void draw( PAINTSTRUCT& ps )
@@ -1424,12 +1442,22 @@ public:
     /** Select by index
         @param[in] i index of item to selecct, -1 clears selection
     */
-    void Select( int i )
+    void select( int i )
     {
         SendMessage(
             handle(),
             CB_SETCURSEL,
             (WPARAM)i, (LPARAM)0);
+    }
+    /** Select by string
+        @param[in] s the string to select
+    */
+    void select( const std::string& s )
+    {
+        SendMessage(
+            handle(),
+            CB_SELECTSTRING,
+            (WPARAM)-1, (LPARAM)s.c_str());
     }
     /// get index of selected item
     int SelectedIndex()
