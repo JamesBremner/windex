@@ -1068,20 +1068,46 @@ class button : public gui
 public:
     button( gui* parent )
         : gui( parent )
+        , myBitmap( NULL )
     {
 
     }
+    /// Specify image to be used for button
+    void image( const std::string& fname )
+    {
+        myBitmap  = (HBITMAP)LoadImage(
+                      NULL, fname.c_str(), IMAGE_BITMAP,
+                      0, 0, LR_LOADFROMFILE);
+    }
 protected:
+    HBITMAP myBitmap;
+
     /// draw - label inside rectangle
     virtual void draw( PAINTSTRUCT& ps )
     {
-        gui::draw( ps );
-        DrawEdge(
-            ps.hdc,
-            &ps.rcPaint,
-            EDGE_RAISED,
-            BF_RECT
-        );
+        if( ! myBitmap )
+        {
+            gui::draw( ps );
+            DrawEdge(
+                ps.hdc,
+                &ps.rcPaint,
+                EDGE_RAISED,
+                BF_RECT
+            );
+        }
+        else
+        {
+            HDC hLocalDC = CreateCompatibleDC(ps.hdc);
+            BITMAP qBitmap;
+            GetObject(reinterpret_cast<HGDIOBJ>(myBitmap), sizeof(BITMAP),
+                      reinterpret_cast<LPVOID>(&qBitmap));
+            HBITMAP hOldBmp = (HBITMAP)SelectObject(hLocalDC, myBitmap);
+            BitBlt(
+                ps.hdc, 0, 0, qBitmap.bmWidth, qBitmap.bmHeight,
+                hLocalDC, 0, 0, SRCCOPY);
+            SelectObject(hLocalDC, hOldBmp);
+            DeleteDC(hLocalDC);
+        }
     }
 };
 /// A widget that user can click to select one of an exclusive set of options
