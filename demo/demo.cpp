@@ -97,6 +97,9 @@ void drawDemo()
         S.color(0,0,255);
         S.circle( 100,100,40);
         S.arc( 100,100,30, 0, 90 );
+
+        S.fill();
+        S.rectangle(  { 200,20,20,20});
     });
 
     form.show();
@@ -499,6 +502,13 @@ int main()
     layout& l = wex::make<layout>( form );
     l.move( {20,20,400,400} );
     l.grid( 2 );
+
+    // handle resize
+    form.events().resize([&]( int w, int h )
+    {
+        l.size(w,h);
+        l.update();
+    });
 
     // display a button
     button& btnhello = wex::make<button>( l );

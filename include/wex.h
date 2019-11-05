@@ -216,6 +216,7 @@ public:
     shapes( PAINTSTRUCT& ps )
         : myHDC( ps.hdc )
         , myPenThick( 1 )
+        , myFill( false )
     {
         hPen = CreatePen(
                    PS_SOLID,
@@ -251,6 +252,7 @@ public:
         old = SelectObject(myHDC, brush );
         DeleteObject( old );
     }
+    // set background color
     void bgcolor( int c )
     {
         SetBkColor(
@@ -261,6 +263,11 @@ public:
     void penThick( int t )
     {
         myPenThick = t;
+    }
+    // Set filling option
+    void fill( bool f = true )
+    {
+        myFill = f;
     }
     /** Draw line between two points
         @param[in] v vector with x1, y1, x2, y2
@@ -283,28 +290,37 @@ public:
     */
     void rectangle( const std::vector<int>& v )
     {
-        MoveToEx(
-            myHDC,
-            v[0],
-            v[1],
-            NULL
-        );
-        LineTo(
-            myHDC,
-            v[0]+v[2],
-            v[1] );
-        LineTo(
-            myHDC,
-            v[0]+v[2],
-            v[1]+v[3] );
-        LineTo(
-            myHDC,
-            v[0],
-            v[1]+v[3] );
-        LineTo(
-            myHDC,
-            v[0],
-            v[1] );
+        if( ! myFill )
+        {
+            MoveToEx(
+                myHDC,
+                v[0],
+                v[1],
+                NULL
+            );
+            LineTo(
+                myHDC,
+                v[0]+v[2],
+                v[1] );
+            LineTo(
+                myHDC,
+                v[0]+v[2],
+                v[1]+v[3] );
+            LineTo(
+                myHDC,
+                v[0],
+                v[1]+v[3] );
+            LineTo(
+                myHDC,
+                v[0],
+                v[1] );
+        }
+        else
+        {
+            Rectangle(
+                myHDC,
+                v[0], v[1], v[0]+v[2], v[1]+v[3] );
+        }
     }
     /** Draw Arc of circle
 
@@ -360,6 +376,7 @@ private:
     int myPenThick;
     HGDIOBJ hPen;
     HGDIOBJ hPenOld;
+    bool myFill;
 };
 
 /// The base class for all windex gui elements
@@ -998,11 +1015,8 @@ public:
     {
         myfColFirst = f;
     }
-    void show( bool f = true )
+    void draw( PAINTSTRUCT& ps )
     {
-        //std::cout << "layout show " << myChild.size() << "\n";
-        ShowWindow(myHandle,  SW_SHOWDEFAULT);
-
         RECT r;
         GetClientRect(myHandle, &r );
         if( ! myWidths.size() )
@@ -1014,8 +1028,11 @@ public:
                 myWidths.push_back( colwidth );
             }
         }
-        //int rowheight = ( r.bottom - r.top ) / ( ( myChild.size() + 1 ) / myColCount );
-        int rowheight = 25;
+        int rowheight;
+        if( ! myfColFirst )
+            rowheight = ( r.bottom - r.top ) / ( ( myChild.size() + 1 ) / myColCount );
+        else
+            rowheight = 50;
 
         // display the children laid out in a grid
         int colcount = 0;
@@ -1027,7 +1044,7 @@ public:
             for( auto w : myChild )
             {
                 w->move( x, rowcount*rowheight );
-                w->show();
+                w->update();
 
                 x += myWidths[colcount];
                 colcount++;
@@ -1044,7 +1061,7 @@ public:
             for( auto w : myChild )
             {
                 w->move( x, rowcount * rowheight );
-                w->show();
+                w->update();
                 rowcount++;
                 if( rowcount >= (int)myChild.size() / myColCount )
                 {
