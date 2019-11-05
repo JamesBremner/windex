@@ -401,6 +401,7 @@ public:
         unsigned long style = WS_CHILD,
         unsigned long exstyle = 0 )
         : myParent( parent )
+        , myDeleteList( 0 )
     {
         myID = NewID();
         Create( parent->handle(), window_class, style, exstyle, myID );
@@ -409,6 +410,7 @@ public:
     }
     virtual ~gui()
     {
+        std::cout << "deleting " << myText << "\n";
         if( myDeleteList )
             myDeleteList->push_back( myHandle );
     }
@@ -717,6 +719,7 @@ public:
         return false;
     }
 
+    /// Show window and all children
     virtual void show( bool f = true )
     {
         int cmd = SW_SHOWDEFAULT;
@@ -729,6 +732,7 @@ public:
             w->show( f );
     }
 
+    /// Show this window and suspend all other windows inteactions until this is closed
     void showModal()
     {
         myfModal = true;
@@ -743,7 +747,14 @@ public:
         }
     }
 
-    /// force widget to redraw completely
+    /** force widget to redraw completely
+
+    Windex makes no effort to auto update the screen display.
+    If application code alters something and the change should be seen immediatly
+    then update() should be called, either on the widget that has changed
+    or the top level winow that contains the changed widgets.
+
+    */
     void update()
     {
         InvalidateRect(myHandle,NULL,true);
@@ -1324,7 +1335,7 @@ public:
             myBGColor );
         RECT r( ps.rcPaint );
         int cbg = r.bottom-r.top-2;
-        r.left += cbg+2;
+        r.left += cbg+5;
         r.top  += 1;
         DrawText(
             ps.hdc,
