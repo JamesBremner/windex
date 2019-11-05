@@ -1726,7 +1726,7 @@ public:
         const std::function<void(void)>& f = [] {})
     {
         // add item to menu
-        auto mi = myf.size();
+        auto mi = CommandHandlers().size();
         AppendMenu(
             myM,
             0,
@@ -1734,10 +1734,24 @@ public:
             title.c_str());
 
         // store function to run when menu item clicked in popup
-        myf.push_back( f );
+        CommandHandlers().push_back( f );
 
         // store function to run when menu item click in menubar
         myParent.events().menuCommand( mi, f );
+    }
+    /** Append submenu
+        @param[in] title
+        @param[in] submenu
+    */
+    void append(
+        const std::string& title,
+        menu& submenu )
+    {
+        AppendMenu(
+            myM,
+            MF_POPUP,
+            (UINT_PTR)submenu.handle(),
+            title.c_str());
     }
     /** Popup menu and run user selection.
         @param[in] x location
@@ -1756,8 +1770,8 @@ public:
                     myParent.handle(),
                     NULL    );
         // if user clicked item, execute associated function
-        if( 0 <= i && i < (int)myf.size() )
-            myf[i]();
+        if( 0 <= i && i < (int)CommandHandlers().size() )
+            CommandHandlers()[i]();
     }
     HMENU handle()
     {
@@ -1765,8 +1779,13 @@ public:
     }
 private:
     HMENU myM;
-    std::vector< std::function<void(void)> > myf;
     gui& myParent;
+
+    std::vector< std::function<void(void)> >& CommandHandlers()
+    {
+        static std::vector< std::function<void(void)> > myf;
+        return myf;
+    }
 };
 
 /// A widget that displays across top of a window and contains a number of dropdown menues.
