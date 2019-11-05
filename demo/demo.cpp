@@ -62,6 +62,15 @@ void choiceDemo()
     cb.move({20, 50, 150, 130 });
     cb.add("Alpha");
     cb.add("Beta");
+    cb.select(-1);
+    cb.events().select( cb.id(), [&]
+    {
+        msgbox(
+            form,
+            cb.SelectedText() );
+     });
+    std::cout << "choice handle " << cb.handle()
+              <<" "<< cb.id() << "\n";
 
     // display a button
     button& btn = wex::make<button>( form );

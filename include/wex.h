@@ -101,6 +101,15 @@ public:
     {
         myTimerFunction();
     }
+    bool onSelect(
+        unsigned short id )
+    {
+        auto it = mapControlFunction().find( std::make_pair(id,CBN_SELCHANGE));
+        if( it == mapControlFunction().end() )
+            return false;
+        it->second();
+        return true;
+    }
     /////////////////////////// register event handlers /////////////////////
 
     /** register click event handler
@@ -150,6 +159,13 @@ public:
     {
         myMapMenuFunction.insert( std::make_pair( id, f ));
     }
+    void select(
+        int id,
+        std::function<void(void)> f )
+    {
+        mapControlFunction().insert(
+            std::make_pair( std::make_pair( id, CBN_SELCHANGE), f ));
+    }
     void mouseMove( std::function<void(sMouse& m)> f )
     {
         myMouseMoveFunction = f;
@@ -183,6 +199,16 @@ private:
 
     // event handlers registered by windex class
     std::function<void(void)> myClickFunWex;
+
+    /// reference to application wide list of registered event handlers
+    /// mapped to control is and notification code
+    std::map< std::pair<int,unsigned short>, std::function<void(void)> >&
+    mapControlFunction()
+    {
+        static std::map< std::pair<int,unsigned short>, std::function<void(void)> >
+        myMapControlFunction;
+        return myMapControlFunction;
+    }
 };
 
 /** @brief A class that offers application code methods to draw on a window.
@@ -698,6 +724,14 @@ public:
                 return true;
 
             case WM_COMMAND:
+                if( lParam )
+                {
+                    if( HIWORD(wParam) == CBN_SELCHANGE )
+                    {
+                        return events().onSelect( LOWORD(wParam) );
+                    }
+                    return false;
+                }
                 events().onMenuCommand( wParam );
                 return true;
 
