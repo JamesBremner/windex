@@ -1912,10 +1912,25 @@ private:
     gui& myParent;
     HMENU myM;
 };
+/** Generate events at regularly timed intervals.
 
+<pre>
+    myDriveTimer = new wex::timer( fm, 50 );
+    fm.events().timer([this]
+    {
+        ... code to run when timer event occurs ...
+    });
+</pre>
+*/
 class timer
 {
 public:
+    /** CTOR
+        @param[in] g gui element that will receive the events
+        @param[in] intervalmsecs time between events
+
+        The events will begin immediatly
+    */
     timer( gui& g, int intervalmsecs )
     {
         SetTimer(
