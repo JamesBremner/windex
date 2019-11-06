@@ -106,7 +106,7 @@ public:
     {
         auto it = mapControlFunction().find( std::make_pair(id,CBN_SELCHANGE));
         if( it == mapControlFunction().end() )
-            return false;
+            return true;
         it->second();
         return true;
     }
@@ -730,7 +730,7 @@ public:
                     {
                         return events().onSelect( LOWORD(wParam) );
                     }
-                    return false;
+                    return true;
                 }
                 events().onMenuCommand( wParam );
                 return true;
@@ -1483,6 +1483,13 @@ public:
         : gui( parent, "Combobox",
                CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
+    }
+    /// Override move to ensure height is sufficient to allow dropdown to apprear
+    void move( int x, int y, int w, int h )
+    {
+        if( h < 100 )
+            h = 100;
+        gui::move( x, y, w, h );
     }
     /// Add an option
     void add( const std::string& s )

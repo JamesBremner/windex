@@ -101,7 +101,7 @@ public:
             break;
         case eType::choice:
             re[3] *= myCombobox.count();
-            myCombobox.move( re );
+            myCombobox.move( re[0], re[1], re[2], re[3] );
             break;
         case eType::check:
             myCheckbox.move( re );
