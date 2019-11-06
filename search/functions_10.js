@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value',['value',['../classwex_1_1inputbox.html#a201a609f944da62b0f26c5b40037ecbf',1,'wex::inputbox::value()'],['../classwex_1_1property_grid.html#aa9d7db95673d02289822c873be55c460',1,'wex::propertyGrid::value()']]]
+  ['update',['update',['../classwex_1_1gui.html#a12afe321b01f6fabf33a06920a033dbc',1,'wex::gui::update()'],['../classwex_1_1property.html#a49fb480857d47dc7e474f533fded9a51',1,'wex::property::update()'],['../classwex_1_1property_grid.html#a7982de0d0ce0a9480c603872e11e93f2',1,'wex::propertyGrid::update()']]]
 ];

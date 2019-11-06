@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['rectangle',['rectangle',['../classwex_1_1shapes.html#ab8370b07ca362fda56623a3997c5a075',1,'wex::shapes']]],
-  ['run',['run',['../classwex_1_1gui.html#ae8a67ea974c35eb77635fe4802dea2d9',1,'wex::gui']]]
+  ['penthick',['penThick',['../classwex_1_1shapes.html#a08b1a2691cf2269729914de1bea0b30b',1,'wex::shapes']]],
+  ['plot',['plot',['../classwex_1_1plot_1_1plot.html#aa6eb2c8ed4cfb7723e1be1d27f757569',1,'wex::plot::plot']]],
+  ['plus',['plus',['../classwex_1_1checkbox.html#a896a907246dc121894dff64d77667b72',1,'wex::checkbox']]],
+  ['popup',['popup',['../classwex_1_1menu.html#a3d09dba0f476a92661c29936427b4479',1,'wex::menu']]],
+  ['property',['property',['../classwex_1_1property.html#a0fedb9ddf1817c4aefc63cbe1c5a5f5b',1,'wex::property']]]
 ];

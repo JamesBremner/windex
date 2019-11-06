@@ -24,6 +24,7 @@ var annotated_dup =
       [ "propertyGrid", "classwex_1_1property_grid.html", "classwex_1_1property_grid" ],
       [ "radiobutton", "classwex_1_1radiobutton.html", "classwex_1_1radiobutton" ],
       [ "shapes", "classwex_1_1shapes.html", "classwex_1_1shapes" ],
+      [ "slider", "classwex_1_1slider.html", "classwex_1_1slider" ],
       [ "sMouse", "structwex_1_1s_mouse.html", "structwex_1_1s_mouse" ],
       [ "timer", "classwex_1_1timer.html", "classwex_1_1timer" ],
       [ "windex", "classwex_1_1windex.html", "classwex_1_1windex" ]

@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('classwex_1_1gui.html','');});
 
 <p><code>#include &lt;<a class="el" href="wex_8h_source.html">wex.h</a>&gt;</code></p>
 
-<p>Inherited by <a class="el" href="classwex_1_1button.html">wex::button</a>, <a class="el" href="classwex_1_1checkbox.html">wex::checkbox</a>, <a class="el" href="classwex_1_1choice.html">wex::choice</a>, <a class="el" href="classwex_1_1editbox.html">wex::editbox</a>, <a class="el" href="classwex_1_1inputbox.html">wex::inputbox</a>, <a class="el" href="classwex_1_1label.html">wex::label</a>, <a class="el" href="classwex_1_1panel.html">wex::panel</a>, <a class="el" href="classwex_1_1plot_1_1plot.html">wex::plot::plot</a>, <a class="el" href="classwex_1_1property_grid.html">wex::propertyGrid</a>, and <a class="el" href="classwex_1_1radiobutton.html">wex::radiobutton</a>.</p>
+<p>Inherited by <a class="el" href="classwex_1_1button.html">wex::button</a>, <a class="el" href="classwex_1_1checkbox.html">wex::checkbox</a>, <a class="el" href="classwex_1_1choice.html">wex::choice</a>, <a class="el" href="classwex_1_1editbox.html">wex::editbox</a>, <a class="el" href="classwex_1_1inputbox.html">wex::inputbox</a>, <a class="el" href="classwex_1_1label.html">wex::label</a>, <a class="el" href="classwex_1_1panel.html">wex::panel</a>, <a class="el" href="classwex_1_1plot_1_1plot.html">wex::plot::plot</a>, <a class="el" href="classwex_1_1property_grid.html">wex::propertyGrid</a>, <a class="el" href="classwex_1_1radiobutton.html">wex::radiobutton</a>, and <a class="el" href="classwex_1_1slider.html">wex::slider</a>.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -138,9 +138,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a2fb2b8257083205b0969be452e5db9cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a2fb2b8257083205b0969be452e5db9cc">scrollRange</a> (int width, int height)</td></tr>
 <tr class="memdesc:a2fb2b8257083205b0969be452e5db9cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the scrolling range.  <a href="#a2fb2b8257083205b0969be452e5db9cc">More...</a><br /></td></tr>
 <tr class="separator:a2fb2b8257083205b0969be452e5db9cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abca8efd1480481dd02e5ebdb19c79e84"><td class="memItemLeft" align="right" valign="top">std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#abca8efd1480481dd02e5ebdb19c79e84">getMousePosition</a> ()</td></tr>
-<tr class="memdesc:abca8efd1480481dd02e5ebdb19c79e84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get mouse position in window client area.  <a href="#abca8efd1480481dd02e5ebdb19c79e84">More...</a><br /></td></tr>
-<tr class="separator:abca8efd1480481dd02e5ebdb19c79e84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6555f709577418760b1485f2c1b8ebb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwex_1_1s_mouse.html">sMouse</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#ad6555f709577418760b1485f2c1b8ebb">getMouseStatus</a> ()</td></tr>
+<tr class="memdesc:ad6555f709577418760b1485f2c1b8ebb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get mouse status.  <a href="#ad6555f709577418760b1485f2c1b8ebb">More...</a><br /></td></tr>
+<tr class="separator:ad6555f709577418760b1485f2c1b8ebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8a67ea974c35eb77635fe4802dea2d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#ae8a67ea974c35eb77635fe4802dea2d9">run</a> ()</td></tr>
 <tr class="memdesc:ae8a67ea974c35eb77635fe4802dea2d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the windows message loop.  <a href="#ae8a67ea974c35eb77635fe4802dea2d9">More...</a><br /></td></tr>
 <tr class="separator:ae8a67ea974c35eb77635fe4802dea2d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -148,14 +148,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>WindowMessageHandler</b> (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)</td></tr>
 <tr class="separator:a7142035ad0833b3e6c754eafd9e46e73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add964f7355c605c970391784463fdb37"><td class="memItemLeft" align="right" valign="top"><a id="add964f7355c605c970391784463fdb37"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>show</b> (bool f=true)</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#add964f7355c605c970391784463fdb37">show</a> (bool f=true)</td></tr>
+<tr class="memdesc:add964f7355c605c970391784463fdb37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show window and all children. <br /></td></tr>
 <tr class="separator:add964f7355c605c970391784463fdb37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73d78d0c4a9dfc91560022389adefc62"><td class="memItemLeft" align="right" valign="top"><a id="a73d78d0c4a9dfc91560022389adefc62"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>showModal</b> ()</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a73d78d0c4a9dfc91560022389adefc62">showModal</a> ()</td></tr>
+<tr class="memdesc:a73d78d0c4a9dfc91560022389adefc62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show this window and suspend all other windows inteactions until this is closed. <br /></td></tr>
 <tr class="separator:a73d78d0c4a9dfc91560022389adefc62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12afe321b01f6fabf33a06920a033dbc"><td class="memItemLeft" align="right" valign="top"><a id="a12afe321b01f6fabf33a06920a033dbc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a12afe321b01f6fabf33a06920a033dbc">update</a> ()</td></tr>
-<tr class="memdesc:a12afe321b01f6fabf33a06920a033dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">force widget to redraw completely <br /></td></tr>
+<tr class="memitem:a12afe321b01f6fabf33a06920a033dbc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a12afe321b01f6fabf33a06920a033dbc">update</a> ()</td></tr>
+<tr class="memdesc:a12afe321b01f6fabf33a06920a033dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">force widget to redraw completely  <a href="#a12afe321b01f6fabf33a06920a033dbc">More...</a><br /></td></tr>
 <tr class="separator:a12afe321b01f6fabf33a06920a033dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44fb9d06fdb73260e3f155c4cac6886c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a44fb9d06fdb73260e3f155c4cac6886c">move</a> (const std::vector&lt; int &gt; &amp;r)</td></tr>
 <tr class="memdesc:a44fb9d06fdb73260e3f155c4cac6886c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move the window.  <a href="#a44fb9d06fdb73260e3f155c4cac6886c">More...</a><br /></td></tr>
@@ -335,8 +336,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="abca8efd1480481dd02e5ebdb19c79e84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abca8efd1480481dd02e5ebdb19c79e84">&#9670;&nbsp;</a></span>getMousePosition()</h2>
+<a id="ad6555f709577418760b1485f2c1b8ebb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6555f709577418760b1485f2c1b8ebb">&#9670;&nbsp;</a></span>getMouseStatus()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -345,7 +346,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::pair&lt;int,int&gt; wex::gui::getMousePosition </td>
+          <td class="memname"><a class="el" href="structwex_1_1s_mouse.html">sMouse</a> wex::gui::getMouseStatus </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -358,8 +359,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Get mouse position in window client area. </p>
-<dl class="section return"><dt>Returns</dt><dd>pair containing x and y positions </dd></dl>
+<p>Get mouse status. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structwex_1_1s_mouse.html" title="A structure containing the mouse status for event handlers. ">sMouse</a> structure containing x and y positions, etx </dd></dl>
 
 </div>
 </div>
@@ -591,6 +592,34 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
+<a id="a12afe321b01f6fabf33a06920a033dbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12afe321b01f6fabf33a06920a033dbc">&#9670;&nbsp;</a></span>update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wex::gui::update </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>force widget to redraw completely </p>
+<p>Windex makes no effort to auto update the screen display. If application code alters something and the change should be seen immediatly then <a class="el" href="classwex_1_1gui.html#a12afe321b01f6fabf33a06920a033dbc" title="force widget to redraw completely ">update()</a> should be called, either on the widget that has changed or the top level winow that contains the changed widgets. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="wex_8h_source.html">wex.h</a></li>
 </ul>
@@ -600,7 +629,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1gui.html">gui</a></li>
-    <li class="footer">Generated on Sat Nov 2 2019 11:20:29 for windex by
+    <li class="footer">Generated on Wed Nov 6 2019 13:19:17 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

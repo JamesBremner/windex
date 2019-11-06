@@ -98,6 +98,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a418dc9ffe74ef87d84473868cb8879f9"><td class="memItemLeft" align="right" valign="top"><a id="a418dc9ffe74ef87d84473868cb8879f9"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>onLeftdown</b> ()</td></tr>
 <tr class="separator:a418dc9ffe74ef87d84473868cb8879f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48b0306530d4d60bb36be7b7ff06951a"><td class="memItemLeft" align="right" valign="top"><a id="a48b0306530d4d60bb36be7b7ff06951a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>onMouseUp</b> ()</td></tr>
+<tr class="separator:a48b0306530d4d60bb36be7b7ff06951a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d71ca5d3d66460a6376d412cc997165"><td class="memItemLeft" align="right" valign="top"><a id="a3d71ca5d3d66460a6376d412cc997165"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>onDraw</b> (PAINTSTRUCT &amp;ps)</td></tr>
 <tr class="separator:a3d71ca5d3d66460a6376d412cc997165"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -122,9 +125,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>onMouseWheel</b> (int
 <tr class="memitem:aa406e6fc5c80ecdb118f4d633d8fa17b"><td class="memItemLeft" align="right" valign="top"><a id="aa406e6fc5c80ecdb118f4d633d8fa17b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>onTimer</b> ()</td></tr>
 <tr class="separator:aa406e6fc5c80ecdb118f4d633d8fa17b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7131625eafed2c7aa4051bead49650a6"><td class="memItemLeft" align="right" valign="top"><a id="a7131625eafed2c7aa4051bead49650a6"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>onSelect</b> (unsigned short id)</td></tr>
+<tr class="separator:a7131625eafed2c7aa4051bead49650a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac76f35c2bc43986eb99931842e60ecda"><td class="memItemLeft" align="right" valign="top"><a id="ac76f35c2bc43986eb99931842e60ecda"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>onSlid</b> (unsigned short id)</td></tr>
+<tr class="separator:ac76f35c2bc43986eb99931842e60ecda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af421567019d65344881f9f6060d5bc7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1eventhandler.html#af421567019d65344881f9f6060d5bc7e">click</a> (std::function&lt; void(void)&gt; f, bool propogate=false)</td></tr>
 <tr class="memdesc:af421567019d65344881f9f6060d5bc7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">register click event handler  <a href="#af421567019d65344881f9f6060d5bc7e">More...</a><br /></td></tr>
 <tr class="separator:af421567019d65344881f9f6060d5bc7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a503d277efec7680118bf991850ff9ac6"><td class="memItemLeft" align="right" valign="top"><a id="a503d277efec7680118bf991850ff9ac6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clickWex</b> (std::function&lt; void(void)&gt; f)</td></tr>
+<tr class="separator:a503d277efec7680118bf991850ff9ac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9867fc21bd6a8d24e070a6eb0260556e"><td class="memItemLeft" align="right" valign="top"><a id="a9867fc21bd6a8d24e070a6eb0260556e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1eventhandler.html#a9867fc21bd6a8d24e070a6eb0260556e">clickPropogate</a> (bool f=true)</td></tr>
 <tr class="memdesc:a9867fc21bd6a8d24e070a6eb0260556e"><td class="mdescLeft">&#160;</td><td class="mdescRight">specify that click event should propogate to parent window after currently registered click event handler runs <br /></td></tr>
@@ -144,15 +156,24 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>scrollV</b> (std::fun
 <tr class="memitem:a27b9f20689541564213942f1bf09baf5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1eventhandler.html#a27b9f20689541564213942f1bf09baf5">menuCommand</a> (int id, std::function&lt; void(void)&gt; f)</td></tr>
 <tr class="memdesc:a27b9f20689541564213942f1bf09baf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register function to run when menu item clicked.  <a href="#a27b9f20689541564213942f1bf09baf5">More...</a><br /></td></tr>
 <tr class="separator:a27b9f20689541564213942f1bf09baf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8554229bade31390ec7efa810da5b91"><td class="memItemLeft" align="right" valign="top"><a id="ab8554229bade31390ec7efa810da5b91"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>select</b> (int id, std::function&lt; void(void)&gt; f)</td></tr>
+<tr class="separator:ab8554229bade31390ec7efa810da5b91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8a2248f7f7a191e9cbc8b8935ef4186"><td class="memItemLeft" align="right" valign="top"><a id="ad8a2248f7f7a191e9cbc8b8935ef4186"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>mouseMove</b> (std::function&lt; void(<a class="el" href="structwex_1_1s_mouse.html">sMouse</a> &amp;m)&gt; f)</td></tr>
 <tr class="separator:ad8a2248f7f7a191e9cbc8b8935ef4186"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae425583e03e80717fda30a0b4649f93a"><td class="memItemLeft" align="right" valign="top"><a id="ae425583e03e80717fda30a0b4649f93a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>mouseWheel</b> (std::function&lt; void(int dist)&gt; f)</td></tr>
 <tr class="separator:ae425583e03e80717fda30a0b4649f93a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a56b96e2786639006618fdbe8cff79f"><td class="memItemLeft" align="right" valign="top"><a id="a1a56b96e2786639006618fdbe8cff79f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>mouseUp</b> (std::function&lt; void(void)&gt; f)</td></tr>
+<tr class="separator:a1a56b96e2786639006618fdbe8cff79f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7fe9057fc93928e16f59a5be21ac977"><td class="memItemLeft" align="right" valign="top"><a id="ab7fe9057fc93928e16f59a5be21ac977"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>timer</b> (std::function&lt; void(void)&gt; f)</td></tr>
 <tr class="separator:ab7fe9057fc93928e16f59a5be21ac977"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2a247d34e03f769d2db1c06f7d7dbc9"><td class="memItemLeft" align="right" valign="top"><a id="aa2a247d34e03f769d2db1c06f7d7dbc9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>slid</b> (std::function&lt; void(int pos)&gt; f)</td></tr>
+<tr class="separator:aa2a247d34e03f769d2db1c06f7d7dbc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A class where application code can register functions to be called when an event occurs. </p>
@@ -256,7 +277,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>timer</b> (std::funct
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1eventhandler.html">eventhandler</a></li>
-    <li class="footer">Generated on Sat Nov 2 2019 11:20:29 for windex by
+    <li class="footer">Generated on Wed Nov 6 2019 13:19:17 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

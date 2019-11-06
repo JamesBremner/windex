@@ -101,6 +101,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1b34c7b450970b47f620ef7a01adf8a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1menu.html#a1b34c7b450970b47f620ef7a01adf8a0">append</a> (const std::string &amp;title, const std::function&lt; void(void)&gt; &amp;f=[] {})</td></tr>
 <tr class="memdesc:a1b34c7b450970b47f620ef7a01adf8a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append menu item.  <a href="#a1b34c7b450970b47f620ef7a01adf8a0">More...</a><br /></td></tr>
 <tr class="separator:a1b34c7b450970b47f620ef7a01adf8a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16fb35c031a194c64ccd4596dc5ac1db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1menu.html#a16fb35c031a194c64ccd4596dc5ac1db">append</a> (const std::string &amp;title, <a class="el" href="classwex_1_1menu.html">menu</a> &amp;submenu)</td></tr>
+<tr class="memdesc:a16fb35c031a194c64ccd4596dc5ac1db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append submenu.  <a href="#a16fb35c031a194c64ccd4596dc5ac1db">More...</a><br /></td></tr>
+<tr class="separator:a16fb35c031a194c64ccd4596dc5ac1db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d09dba0f476a92661c29936427b4479"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1menu.html#a3d09dba0f476a92661c29936427b4479">popup</a> (int x, int y)</td></tr>
 <tr class="memdesc:a3d09dba0f476a92661c29936427b4479"><td class="mdescLeft">&#160;</td><td class="mdescRight">Popup menu and run user selection.  <a href="#a3d09dba0f476a92661c29936427b4479">More...</a><br /></td></tr>
 <tr class="separator:a3d09dba0f476a92661c29936427b4479"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,7 +133,7 @@ HMENU&#160;</td><td class="memItemRight" valign="bottom"><b>handle</b> ()</td></
     m.popup( form, 200,200 );</pre><pre>    msgbox( form,std::string("item ") + std::to_string(clicked) + " clicked");</pre><pre>    form.show();
 </pre> </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a1b34c7b450970b47f620ef7a01adf8a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1b34c7b450970b47f620ef7a01adf8a0">&#9670;&nbsp;</a></span>append()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b34c7b450970b47f620ef7a01adf8a0">&#9670;&nbsp;</a></span>append() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -168,6 +171,51 @@ HMENU&#160;</td><td class="memItemRight" valign="bottom"><b>handle</b> ()</td></
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">title</td><td></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">f</td><td>function to be run when menu item clicked </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a16fb35c031a194c64ccd4596dc5ac1db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16fb35c031a194c64ccd4596dc5ac1db">&#9670;&nbsp;</a></span>append() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wex::menu::append </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>title</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwex_1_1menu.html">menu</a> &amp;&#160;</td>
+          <td class="paramname"><em>submenu</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Append submenu. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">title</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">submenu</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -228,7 +276,7 @@ HMENU&#160;</td><td class="memItemRight" valign="bottom"><b>handle</b> ()</td></
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1menu.html">menu</a></li>
-    <li class="footer">Generated on Sat Nov 2 2019 11:20:29 for windex by
+    <li class="footer">Generated on Wed Nov 6 2019 13:19:17 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

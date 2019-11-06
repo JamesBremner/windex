@@ -87,13 +87,73 @@ $(document).ready(function(){initNavTree('classwex_1_1timer.html','');});
 <div class="title">wex::timer Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Generate events at regularly timed intervals.  
+ <a href="classwex_1_1timer.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="wex_8h_source.html">wex.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4dc30f81c32678ed09ec06f905786eb8"><td class="memItemLeft" align="right" valign="top"><a id="a4dc30f81c32678ed09ec06f905786eb8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>timer</b> (<a class="el" href="classwex_1_1gui.html">gui</a> &amp;g, int intervalmsecs)</td></tr>
+<tr class="memitem:a4dc30f81c32678ed09ec06f905786eb8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1timer.html#a4dc30f81c32678ed09ec06f905786eb8">timer</a> (<a class="el" href="classwex_1_1gui.html">gui</a> &amp;g, int intervalmsecs)</td></tr>
+<tr class="memdesc:a4dc30f81c32678ed09ec06f905786eb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">CTOR.  <a href="#a4dc30f81c32678ed09ec06f905786eb8">More...</a><br /></td></tr>
 <tr class="separator:a4dc30f81c32678ed09ec06f905786eb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Generate events at regularly timed intervals. </p>
+<pre>
+    myDriveTimer = new <a class="el" href="classwex_1_1timer.html" title="Generate events at regularly timed intervals. ">wex::timer( fm, 50 )</a>;
+    fm.events().timer([this]
+    {
+        ... code to run when timer event occurs ...
+    });
+</pre> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a4dc30f81c32678ed09ec06f905786eb8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4dc30f81c32678ed09ec06f905786eb8">&#9670;&nbsp;</a></span>timer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">wex::timer::timer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwex_1_1gui.html">gui</a> &amp;&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>intervalmsecs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>CTOR. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">g</td><td>gui element that will receive the events </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">intervalmsecs</td><td>time between events</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The events will begin immediatly </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="wex_8h_source.html">wex.h</a></li>
 </ul>
@@ -103,7 +163,7 @@ Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1timer.html">timer</a></li>
-    <li class="footer">Generated on Sat Nov 2 2019 11:20:29 for windex by
+    <li class="footer">Generated on Wed Nov 6 2019 13:19:18 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

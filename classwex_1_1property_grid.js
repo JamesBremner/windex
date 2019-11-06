@@ -6,6 +6,7 @@ var classwex_1_1property_grid =
     [ "choice", "classwex_1_1property_grid.html#a1b2312fe1368af1ac7dddcdef7a79de4", null ],
     [ "expand", "classwex_1_1property_grid.html#a54e9ff5063cacc39227b5e48aee87151", null ],
     [ "find", "classwex_1_1property_grid.html#ada56a103b6f009f9d2f0446e8edfc3de", null ],
+    [ "find", "classwex_1_1property_grid.html#abd661706ffcccea51c315588bc8211ed", null ],
     [ "labelWidth", "classwex_1_1property_grid.html#a8da95e3bfc995031d546e2336da850e9", null ],
     [ "move", "classwex_1_1property_grid.html#a937c83efe710bf9a93c2fb8196b41c53", null ],
     [ "propHeight", "classwex_1_1property_grid.html#a284c7f08c76aaed20e586f65bf698bdc", null ],

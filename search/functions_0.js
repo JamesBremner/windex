@@ -4,6 +4,6 @@ var searchData=
   ['addrealtimetrace',['AddRealTimeTrace',['../classwex_1_1plot_1_1plot.html#a9ff35dea82800622757536cb4e2df627',1,'wex::plot::plot']]],
   ['addscattertrace',['AddScatterTrace',['../classwex_1_1plot_1_1plot.html#a29de12b781bbd07f5f4dd848bda8c95c',1,'wex::plot::plot']]],
   ['addstatictrace',['AddStaticTrace',['../classwex_1_1plot_1_1plot.html#af55c5abc73bee295c1cdba6119b99b8c',1,'wex::plot::plot']]],
-  ['append',['append',['../classwex_1_1menu.html#a1b34c7b450970b47f620ef7a01adf8a0',1,'wex::menu::append()'],['../classwex_1_1menubar.html#a073d149b71bfd66533997e34cc19837c',1,'wex::menubar::append()']]],
+  ['append',['append',['../classwex_1_1menu.html#a1b34c7b450970b47f620ef7a01adf8a0',1,'wex::menu::append(const std::string &amp;title, const std::function&lt; void(void)&gt; &amp;f=[] {})'],['../classwex_1_1menu.html#a16fb35c031a194c64ccd4596dc5ac1db',1,'wex::menu::append(const std::string &amp;title, menu &amp;submenu)'],['../classwex_1_1menubar.html#a073d149b71bfd66533997e34cc19837c',1,'wex::menubar::append()']]],
   ['arc',['arc',['../classwex_1_1shapes.html#a44b342785038b0b7d5cb9b03d0f5cdb7',1,'wex::shapes']]]
 ];
