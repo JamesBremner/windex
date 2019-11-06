@@ -59,7 +59,7 @@ void choiceDemo()
 
     // display combobox
     choice& cb = wex::make<choice>( form );
-    cb.move({20, 50, 150, 130 });
+    cb.move(20, 50, 150, 130 );
     cb.add("Alpha");
     cb.add("Beta");
     cb.select(-1);
@@ -68,7 +68,7 @@ void choiceDemo()
         msgbox(
             form,
             cb.SelectedText() );
-     });
+    });
     std::cout << "choice handle " << cb.handle()
               <<" "<< cb.id() << "\n";
 
@@ -367,7 +367,46 @@ void ScrollDemo()
     label& lbB = wex::make<label>( form );
     lbB.move( {20, 460, 500, 30 } );
     lbB.text("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");;
-    \
+
+    form.show();
+}
+
+void SliderDemo()
+{
+    // construct top level window
+    gui& form = wex::windex::topWindow();
+    form.move({ 50,50,500,400});
+    form.text("Slider demo");
+
+    // construct labels to display values when sliders are moved
+    wex::label& label = wex::make<wex::label>(form);
+    label.move( 200, 200, 100,30 );
+    label.text("");
+    wex::label& vlabel = wex::make<wex::label>(form);
+    vlabel.move( 200, 240, 100,30 );
+    vlabel.text("");
+
+    // construct horizontal slider
+    wex::slider& S = wex::make<wex::slider>( form );
+    S.move({ 50,50,400,50});
+    S.range( 0, 100 );
+    S.text("horiz slider");
+    S.events().slid([&](int pos)
+    {
+        label.text("horiz value: " + std::to_string( pos ));
+        label.update();
+    });
+
+    // construct vertical slider
+    wex::slider& V = wex::make<wex::slider>( form );
+    V.move({ 50,100,50,400});
+    V.range( 0, 10 );
+    V.vertical();
+    V.events().slid([&](int pos)
+    {
+        vlabel.text("vert value: " + std::to_string( pos ));
+        vlabel.update();
+    });
 
     form.show();
 }
@@ -613,6 +652,14 @@ int main()
     btnplot.events().click([&]
     {
         PlotDemo();
+    });
+
+    button& btnslider = wex::make<button>( l );
+    btnslider.size(  150, 30 );
+    btnslider.text( "Slider" );
+    btnslider.events().click([&]
+    {
+        SliderDemo();
     });
 
     // show the application

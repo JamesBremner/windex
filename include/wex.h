@@ -8,6 +8,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <windows.h>
+#include <CommCtrl.h>
 
 namespace wex
 {
@@ -46,6 +47,7 @@ public:
         mouseWheel([](int dist) {});
         mouseUp([] {});
         timer([] {});
+        slid([](int pos){});
     }
     bool onLeftdown()
     {
@@ -109,6 +111,11 @@ public:
             return true;
         it->second();
         return true;
+    }
+    void onSlid(unsigned short id )
+    {
+        std::cout << "OnSlid " << id << "\n";
+        mySlidFunction( (int) id );
     }
     /////////////////////////// register event handlers /////////////////////
 
@@ -182,6 +189,10 @@ public:
     {
         myTimerFunction = f;
     }
+    void slid( std::function<void(int pos)> f )
+    {
+        mySlidFunction = f;
+    }
 private:
     bool myfClickPropogate;
 
@@ -196,12 +207,13 @@ private:
     std::function<void(int dist)> myMouseWheelFunction;
     std::function<void(void)> myTimerFunction;
     std::function<void(void)> myMouseUpFunction;
+    std::function<void(int pos)> mySlidFunction;
 
     // event handlers registered by windex class
     std::function<void(void)> myClickFunWex;
 
     /// reference to application wide list of registered event handlers
-    /// mapped to control is and notification code
+    /// mapped to control ids and notification code
     std::map< std::pair<int,unsigned short>, std::function<void(void)> >&
     mapControlFunction()
     {
@@ -717,9 +729,40 @@ public:
                 return false;
 
             case WM_HSCROLL:
+                if( lParam )
+                {
+                    if( LOWORD(wParam) == SB_THUMBPOSITION )
+                    {
+                        // this gui element has received a notification
+                        // that a slider has been dragged and released.
+                        // The slider is a child of this gui element
+                        // so find which child and call its slid event handler
+                        // with the new position
+                        for( auto c : myChild ) {
+                            if( c->handle() == (HWND)lParam ) {
+                                c->events().onSlid( HIWORD(wParam) );
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
                 myEvents.onScrollH( LOWORD (wParam) );
                 return true;
             case WM_VSCROLL:
+                if( lParam )
+                {
+                    if( LOWORD(wParam) == SB_THUMBPOSITION )
+                    {
+                        for( auto c : myChild ) {
+                            if( c->handle() == (HWND)lParam ) {
+                                c->events().onSlid( HIWORD(wParam) );
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
                 myEvents.onScrollV( LOWORD (wParam) );
                 return true;
 
@@ -1881,6 +1924,84 @@ public:
             1,            // timer identifier
             intervalmsecs,                 //  interval ms
             (TIMERPROC) NULL);     // no timer callback
+    }
+};
+/** A widget which user can drag to change a value.
+
+<pre>
+    // construct top level window
+    gui& form = wex::windex::topWindow();
+    form.move({ 50,50,500,400});
+    form.text("Slider demo");
+
+    // construct labels to display values when sliders are moved
+    wex::label& label = wex::make<wex::label>(form);
+    label.move( 200, 200, 100,30 );
+    label.text("");
+    wex::label& vlabel = wex::make<wex::label>(form);
+    vlabel.move( 200, 240, 100,30 );
+    vlabel.text("");
+
+    // construct horizontal slider
+    wex::slider& S = wex::make<wex::slider>( form );
+    S.move({ 50,50,400,50});
+    S.range( 0, 100 );
+    S.text("horiz slider");
+    S.events().slid([&](int pos)
+    {
+        label.text("horiz value: " + std::to_string( pos ));
+        label.update();
+    });
+
+    // construct vertical slider
+    wex::slider& V = wex::make<wex::slider>( form );
+    V.move({ 50,100,50,400});
+    V.range( 0, 10 );
+    V.vertical();
+    V.events().slid([&](int pos)
+    {
+        vlabel.text("vert value: " + std::to_string( pos ));
+        vlabel.update();
+    });
+
+    form.show();
+</pre>
+*/
+
+class slider : public gui
+{
+public:
+    slider( gui* parent )
+        : gui( parent, "msctls_trackbar32",
+               WS_CHILD | WS_OVERLAPPED | WS_VISIBLE |
+               TBS_AUTOTICKS )
+    {
+    }
+    /** Specify the range values used
+        @param[in] min
+        @param[in] max
+
+        The values mut all be positive,
+        otherwise a runtime_error exception is thrown
+    */
+    void range( int min, int max )
+    {
+        if( min < 0 )
+            throw std::runtime_error("wex::slider positions must be positive");
+
+        SendMessage(
+            myHandle,
+            TBM_SETRANGE,
+            (WPARAM) TRUE,                   // redraw flag
+            (LPARAM) MAKELONG(min, max));  // min. & max. positions
+    }
+    /// Change the orientation to be vertical
+    void vertical()
+    {
+        SetWindowLongPtr(
+            myHandle,
+            GWL_STYLE,
+            GetWindowLongPtr( myHandle, GWL_STYLE) |  TBS_VERT );
     }
 };
 
