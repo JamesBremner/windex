@@ -114,7 +114,6 @@ public:
     }
     void onSlid(unsigned short id )
     {
-        std::cout << "OnSlid " << id << "\n";
         mySlidFunction( (int) id );
     }
     /////////////////////////// register event handlers /////////////////////
