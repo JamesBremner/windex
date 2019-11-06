@@ -4,9 +4,11 @@
 #include <vector>
 #include <map>
 #include <functional>
+#include <algorithm>
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <windows.h>
+#include <CommCtrl.h>
 
 namespace wex
 {
@@ -22,6 +24,8 @@ struct  sMouse
     int x;
     int y;
     bool left;
+    bool right;
+    bool shift;
 };
 
 
@@ -34,18 +38,26 @@ public:
     {
         // initialize functions with no-ops
         click([] {});
+        clickWex([] {});
         draw([](PAINTSTRUCT& ps) {});
         resize([](int w, int h) {});
         scrollH([](int c) {});
         scrollV([](int c) {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
+        mouseUp([] {});
         timer([] {});
+        slid([](int pos){});
     }
     bool onLeftdown()
     {
-        myClickFunction();
+        myClickFunWex();
+        myClickFunctionApp();
         return ! myfClickPropogate;
+    }
+    void onMouseUp()
+    {
+        myMouseUpFunction();
     }
     void onDraw( PAINTSTRUCT& ps )
     {
@@ -91,6 +103,19 @@ public:
     {
         myTimerFunction();
     }
+    bool onSelect(
+        unsigned short id )
+    {
+        auto it = mapControlFunction().find( std::make_pair(id,CBN_SELCHANGE));
+        if( it == mapControlFunction().end() )
+            return true;
+        it->second();
+        return true;
+    }
+    void onSlid(unsigned short id )
+    {
+        mySlidFunction( (int) id );
+    }
     /////////////////////////// register event handlers /////////////////////
 
     /** register click event handler
@@ -101,8 +126,12 @@ public:
         std::function<void(void)> f,
         bool propogate = false )
     {
-        myClickFunction = f;
+        myClickFunctionApp = f;
         myfClickPropogate = propogate;
+    }
+    void clickWex( std::function<void(void)> f )
+    {
+        myClickFunWex = f;
     }
     /// specify that click event should propogate to parent window after currently registered click event handler runs
     void clickPropogate( bool f = true)
@@ -136,6 +165,13 @@ public:
     {
         myMapMenuFunction.insert( std::make_pair( id, f ));
     }
+    void select(
+        int id,
+        std::function<void(void)> f )
+    {
+        mapControlFunction().insert(
+            std::make_pair( std::make_pair( id, CBN_SELCHANGE), f ));
+    }
     void mouseMove( std::function<void(sMouse& m)> f )
     {
         myMouseMoveFunction = f;
@@ -144,13 +180,23 @@ public:
     {
         myMouseWheelFunction = f;
     }
+    void mouseUp( std::function<void(void)> f )
+    {
+        myMouseUpFunction = f;
+    }
     void timer( std::function<void(void)> f )
     {
         myTimerFunction = f;
     }
+    void slid( std::function<void(int pos)> f )
+    {
+        mySlidFunction = f;
+    }
 private:
     bool myfClickPropogate;
-    std::function<void(void)> myClickFunction;
+
+    // event handlers registered by application code
+    std::function<void(void)> myClickFunctionApp;
     std::function<void(PAINTSTRUCT& ps)> myDrawFunction;
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
@@ -159,6 +205,21 @@ private:
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
     std::function<void(void)> myTimerFunction;
+    std::function<void(void)> myMouseUpFunction;
+    std::function<void(int pos)> mySlidFunction;
+
+    // event handlers registered by windex class
+    std::function<void(void)> myClickFunWex;
+
+    /// reference to application wide list of registered event handlers
+    /// mapped to control ids and notification code
+    std::map< std::pair<int,unsigned short>, std::function<void(void)> >&
+    mapControlFunction()
+    {
+        static std::map< std::pair<int,unsigned short>, std::function<void(void)> >
+        myMapControlFunction;
+        return myMapControlFunction;
+    }
 };
 
 /** @brief A class that offers application code methods to draw on a window.
@@ -192,6 +253,7 @@ public:
     shapes( PAINTSTRUCT& ps )
         : myHDC( ps.hdc )
         , myPenThick( 1 )
+        , myFill( false )
     {
         hPen = CreatePen(
                    PS_SOLID,
@@ -220,14 +282,29 @@ public:
                    PS_SOLID,
                    myPenThick,
                    c);
-        HGDIOBJ pen = SelectObject(myHDC, hPen);
-        DeleteObject( pen );
+        HGDIOBJ old = SelectObject(myHDC, hPen);
+        DeleteObject( old );
         SetTextColor( myHDC,  c);
+        HBRUSH brush = CreateSolidBrush( c );
+        old = SelectObject(myHDC, brush );
+        DeleteObject( old );
+    }
+    // set background color
+    void bgcolor( int c )
+    {
+        SetBkColor(
+            myHDC,
+            c );
     }
     /// Set pen thickness in pixels
     void penThick( int t )
     {
         myPenThick = t;
+    }
+    // Set filling option
+    void fill( bool f = true )
+    {
+        myFill = f;
     }
     /** Draw line between two points
         @param[in] v vector with x1, y1, x2, y2
@@ -250,28 +327,37 @@ public:
     */
     void rectangle( const std::vector<int>& v )
     {
-        MoveToEx(
-            myHDC,
-            v[0],
-            v[1],
-            NULL
-        );
-        LineTo(
-            myHDC,
-            v[0]+v[2],
-            v[1] );
-        LineTo(
-            myHDC,
-            v[0]+v[2],
-            v[1]+v[3] );
-        LineTo(
-            myHDC,
-            v[0],
-            v[1]+v[3] );
-        LineTo(
-            myHDC,
-            v[0],
-            v[1] );
+        if( ! myFill )
+        {
+            MoveToEx(
+                myHDC,
+                v[0],
+                v[1],
+                NULL
+            );
+            LineTo(
+                myHDC,
+                v[0]+v[2],
+                v[1] );
+            LineTo(
+                myHDC,
+                v[0]+v[2],
+                v[1]+v[3] );
+            LineTo(
+                myHDC,
+                v[0],
+                v[1]+v[3] );
+            LineTo(
+                myHDC,
+                v[0],
+                v[1] );
+        }
+        else
+        {
+            Rectangle(
+                myHDC,
+                v[0], v[1], v[0]+v[2], v[1]+v[3] );
+        }
     }
     /** Draw Arc of circle
 
@@ -327,6 +413,7 @@ private:
     int myPenThick;
     HGDIOBJ hPen;
     HGDIOBJ hPenOld;
+    bool myFill;
 };
 
 /// The base class for all windex gui elements
@@ -351,6 +438,7 @@ public:
         unsigned long style = WS_CHILD,
         unsigned long exstyle = 0 )
         : myParent( parent )
+        , myDeleteList( 0 )
     {
         myID = NewID();
         Create( parent->handle(), window_class, style, exstyle, myID );
@@ -359,7 +447,9 @@ public:
     }
     virtual ~gui()
     {
-        myDeleteList->push_back( myHandle );
+        std::cout << "deleting " << myText << "\n";
+        if( myDeleteList )
+            myDeleteList->push_back( myHandle );
     }
 
     // register child on this window
@@ -508,19 +598,25 @@ public:
         SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
     }
 
-    /** Get mouse position in window client area
-        @return pair containing x and y positions
+    /** Get mouse status
+        @return sMouse structure containing x and y positions, etx
     */
-    std::pair<int,int> getMousePosition()
+    sMouse getMouseStatus()
     {
+        sMouse m;
         POINT p;
         GetCursorPos( &p );
         if( ! ScreenToClient( myHandle, &p ) )
         {
-            p.x = -1;
-            p.y = -1;
+            m.x = -1;
+            m.y = -1;
         }
-        return std::make_pair( (int)p.x, (int)p.y );
+        m.x = p.x;
+        m.y = p.y;
+        m.left = (GetKeyState(VK_LBUTTON) < 0);
+        m.right = (GetKeyState(VK_RBUTTON) < 0);
+        m.shift = (GetKeyState(VK_SHIFT) < 0);
+        return m;
     }
     /** \brief Run the windows message loop
 
@@ -592,6 +688,7 @@ public:
 
             case WM_LBUTTONDOWN:
             case WM_RBUTTONDOWN:
+                //std::cout << "click on " << myText << "\n";
                 if( myEvents.onLeftdown() )
                     return true;
                 // the event was not completely handled, maybe the parent can look after it
@@ -603,6 +700,11 @@ public:
                         return true;
                 }
                 break;
+
+            case WM_LBUTTONUP:
+            case WM_RBUTTONUP:
+                myEvents.onMouseUp();
+                return true;
 
             case WM_MOUSEMOVE:
                 myEvents.onMouseMove( wParam, lParam );
@@ -626,13 +728,52 @@ public:
                 return false;
 
             case WM_HSCROLL:
+                if( lParam )
+                {
+                    if( LOWORD(wParam) == SB_THUMBPOSITION )
+                    {
+                        // this gui element has received a notification
+                        // that a slider has been dragged and released.
+                        // The slider is a child of this gui element
+                        // so find which child and call its slid event handler
+                        // with the new position
+                        for( auto c : myChild ) {
+                            if( c->handle() == (HWND)lParam ) {
+                                c->events().onSlid( HIWORD(wParam) );
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
                 myEvents.onScrollH( LOWORD (wParam) );
                 return true;
             case WM_VSCROLL:
+                if( lParam )
+                {
+                    if( LOWORD(wParam) == SB_THUMBPOSITION )
+                    {
+                        for( auto c : myChild ) {
+                            if( c->handle() == (HWND)lParam ) {
+                                c->events().onSlid( HIWORD(wParam) );
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
                 myEvents.onScrollV( LOWORD (wParam) );
                 return true;
 
             case WM_COMMAND:
+                if( lParam )
+                {
+                    if( HIWORD(wParam) == CBN_SELCHANGE )
+                    {
+                        return events().onSelect( LOWORD(wParam) );
+                    }
+                    return true;
+                }
                 events().onMenuCommand( wParam );
                 return true;
 
@@ -654,6 +795,7 @@ public:
         return false;
     }
 
+    /// Show window and all children
     virtual void show( bool f = true )
     {
         int cmd = SW_SHOWDEFAULT;
@@ -666,6 +808,7 @@ public:
             w->show( f );
     }
 
+    /// Show this window and suspend all other windows inteactions until this is closed
     void showModal()
     {
         myfModal = true;
@@ -680,7 +823,14 @@ public:
         }
     }
 
-    /// force widget to redraw completely
+    /** force widget to redraw completely
+
+    Windex makes no effort to auto update the screen display.
+    If application code alters something and the change should be seen immediatly
+    then update() should be called, either on the widget that has changed
+    or the top level winow that contains the changed widgets.
+
+    */
     void update()
     {
         InvalidateRect(myHandle,NULL,true);
@@ -904,6 +1054,7 @@ public:
     layout( gui* parent )
         : panel( parent )
         , myColCount( 2 )
+        , myfColFirst( false )
     {
 
     }
@@ -922,33 +1073,97 @@ public:
     {
         myColCount = cols;
     }
-    void show( bool f = true )
+    /** Specify column widths.
+        @param[in] vw vector of widths for each column
+    */
+    void colWidths( const std::vector<int>& vw )
     {
-        ShowWindow(myHandle,  SW_SHOWDEFAULT);
+        myWidths = vw;
+    }
+    /** Specify that widgets should be added to fill columns first
+        @param[in] f column first flag, defaault true
 
+        By default ( if this method is not called ) rows are filled first
+
+        <pre>
+         1    2
+         3    4
+         5    6
+         </pre>
+
+         In column first, the widgets are added like this
+
+         <pre>
+         1    4
+         2    5
+         3    6
+    */
+    void colfirst( bool f = true )
+    {
+        myfColFirst = f;
+    }
+    void draw( PAINTSTRUCT& ps )
+    {
         RECT r;
         GetClientRect(myHandle, &r );
-        int colwidth = (r.right - r.left) / myColCount;
-        int rowheight = ( r.bottom - r.top ) / ( ( myChild.size() + 1 ) / myColCount );
+        if( ! myWidths.size() )
+        {
+            // col widths not specified, default to all the same width to fill panel
+            int colwidth = (r.right - r.left) / myColCount;
+            for( int k = 0; k < myColCount; k++ )
+            {
+                myWidths.push_back( colwidth );
+            }
+        }
+        int rowheight;
+        if( ! myfColFirst )
+            rowheight = ( r.bottom - r.top ) / ( ( myChild.size() + 1 ) / myColCount );
+        else
+            rowheight = 50;
 
         // display the children laid out in a grid
         int colcount = 0;
         int rowcount = 0;
-        for( auto w : myChild )
-        {
-            w->move( colcount*colwidth, rowcount*rowheight );
-            w->show();
+        int x = 0;
 
-            colcount++;
-            if( colcount >= myColCount )
+        if( ! myfColFirst )
+        {
+            for( auto w : myChild )
             {
-                colcount = 0;
+                w->move( x, rowcount*rowheight );
+                w->update();
+
+                x += myWidths[colcount];
+                colcount++;
+                if( colcount >= myColCount )
+                {
+                    colcount = 0;
+                    x = 0;
+                    rowcount++;
+                }
+            }
+        }
+        else
+        {
+            for( auto w : myChild )
+            {
+                w->move( x, rowcount * rowheight );
+                w->update();
                 rowcount++;
+                if( rowcount >= (int)myChild.size() / myColCount )
+                {
+                    rowcount = 0;
+                    x += myWidths[colcount];
+                    colcount++;
+                }
             }
         }
     }
+
 private:
     int myColCount;
+    std::vector<int> myWidths;
+    bool myfColFirst;               // true if columns should be filled first
 };
 
 /// A widget that user can click to start an action.
@@ -957,20 +1172,46 @@ class button : public gui
 public:
     button( gui* parent )
         : gui( parent )
+        , myBitmap( NULL )
     {
 
     }
+    /// Specify image to be used for button
+    void image( const std::string& fname )
+    {
+        myBitmap  = (HBITMAP)LoadImage(
+                        NULL, fname.c_str(), IMAGE_BITMAP,
+                        0, 0, LR_LOADFROMFILE);
+    }
 protected:
+    HBITMAP myBitmap;
+
     /// draw - label inside rectangle
     virtual void draw( PAINTSTRUCT& ps )
     {
-        gui::draw( ps );
-        DrawEdge(
-            ps.hdc,
-            &ps.rcPaint,
-            EDGE_RAISED,
-            BF_RECT
-        );
+        if( ! myBitmap )
+        {
+            gui::draw( ps );
+            DrawEdge(
+                ps.hdc,
+                &ps.rcPaint,
+                EDGE_RAISED,
+                BF_RECT
+            );
+        }
+        else
+        {
+            HDC hLocalDC = CreateCompatibleDC(ps.hdc);
+            BITMAP qBitmap;
+            GetObject(reinterpret_cast<HGDIOBJ>(myBitmap), sizeof(BITMAP),
+                      reinterpret_cast<LPVOID>(&qBitmap));
+            HBITMAP hOldBmp = (HBITMAP)SelectObject(hLocalDC, myBitmap);
+            BitBlt(
+                ps.hdc, 0, 0, qBitmap.bmWidth, qBitmap.bmHeight,
+                hLocalDC, 0, 0, SRCCOPY);
+            SelectObject(hLocalDC, hOldBmp);
+            DeleteDC(hLocalDC);
+        }
     }
 };
 /// A widget that user can click to select one of an exclusive set of options
@@ -978,34 +1219,147 @@ class radiobutton : public gui
 {
 public:
     radiobutton( gui* parent )
-        : gui( parent, "button",
-               WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON )
+        : gui( parent )
+        , myValue( false )
     {
+        // Add to current group
+        group().back().push_back( this );
+        myGroup = group().size()-1;
+
+        // set the boolean value when clicked
+        events().clickWex([this]
+        {
+            // set all buttons in group false
+            for( auto b : group()[ myGroup ] )
+            {
+                b->myValue = false;
+                b->update();
+            }
+            // set this button true
+            myValue = true;
+            update();
+        });
     }
-    /** Make first radiobutton in a group
+    /** Make this button first of a new group
 
-    Clicking any radiobutton in a group will set that button
-    and clear the other buttons in the group
-    without effecting buttons in other groups.
+    The other buttons in a group will become false when one is clicked
+    but buttons in different groups will not be changed.
 
-    This must be called for the first radiobutton of the first group
-    if there will be more than one group.
+    All succeeding buttons,
+    those that were constructed after this button and remain in the same group,
+    are also moved to the new group.
 
-    This must be called before constructing the other buttons in the group.
     */
     void first()
     {
-        SetWindowLongPtr(
-            myHandle,
-            GWL_STYLE,
-            (LONG_PTR)WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP );
+        // find button in its group
+        auto this_it = std::find(
+                           group()[myGroup].begin(),
+                           group()[myGroup].end(),
+                           this );
+
+        if( this_it == group()[myGroup].end() )
+            throw std::runtime_error("wex::radiobutton::first error in group");
+
+        // if button is first in group, nothing is needed
+        if( this_it == group()[myGroup].begin() )
+            return;
+
+        // construct new group
+        std::vector< radiobutton * > g;
+        group().push_back( g );
+
+        // copy button and following buttons in same group to new group
+        for(
+            auto it = this_it;
+            it != group()[myGroup].end();
+            it++ )
+        {
+            group().back().push_back( *it );
+        }
+
+        // erase from old group
+        group()[myGroup].erase(
+            this_it,
+            group()[myGroup].end() );
+
+        // tell buttons that were moved about their new group
+        for( auto b : group().back() )
+            b->myGroup = group().size() - 1;
+
+//        std::cout << "< first\n";
+//        for( int kg=0; kg< group().size(); kg++ )
+//        {
+//            for( auto b : group()[kg] )
+//                std::cout << b->id() << " , " << b->text() << " ";
+//            std::cout << "\n";
+//        }
     }
 
+    /// true if checked
     bool isChecked()
     {
-        return ( IsDlgButtonChecked(
-                     myParent->handle(),
-                     myID ) == BST_CHECKED );
+        return myValue;
+    }
+
+    /// set value true( default ) or false
+    void check( bool f = true )
+    {
+        if( f )
+        {
+            // set all buttons in group false
+            for( auto b : group()[ myGroup ] )
+            {
+                b->myValue = false;
+                b->update();
+            }
+        }
+        myValue = f;
+        update();
+    }
+
+    virtual void draw( PAINTSTRUCT& ps )
+    {
+        SetBkColor(
+            ps.hdc,
+            myBGColor );
+        RECT r( ps.rcPaint );
+        r.left += 20;
+        shapes S( ps );
+
+        DrawText(
+            ps.hdc,
+            myText.c_str(),
+            -1,
+            &r,
+            0);
+        if( ! myValue )
+        {
+            S.circle( 10, 10, 5 );
+        }
+        else
+        {
+            SelectObject(ps.hdc, GetStockObject(BLACK_BRUSH));
+            Ellipse( ps.hdc, 5, 5, 15, 15 );
+        }
+    }
+private:
+    bool myValue;
+    int myGroup;            /// index of group button belongs to
+
+    /// get reference to radiobutton groups
+    std::vector< std::vector< radiobutton * > > & group()
+    {
+        static std::vector< std::vector< radiobutton * > > theGroups;
+        static bool fGroupInit = false;
+        if( ! fGroupInit )
+        {
+            // create first group
+            fGroupInit = true;
+            std::vector< radiobutton * > g;
+            theGroups.push_back( g );
+        }
+        return theGroups;
     }
 };
 /** @brief A widget that user can click to toggle a true/false value
@@ -1028,7 +1382,7 @@ public:
         , myValue( false )
     {
         // toggle the boolean value when clicked
-        events().click([this]
+        events().clickWex([this]
         {
             myValue = ! myValue;
             update();
@@ -1057,7 +1411,7 @@ public:
             myBGColor );
         RECT r( ps.rcPaint );
         int cbg = r.bottom-r.top-2;
-        r.left += cbg+2;
+        r.left += cbg+5;
         r.top  += 1;
         DrawText(
             ps.hdc,
@@ -1068,6 +1422,7 @@ public:
         shapes S( ps );
         S.rectangle( { 0,0, cbg, cbg} );
         S.penThick( 3 );
+        S.color( 0 );
         switch( myType )
         {
         case eType::check:
@@ -1171,6 +1526,13 @@ public:
                CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
+    /// Override move to ensure height is sufficient to allow dropdown to apprear
+    void move( int x, int y, int w, int h )
+    {
+        if( h < 100 )
+            h = 100;
+        gui::move( x, y, w, h );
+    }
     /// Add an option
     void add( const std::string& s )
     {
@@ -1191,12 +1553,22 @@ public:
     /** Select by index
         @param[in] i index of item to selecct, -1 clears selection
     */
-    void Select( int i )
+    void select( int i )
     {
         SendMessage(
             handle(),
             CB_SETCURSEL,
             (WPARAM)i, (LPARAM)0);
+    }
+    /** Select by string
+        @param[in] s the string to select
+    */
+    void select( const std::string& s )
+    {
+        SendMessage(
+            handle(),
+            CB_SELECTSTRING,
+            (WPARAM)-1, (LPARAM)s.c_str());
     }
     /// get index of selected item
     int SelectedIndex()
@@ -1320,6 +1692,7 @@ public:
         // add to existing gui elements
         myGui.insert( std::make_pair( g->handle(), g ));
     }
+
 
 private:
     mgui_t myGui;                       ///< map of existing gui elements
@@ -1447,7 +1820,7 @@ public:
         const std::function<void(void)>& f = [] {})
     {
         // add item to menu
-        auto mi = myf.size();
+        auto mi = CommandHandlers().size();
         AppendMenu(
             myM,
             0,
@@ -1455,10 +1828,24 @@ public:
             title.c_str());
 
         // store function to run when menu item clicked in popup
-        myf.push_back( f );
+        CommandHandlers().push_back( f );
 
         // store function to run when menu item click in menubar
         myParent.events().menuCommand( mi, f );
+    }
+    /** Append submenu
+        @param[in] title
+        @param[in] submenu
+    */
+    void append(
+        const std::string& title,
+        menu& submenu )
+    {
+        AppendMenu(
+            myM,
+            MF_POPUP,
+            (UINT_PTR)submenu.handle(),
+            title.c_str());
     }
     /** Popup menu and run user selection.
         @param[in] x location
@@ -1477,8 +1864,8 @@ public:
                     myParent.handle(),
                     NULL    );
         // if user clicked item, execute associated function
-        if( 0 <= i && i < myf.size() )
-            myf[i]();
+        if( 0 <= i && i < (int)CommandHandlers().size() )
+            CommandHandlers()[i]();
     }
     HMENU handle()
     {
@@ -1486,8 +1873,13 @@ public:
     }
 private:
     HMENU myM;
-    std::vector< std::function<void(void)> > myf;
     gui& myParent;
+
+    std::vector< std::function<void(void)> >& CommandHandlers()
+    {
+        static std::vector< std::function<void(void)> > myf;
+        return myf;
+    }
 };
 
 /// A widget that displays across top of a window and contains a number of dropdown menues.
@@ -1531,6 +1923,84 @@ public:
             1,            // timer identifier
             intervalmsecs,                 //  interval ms
             (TIMERPROC) NULL);     // no timer callback
+    }
+};
+/** A widget which user can drag to change a value.
+
+<pre>
+    // construct top level window
+    gui& form = wex::windex::topWindow();
+    form.move({ 50,50,500,400});
+    form.text("Slider demo");
+
+    // construct labels to display values when sliders are moved
+    wex::label& label = wex::make<wex::label>(form);
+    label.move( 200, 200, 100,30 );
+    label.text("");
+    wex::label& vlabel = wex::make<wex::label>(form);
+    vlabel.move( 200, 240, 100,30 );
+    vlabel.text("");
+
+    // construct horizontal slider
+    wex::slider& S = wex::make<wex::slider>( form );
+    S.move({ 50,50,400,50});
+    S.range( 0, 100 );
+    S.text("horiz slider");
+    S.events().slid([&](int pos)
+    {
+        label.text("horiz value: " + std::to_string( pos ));
+        label.update();
+    });
+
+    // construct vertical slider
+    wex::slider& V = wex::make<wex::slider>( form );
+    V.move({ 50,100,50,400});
+    V.range( 0, 10 );
+    V.vertical();
+    V.events().slid([&](int pos)
+    {
+        vlabel.text("vert value: " + std::to_string( pos ));
+        vlabel.update();
+    });
+
+    form.show();
+</pre>
+*/
+
+class slider : public gui
+{
+public:
+    slider( gui* parent )
+        : gui( parent, "msctls_trackbar32",
+               WS_CHILD | WS_OVERLAPPED | WS_VISIBLE |
+               TBS_AUTOTICKS )
+    {
+    }
+    /** Specify the range values used
+        @param[in] min
+        @param[in] max
+
+        The values mut all be positive,
+        otherwise a runtime_error exception is thrown
+    */
+    void range( int min, int max )
+    {
+        if( min < 0 )
+            throw std::runtime_error("wex::slider positions must be positive");
+
+        SendMessage(
+            myHandle,
+            TBM_SETRANGE,
+            (WPARAM) TRUE,                   // redraw flag
+            (LPARAM) MAKELONG(min, max));  // min. & max. positions
+    }
+    /// Change the orientation to be vertical
+    void vertical()
+    {
+        SetWindowLongPtr(
+            myHandle,
+            GWL_STYLE,
+            GetWindowLongPtr( myHandle, GWL_STYLE) |  TBS_VERT );
     }
 };
 

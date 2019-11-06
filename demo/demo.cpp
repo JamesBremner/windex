@@ -59,9 +59,18 @@ void choiceDemo()
 
     // display combobox
     choice& cb = wex::make<choice>( form );
-    cb.move({20, 50, 150, 130 });
+    cb.move(20, 50, 150, 130 );
     cb.add("Alpha");
     cb.add("Beta");
+    cb.select(-1);
+    cb.events().select( cb.id(), [&]
+    {
+        msgbox(
+            form,
+            cb.SelectedText() );
+    });
+    std::cout << "choice handle " << cb.handle()
+              <<" "<< cb.id() << "\n";
 
     // display a button
     button& btn = wex::make<button>( form );
@@ -97,6 +106,9 @@ void drawDemo()
         S.color(0,0,255);
         S.circle( 100,100,40);
         S.arc( 100,100,30, 0, 90 );
+
+        S.fill();
+        S.rectangle(  { 200,20,20,20});
     });
 
     form.show();
@@ -202,28 +214,37 @@ void RBDemo()
     form.move({ 50,50,400,400});
     form.text("A windex radiobutton");
 
+    wex::groupbox& P = wex::make<wex::groupbox>( form );
+    P.move( 5, 5, 350,350 );
+
+    // use laypout to atomatically arrange buttons in columns
+    wex::layout& L = wex::make<wex::layout>(P  );
+    L.move( 50, 50,300,300);
+    L.grid( 2 );                // specify 2 columns
+    L.colfirst();               // specify column first order
+
     // first group of radiobuttons
-    radiobutton& rb1 = wex::make<radiobutton>(form);
-    rb1.first();
+    radiobutton& rb1 = wex::make<radiobutton>(L);
+    rb1.first();                // first in group of interacting buttons
     rb1.move( {20,20,100,30} );
     rb1.text("Alpha");
-    radiobutton& rb2 = wex::make<radiobutton>(form);
+    radiobutton& rb2 = wex::make<radiobutton>(L);
     rb2.move( {20,60,100,30} );
     rb2.text("Beta");
-    radiobutton& rb3 = wex::make<radiobutton>(form);
+    radiobutton& rb3 = wex::make<radiobutton>(L);
     rb3.move( {20,100,100,30} );
     rb3.text("Gamma");
 
     // second group of radio buttons
-    radiobutton& rb4 = wex::make<radiobutton>(form);
-    rb4.first();
-    rb4.move( {150,20,100,30} );
+    radiobutton& rb4 = wex::make<radiobutton>(L);
+    rb4.first();                // first in group of interacting buttons
+    rb4.size( 100,30 );
     rb4.text("X");
-    radiobutton& rb5 = wex::make<radiobutton>(form);
-    rb5.move( {150,60,100,30} );
+    radiobutton& rb5 = wex::make<radiobutton>(L);
+    rb5.size( 100,30 );
     rb5.text("Y");
-    radiobutton& rb6 = wex::make<radiobutton>(form);
-    rb6.move( {150,100,100,30} );
+    radiobutton& rb6 = wex::make<radiobutton>(L);
+    rb6.size( 100,30 );
     rb6.text("Z");
 
     // display a button
@@ -265,6 +286,13 @@ void CBDemo()
     checkbox& rb1 = wex::make<checkbox>(form);
     rb1.move( {20,20,100,20} );
     rb1.text("Alpha");
+    rb1.events().click([&]
+    {
+        if( rb1.isChecked() )
+            msgbox( form, "Alpha clicked true") ;
+        else
+            msgbox( form, "Alpha clicked false") ;
+    });
     checkbox& rb2 = wex::make<checkbox>(form);
     rb2.plus();
     rb2.move( {20,60,100,30} );
@@ -339,7 +367,46 @@ void ScrollDemo()
     label& lbB = wex::make<label>( form );
     lbB.move( {20, 460, 500, 30 } );
     lbB.text("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");;
-    \
+
+    form.show();
+}
+
+void SliderDemo()
+{
+    // construct top level window
+    gui& form = wex::windex::topWindow();
+    form.move({ 50,50,500,400});
+    form.text("Slider demo");
+
+    // construct labels to display values when sliders are moved
+    wex::label& label = wex::make<wex::label>(form);
+    label.move( 200, 200, 100,30 );
+    label.text("");
+    wex::label& vlabel = wex::make<wex::label>(form);
+    vlabel.move( 200, 240, 100,30 );
+    vlabel.text("");
+
+    // construct horizontal slider
+    wex::slider& S = wex::make<wex::slider>( form );
+    S.move({ 50,50,400,50});
+    S.range( 0, 100 );
+    S.text("horiz slider");
+    S.events().slid([&](int pos)
+    {
+        label.text("horiz value: " + std::to_string( pos ));
+        label.update();
+    });
+
+    // construct vertical slider
+    wex::slider& V = wex::make<wex::slider>( form );
+    V.move({ 50,100,50,400});
+    V.range( 0, 10 );
+    V.vertical();
+    V.events().slid([&](int pos)
+    {
+        vlabel.text("vert value: " + std::to_string( pos ));
+        vlabel.update();
+    });
 
     form.show();
 }
@@ -484,6 +551,13 @@ int main()
     l.move( {20,20,400,400} );
     l.grid( 2 );
 
+    // handle resize
+    form.events().resize([&]( int w, int h )
+    {
+        l.size(w,h);
+        l.update();
+    });
+
     // display a button
     button& btnhello = wex::make<button>( l );
     btnhello.size( 150, 30 );
@@ -578,6 +652,14 @@ int main()
     btnplot.events().click([&]
     {
         PlotDemo();
+    });
+
+    button& btnslider = wex::make<button>( l );
+    btnslider.size(  150, 30 );
+    btnslider.text( "Slider" );
+    btnslider.events().click([&]
+    {
+        SliderDemo();
     });
 
     // show the application

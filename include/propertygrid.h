@@ -101,14 +101,17 @@ public:
             break;
         case eType::choice:
             re[3] *= myCombobox.count();
-            myCombobox.move( re );
+            myCombobox.move( re[0], re[1], re[2], re[3] );
             break;
         case eType::check:
             myCheckbox.move( re );
             break;
         case eType::category:
+            re = r;
+            re[1] += 0.5 * re[3];
+            re[3] /= 2;
+            myCategoryExpanded.move( re );
             myLabel.move({0,0,0,0});        // keep unused label out of the way
-            myCategoryExpanded.move( r );
             break;
         }
     }
@@ -291,9 +294,9 @@ public:
             if( p.name() == name &&
                     p.isCategory() )
             {
-               p.expand( fexpand );
-               visible();
-               return;
+                p.expand( fexpand );
+                visible();
+                return;
             }
         }
     }
@@ -314,13 +317,41 @@ public:
             p.update();
     }
 
-    /// get pointer to property with name
+    /// get pointer to first property with name, ignoring categories
     property* find( const std::string& name )
     {
         for( auto& p : myProperty )
         {
             if( p.name() == name )
                 return &p;
+        }
+        return nullptr;
+    }
+
+    /// get pointer to first property with name in a category
+    property* find(
+        const std::string& category,
+        const std::string& name)
+    {
+        for( auto p = myProperty.begin();
+                p != myProperty.end();
+                p++ )
+        {
+            if( p->isCategory() )
+            {
+                if( p->name() == category )
+                {
+                    for( p++;
+                        p != myProperty.end();
+                        p++ )
+                    {
+                        if( p->isCategory() )
+                            return nullptr;
+                        if( p->name() == name)
+                            return &(*p);
+                    }
+                }
+            }
         }
         return nullptr;
     }

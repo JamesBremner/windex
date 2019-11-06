@@ -47,7 +47,7 @@ public:
         showModal();
     }
     /// get value saved in property attribute
-    std::string value( const std::string& name )
+    std::string value ( const std::string& name )
     {
         auto p = myGrid.find( name );
         return p->savedValue();
