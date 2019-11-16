@@ -47,7 +47,7 @@ public:
         mouseWheel([](int dist) {});
         mouseUp([] {});
         timer([] {});
-        slid([](int pos){});
+        slid([](int pos) {});
     }
     bool onLeftdown()
     {
@@ -481,6 +481,22 @@ public:
         DeleteObject( myBGBrush);
         myBGBrush = CreateSolidBrush( color );
     }
+
+    /** Change icon
+        @param[in] iconfilename
+
+        Use to set the application icon in the taskbar
+    */
+    void icon( const std::string& iconfilename )
+    {
+        SetClassLongPtr(
+            myHandle,
+            GCLP_HICON,
+            (LONG_PTR) ExtractIconA(
+                NULL,
+                iconfilename.c_str(),
+                0 ) );
+    }
     int id()
     {
         return myID;
@@ -737,8 +753,10 @@ public:
                         // The slider is a child of this gui element
                         // so find which child and call its slid event handler
                         // with the new position
-                        for( auto c : myChild ) {
-                            if( c->handle() == (HWND)lParam ) {
+                        for( auto c : myChild )
+                        {
+                            if( c->handle() == (HWND)lParam )
+                            {
                                 c->events().onSlid( HIWORD(wParam) );
                                 return true;
                             }
@@ -753,8 +771,10 @@ public:
                 {
                     if( LOWORD(wParam) == SB_THUMBPOSITION )
                     {
-                        for( auto c : myChild ) {
-                            if( c->handle() == (HWND)lParam ) {
+                        for( auto c : myChild )
+                        {
+                            if( c->handle() == (HWND)lParam )
+                            {
                                 c->events().onSlid( HIWORD(wParam) );
                                 return true;
                             }
