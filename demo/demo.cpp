@@ -179,6 +179,11 @@ void PGDemo()
             msg );
     });
 
+    pg.events().click([&]
+    {
+        msgbox( form, "pg click");
+    });
+
     form.showModal();
 }
 
