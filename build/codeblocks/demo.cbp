@@ -37,12 +37,14 @@
 		<Linker>
 			<Add library="gdi32" />
 			<Add library="comdlg32" />
+			<Add library="gdiplus" />
 		</Linker>
 		<Unit filename="../../demo/demo.cpp" />
 		<Unit filename="../../include/inputbox.h" />
 		<Unit filename="../../include/plot2d.h" />
 		<Unit filename="../../include/propertygrid.h" />
 		<Unit filename="../../include/wex.h" />
+		<Unit filename="../../include/window2file.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -4,6 +4,7 @@
 #include "propertygrid.h"
 #include "inputbox.h"
 #include "plot2d.h"
+#include "window2file.h"
 using namespace wex;
 
 void helloworld()
@@ -177,6 +178,11 @@ void PGDemo()
         msgbox(
             form,
             msg );
+    });
+
+    pg.events().click([&]
+    {
+        msgbox( form, "pg click");
     });
 
     form.showModal();
@@ -660,6 +666,15 @@ int main()
     btnslider.events().click([&]
     {
         SliderDemo();
+    });
+
+    button& btnpng = wex::make<button>( l );
+    btnpng.size(  150, 30 );
+    btnpng.text( "Save to demo.png" );
+    btnpng.events().click([&]
+    {
+        window2file w2f;
+        w2f.save( form, "demo.png" );
     });
 
     // show the application

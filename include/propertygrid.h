@@ -44,6 +44,7 @@ public:
         myLabel.text( myName );
         myCheckbox.check( value );
         myCheckbox.text("");
+        myCheckbox.events().clickPropogate();
     }
     property(
         gui* parent,

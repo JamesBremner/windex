@@ -47,7 +47,7 @@ public:
         mouseWheel([](int dist) {});
         mouseUp([] {});
         timer([] {});
-        slid([](int pos){});
+        slid([](int pos) {});
     }
     bool onLeftdown()
     {
@@ -481,6 +481,22 @@ public:
         DeleteObject( myBGBrush);
         myBGBrush = CreateSolidBrush( color );
     }
+
+    /** Change icon
+        @param[in] iconfilename
+
+        Use to set the application icon in the taskbar
+    */
+    void icon( const std::string& iconfilename )
+    {
+        SetClassLongPtr(
+            myHandle,
+            GCLP_HICON,
+            (LONG_PTR) ExtractIconA(
+                NULL,
+                iconfilename.c_str(),
+                0 ) );
+    }
     int id()
     {
         return myID;
@@ -737,8 +753,10 @@ public:
                         // The slider is a child of this gui element
                         // so find which child and call its slid event handler
                         // with the new position
-                        for( auto c : myChild ) {
-                            if( c->handle() == (HWND)lParam ) {
+                        for( auto c : myChild )
+                        {
+                            if( c->handle() == (HWND)lParam )
+                            {
                                 c->events().onSlid( HIWORD(wParam) );
                                 return true;
                             }
@@ -753,8 +771,10 @@ public:
                 {
                     if( LOWORD(wParam) == SB_THUMBPOSITION )
                     {
-                        for( auto c : myChild ) {
-                            if( c->handle() == (HWND)lParam ) {
+                        for( auto c : myChild )
+                        {
+                            if( c->handle() == (HWND)lParam )
+                            {
                                 c->events().onSlid( HIWORD(wParam) );
                                 return true;
                             }
@@ -1047,7 +1067,7 @@ public:
     }
 };
 
-/// A panel which arrarnges the widgets it contains in a grid
+/// \brief A panel which arranges the widgets it contains in a grid.
 class layout : public panel
 {
 public:
@@ -1771,7 +1791,7 @@ private:
     std::string myfname;
 };
 
-/** A drop down list of options that user can click to start an action.
+/** \brief A drop down list of options that user can click to start an action.
 
 <pre>
     // construct top level window
@@ -1912,7 +1932,7 @@ private:
     gui& myParent;
     HMENU myM;
 };
-/** Generate events at regularly timed intervals.
+/** \brief Generate events at regularly timed intervals.
 
 <pre>
     myDriveTimer = new wex::timer( fm, 50 );
@@ -1940,7 +1960,7 @@ public:
             (TIMERPROC) NULL);     // no timer callback
     }
 };
-/** A widget which user can drag to change a value.
+/** A \brief widget which user can drag to change a value.
 
 <pre>
     // construct top level window
