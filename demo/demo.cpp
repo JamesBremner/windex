@@ -669,9 +669,9 @@ int main()
     });
 
     button& btnpng = wex::make<button>( l );
-    btnslider.size(  150, 30 );
-    btnslider.text( "Save to demo.png" );
-    btnslider.events().click([&]
+    btnpng.size(  150, 30 );
+    btnpng.text( "Save to demo.png" );
+    btnpng.events().click([&]
     {
         window2file w2f;
         w2f.save( form, "demo.png" );

@@ -1067,7 +1067,7 @@ public:
     }
 };
 
-/// A panel which arrarnges the widgets it contains in a grid
+/// \brief A panel which arranges the widgets it contains in a grid.
 class layout : public panel
 {
 public:
@@ -1791,7 +1791,7 @@ private:
     std::string myfname;
 };
 
-/** A drop down list of options that user can click to start an action.
+/** \brief A drop down list of options that user can click to start an action.
 
 <pre>
     // construct top level window
@@ -1932,7 +1932,7 @@ private:
     gui& myParent;
     HMENU myM;
 };
-/** Generate events at regularly timed intervals.
+/** \brief Generate events at regularly timed intervals.
 
 <pre>
     myDriveTimer = new wex::timer( fm, 50 );
@@ -1960,7 +1960,7 @@ public:
             (TIMERPROC) NULL);     // no timer callback
     }
 };
-/** A widget which user can drag to change a value.
+/** A \brief widget which user can drag to change a value.
 
 <pre>
     // construct top level window

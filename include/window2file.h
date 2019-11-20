@@ -5,6 +5,10 @@
 #include "wex.h"
 namespace wex
 {
+    /** \brief save window contents to an image file in PNG format.
+
+    Add library gdiplus to linker library list
+    */
 class window2file
 {
 public:
@@ -13,7 +17,6 @@ public:
         using namespace Gdiplus;
 
         GdiplusStartupInput gdiplusStartupInput;
-
         GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
         UINT  num = 0;
@@ -46,13 +49,14 @@ public:
     {
         Gdiplus::GdiplusShutdown(gdiplusToken);
     }
+
+    /** Save window contents to image file
+        @param[in] w the window to save
+        @param[in] filename to save to
+    */
     void save( gui& w, const std::string& filename )
     {
         using namespace Gdiplus;
-
-        GdiplusStartupInput gdiplusStartupInput;
-        ULONG_PTR gdiplusToken;
-        GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
         HDC  memdc;
         HBITMAP membit;
