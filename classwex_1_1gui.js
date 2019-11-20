@@ -14,6 +14,7 @@ var classwex_1_1gui =
     [ "find", "classwex_1_1gui.html#a61a57c4c9da7d8ae46383fe5507b08db", null ],
     [ "getMouseStatus", "classwex_1_1gui.html#ad6555f709577418760b1485f2c1b8ebb", null ],
     [ "handle", "classwex_1_1gui.html#a93349cbd28fb50067b965d54f7c3fa34", null ],
+    [ "icon", "classwex_1_1gui.html#a590ea5a21ec6c78b56d5187637f938d3", null ],
     [ "id", "classwex_1_1gui.html#a6e3cd96e949377f1c0aeb2ac812af40a", null ],
     [ "move", "classwex_1_1gui.html#a44fb9d06fdb73260e3f155c4cac6886c", null ],
     [ "move", "classwex_1_1gui.html#aca683392ec4207f17ec4a696f638f289", null ],

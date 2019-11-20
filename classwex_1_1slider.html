@@ -88,7 +88,7 @@ $(document).ready(function(){initNavTree('classwex_1_1slider.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>A widget which user can drag to change a value.  
+<p>A.  
  <a href="classwex_1_1slider.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="wex_8h_source.html">wex.h</a>&gt;</code></p>
@@ -128,6 +128,9 @@ children_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>children<
 <tr class="memitem:adaf4ee784a232178cc304f1a35208345 inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#adaf4ee784a232178cc304f1a35208345">bgcolor</a> (int color)</td></tr>
 <tr class="memdesc:adaf4ee784a232178cc304f1a35208345 inherit pub_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change background color.  <a href="classwex_1_1gui.html#adaf4ee784a232178cc304f1a35208345">More...</a><br /></td></tr>
 <tr class="separator:adaf4ee784a232178cc304f1a35208345 inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a590ea5a21ec6c78b56d5187637f938d3 inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a590ea5a21ec6c78b56d5187637f938d3">icon</a> (const std::string &amp;iconfilename)</td></tr>
+<tr class="memdesc:a590ea5a21ec6c78b56d5187637f938d3 inherit pub_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change icon.  <a href="classwex_1_1gui.html#a590ea5a21ec6c78b56d5187637f938d3">More...</a><br /></td></tr>
+<tr class="separator:a590ea5a21ec6c78b56d5187637f938d3 inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e3cd96e949377f1c0aeb2ac812af40a inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="a6e3cd96e949377f1c0aeb2ac812af40a"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>id</b> ()</td></tr>
 <tr class="separator:a6e3cd96e949377f1c0aeb2ac812af40a inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -242,7 +245,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:ac4eb62c95293f3346ba8629594c94eaf inherit pro_attribs_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A widget which user can drag to change a value. </p>
+<div class="textblock"><p>A. </p>
+<p>widget which user can drag to change a value.</p>
 <pre>
     // construct top level window
     gui&amp; form = <a class="el" href="classwex_1_1windex.html#a5fe976f60057ae85f1034c12559336eb" title="Construct a top level window ( first call constructs application window ) ">wex::windex::topWindow()</a>;
@@ -254,7 +258,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <a class="el" href="classwex_1_1label.html" title="A widget that displays a string. ">wex::label</a>&amp; vlabel = wex::make&lt;wex::label&gt;(form);
     vlabel.move( 200, 240, 100,30 );
     vlabel.text("");</pre><pre>    // construct horizontal slider
-    <a class="el" href="classwex_1_1slider.html" title="A widget which user can drag to change a value. ">wex::slider</a>&amp; S = wex::make&lt;wex::slider&gt;( form );
+    <a class="el" href="classwex_1_1slider.html" title="A. ">wex::slider</a>&amp; S = wex::make&lt;wex::slider&gt;( form );
     S.move({ 50,50,400,50});
     S.range( 0, 100 );
     S.text("horiz slider");
@@ -263,7 +267,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         label.text("horiz value: " + std::to_string( pos ));
         <a class="el" href="classwex_1_1gui.html#a12afe321b01f6fabf33a06920a033dbc" title="force widget to redraw completely ">label.update()</a>;
     });</pre><pre>    // construct vertical slider
-    <a class="el" href="classwex_1_1slider.html" title="A widget which user can drag to change a value. ">wex::slider</a>&amp; V = wex::make&lt;wex::slider&gt;( form );
+    <a class="el" href="classwex_1_1slider.html" title="A. ">wex::slider</a>&amp; V = wex::make&lt;wex::slider&gt;( form );
     V.move({ 50,100,50,400});
     V.range( 0, 10 );
     V.vertical();
@@ -327,7 +331,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1slider.html">slider</a></li>
-    <li class="footer">Generated on Wed Nov 6 2019 13:19:18 for windex by
+    <li class="footer">Generated on Wed Nov 20 2019 17:34:49 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>
