@@ -1117,6 +1117,7 @@ public:
          1    4
          2    5
          3    6
+         </pre>
     */
     void colfirst( bool f = true )
     {
@@ -1757,8 +1758,6 @@ class filebox
 public:
     filebox( gui& parent )
     {
-        OPENFILENAME ofn;       // common dialog box structure
-        char szFile[260];       // buffer for file name
 
 // Initialize OPENFILENAME
         ZeroMemory(&ofn, sizeof(ofn));
@@ -1775,19 +1774,40 @@ public:
         ofn.nMaxFileTitle = 0;
         ofn.lpstrInitialDir = NULL;
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+    }
 
-// Display the Open dialog box.
-
+    /** \brief prompt user for file to open
+        @return path to file to be opened, "" if cancelled
+    */
+    std::string open()
+    {
         if (GetOpenFileName(&ofn)==TRUE)
         {
-            myfname = ofn.lpstrFile;
+             myfname = ofn.lpstrFile;
         }
+        else
+            myfname = "";
+        return myfname;
     }
+    /** \brief prompt user for folder and filename to save
+        @return path to file to be saved, "" if cancelled
+    */
+    std::string save()
+    {
+        if( GetSaveFileName(&ofn) == TRUE)
+            myfname = ofn.lpstrFile;
+        else
+            myfname = "";
+        return myfname;
+    }
+    /// get filename entered by user
     std::string path() const
     {
         return myfname;
     }
 private:
+    OPENFILENAME ofn;       // common dialog box structure
+    char szFile[260];       // buffer for file name
     std::string myfname;
 };
 
@@ -1960,7 +1980,7 @@ public:
             (TIMERPROC) NULL);     // no timer callback
     }
 };
-/** A \brief widget which user can drag to change a value.
+/** \brief A widget which user can drag to change a value.
 
 <pre>
     // construct top level window
