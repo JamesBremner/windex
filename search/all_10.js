@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['update',['update',['../classwex_1_1gui.html#a12afe321b01f6fabf33a06920a033dbc',1,'wex::gui::update()'],['../classwex_1_1property.html#a49fb480857d47dc7e474f533fded9a51',1,'wex::property::update()'],['../classwex_1_1property_grid.html#a7982de0d0ce0a9480c603872e11e93f2',1,'wex::propertyGrid::update()']]]
+  ['timer',['timer',['../classwex_1_1timer.html',1,'wex::timer'],['../classwex_1_1timer.html#a4dc30f81c32678ed09ec06f905786eb8',1,'wex::timer::timer()']]],
+  ['topwindow',['topWindow',['../classwex_1_1windex.html#a5fe976f60057ae85f1034c12559336eb',1,'wex::windex']]],
+  ['trace',['trace',['../classwex_1_1plot_1_1trace.html',1,'wex::plot']]]
 ];

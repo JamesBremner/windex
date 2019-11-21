@@ -98,13 +98,77 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac31590568f29e2b087e026ed3e286e34"><td class="memItemLeft" align="right" valign="top"><a id="ac31590568f29e2b087e026ed3e286e34"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>filebox</b> (<a class="el" href="classwex_1_1gui.html">gui</a> &amp;parent)</td></tr>
 <tr class="separator:ac31590568f29e2b087e026ed3e286e34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bc1502dfe09a8a19fd9dcfa8b6bd25a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">open</a> ()</td></tr>
+<tr class="memdesc:a7bc1502dfe09a8a19fd9dcfa8b6bd25a"><td class="mdescLeft">&#160;</td><td class="mdescRight">prompt user for file to open  <a href="#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">More...</a><br /></td></tr>
+<tr class="separator:a7bc1502dfe09a8a19fd9dcfa8b6bd25a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaaa7a6e971840cd8e23cd8c93846929"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1filebox.html#aeaaa7a6e971840cd8e23cd8c93846929">save</a> ()</td></tr>
+<tr class="memdesc:aeaaa7a6e971840cd8e23cd8c93846929"><td class="mdescLeft">&#160;</td><td class="mdescRight">prompt user for folder and filename to save  <a href="#aeaaa7a6e971840cd8e23cd8c93846929">More...</a><br /></td></tr>
+<tr class="separator:aeaaa7a6e971840cd8e23cd8c93846929"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ddf3950a7af50786fb7bc4d84472d09"><td class="memItemLeft" align="right" valign="top"><a id="a3ddf3950a7af50786fb7bc4d84472d09"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>path</b> () const</td></tr>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1filebox.html#a3ddf3950a7af50786fb7bc4d84472d09">path</a> () const</td></tr>
+<tr class="memdesc:a3ddf3950a7af50786fb7bc4d84472d09"><td class="mdescLeft">&#160;</td><td class="mdescRight">get filename entered by user <br /></td></tr>
 <tr class="separator:a3ddf3950a7af50786fb7bc4d84472d09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A popup window where used can browse folders and select a file. </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7bc1502dfe09a8a19fd9dcfa8b6bd25a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">&#9670;&nbsp;</a></span>open()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string wex::filebox::open </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>prompt user for file to open </p>
+<dl class="section return"><dt>Returns</dt><dd>path to file to be opened, "" if cancelled </dd></dl>
+
+</div>
+</div>
+<a id="aeaaa7a6e971840cd8e23cd8c93846929"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeaaa7a6e971840cd8e23cd8c93846929">&#9670;&nbsp;</a></span>save()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string wex::filebox::save </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>prompt user for folder and filename to save </p>
+<dl class="section return"><dt>Returns</dt><dd>path to file to be saved, "" if cancelled </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="wex_8h_source.html">wex.h</a></li>
 </ul>
 </div><!-- contents -->
@@ -113,7 +177,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>path</b> () co
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1filebox.html">filebox</a></li>
-    <li class="footer">Generated on Wed Nov 20 2019 17:34:48 for windex by
+    <li class="footer">Generated on Thu Nov 21 2019 13:20:55 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

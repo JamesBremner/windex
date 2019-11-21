@@ -27,6 +27,7 @@ var annotated_dup =
       [ "slider", "classwex_1_1slider.html", "classwex_1_1slider" ],
       [ "sMouse", "structwex_1_1s_mouse.html", "structwex_1_1s_mouse" ],
       [ "timer", "classwex_1_1timer.html", "classwex_1_1timer" ],
-      [ "windex", "classwex_1_1windex.html", "classwex_1_1windex" ]
+      [ "windex", "classwex_1_1windex.html", "classwex_1_1windex" ],
+      [ "window2file", "classwex_1_1window2file.html", "classwex_1_1window2file" ]
     ] ]
 ];

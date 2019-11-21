@@ -26,5 +26,6 @@ var hierarchy =
     [ "wex::sMouse", "structwex_1_1s_mouse.html", null ],
     [ "wex::timer", "classwex_1_1timer.html", null ],
     [ "wex::plot::trace", "classwex_1_1plot_1_1trace.html", null ],
-    [ "wex::windex", "classwex_1_1windex.html", null ]
+    [ "wex::windex", "classwex_1_1windex.html", null ],
+    [ "wex::window2file", "classwex_1_1window2file.html", null ]
 ];
