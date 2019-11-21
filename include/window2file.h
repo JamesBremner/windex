@@ -67,7 +67,7 @@ public:
         int Width = rcClient.right-rcClient.left;
         memdc = CreateCompatibleDC(scrdc);
         membit = CreateCompatibleBitmap(scrdc, Width, Height);
-        HBITMAP hOldBitmap =(HBITMAP) SelectObject(memdc, membit);
+        SelectObject(memdc, membit);
         BitBlt(memdc, 0, 0, Width, Height, scrdc, 0, 0, SRCCOPY);
 
         Gdiplus::Bitmap bitmap(membit, NULL);

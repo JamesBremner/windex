@@ -261,6 +261,16 @@ public:
                    RGB(0,0,0));
         hPenOld =  SelectObject(myHDC, hPen);
 
+        myLogfont = {0};
+        HANDLE hFont;
+        ZeroMemory(&myLogfont, sizeof(LOGFONT));
+        myLogfont.lfWeight = FW_NORMAL;
+        strcpy(myLogfont.lfFaceName, "Tahoma");
+        myLogfont.lfHeight = 20;
+        hFont = CreateFontIndirect (&myLogfont);
+        hFont = (HFONT)SelectObject (myHDC, hFont);
+        DeleteObject( hFont );
+
     }
     ~shapes()
     {
@@ -408,12 +418,34 @@ public:
             &rc,
             DT_NOCLIP);
     }
+    /// Enable / disable drawing text in vertical orientation
+    void textVertical( bool f = true )
+    {
+        if( f )
+            myLogfont.lfEscapement = 900;
+        else
+            myLogfont.lfEscapement = 0;
+        HANDLE hFont = CreateFontIndirect (&myLogfont);
+        hFont = (HFONT)SelectObject (myHDC, hFont);
+        DeleteObject( hFont );
+    }
+
+    /// Set text height
+    void textHeight( int h )
+    {
+        myLogfont.lfHeight = h;
+        HANDLE hFont = CreateFontIndirect (&myLogfont);
+        hFont = (HFONT)SelectObject (myHDC, hFont);
+        DeleteObject( hFont );
+    }
+
 private:
     HDC myHDC;
     int myPenThick;
     HGDIOBJ hPen;
     HGDIOBJ hPenOld;
     bool myFill;
+    LOGFONT myLogfont;
 };
 
 /// The base class for all windex gui elements
@@ -1783,7 +1815,7 @@ public:
     {
         if (GetOpenFileName(&ofn)==TRUE)
         {
-             myfname = ofn.lpstrFile;
+            myfname = ofn.lpstrFile;
         }
         else
             myfname = "";
