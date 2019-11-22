@@ -529,6 +529,10 @@ public:
     */
     void icon( const std::string& iconfilename )
     {
+        HICON hIcon = ExtractIconA(
+                          NULL,
+                          iconfilename.c_str(),
+                          0 );
         SetClassLongPtr(
             myHandle,
             GCLP_HICON,
@@ -536,6 +540,11 @@ public:
                 NULL,
                 iconfilename.c_str(),
                 0 ) );
+
+        SendMessage(myHandle, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        SendMessage(myHandle, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+        SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_BIG, (LPARAM)hIcon);
     }
     int id()
     {
