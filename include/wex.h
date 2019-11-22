@@ -299,13 +299,21 @@ public:
         old = SelectObject(myHDC, brush );
         DeleteObject( old );
     }
-    // set background color
+    /// set background color
     void bgcolor( int c )
     {
         SetBkColor(
             myHDC,
             c );
     }
+    /// enable/disable transparent background
+    void transparent( bool f = true )
+    {
+        SetBkMode(
+            myHDC,
+            TRANSPARENT);
+    }
+
     /// Set pen thickness in pixels
     void penThick( int t )
     {
