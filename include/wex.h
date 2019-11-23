@@ -2103,6 +2103,13 @@ public:
                    TBM_GETPOS,
                    (WPARAM) 0, (LPARAM) 0 );
     }
+    void position( int pos )
+    {
+        SendMessage(
+                    myHandle,
+                    TBM_SETPOS,
+                    (WPARAM) true, (LPARAM) pos );
+    }
 };
 
 /** Construct widget
