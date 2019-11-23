@@ -536,10 +536,7 @@ public:
         SetClassLongPtr(
             myHandle,
             GCLP_HICON,
-            (LONG_PTR) ExtractIconA(
-                NULL,
-                iconfilename.c_str(),
-                0 ) );
+            (LONG_PTR) hIcon );
 
         SendMessage(myHandle, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
         SendMessage(myHandle, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
@@ -794,45 +791,19 @@ public:
 
             case WM_HSCROLL:
                 if( lParam )
-                {
-                    if( LOWORD(wParam) == SB_THUMBPOSITION )
-                    {
-                        // this gui element has received a notification
-                        // that a slider has been dragged and released.
-                        // The slider is a child of this gui element
-                        // so find which child and call its slid event handler
-                        // with the new position
-                        for( auto c : myChild )
-                        {
-                            if( c->handle() == (HWND)lParam )
-                            {
-                                c->events().onSlid( HIWORD(wParam) );
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-                myEvents.onScrollH( LOWORD (wParam) );
+                    trackbarMessageHandler( (HWND) lParam );
+                else
+                    myEvents.onScrollH( LOWORD (wParam) );
                 return true;
+
             case WM_VSCROLL:
                 if( lParam )
-                {
-                    if( LOWORD(wParam) == SB_THUMBPOSITION )
-                    {
-                        for( auto c : myChild )
-                        {
-                            if( c->handle() == (HWND)lParam )
-                            {
-                                c->events().onSlid( HIWORD(wParam) );
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-                myEvents.onScrollV( LOWORD (wParam) );
+                    trackbarMessageHandler( (HWND) lParam );
+                else
+                    myEvents.onScrollV( LOWORD (wParam) );
                 return true;
+
+
 
             case WM_COMMAND:
                 if( lParam )
@@ -1072,7 +1043,24 @@ protected:
         }
         return oldPos;
     }
-
+private:
+    void trackbarMessageHandler( HWND hwnd )
+    {
+        // trackbar notifications are sent to trackbar's parent window
+        // find the child that generated this notification
+        // get the tackbar position and call the slid event handler
+        for( auto c : myChild )
+        {
+            if( c->handle() == hwnd )
+            {
+                c->events().onSlid(
+                    SendMessage(
+                        hwnd,
+                        TBM_GETPOS,
+                        (WPARAM) 0, (LPARAM) 0 ));
+            }
+        }
+    }
 };
 
 
@@ -2077,14 +2065,14 @@ public:
     slider( gui* parent )
         : gui( parent, "msctls_trackbar32",
                WS_CHILD | WS_OVERLAPPED | WS_VISIBLE |
-               TBS_AUTOTICKS )
+               TBS_AUTOTICKS | TBS_TRANSPARENTBKGND )
     {
     }
     /** Specify the range values used
         @param[in] min
         @param[in] max
 
-        The values mut all be positive,
+        The values must all be positive,
         otherwise a runtime_error exception is thrown
     */
     void range( int min, int max )
@@ -2105,6 +2093,15 @@ public:
             myHandle,
             GWL_STYLE,
             GetWindowLongPtr( myHandle, GWL_STYLE) |  TBS_VERT );
+    }
+
+    /// Position of the slider thumb in range
+    int position()
+    {
+        return SendMessage(
+                   myHandle,
+                   TBM_GETPOS,
+                   (WPARAM) 0, (LPARAM) 0 );
     }
 };
 
