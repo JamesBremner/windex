@@ -741,7 +741,7 @@ public:
             {
                 PAINTSTRUCT ps;
                 BeginPaint(myHandle, &ps);
-                FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
+                //FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
                 draw(ps);
 
                 EndPaint(myHandle, &ps);
@@ -868,7 +868,7 @@ public:
     Windex makes no effort to auto update the screen display.
     If application code alters something and the change should be seen immediatly
     then update() should be called, either on the widget that has changed
-    or the top level winow that contains the changed widgets.
+    or the top level window that contains the changed widgets.
 
     */
     void update()

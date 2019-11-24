@@ -412,6 +412,7 @@ void SliderDemo()
     V.move({ 50,100,50,400});
     V.range( 0, 10 );
     V.vertical();
+    V.bgcolor( 0x0000FF );
     V.events().slid([&](int pos)
     {
         vlabel.text("vert value: " + std::to_string( pos ));
