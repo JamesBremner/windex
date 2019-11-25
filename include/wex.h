@@ -741,7 +741,7 @@ public:
             {
                 PAINTSTRUCT ps;
                 BeginPaint(myHandle, &ps);
-                //FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
+                FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
                 draw(ps);
 
                 EndPaint(myHandle, &ps);
