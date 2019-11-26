@@ -159,6 +159,7 @@ void PGDemo()
         // window containing propertyGrid has been resized
         // ensure that every visible label is completely redrawn
         pg.update();
+        form.update();
     });
 
     // display a button

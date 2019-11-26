@@ -316,6 +316,7 @@ public:
     {
         for( auto& p : myProperty )
             p.update();
+        gui::update();
     }
 
     /// get pointer to first property with name, ignoring categories
