@@ -34,6 +34,7 @@ void helloworld()
     button& btn = wex::make<button>( form );
     btn.move( {20, 100, 150, 30 } );
     btn.text( "Show values entered" );
+    btn.tooltip("tooltip explaining button function");
 
 
     // popup a message box when button is clicked
@@ -486,6 +487,7 @@ void PlotDemo()
     wex::button& btnStatic = wex::make<wex::button>(fm);
     btnStatic.move(100,10,50,20);
     btnStatic.text("Static");
+    btnStatic.tooltip("Display line ( single valued ) plot");
     btnStatic.events().click([&]
     {
         // construct plot traces
@@ -512,6 +514,7 @@ void PlotDemo()
     wex::button& btnScatter = wex::make<wex::button>(fm);
     btnScatter.move(200,10,50,20);
     btnScatter.text("Scatter");
+    btnScatter.tooltip("Display scatter ( individual, perhaps multiple y values for each x ) plot");
     btnScatter.events().click([&]
     {
         std::vector< double > x { 0, 1, 2, 3, 4 };
@@ -528,6 +531,7 @@ void PlotDemo()
     wex::button& btnTime = wex::make<wex::button>(fm);
     btnTime.move(300,10,100,20);
     btnTime.text("Real Time");
+    btnTime.tooltip("Display moving line plot that updates in real time");
     btnTime.events().click([&]
     {
         // construct plot trace

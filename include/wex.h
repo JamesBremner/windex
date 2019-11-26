@@ -471,601 +471,626 @@ public:
         myID = NewID();
         Create(NULL,"windex",WS_OVERLAPPEDWINDOW);
 
-//        events().resize( [this](int w, int h)
-//    {
-//        update();
-//    });
-}
+        /*  default resize event handler
+            simply forces a refresh so partially visible widgets are correctly drawn
+            Application code, if it needs to move child windows around,
+            should overwrite this event handler.  Remember to call update() at end of event handler.
+        */
+        events().resize( [this](int w, int h)
+        {
+            update();
+        });
+    }
 /// Construct child of a parent
-gui(
-    gui* parent,
-    const char* window_class = "windex",
-    unsigned long style = WS_CHILD,
-    unsigned long exstyle = 0 )
-    : myParent( parent )
-    , myDeleteList( 0 )
-{
-    myID = NewID();
-    Create( parent->handle(), window_class, style, exstyle, myID );
-    parent->child( this );
-    text("???"+std::to_string(myID));
-}
-virtual ~gui()
-{
-    std::cout << "deleting " << myText << "\n";
-    if( myDeleteList )
-        myDeleteList->push_back( myHandle );
-}
+    gui(
+        gui* parent,
+        const char* window_class = "windex",
+        unsigned long style = WS_CHILD,
+        unsigned long exstyle = 0 )
+        : myParent( parent )
+        , myDeleteList( 0 )
+    {
+        myID = NewID();
+        Create( parent->handle(), window_class, style, exstyle, myID );
+        parent->child( this );
+        text("???"+std::to_string(myID));
+    }
+    virtual ~gui()
+    {
+        std::cout << "deleting " << myText << "\n";
+        if( myDeleteList )
+            myDeleteList->push_back( myHandle );
+    }
 
 // register child on this window
-void child( gui* w )
-{
-    myChild.push_back( w );
-}
-children_t& children()
-{
-    return myChild;
-}
-
-gui* find( int id )
-{
-    for( auto w : myChild )
+    void child( gui* w )
     {
-        if ( w->id() == id )
-            return (gui*)w;
+        myChild.push_back( w );
     }
-    return nullptr;
-}
+    children_t& children()
+    {
+        return myChild;
+    }
 
-/** Change background color
-@param[in] color eg 0x0000FF
-*/
-void bgcolor( int color )
-{
-    myBGColor = color;
-    DeleteObject( myBGBrush);
-    myBGBrush = CreateSolidBrush( color );
-}
+    gui* find( int id )
+    {
+        for( auto w : myChild )
+        {
+            if ( w->id() == id )
+                return (gui*)w;
+        }
+        return nullptr;
+    }
 
-/** Change icon
-    @param[in] iconfilename
+    /** Change background color
+    @param[in] color eg 0x0000FF
+    */
+    void bgcolor( int color )
+    {
+        myBGColor = color;
+        DeleteObject( myBGBrush);
+        myBGBrush = CreateSolidBrush( color );
+    }
 
-    Use to set the application icon in the taskbar
-*/
-void icon( const std::string& iconfilename )
-{
-    HICON hIcon = ExtractIconA(
-                      NULL,
-                      iconfilename.c_str(),
-                      0 );
-    SetClassLongPtr(
-        myHandle,
-        GCLP_HICON,
-        (LONG_PTR) hIcon );
+    /** Change icon
+        @param[in] iconfilename
 
-    SendMessage(myHandle, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-    SendMessage(myHandle, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-    SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-    SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-}
-int id()
-{
-    return myID;
-}
-int bgcolor() const
-{
-    return myBGColor;
-}
-void text( const std::string& text )
-{
-    myText = text;
-    SetWindowText( myHandle, text.c_str() );
-}
-std::string text() const
-{
-    return myText;
-}
+        Use to set the application icon in the taskbar
+    */
+    void icon( const std::string& iconfilename )
+    {
+        HICON hIcon = ExtractIconA(
+                          NULL,
+                          iconfilename.c_str(),
+                          0 );
+        SetClassLongPtr(
+            myHandle,
+            GCLP_HICON,
+            (LONG_PTR) hIcon );
+
+        SendMessage(myHandle, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        SendMessage(myHandle, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+        SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+    }
+    int id()
+    {
+        return myID;
+    }
+    int bgcolor() const
+    {
+        return myBGColor;
+    }
+    void text( const std::string& text )
+    {
+        myText = text;
+        SetWindowText( myHandle, text.c_str() );
+    }
+    std::string text() const
+    {
+        return myText;
+    }
 /// Add scrollbars
-void scroll()
-{
-    // Add scrollbars to window style
-    SetWindowLongPtr(
-        myHandle,
-        GWL_STYLE,
-        GetWindowLongPtr( myHandle, GWL_STYLE) | WS_HSCROLL | WS_VSCROLL );
-
-    // Set the scrolling range and page size to defaaults
-    scrollRange( 100, 100 );
-
-    // horizontal scroll handler
-    events().scrollH([this](int code)
+    void scroll()
     {
+        // Add scrollbars to window style
+        SetWindowLongPtr(
+            myHandle,
+            GWL_STYLE,
+            GetWindowLongPtr( myHandle, GWL_STYLE) | WS_HSCROLL | WS_VSCROLL );
+
+        // Set the scrolling range and page size to defaaults
+        scrollRange( 100, 100 );
+
+        // horizontal scroll handler
+        events().scrollH([this](int code)
+        {
+            SCROLLINFO si;
+            si.cbSize = sizeof(si);
+            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+            if( ! GetScrollInfo (myHandle, SB_HORZ, &si) )
+                return;
+
+            int oldPos = scrollMove( si, code );
+
+            si.fMask = SIF_POS;
+            SetScrollInfo (myHandle, SB_HORZ, &si, TRUE);
+            GetScrollInfo (myHandle, SB_CTL, &si);
+
+            RECT rect;
+            GetClientRect(myHandle, &rect);
+            int xs = oldPos - si.nPos;
+            //std::cout << "scrollH " << xs <<" "<< oldPos <<" "<< si.nPos << "\n";
+            ScrollWindow(
+                myHandle,
+                xs,
+                0, NULL, NULL);
+
+            for( auto& w : myChild )
+                w->update();
+        });
+
+        // vertical scroll handler
+        events().scrollV([this](int code)
+        {
+            SCROLLINFO si;
+            si.cbSize = sizeof(si);
+            si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+            if( ! GetScrollInfo (myHandle, SB_VERT, &si) )
+                return;
+
+            int oldPos = scrollMove( si, code );
+
+            si.fMask = SIF_POS;
+            SetScrollInfo (myHandle, SB_VERT, &si, TRUE);
+            GetScrollInfo (myHandle, SB_VERT, &si);
+            RECT rect;
+            GetClientRect(myHandle, &rect);
+            int ys = oldPos - si.nPos;
+            //std::cout << "scroll " << ys <<" "<< oldPos <<" "<< si.nPos << "\n";
+            ScrollWindow(
+                myHandle,
+                0,
+                ys, NULL, NULL);
+
+            for( auto& w : myChild )
+                w->update();
+        });
+
+    }
+    /** Set the scrolling range
+        @param[in] width of the underlying window to be scrolled over
+        @param[in] height of the underlying window to be scrolled over
+
+        This sets how far scrolling can move horixonatally and vertically.
+        The width and height should be set to the maximum locations
+        to be shown when scrolled to the limits.
+
+        This should be called again if the window size changes.
+    */
+    void scrollRange( int width, int height )
+    {
+        RECT r;
+        GetClientRect(myHandle,&r);
+        int xmax = width - r.right;
+        if( xmax < 0 )
+            xmax = 0;
+        int ymax = height - r.bottom;
+        if( ymax < 0 )
+            ymax = 0;
         SCROLLINFO si;
         si.cbSize = sizeof(si);
-        si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
-        if( ! GetScrollInfo (myHandle, SB_HORZ, &si) )
-            return;
-
-        int oldPos = scrollMove( si, code );
-
-        si.fMask = SIF_POS;
-        SetScrollInfo (myHandle, SB_HORZ, &si, TRUE);
-        GetScrollInfo (myHandle, SB_CTL, &si);
-
-        RECT rect;
-        GetClientRect(myHandle, &rect);
-        int xs = oldPos - si.nPos;
-        //std::cout << "scrollH " << xs <<" "<< oldPos <<" "<< si.nPos << "\n";
-        ScrollWindow(
-            myHandle,
-            xs,
-            0, NULL, NULL);
-
-        for( auto& w : myChild )
-            w->update();
-    });
-
-    // vertical scroll handler
-    events().scrollV([this](int code)
-    {
-        SCROLLINFO si;
-        si.cbSize = sizeof(si);
-        si.fMask  = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
-        if( ! GetScrollInfo (myHandle, SB_VERT, &si) )
-            return;
-
-        int oldPos = scrollMove( si, code );
-
-        si.fMask = SIF_POS;
-        SetScrollInfo (myHandle, SB_VERT, &si, TRUE);
-        GetScrollInfo (myHandle, SB_VERT, &si);
-        RECT rect;
-        GetClientRect(myHandle, &rect);
-        int ys = oldPos - si.nPos;
-        //std::cout << "scroll " << ys <<" "<< oldPos <<" "<< si.nPos << "\n";
-        ScrollWindow(
-            myHandle,
-            0,
-            ys, NULL, NULL);
-
-        for( auto& w : myChild )
-            w->update();
-    });
-
-}
-/** Set the scrolling range
-    @param[in] width of the underlying window to be scrolled over
-    @param[in] height of the underlying window to be scrolled over
-
-    This sets how far scrolling can move horixonatally and vertically.
-    The width and height should be set to the maximum locations
-    to be shown when scrolled to the limits.
-
-    This should be called again if the window size changes.
-*/
-void scrollRange( int width, int height )
-{
-    RECT r;
-    GetClientRect(myHandle,&r);
-    int xmax = width - r.right;
-    if( xmax < 0 )
-        xmax = 0;
-    int ymax = height - r.bottom;
-    if( ymax < 0 )
-        ymax = 0;
-    SCROLLINFO si;
-    si.cbSize = sizeof(si);
-    si.fMask  = SIF_RANGE | SIF_PAGE;
-    si.nMin   = 0;
-    si.nMax   = ymax;
-    si.nPage  = ymax/10;
-    SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
-    si.nMax   = xmax;
-    si.nPage  = xmax/10;
-    SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
-}
-
-/** Get mouse status
-    @return sMouse structure containing x and y positions, etx
-*/
-sMouse getMouseStatus()
-{
-    sMouse m;
-    POINT p;
-    GetCursorPos( &p );
-    if( ! ScreenToClient( myHandle, &p ) )
-    {
-        m.x = -1;
-        m.y = -1;
+        si.fMask  = SIF_RANGE | SIF_PAGE;
+        si.nMin   = 0;
+        si.nMax   = ymax;
+        si.nPage  = ymax/10;
+        SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
+        si.nMax   = xmax;
+        si.nPage  = xmax/10;
+        SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
     }
-    m.x = p.x;
-    m.y = p.y;
-    m.left = (GetKeyState(VK_LBUTTON) < 0);
-    m.right = (GetKeyState(VK_RBUTTON) < 0);
-    m.shift = (GetKeyState(VK_SHIFT) < 0);
-    return m;
-}
-/** \brief Run the windows message loop
 
-This waits for events to occur
-and runs the requested event handler when they do.
-
-It does not return until the application window
-( that is the first top level window created )
-is closed
-
-*/
-void run()
-{
-    MSG msg = { };
-    while (GetMessage(&msg, NULL, 0, 0))
+    /** Get mouse status
+        @return sMouse structure containing x and y positions, etx
+    */
+    sMouse getMouseStatus()
     {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        sMouse m;
+        POINT p;
+        GetCursorPos( &p );
+        if( ! ScreenToClient( myHandle, &p ) )
+        {
+            m.x = -1;
+            m.y = -1;
+        }
+        m.x = p.x;
+        m.y = p.y;
+        m.left = (GetKeyState(VK_LBUTTON) < 0);
+        m.right = (GetKeyState(VK_RBUTTON) < 0);
+        m.shift = (GetKeyState(VK_SHIFT) < 0);
+        return m;
     }
+    /** \brief Run the windows message loop
+
+    This waits for events to occur
+    and runs the requested event handler when they do.
+
+    It does not return until the application window
+    ( that is the first top level window created )
+    is closed
+
+    */
+    void run()
+    {
+        MSG msg = { };
+        while (GetMessage(&msg, NULL, 0, 0))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
+
+    /// Add tooltip that pops up helpfully when mouse cursor hovers ober widget
+    void tooltip( const std::string& text )
+{
+    // Create the tooltip. g_hInst is the global instance handle.
+    HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
+                              WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
+                              CW_USEDEFAULT, CW_USEDEFAULT,
+                              CW_USEDEFAULT, CW_USEDEFAULT,
+                              myHandle, NULL, NULL, NULL);
+
+    // Associate the tooltip with the tool.
+    TOOLINFO toolInfo = { 0 };
+    toolInfo.cbSize = sizeof(toolInfo);
+    toolInfo.hwnd = myHandle;
+    toolInfo.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
+    toolInfo.uId = (UINT_PTR)myHandle;
+    toolInfo.lpszText = (char*)text.c_str();
+    SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
 }
 
-virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
-    if( hwnd == myHandle )
+    virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        switch (uMsg)
+        //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
+        if( hwnd == myHandle )
         {
-        case WM_DESTROY:
-            // if this is the appliction window
-            // then quit application when destroyed
-            if( myID == 1 )
-                PostQuitMessage(0);
-            return true;
-            return true;
+            switch (uMsg)
+            {
+            case WM_DESTROY:
+                // if this is the appliction window
+                // then quit application when destroyed
+                if( myID == 1 )
+                    PostQuitMessage(0);
+                return true;
+                return true;
 
-        case WM_NCDESTROY:
-            // all the children are gone
-            // so a modal display can close
-            myfModal = false;
-            return false;
+            case WM_NCDESTROY:
+                // all the children are gone
+                // so a modal display can close
+                myfModal = false;
+                return false;
 
-        case WM_ERASEBKGND:
-        {
+            case WM_ERASEBKGND:
+            {
 //                if( ! myParent )
 //                {
-            RECT rc;
-            GetWindowRect(hwnd, &rc);
-            FillRect((HDC)wParam, &rc, myBGBrush );
-            return true;
+                RECT rc;
+                GetWindowRect(hwnd, &rc);
+                FillRect((HDC)wParam, &rc, myBGBrush );
+                return true;
 //               }
 //                RECT rc;
 //                GetWindowRect(hwnd, &rc);
 //                GetClientRect(hwnd,&rc );
 //                //FillRect((HDC)wParam, &rc, myBGBrush );
-            return true;
-        }
-
-        case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            BeginPaint(myHandle, &ps);
-            FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
-            draw(ps);
-
-            EndPaint(myHandle, &ps);
-        }
-        return true;
-
-        case WM_LBUTTONDOWN:
-        case WM_RBUTTONDOWN:
-            //std::cout << "click on " << myText << "\n";
-            if( myEvents.onLeftdown() )
                 return true;
-            // the event was not completely handled, maybe the parent can look after it
-            if( myParent )
+            }
+
+            case WM_PAINT:
             {
-                if( myParent->WindowMessageHandler(
-                            myParent->handle(),
-                            uMsg, wParam, lParam ))
+                PAINTSTRUCT ps;
+                BeginPaint(myHandle, &ps);
+                FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
+                draw(ps);
+
+                EndPaint(myHandle, &ps);
+            }
+            return true;
+
+            case WM_LBUTTONDOWN:
+            case WM_RBUTTONDOWN:
+                //std::cout << "click on " << myText << "\n";
+                if( myEvents.onLeftdown() )
+                    return true;
+                // the event was not completely handled, maybe the parent can look after it
+                if( myParent )
+                {
+                    if( myParent->WindowMessageHandler(
+                                myParent->handle(),
+                                uMsg, wParam, lParam ))
+                        return true;
+                }
+                break;
+
+            case WM_LBUTTONUP:
+            case WM_RBUTTONUP:
+                myEvents.onMouseUp();
+                return true;
+
+            case WM_MOUSEMOVE:
+                myEvents.onMouseMove( wParam, lParam );
+                break;
+
+            case WM_MOUSEWHEEL:
+            {
+                int d = HIWORD(wParam);
+                if( d > 0xEFFF)
+                    d = -120;
+                myEvents.onMouseWheel( d );
+            }
+            break;
+
+            case WM_SIZE:
+                if( wParam == SIZE_RESTORED)
+                {
+                    myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
+                    return true;
+                }
+                return false;
+
+            case WM_HSCROLL:
+                if( lParam )
+                    trackbarMessageHandler( (HWND) lParam );
+                else
+                    myEvents.onScrollH( LOWORD (wParam) );
+                return true;
+
+            case WM_VSCROLL:
+                if( lParam )
+                    trackbarMessageHandler( (HWND) lParam );
+                else
+                    myEvents.onScrollV( LOWORD (wParam) );
+                return true;
+
+
+
+            case WM_COMMAND:
+                if( lParam )
+                {
+                    if( HIWORD(wParam) == CBN_SELCHANGE )
+                    {
+                        return events().onSelect( LOWORD(wParam) );
+                    }
+                    return true;
+                }
+                events().onMenuCommand( wParam );
+                return true;
+
+            case WM_TIMER:
+                events().onTimer();
+                return true;
+            }
+
+        }
+        else
+        {
+            for( auto w : myChild )
+            {
+                if( w->WindowMessageHandler( hwnd, uMsg, wParam, lParam ))
                     return true;
             }
-            break;
-
-        case WM_LBUTTONUP:
-        case WM_RBUTTONUP:
-            myEvents.onMouseUp();
-            return true;
-
-        case WM_MOUSEMOVE:
-            myEvents.onMouseMove( wParam, lParam );
-            break;
-
-        case WM_MOUSEWHEEL:
-        {
-            int d = HIWORD(wParam);
-            if( d > 0xEFFF)
-                d = -120;
-            myEvents.onMouseWheel( d );
-        }
-        break;
-
-        case WM_SIZE:
-            if( wParam == SIZE_RESTORED)
-            {
-                myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
-                return true;
-            }
-            return false;
-
-        case WM_HSCROLL:
-            if( lParam )
-                trackbarMessageHandler( (HWND) lParam );
-            else
-                myEvents.onScrollH( LOWORD (wParam) );
-            return true;
-
-        case WM_VSCROLL:
-            if( lParam )
-                trackbarMessageHandler( (HWND) lParam );
-            else
-                myEvents.onScrollV( LOWORD (wParam) );
-            return true;
-
-
-
-        case WM_COMMAND:
-            if( lParam )
-            {
-                if( HIWORD(wParam) == CBN_SELCHANGE )
-                {
-                    return events().onSelect( LOWORD(wParam) );
-                }
-                return true;
-            }
-            events().onMenuCommand( wParam );
-            return true;
-
-        case WM_TIMER:
-            events().onTimer();
-            return true;
         }
 
+        return false;
     }
-    else
-    {
-        for( auto w : myChild )
-        {
-            if( w->WindowMessageHandler( hwnd, uMsg, wParam, lParam ))
-                return true;
-        }
-    }
-
-    return false;
-}
 
 /// Show window and all children
-virtual void show( bool f = true )
-{
-    int cmd = SW_SHOWDEFAULT;
-    if( ! f )
-        cmd = SW_HIDE;
-    //std::cout << "show " << myText <<" "<< myHandle <<" "<< myChild.size() << "\n"; ;
-    ShowWindow(myHandle, cmd);
-    // display any children
-    for( auto w : myChild )
-        w->show( f );
-}
+    virtual void show( bool f = true )
+    {
+        int cmd = SW_SHOWDEFAULT;
+        if( ! f )
+            cmd = SW_HIDE;
+        //std::cout << "show " << myText <<" "<< myHandle <<" "<< myChild.size() << "\n"; ;
+        ShowWindow(myHandle, cmd);
+        // display any children
+        for( auto w : myChild )
+            w->show( f );
+    }
 
 /// Show this window and suspend all other windows inteactions until this is closed
-void showModal()
-{
-    myfModal = true;
-    show();
-    MSG msg = { };
-    while (GetMessage(&msg, NULL, 0, 0))
+    void showModal()
     {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-        if( ! myfModal )
-            break;
+        myfModal = true;
+        show();
+        MSG msg = { };
+        while (GetMessage(&msg, NULL, 0, 0))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            if( ! myfModal )
+                break;
+        }
     }
-}
 
-/** force widget to redraw completely
+    /** force widget to redraw completely
 
-Windex makes no effort to auto update the screen display.
-If application code alters something and the change should be seen immediatly
-then update() should be called, either on the widget that has changed
-or the top level window that contains the changed widgets.
+    Windex makes no effort to auto update the screen display.
+    If application code alters something and the change should be seen immediatly
+    then update() should be called, either on the widget that has changed
+    or the top level window that contains the changed widgets.
 
-*/
-void update()
-{
-    InvalidateRect(myHandle,NULL,true);
-    UpdateWindow(myHandle);
-}
+    */
+    void update()
+    {
+        InvalidateRect(myHandle,NULL,true);
+        UpdateWindow(myHandle);
+    }
 
-/** Move the window
-    @param[in] r specify location and size
-    r contains 4 values, { x, y, width, height }
-*/
-void move( const std::vector<int>& r )
-{
-    if( r.size() != 4 )
-        return;
-    MoveWindow( myHandle,
-                r[0],r[1],r[2],r[3],false);
-}
-/** Change size without moving top left corner
-    @param[in] w width
-    @param[in] h height
-*/
-void size( int w, int h )
-{
-    RECT rect;
-    GetClientRect( myHandle, &rect );
-    MoveWindow( myHandle,
-                rect.left, rect.top, w, h,
-                false );
-}
-/** Change position without changing size
-    @param[in] x left
-    @param[in] y top
-*/
-void move( int x, int y )
-{
-    RECT rect;
-    GetClientRect( myHandle, &rect );
-    MoveWindow( myHandle,
-                x,y,rect.right-rect.left,rect.bottom-rect.top,
-                false );
-}
-void move( int x, int y, int w, int h )
-{
-    MoveWindow( myHandle,
-                x, y, w, h, false);
-}
+    /** Move the window
+        @param[in] r specify location and size
+        r contains 4 values, { x, y, width, height }
+    */
+    void move( const std::vector<int>& r )
+    {
+        if( r.size() != 4 )
+            return;
+        MoveWindow( myHandle,
+                    r[0],r[1],r[2],r[3],false);
+    }
+    /** Change size without moving top left corner
+        @param[in] w width
+        @param[in] h height
+    */
+    void size( int w, int h )
+    {
+        RECT rect;
+        GetClientRect( myHandle, &rect );
+        MoveWindow( myHandle,
+                    rect.left, rect.top, w, h,
+                    false );
+    }
+    /** Change position without changing size
+        @param[in] x left
+        @param[in] y top
+    */
+    void move( int x, int y )
+    {
+        RECT rect;
+        GetClientRect( myHandle, &rect );
+        MoveWindow( myHandle,
+                    x,y,rect.right-rect.left,rect.bottom-rect.top,
+                    false );
+    }
+    void move( int x, int y, int w, int h )
+    {
+        MoveWindow( myHandle,
+                    x, y, w, h, false);
+    }
 
 /// Get event handler
-eventhandler& events()
-{
-    return myEvents;
-}
+    eventhandler& events()
+    {
+        return myEvents;
+    }
 
 /// get window handle
-HWND handle()
-{
-    return myHandle;
-}
+    HWND handle()
+    {
+        return myHandle;
+    }
 
 
 /// set delete list for when gui is detroyed
-void delete_list( std::vector< HWND >* list )
-{
-    myDeleteList = list;
-}
+    void delete_list( std::vector< HWND >* list )
+    {
+        myDeleteList = list;
+    }
 
 
 
 protected:
-HWND myHandle;
-gui* myParent;
-eventhandler myEvents;
-int myBGColor;
-HBRUSH myBGBrush;
-std::vector< HWND >* myDeleteList;
-std::string myText;
-int myID;
-std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
-bool myfModal;                          ///< true if element is being shown as modal
+    HWND myHandle;
+    gui* myParent;
+    eventhandler myEvents;
+    int myBGColor;
+    HBRUSH myBGBrush;
+    std::vector< HWND >* myDeleteList;
+    std::string myText;
+    int myID;
+    std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
+    bool myfModal;                          ///< true if element is being shown as modal
 
 
-/** Create the managed window
-    @param[in] parent handle of parent window
-    @param[in] window_class controls which callback function handles window messages
-    @param[in] style
-    @param[in] exstyle
-    @param[in] id identifies which control generated notification
- */
-void Create(
-    HWND parent,
-    const char* window_class,
-    DWORD style, DWORD exstyle = 0,
-    int id=0 )
-{
-    myHandle = CreateWindowEx(
-                   exstyle,          // Optional window styles.
-                   window_class,     // Window class
-                   "widget",         // Window text
-                   style,            // Window style
-
-                   // Size and position
-                   CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-
-                   parent,       // Parent window
-                   reinterpret_cast<HMENU>( id ),       // Menu or control id
-                   NULL,  // Instance handle
-                   NULL        // Additional application data
-               );
-}
-virtual void draw( PAINTSTRUCT& ps )
-{
-    SetBkColor(
-        ps.hdc,
-        myBGColor );
-    if( myParent )
+    /** Create the managed window
+        @param[in] parent handle of parent window
+        @param[in] window_class controls which callback function handles window messages
+        @param[in] style
+        @param[in] exstyle
+        @param[in] id identifies which control generated notification
+     */
+    void Create(
+        HWND parent,
+        const char* window_class,
+        DWORD style, DWORD exstyle = 0,
+        int id=0 )
     {
-        RECT r( ps.rcPaint );
-        r.left += 1;
-        r.top  += 1;
-        DrawText(
+        myHandle = CreateWindowEx(
+                       exstyle,          // Optional window styles.
+                       window_class,     // Window class
+                       "widget",         // Window text
+                       style,            // Window style
+
+                       // Size and position
+                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+
+                       parent,       // Parent window
+                       reinterpret_cast<HMENU>( id ),       // Menu or control id
+                       NULL,  // Instance handle
+                       NULL        // Additional application data
+                   );
+    }
+    virtual void draw( PAINTSTRUCT& ps )
+    {
+        SetBkColor(
             ps.hdc,
-            myText.c_str(),
-            -1,
-            &r,
-            0);
-    }
-    myEvents.onDraw( ps );
-}
-
-/** Create new, unique ID for gui element
-
-The first ID will be 1, and is assumed to be the application window
-which causes the application to quit when destroyed
-*/
-int NewID()
-{
-    static int lastID = 0;
-    lastID++;
-    return lastID;
-}
-int scrollMove( SCROLLINFO& si, int code )
-{
-    int oldPos = si.nPos;
-    switch( code )
-    {
-    // User clicked the left arrow.
-    case SB_LINELEFT:
-        si.nPos -= 1;
-        break;
-
-    // User clicked the right arrow.
-    case SB_LINERIGHT:
-        si.nPos += 1;
-        break;
-
-    // User clicked the scroll bar shaft left of the scroll box.
-    case SB_PAGELEFT:
-        si.nPos -= si.nPage;
-        break;
-
-    // User clicked the scroll bar shaft right of the scroll box.
-    case SB_PAGERIGHT:
-        si.nPos += si.nPage;
-        break;
-
-    // User dragged the scroll box.
-    case SB_THUMBTRACK:
-        si.nPos = si.nTrackPos;
-        break;
-    }
-    return oldPos;
-}
-private:
-void trackbarMessageHandler( HWND hwnd )
-{
-    // trackbar notifications are sent to trackbar's parent window
-    // find the child that generated this notification
-    // get the tackbar position and call the slid event handler
-    for( auto c : myChild )
-    {
-        if( c->handle() == hwnd )
+            myBGColor );
+        if( myParent )
         {
-            c->events().onSlid(
-                SendMessage(
-                    hwnd,
-                    TBM_GETPOS,
-                    (WPARAM) 0, (LPARAM) 0 ));
+            RECT r( ps.rcPaint );
+            r.left += 1;
+            r.top  += 1;
+            DrawText(
+                ps.hdc,
+                myText.c_str(),
+                -1,
+                &r,
+                0);
+        }
+        myEvents.onDraw( ps );
+    }
+
+    /** Create new, unique ID for gui element
+
+    The first ID will be 1, and is assumed to be the application window
+    which causes the application to quit when destroyed
+    */
+    int NewID()
+    {
+        static int lastID = 0;
+        lastID++;
+        return lastID;
+    }
+    int scrollMove( SCROLLINFO& si, int code )
+    {
+        int oldPos = si.nPos;
+        switch( code )
+        {
+        // User clicked the left arrow.
+        case SB_LINELEFT:
+            si.nPos -= 1;
+            break;
+
+        // User clicked the right arrow.
+        case SB_LINERIGHT:
+            si.nPos += 1;
+            break;
+
+        // User clicked the scroll bar shaft left of the scroll box.
+        case SB_PAGELEFT:
+            si.nPos -= si.nPage;
+            break;
+
+        // User clicked the scroll bar shaft right of the scroll box.
+        case SB_PAGERIGHT:
+            si.nPos += si.nPage;
+            break;
+
+        // User dragged the scroll box.
+        case SB_THUMBTRACK:
+            si.nPos = si.nTrackPos;
+            break;
+        }
+        return oldPos;
+    }
+private:
+    void trackbarMessageHandler( HWND hwnd )
+    {
+        // trackbar notifications are sent to trackbar's parent window
+        // find the child that generated this notification
+        // get the tackbar position and call the slid event handler
+        for( auto c : myChild )
+        {
+            if( c->handle() == hwnd )
+            {
+                c->events().onSlid(
+                    SendMessage(
+                        hwnd,
+                        TBM_GETPOS,
+                        (WPARAM) 0, (LPARAM) 0 ));
+            }
         }
     }
-}
 };
 
 
