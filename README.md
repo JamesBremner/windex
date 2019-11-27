@@ -22,7 +22,7 @@ Complete [sample code](https://github.com/JamesBremner/windex/wiki/hello-world) 
 
 ## Demo & Test
 
-An application to demonstrate and test the windex features is included.  The source is in the demo folder, and a code::blocks project to build it in build/codeblocks.
+An application to demonstrate and test the windex features is [available](https://github.com/JamesBremner/windex/releases/latest).  The source is in the demo folder, and a code::blocks project to build it in build/codeblocks.
 
 <img src="https://github.com/JamesBremner/windex/blob/master/doc/demo.png" alt="demo"></a>
 
