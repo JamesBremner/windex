@@ -1733,48 +1733,6 @@ public:
         return theInstance;
     }
 
-    /// Construct a top level window ( first call constructs application window )
-    static gui & topWindow()
-    {
-        return get().MakeWindow();
-    }
-
-
-
-    /** get reference to new widget or window of type T
-        @param[in] parent reference to parent window or widget
-    */
-    template <class T, class W>
-    T& make( W& parent )
-    {
-        T* w = new T( (gui*)&parent );
-
-        // inherit background color from parent
-        w->bgcolor( parent.bgcolor() );
-
-        Add( w );
-        return *w;
-    }
-
-    /// get map of existing gui elements
-    mgui_t * mgui()
-    {
-        return &myGui;
-    }
-
-    /** Find gui element that is managing a window
-        param[in] hwnd window handle
-        @return pointer to gui element, or NULL
-    */
-    static gui* findGui( HWND hwnd )
-    {
-        mgui_t* mgui = get().mgui();
-        auto w = mgui->find( hwnd );
-        if( w == mgui->end() )
-            return NULL;
-        return w->second;
-    }
-
     /* handle window messages
 
     All messages to windows created by windex come here.
@@ -1782,10 +1740,10 @@ public:
     */
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        gui* g = findGui( hwnd );
-        if( g )
+        auto w =  get().myGui.find( hwnd );
+        if( w !=  get().myGui.end() )
         {
-            if( g->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
+            if( w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
                 return 0;
         }
 
@@ -1804,11 +1762,13 @@ public:
 
         // add to existing gui elements
         myGui.insert( std::make_pair( g->handle(), g ));
+
+        //std::cout << "windexAdd " << myGui.size() <<" in "<< this << "\n";
     }
 
-
-private:
     mgui_t myGui;                       ///< map of existing gui elements
+private:
+
     std::vector< HWND > myDeleteList;   ///< gui elements that have been deleted but not yet removed from map
 
     windex()
@@ -1823,13 +1783,7 @@ private:
         RegisterClass(&wc);
     }
 
-    /// get reference to new top level window
-    gui& MakeWindow()
-    {
-        gui* w = new gui();
-        Add( w );
-        return *w;
-    }
+
 
     /// remove destroyed gui elements
     void Delete()
@@ -2167,14 +2121,35 @@ public:
     }
 };
 
+/// \brief A class for making windex objects.
+class maker {
+    public:
+
 /** Construct widget
         @param[in] parent reference to parent window or widget
 */
-template <class T, class W>
-T& make( W& parent )
+template < class W, class P >
+static W& make( P& parent )
 {
-    return windex::get().make<T>(parent);
+    W* w = new W( (gui*)&parent );
+
+    // inherit background color from parent
+    w->bgcolor( parent.bgcolor() );
+
+    windex::get().Add( w );
+    return *w;
 }
+
+/// Construct a top level window ( first call constructs application window )
+static gui&  make()
+{
+    windex::get().myGui.size();
+
+    gui* w = new gui();
+    windex::get().Add( w );
+    return *w;
+}
+};
 
 }
 
