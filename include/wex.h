@@ -1141,6 +1141,7 @@ public:
     layout( gui* parent )
         : panel( parent )
         , myColCount( 2 )
+        , myfWidthsSpecified( false )
         , myfColFirst( false )
     {
 
@@ -1166,6 +1167,7 @@ public:
     void colWidths( const std::vector<int>& vw )
     {
         myWidths = vw;
+        myfWidthsSpecified = true;
     }
     /** Specify that widgets should be added to fill columns first
         @param[in] f column first flag, defaault true
@@ -1194,10 +1196,11 @@ public:
     {
         RECT r;
         GetClientRect(myHandle, &r );
-        if( ! myWidths.size() )
+        if( ! myfWidthsSpecified )
         {
             // col widths not specified, default to all the same width to fill panel
             int colwidth = (r.right - r.left) / myColCount;
+            myWidths.clear();
             for( int k = 0; k < myColCount; k++ )
             {
                 myWidths.push_back( colwidth );
@@ -1251,6 +1254,7 @@ public:
 private:
     int myColCount;
     std::vector<int> myWidths;
+    bool myfWidthsSpecified;        // true if app code specified column widths
     bool myfColFirst;               // true if columns should be filled first
 };
 

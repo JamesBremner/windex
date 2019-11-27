@@ -570,7 +570,8 @@ int main()
     // handle resize
     form.events().resize([&]( int w, int h )
     {
-        l.size(w,h);
+        l.size( w-40,h-40 );
+        l.move( 20,20 );
         l.update();
     });
 
