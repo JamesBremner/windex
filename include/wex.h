@@ -410,6 +410,10 @@ public:
     {
         arc( x0, y0, r, 0, 0 );
     }
+    /** Draw text.
+    @param[in] t the text
+    @param[in] v vector of left, top, width, height
+    */
     void text(
         const std::string& t,
         const std::vector<int>& v )
@@ -424,7 +428,7 @@ public:
             t.c_str(),
             -1,
             &rc,
-            DT_NOCLIP);
+            0 );
     }
     /// Enable / disable drawing text in vertical orientation
     void textVertical( bool f = true )
