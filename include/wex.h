@@ -712,23 +712,23 @@ public:
 
     /// Add tooltip that pops up helpfully when mouse cursor hovers ober widget
     void tooltip( const std::string& text )
-{
-    // Create the tooltip. g_hInst is the global instance handle.
-    HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
-                              WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
-                              CW_USEDEFAULT, CW_USEDEFAULT,
-                              CW_USEDEFAULT, CW_USEDEFAULT,
-                              myHandle, NULL, NULL, NULL);
+    {
+        // Create the tooltip. g_hInst is the global instance handle.
+        HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
+                                      WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
+                                      CW_USEDEFAULT, CW_USEDEFAULT,
+                                      CW_USEDEFAULT, CW_USEDEFAULT,
+                                      myHandle, NULL, NULL, NULL);
 
-    // Associate the tooltip with the tool.
-    TOOLINFO toolInfo = { 0 };
-    toolInfo.cbSize = sizeof(toolInfo);
-    toolInfo.hwnd = myHandle;
-    toolInfo.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
-    toolInfo.uId = (UINT_PTR)myHandle;
-    toolInfo.lpszText = (char*)text.c_str();
-    SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
-}
+        // Associate the tooltip with the tool.
+        TOOLINFO toolInfo = { 0 };
+        toolInfo.cbSize = sizeof(toolInfo);
+        toolInfo.hwnd = myHandle;
+        toolInfo.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
+        toolInfo.uId = (UINT_PTR)myHandle;
+        toolInfo.lpszText = (char*)text.c_str();
+        SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+    }
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -1274,12 +1274,27 @@ public:
 protected:
     HBITMAP myBitmap;
 
-    /// draw - label inside rectangle
+    /// draw
     virtual void draw( PAINTSTRUCT& ps )
     {
         if( ! myBitmap )
         {
-            gui::draw( ps );
+            // button with text
+
+            SetBkColor(
+                ps.hdc,
+                myBGColor );
+
+            RECT r( ps.rcPaint );
+            r.left += 1;
+            r.top  += 1;
+            DrawText(
+                ps.hdc,
+                myText.c_str(),
+                -1,
+                &r,
+                DT_SINGLELINE | DT_CENTER | DT_VCENTER );
+
             DrawEdge(
                 ps.hdc,
                 &ps.rcPaint,
@@ -1289,6 +1304,8 @@ protected:
         }
         else
         {
+            // button with bitmap
+
             HDC hLocalDC = CreateCompatibleDC(ps.hdc);
             BITMAP qBitmap;
             GetObject(reinterpret_cast<HGDIOBJ>(myBitmap), sizeof(BITMAP),
