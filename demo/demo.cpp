@@ -230,41 +230,43 @@ void RBDemo()
     form.text("A windex radiobutton");
 
     wex::groupbox& P = wex::maker::make<wex::groupbox>( form );
-    P.move( 5, 5, 350,350 );
+    P.move( 5, 5, 350,200 );
 
     // use laypout to atomatically arrange buttons in columns
     wex::layout& L = wex::maker::make<wex::layout>(P  );
-    L.move( 50, 50,300,300);
+    L.move( 50, 50,300,190);
     L.grid( 2 );                // specify 2 columns
     L.colfirst();               // specify column first order
 
     // first group of radiobuttons
+    static std::vector<std::string> group0labels { "Alpha", "Beta", "Gamma" };
     radiobutton& rb1 = wex::maker::make<radiobutton>(L);
     rb1.first();                // first in group of interacting buttons
     rb1.move( {20,20,100,30} );
-    rb1.text("Alpha");
+    rb1.text(group0labels[0]);
     radiobutton& rb2 = wex::maker::make<radiobutton>(L);
     rb2.move( {20,60,100,30} );
-    rb2.text("Beta");
+    rb2.text(group0labels[1]);
     radiobutton& rb3 = wex::maker::make<radiobutton>(L);
     rb3.move( {20,100,100,30} );
-    rb3.text("Gamma");
+    rb3.text(group0labels[2]);
 
     // second group of radio buttons
+     static std::vector<std::string> group1labels { "X", "Y", "Z" };
     radiobutton& rb4 = wex::maker::make<radiobutton>(L);
     rb4.first();                // first in group of interacting buttons
-    rb4.size( 100,30 );
-    rb4.text("X");
+    rb4.size( 80,30 );
+    rb4.text(group1labels[0]);
     radiobutton& rb5 = wex::maker::make<radiobutton>(L);
-    rb5.size( 100,30 );
-    rb5.text("Y");
+    rb5.size( 80,30 );
+    rb5.text(group1labels[1]);
     radiobutton& rb6 = wex::maker::make<radiobutton>(L);
-    rb6.size( 100,30 );
-    rb6.text("Z");
+    rb6.size( 80,30 );
+    rb6.text(group1labels[2]);
 
     // display a button
     button& btn = wex::maker::make<button>( form );
-    btn.move( {20, 150, 150, 30 } );
+    btn.move( {20, 250, 150, 30 } );
     btn.text( "Show values entered" );
 
     // popup a message box when button is clicked
@@ -272,15 +274,17 @@ void RBDemo()
     btn.events().click([&]
     {
         std::string msg;
-        if( rb1.isChecked() )
-            msg = "Alpha";
-        else if( rb2.isChecked() )
-            msg = "Beta";
-        else if( rb3.isChecked() )
-            msg = "Gamma";
+        int coff = rb1.checkedOffset();
+        if( coff >= 0 )
+            msg = group0labels[ coff ];
         else
-            msg = "Nothing";
-        msg += " is checked";
+            msg = "nothing";
+         coff = rb4.checkedOffset();
+        if( coff >= 0 )
+            msg += " and " + group1labels[ coff ];
+        else
+            msg = " and nothing";
+
         msgbox(
             form,
             msg );
@@ -288,7 +292,6 @@ void RBDemo()
 
     // show the application
     form.show();
-
 }
 
 void CBDemo()
@@ -580,7 +583,7 @@ int main()
     form.text("Windex demos");
 
     // construct layout to arrange buttons in a grid
-   // layout& l = wex::make<layout>( form );
+    // layout& l = wex::make<layout>( form );
     layout& l = maker::make<layout>( form );
     l.move( {20,20,400,400} );
     l.grid( 2 );

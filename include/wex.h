@@ -1327,7 +1327,75 @@ protected:
         }
     }
 };
-/// A widget that user can click to select one of an exclusive set of options
+/** A widget that user can click to select one of an exclusive set of options
+
+<pre>
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,400,400});
+    form.text("A windex radiobutton");
+
+    wex::groupbox& P = wex::maker::make<wex::groupbox>( form );
+    P.move( 5, 5, 350,200 );
+
+    // use laypout to atomatically arrange buttons in columns
+    wex::layout& L = wex::maker::make<wex::layout>(P  );
+    L.move( 50, 50,300,190);
+    L.grid( 2 );                // specify 2 columns
+    L.colfirst();               // specify column first order
+
+    // first group of radiobuttons
+    radiobutton& rb1 = wex::maker::make<radiobutton>(L);
+    rb1.first();                // first in group of interacting buttons
+    rb1.move( {20,20,100,30} );
+    rb1.text("Alpha");
+    radiobutton& rb2 = wex::maker::make<radiobutton>(L);
+    rb2.move( {20,60,100,30} );
+    rb2.text("Beta");
+    radiobutton& rb3 = wex::maker::make<radiobutton>(L);
+    rb3.move( {20,100,100,30} );
+    rb3.text("Gamma");
+
+    // second group of radio buttons
+    radiobutton& rb4 = wex::maker::make<radiobutton>(L);
+    rb4.first();                // first in group of interacting buttons
+    rb4.size( 80,30 );
+    rb4.text("X");
+    radiobutton& rb5 = wex::maker::make<radiobutton>(L);
+    rb5.size( 80,30 );
+    rb5.text("Y");
+    radiobutton& rb6 = wex::maker::make<radiobutton>(L);
+    rb6.size( 80,30 );
+    rb6.text("Z");
+
+    // display a button
+    button& btn = wex::maker::make<button>( form );
+    btn.move( {20, 250, 150, 30 } );
+    btn.text( "Show values entered" );
+
+    // popup a message box when button is clicked
+    // showing the values entered
+    btn.events().click([&]
+    {
+        std::string msg;
+        if( rb1.isChecked() )
+            msg = "Alpha";
+        else if( rb2.isChecked() )
+            msg = "Beta";
+        else if( rb3.isChecked() )
+            msg = "Gamma";
+        else
+            msg = "Nothing";
+        msg += " is checked";
+        msgbox(
+            form,
+            msg );
+    });
+
+    // show the application
+    form.show();
+</pre>
+*/
 class radiobutton : public gui
 {
 public:
@@ -1413,6 +1481,23 @@ public:
     bool isChecked()
     {
         return myValue;
+    }
+
+    /** Which button in group is checked
+        @return zero-based offset of checked button in group this button belongs to, -1 if none checked
+    */
+    int checkedOffset()
+    {
+        int off = 0;
+        for( auto b : group()[myGroup] )
+        {
+            if( b->isChecked() )
+                break;
+            off++;
+        }
+        if( off < (int)group()[myGroup].size() )
+            return off;
+        return -1;
     }
 
     /// set value true( default ) or false
