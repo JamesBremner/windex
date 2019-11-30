@@ -288,6 +288,7 @@ public:
     }
     void color( int c )
     {
+        myColor = c;
         hPen = CreatePen(
                    PS_SOLID,
                    myPenThick,
@@ -319,10 +320,15 @@ public:
     {
         myPenThick = t;
     }
-    // Set filling option
+    /// Set filling option
     void fill( bool f = true )
     {
         myFill = f;
+    }
+    /// Color a pixel
+    void pixel( int x, int y )
+    {
+        SetPixel( myHDC, x, y, myColor );
     }
     /** Draw line between two points
         @param[in] v vector with x1, y1, x2, y2
@@ -458,6 +464,7 @@ private:
     HGDIOBJ hPenOld;
     bool myFill;
     LOGFONT myLogfont;
+    int myColor;
 };
 
 /// The base class for all windex gui elements
