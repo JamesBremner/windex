@@ -1698,7 +1698,7 @@ public:
         }
     }
 
-    // change text in textbox
+    /// change text in textbox
     void text( const std::string& t )
     {
         SetDlgItemText(
@@ -1707,7 +1707,7 @@ public:
             t.c_str() );
     }
 
-    // get text in textbox
+    /// get text in textbox
     std::string text()
     {
         char buf[1000];
@@ -1720,6 +1720,14 @@ public:
         );
         return std::string( buf );
     }
+    /// disable ( or enable ) user editing
+    void readonly( bool f = true )
+    {
+        SendMessage(
+            handle(),
+            EM_SETREADONLY,
+            (WPARAM)f, (LPARAM)0);
+    }
 };
 
 /// A widget where user can choose from a dropdown list of strings
@@ -1728,7 +1736,7 @@ class choice : public gui
 public:
     choice( gui* parent )
         : gui( parent, "Combobox",
-               CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+               CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
     /// Override move to ensure height is sufficient to allow dropdown to apprear
