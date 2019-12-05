@@ -15,11 +15,11 @@ public:
         : myName( name )
         , myValue( value )
         , W( windex::get())
-        , myLabel( wex::make<label>(*parent) )
-        , myEditbox( wex::make<editbox>(*parent) )
-        , myCombobox( wex::make<choice>(*parent) )
-        , myCheckbox( wex::make<checkbox>(*parent) )
-        , myCategoryExpanded( wex::make<checkbox>(*parent) )
+        , myLabel( wex::maker::make<label>(*parent) )
+        , myEditbox( wex::maker::make<editbox>(*parent) )
+        , myCombobox( wex::maker::make<choice>(*parent) )
+        , myCheckbox( wex::maker::make<checkbox>(*parent) )
+        , myCategoryExpanded( wex::maker::make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::string )
     {
@@ -33,11 +33,11 @@ public:
         : myName( name )
         , myValue( std::to_string((int)value ))
         , W( windex::get())
-        , myLabel( wex::make<label>(*parent) )
-        , myEditbox( wex::make<editbox>(*parent) )
-        , myCombobox( wex::make<choice>(*parent) )
-        , myCheckbox( wex::make<checkbox>(*parent) )
-        , myCategoryExpanded( wex::make<checkbox>(*parent) )
+        , myLabel( wex::maker::make<label>(*parent) )
+        , myEditbox( wex::maker::make<editbox>(*parent) )
+        , myCombobox( wex::maker::make<choice>(*parent) )
+        , myCheckbox( wex::maker::make<checkbox>(*parent) )
+        , myCategoryExpanded( wex::maker::make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::check )
     {
@@ -53,11 +53,11 @@ public:
         : myName( name )
         , myValue( "" )
         , W( windex::get())
-        , myLabel( wex::make<label>(*parent) )
-        , myEditbox( wex::make<editbox>(*parent) )
-        , myCombobox( wex::make<choice>(*parent) )
-        , myCheckbox( wex::make<checkbox>(*parent) )
-        , myCategoryExpanded( wex::make<checkbox>(*parent) )
+        , myLabel( wex::maker::make<label>(*parent) )
+        , myEditbox( wex::maker::make<editbox>(*parent) )
+        , myCombobox( wex::maker::make<choice>(*parent) )
+        , myCheckbox( wex::maker::make<checkbox>(*parent) )
+        , myCategoryExpanded( wex::maker::make<checkbox>(*parent) )
         , myLabelWidth( 100 )
         , myType( eType::choice )
     {
@@ -73,11 +73,11 @@ public:
         const std::string& name )
         : myName( name )
         , W( windex::get())
-        , myLabel( wex::make<label>(*parent) )
-        , myEditbox( wex::make<editbox>(*parent) )
-        , myCombobox( wex::make<choice>(*parent) )
-        , myCheckbox( wex::make<checkbox>(*parent) )
-        , myCategoryExpanded( wex::make<checkbox>(*parent) )
+        , myLabel( wex::maker::make<label>(*parent) )
+        , myEditbox( wex::maker::make<editbox>(*parent) )
+        , myCombobox( wex::maker::make<choice>(*parent) )
+        , myCheckbox( wex::maker::make<checkbox>(*parent) )
+        , myCategoryExpanded( wex::maker::make<checkbox>(*parent) )
         , myType( eType::category )
     {
         myCategoryExpanded.text( myName );
@@ -316,6 +316,7 @@ public:
     {
         for( auto& p : myProperty )
             p.update();
+        gui::update();
     }
 
     /// get pointer to first property with name, ignoring categories

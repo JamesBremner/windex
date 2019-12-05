@@ -261,6 +261,16 @@ public:
                    RGB(0,0,0));
         hPenOld =  SelectObject(myHDC, hPen);
 
+        myLogfont = {0};
+        HANDLE hFont;
+        ZeroMemory(&myLogfont, sizeof(LOGFONT));
+        myLogfont.lfWeight = FW_NORMAL;
+        strcpy(myLogfont.lfFaceName, "Tahoma");
+        myLogfont.lfHeight = 20;
+        hFont = CreateFontIndirect (&myLogfont);
+        hFont = (HFONT)SelectObject (myHDC, hFont);
+        DeleteObject( hFont );
+
     }
     ~shapes()
     {
@@ -278,6 +288,7 @@ public:
     }
     void color( int c )
     {
+        myColor = c;
         hPen = CreatePen(
                    PS_SOLID,
                    myPenThick,
@@ -289,22 +300,35 @@ public:
         old = SelectObject(myHDC, brush );
         DeleteObject( old );
     }
-    // set background color
+    /// set background color
     void bgcolor( int c )
     {
         SetBkColor(
             myHDC,
             c );
     }
+    /// enable/disable transparent background
+    void transparent( bool f = true )
+    {
+        SetBkMode(
+            myHDC,
+            TRANSPARENT);
+    }
+
     /// Set pen thickness in pixels
     void penThick( int t )
     {
         myPenThick = t;
     }
-    // Set filling option
+    /// Set filling option
     void fill( bool f = true )
     {
         myFill = f;
+    }
+    /// Color a pixel
+    void pixel( int x, int y )
+    {
+        SetPixel( myHDC, x, y, myColor );
     }
     /** Draw line between two points
         @param[in] v vector with x1, y1, x2, y2
@@ -392,6 +416,10 @@ public:
     {
         arc( x0, y0, r, 0, 0 );
     }
+    /** Draw text.
+    @param[in] t the text
+    @param[in] v vector of left, top, width, height
+    */
     void text(
         const std::string& t,
         const std::vector<int>& v )
@@ -406,14 +434,37 @@ public:
             t.c_str(),
             -1,
             &rc,
-            DT_NOCLIP);
+            0 );
     }
+    /// Enable / disable drawing text in vertical orientation
+    void textVertical( bool f = true )
+    {
+        if( f )
+            myLogfont.lfEscapement = 900;
+        else
+            myLogfont.lfEscapement = 0;
+        HANDLE hFont = CreateFontIndirect (&myLogfont);
+        hFont = (HFONT)SelectObject (myHDC, hFont);
+        DeleteObject( hFont );
+    }
+
+    /// Set text height
+    void textHeight( int h )
+    {
+        myLogfont.lfHeight = h;
+        HANDLE hFont = CreateFontIndirect (&myLogfont);
+        hFont = (HFONT)SelectObject (myHDC, hFont);
+        DeleteObject( hFont );
+    }
+
 private:
     HDC myHDC;
     int myPenThick;
     HGDIOBJ hPen;
     HGDIOBJ hPenOld;
     bool myFill;
+    LOGFONT myLogfont;
+    int myColor;
 };
 
 /// The base class for all windex gui elements
@@ -430,8 +481,18 @@ public:
     {
         myID = NewID();
         Create(NULL,"windex",WS_OVERLAPPEDWINDOW);
+
+        /*  default resize event handler
+            simply forces a refresh so partially visible widgets are correctly drawn
+            Application code, if it needs to move child windows around,
+            should overwrite this event handler.  Remember to call update() at end of event handler.
+        */
+        events().resize( [this](int w, int h)
+        {
+            update();
+        });
     }
-    /// Construct child of a parent
+/// Construct child of a parent
     gui(
         gui* parent,
         const char* window_class = "windex",
@@ -452,7 +513,7 @@ public:
             myDeleteList->push_back( myHandle );
     }
 
-    // register child on this window
+// register child on this window
     void child( gui* w )
     {
         myChild.push_back( w );
@@ -489,13 +550,19 @@ public:
     */
     void icon( const std::string& iconfilename )
     {
+        HICON hIcon = ExtractIconA(
+                          NULL,
+                          iconfilename.c_str(),
+                          0 );
         SetClassLongPtr(
             myHandle,
             GCLP_HICON,
-            (LONG_PTR) ExtractIconA(
-                NULL,
-                iconfilename.c_str(),
-                0 ) );
+            (LONG_PTR) hIcon );
+
+        SendMessage(myHandle, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        SendMessage(myHandle, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+        SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_BIG, (LPARAM)hIcon);
     }
     int id()
     {
@@ -514,7 +581,7 @@ public:
     {
         return myText;
     }
-    /// Add scrollbars
+/// Add scrollbars
     void scroll()
     {
         // Add scrollbars to window style
@@ -654,6 +721,26 @@ public:
         }
     }
 
+    /// Add tooltip that pops up helpfully when mouse cursor hovers ober widget
+    void tooltip( const std::string& text )
+    {
+        // Create the tooltip. g_hInst is the global instance handle.
+        HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
+                                      WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
+                                      CW_USEDEFAULT, CW_USEDEFAULT,
+                                      CW_USEDEFAULT, CW_USEDEFAULT,
+                                      myHandle, NULL, NULL, NULL);
+
+        // Associate the tooltip with the tool.
+        TOOLINFO toolInfo = { 0 };
+        toolInfo.cbSize = sizeof(toolInfo);
+        toolInfo.hwnd = myHandle;
+        toolInfo.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
+        toolInfo.uId = (UINT_PTR)myHandle;
+        toolInfo.lpszText = (char*)text.c_str();
+        SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+    }
+
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
@@ -745,45 +832,19 @@ public:
 
             case WM_HSCROLL:
                 if( lParam )
-                {
-                    if( LOWORD(wParam) == SB_THUMBPOSITION )
-                    {
-                        // this gui element has received a notification
-                        // that a slider has been dragged and released.
-                        // The slider is a child of this gui element
-                        // so find which child and call its slid event handler
-                        // with the new position
-                        for( auto c : myChild )
-                        {
-                            if( c->handle() == (HWND)lParam )
-                            {
-                                c->events().onSlid( HIWORD(wParam) );
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-                myEvents.onScrollH( LOWORD (wParam) );
+                    trackbarMessageHandler( (HWND) lParam );
+                else
+                    myEvents.onScrollH( LOWORD (wParam) );
                 return true;
+
             case WM_VSCROLL:
                 if( lParam )
-                {
-                    if( LOWORD(wParam) == SB_THUMBPOSITION )
-                    {
-                        for( auto c : myChild )
-                        {
-                            if( c->handle() == (HWND)lParam )
-                            {
-                                c->events().onSlid( HIWORD(wParam) );
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-                myEvents.onScrollV( LOWORD (wParam) );
+                    trackbarMessageHandler( (HWND) lParam );
+                else
+                    myEvents.onScrollV( LOWORD (wParam) );
                 return true;
+
+
 
             case WM_COMMAND:
                 if( lParam )
@@ -815,7 +876,7 @@ public:
         return false;
     }
 
-    /// Show window and all children
+/// Show window and all children
     virtual void show( bool f = true )
     {
         int cmd = SW_SHOWDEFAULT;
@@ -828,7 +889,7 @@ public:
             w->show( f );
     }
 
-    /// Show this window and suspend all other windows inteactions until this is closed
+/// Show this window and suspend all other windows inteactions until this is closed
     void showModal()
     {
         myfModal = true;
@@ -848,7 +909,7 @@ public:
     Windex makes no effort to auto update the screen display.
     If application code alters something and the change should be seen immediatly
     then update() should be called, either on the widget that has changed
-    or the top level winow that contains the changed widgets.
+    or the top level window that contains the changed widgets.
 
     */
     void update()
@@ -898,20 +959,20 @@ public:
                     x, y, w, h, false);
     }
 
-    /// Get event handler
+/// Get event handler
     eventhandler& events()
     {
         return myEvents;
     }
 
-    /// get window handle
+/// get window handle
     HWND handle()
     {
         return myHandle;
     }
 
 
-    /// set delete list for when gui is detroyed
+/// set delete list for when gui is detroyed
     void delete_list( std::vector< HWND >* list )
     {
         myDeleteList = list;
@@ -1023,7 +1084,24 @@ protected:
         }
         return oldPos;
     }
-
+private:
+    void trackbarMessageHandler( HWND hwnd )
+    {
+        // trackbar notifications are sent to trackbar's parent window
+        // find the child that generated this notification
+        // get the tackbar position and call the slid event handler
+        for( auto c : myChild )
+        {
+            if( c->handle() == hwnd )
+            {
+                c->events().onSlid(
+                    SendMessage(
+                        hwnd,
+                        TBM_GETPOS,
+                        (WPARAM) 0, (LPARAM) 0 ));
+            }
+        }
+    }
 };
 
 
@@ -1074,6 +1152,7 @@ public:
     layout( gui* parent )
         : panel( parent )
         , myColCount( 2 )
+        , myfWidthsSpecified( false )
         , myfColFirst( false )
     {
 
@@ -1099,6 +1178,7 @@ public:
     void colWidths( const std::vector<int>& vw )
     {
         myWidths = vw;
+        myfWidthsSpecified = true;
     }
     /** Specify that widgets should be added to fill columns first
         @param[in] f column first flag, defaault true
@@ -1127,10 +1207,11 @@ public:
     {
         RECT r;
         GetClientRect(myHandle, &r );
-        if( ! myWidths.size() )
+        if( ! myfWidthsSpecified )
         {
             // col widths not specified, default to all the same width to fill panel
             int colwidth = (r.right - r.left) / myColCount;
+            myWidths.clear();
             for( int k = 0; k < myColCount; k++ )
             {
                 myWidths.push_back( colwidth );
@@ -1184,6 +1265,7 @@ public:
 private:
     int myColCount;
     std::vector<int> myWidths;
+    bool myfWidthsSpecified;        // true if app code specified column widths
     bool myfColFirst;               // true if columns should be filled first
 };
 
@@ -1207,12 +1289,27 @@ public:
 protected:
     HBITMAP myBitmap;
 
-    /// draw - label inside rectangle
+    /// draw
     virtual void draw( PAINTSTRUCT& ps )
     {
         if( ! myBitmap )
         {
-            gui::draw( ps );
+            // button with text
+
+            SetBkColor(
+                ps.hdc,
+                myBGColor );
+
+            RECT r( ps.rcPaint );
+            r.left += 1;
+            r.top  += 1;
+            DrawText(
+                ps.hdc,
+                myText.c_str(),
+                -1,
+                &r,
+                DT_SINGLELINE | DT_CENTER | DT_VCENTER );
+
             DrawEdge(
                 ps.hdc,
                 &ps.rcPaint,
@@ -1222,6 +1319,8 @@ protected:
         }
         else
         {
+            // button with bitmap
+
             HDC hLocalDC = CreateCompatibleDC(ps.hdc);
             BITMAP qBitmap;
             GetObject(reinterpret_cast<HGDIOBJ>(myBitmap), sizeof(BITMAP),
@@ -1235,7 +1334,75 @@ protected:
         }
     }
 };
-/// A widget that user can click to select one of an exclusive set of options
+/** A widget that user can click to select one of an exclusive set of options
+
+<pre>
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,400,400});
+    form.text("A windex radiobutton");
+
+    wex::groupbox& P = wex::maker::make<wex::groupbox>( form );
+    P.move( 5, 5, 350,200 );
+
+    // use laypout to atomatically arrange buttons in columns
+    wex::layout& L = wex::maker::make<wex::layout>(P  );
+    L.move( 50, 50,300,190);
+    L.grid( 2 );                // specify 2 columns
+    L.colfirst();               // specify column first order
+
+    // first group of radiobuttons
+    radiobutton& rb1 = wex::maker::make<radiobutton>(L);
+    rb1.first();                // first in group of interacting buttons
+    rb1.move( {20,20,100,30} );
+    rb1.text("Alpha");
+    radiobutton& rb2 = wex::maker::make<radiobutton>(L);
+    rb2.move( {20,60,100,30} );
+    rb2.text("Beta");
+    radiobutton& rb3 = wex::maker::make<radiobutton>(L);
+    rb3.move( {20,100,100,30} );
+    rb3.text("Gamma");
+
+    // second group of radio buttons
+    radiobutton& rb4 = wex::maker::make<radiobutton>(L);
+    rb4.first();                // first in group of interacting buttons
+    rb4.size( 80,30 );
+    rb4.text("X");
+    radiobutton& rb5 = wex::maker::make<radiobutton>(L);
+    rb5.size( 80,30 );
+    rb5.text("Y");
+    radiobutton& rb6 = wex::maker::make<radiobutton>(L);
+    rb6.size( 80,30 );
+    rb6.text("Z");
+
+    // display a button
+    button& btn = wex::maker::make<button>( form );
+    btn.move( {20, 250, 150, 30 } );
+    btn.text( "Show values entered" );
+
+    // popup a message box when button is clicked
+    // showing the values entered
+    btn.events().click([&]
+    {
+        std::string msg;
+        if( rb1.isChecked() )
+            msg = "Alpha";
+        else if( rb2.isChecked() )
+            msg = "Beta";
+        else if( rb3.isChecked() )
+            msg = "Gamma";
+        else
+            msg = "Nothing";
+        msg += " is checked";
+        msgbox(
+            form,
+            msg );
+    });
+
+    // show the application
+    form.show();
+</pre>
+*/
 class radiobutton : public gui
 {
 public:
@@ -1321,6 +1488,23 @@ public:
     bool isChecked()
     {
         return myValue;
+    }
+
+    /** Which button in group is checked
+        @return zero-based offset of checked button in group this button belongs to, -1 if none checked
+    */
+    int checkedOffset()
+    {
+        int off = 0;
+        for( auto b : group()[myGroup] )
+        {
+            if( b->isChecked() )
+                break;
+            off++;
+        }
+        if( off < (int)group()[myGroup].size() )
+            return off;
+        return -1;
     }
 
     /// set value true( default ) or false
@@ -1514,7 +1698,7 @@ public:
         }
     }
 
-    // change text in textbox
+    /// change text in textbox
     void text( const std::string& t )
     {
         SetDlgItemText(
@@ -1523,7 +1707,7 @@ public:
             t.c_str() );
     }
 
-    // get text in textbox
+    /// get text in textbox
     std::string text()
     {
         char buf[1000];
@@ -1536,6 +1720,14 @@ public:
         );
         return std::string( buf );
     }
+    /// disable ( or enable ) user editing
+    void readonly( bool f = true )
+    {
+        SendMessage(
+            handle(),
+            EM_SETREADONLY,
+            (WPARAM)f, (LPARAM)0);
+    }
 };
 
 /// A widget where user can choose from a dropdown list of strings
@@ -1544,7 +1736,7 @@ class choice : public gui
 public:
     choice( gui* parent )
         : gui( parent, "Combobox",
-               CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+               CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
     /// Override move to ensure height is sufficient to allow dropdown to apprear
@@ -1641,48 +1833,6 @@ public:
         return theInstance;
     }
 
-    /// Construct a top level window ( first call constructs application window )
-    static gui & topWindow()
-    {
-        return get().MakeWindow();
-    }
-
-
-
-    /** get reference to new widget or window of type T
-        @param[in] parent reference to parent window or widget
-    */
-    template <class T, class W>
-    T& make( W& parent )
-    {
-        T* w = new T( (gui*)&parent );
-
-        // inherit background color from parent
-        w->bgcolor( parent.bgcolor() );
-
-        Add( w );
-        return *w;
-    }
-
-    /// get map of existing gui elements
-    mgui_t * mgui()
-    {
-        return &myGui;
-    }
-
-    /** Find gui element that is managing a window
-        param[in] hwnd window handle
-        @return pointer to gui element, or NULL
-    */
-    static gui* findGui( HWND hwnd )
-    {
-        mgui_t* mgui = get().mgui();
-        auto w = mgui->find( hwnd );
-        if( w == mgui->end() )
-            return NULL;
-        return w->second;
-    }
-
     /* handle window messages
 
     All messages to windows created by windex come here.
@@ -1690,10 +1840,10 @@ public:
     */
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        gui* g = findGui( hwnd );
-        if( g )
+        auto w =  get().myGui.find( hwnd );
+        if( w !=  get().myGui.end() )
         {
-            if( g->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
+            if( w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
                 return 0;
         }
 
@@ -1712,11 +1862,13 @@ public:
 
         // add to existing gui elements
         myGui.insert( std::make_pair( g->handle(), g ));
+
+        //std::cout << "windexAdd " << myGui.size() <<" in "<< this << "\n";
     }
 
-
-private:
     mgui_t myGui;                       ///< map of existing gui elements
+private:
+
     std::vector< HWND > myDeleteList;   ///< gui elements that have been deleted but not yet removed from map
 
     windex()
@@ -1731,13 +1883,7 @@ private:
         RegisterClass(&wc);
     }
 
-    /// get reference to new top level window
-    gui& MakeWindow()
-    {
-        gui* w = new gui();
-        Add( w );
-        return *w;
-    }
+
 
     /// remove destroyed gui elements
     void Delete()
@@ -1783,7 +1929,7 @@ public:
     {
         if (GetOpenFileName(&ofn)==TRUE)
         {
-             myfname = ofn.lpstrFile;
+            myfname = ofn.lpstrFile;
         }
         else
             myfname = "";
@@ -2028,14 +2174,14 @@ public:
     slider( gui* parent )
         : gui( parent, "msctls_trackbar32",
                WS_CHILD | WS_OVERLAPPED | WS_VISIBLE |
-               TBS_AUTOTICKS )
+               TBS_AUTOTICKS | TBS_TRANSPARENTBKGND )
     {
     }
     /** Specify the range values used
         @param[in] min
         @param[in] max
 
-        The values mut all be positive,
+        The values must all be positive,
         otherwise a runtime_error exception is thrown
     */
     void range( int min, int max )
@@ -2057,16 +2203,53 @@ public:
             GWL_STYLE,
             GetWindowLongPtr( myHandle, GWL_STYLE) |  TBS_VERT );
     }
+
+    /// Position of the slider thumb in range
+    int position()
+    {
+        return SendMessage(
+                   myHandle,
+                   TBM_GETPOS,
+                   (WPARAM) 0, (LPARAM) 0 );
+    }
+    void position( int pos )
+    {
+        SendMessage(
+            myHandle,
+            TBM_SETPOS,
+            (WPARAM) true, (LPARAM) pos );
+    }
 };
+
+/// \brief A class for making windex objects.
+class maker {
+    public:
 
 /** Construct widget
         @param[in] parent reference to parent window or widget
 */
-template <class T, class W>
-T& make( W& parent )
+template < class W, class P >
+static W& make( P& parent )
 {
-    return windex::get().make<T>(parent);
+    W* w = new W( (gui*)&parent );
+
+    // inherit background color from parent
+    w->bgcolor( parent.bgcolor() );
+
+    windex::get().Add( w );
+    return *w;
 }
+
+/// Construct a top level window ( first call constructs application window )
+static gui&  make()
+{
+    windex::get().myGui.size();
+
+    gui* w = new gui();
+    windex::get().Add( w );
+    return *w;
+}
+};
 
 }
 

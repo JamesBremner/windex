@@ -5,10 +5,10 @@
 #include "wex.h"
 namespace wex
 {
-    /** \brief save window contents to an image file in PNG format.
+/** \brief save window contents to an image file in PNG format.
 
-    Add library gdiplus to linker library list
-    */
+Add library gdiplus to linker library list
+*/
 class window2file
 {
 public:
@@ -56,8 +56,6 @@ public:
     */
     void save( gui& w, const std::string& filename )
     {
-        using namespace Gdiplus;
-
         HDC  memdc;
         HBITMAP membit;
         HDC scrdc = ::GetDC( w.handle() );
@@ -67,18 +65,17 @@ public:
         int Width = rcClient.right-rcClient.left;
         memdc = CreateCompatibleDC(scrdc);
         membit = CreateCompatibleBitmap(scrdc, Width, Height);
-        HBITMAP hOldBitmap =(HBITMAP) SelectObject(memdc, membit);
+        SelectObject(memdc, membit);
         BitBlt(memdc, 0, 0, Width, Height, scrdc, 0, 0, SRCCOPY);
 
         Gdiplus::Bitmap bitmap(membit, NULL);
         std::wstringstream wss;
         wss << filename.c_str();
 
-        Status stat = bitmap.Save(
-                          wss.str().c_str(),
-                          &myPngclsid,
-                          NULL);
-        //std::cout << "status " << stat << "\n";
+        bitmap.Save(
+            wss.str().c_str(),
+            &myPngclsid,
+            NULL);
 
         DeleteObject(memdc);
         DeleteObject(membit);
