@@ -2,6 +2,7 @@ var searchData=
 [
   ['check',['check',['../classwex_1_1radiobutton.html#a67092b91e7e7518ac9c22a47c98889c7',1,'wex::radiobutton']]],
   ['checkbox',['checkbox',['../classwex_1_1checkbox.html',1,'wex']]],
+  ['checkedoffset',['checkedOffset',['../classwex_1_1radiobutton.html#a54c0453f7f0e3b7a0a44a9e48b10f006',1,'wex::radiobutton']]],
   ['choice',['choice',['../classwex_1_1choice.html',1,'wex']]],
   ['circle',['circle',['../classwex_1_1shapes.html#a9769669dd94acb5b6f5b12670987f4b8',1,'wex::shapes']]],
   ['clear',['clear',['../classwex_1_1choice.html#a07a4b86ed1550beb8fb1f1847aef0a74',1,'wex::choice']]],

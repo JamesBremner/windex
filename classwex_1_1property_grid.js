@@ -9,10 +9,10 @@ var classwex_1_1property_grid =
     [ "find", "classwex_1_1property_grid.html#abd661706ffcccea51c315588bc8211ed", null ],
     [ "labelWidth", "classwex_1_1property_grid.html#a8da95e3bfc995031d546e2336da850e9", null ],
     [ "move", "classwex_1_1property_grid.html#a937c83efe710bf9a93c2fb8196b41c53", null ],
-    [ "propHeight", "classwex_1_1property_grid.html#a284c7f08c76aaed20e586f65bf698bdc", null ],
+    [ "propHeight", "classwex_1_1property_grid.html#a6a8a3629bc1eb2c177b5bd9a300fd6e4", null ],
     [ "saveValues", "classwex_1_1property_grid.html#a8c41f80dc0f8955821bb74a42976ae67", null ],
     [ "string", "classwex_1_1property_grid.html#ac62ea8c07d0c7d49af078f3a6e26a7c5", null ],
     [ "update", "classwex_1_1property_grid.html#a7982de0d0ce0a9480c603872e11e93f2", null ],
     [ "value", "classwex_1_1property_grid.html#aa9d7db95673d02289822c873be55c460", null ],
-    [ "width", "classwex_1_1property_grid.html#a39174237a9d96004b07a1a97076f7242", null ]
+    [ "width", "classwex_1_1property_grid.html#a12ac25b450c03b6d503730c7e4838118", null ]
 ];

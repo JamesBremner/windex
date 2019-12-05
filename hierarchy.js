@@ -18,6 +18,7 @@ var hierarchy =
       [ "wex::radiobutton", "classwex_1_1radiobutton.html", null ],
       [ "wex::slider", "classwex_1_1slider.html", null ]
     ] ],
+    [ "wex::maker", "classwex_1_1maker.html", null ],
     [ "wex::menu", "classwex_1_1menu.html", null ],
     [ "wex::menubar", "classwex_1_1menubar.html", null ],
     [ "wex::msgbox", "classwex_1_1msgbox.html", null ],

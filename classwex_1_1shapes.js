@@ -10,6 +10,10 @@ var classwex_1_1shapes =
     [ "fill", "classwex_1_1shapes.html#a9e44cf7df1ccaafd93ffa1f0b268152d", null ],
     [ "line", "classwex_1_1shapes.html#a82c461628854775ba28d7946ad1300bf", null ],
     [ "penThick", "classwex_1_1shapes.html#a08b1a2691cf2269729914de1bea0b30b", null ],
+    [ "pixel", "classwex_1_1shapes.html#acbea31a4f58f95722b4f26323b05e9c4", null ],
     [ "rectangle", "classwex_1_1shapes.html#ab8370b07ca362fda56623a3997c5a075", null ],
-    [ "text", "classwex_1_1shapes.html#a4c1085ffbeb0578b85b264a302f61ec9", null ]
+    [ "text", "classwex_1_1shapes.html#a4c1085ffbeb0578b85b264a302f61ec9", null ],
+    [ "textHeight", "classwex_1_1shapes.html#a48ae9c484082d78fca2b5284f1f4cc82", null ],
+    [ "textVertical", "classwex_1_1shapes.html#a56de559f7b367afaaf846c8c5298b3d4", null ],
+    [ "transparent", "classwex_1_1shapes.html#a665cd16dbcc39330be5d26619a106746", null ]
 ];

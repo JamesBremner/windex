@@ -1,5 +1,5 @@
-C:/Users/James/code/windex/include/wex.h:362: warning: argument 'se' of command @param is not found in the argument list of wex::shapes::arc(int x, int y, double r, double sa, double ea)
-C:/Users/James/code/windex/include/wex.h:370: warning: The following parameters of wex::shapes::arc(int x, int y, double r, double sa, double ea) are not documented:
+C:/Users/James/code/windex/include/wex.h:386: warning: argument 'se' of command @param is not found in the argument list of wex::shapes::arc(int x, int y, double r, double sa, double ea)
+C:/Users/James/code/windex/include/wex.h:386: warning: The following parameters of wex::shapes::arc(int x, int y, double r, double sa, double ea) are not documented:
   parameter 'ea'
 C:/Users/James/code/windex/include/plot2d.h:482: warning: explicit link request to 'include' could not be resolved
 C:/Users/James/code/windex/include/plot2d.h:483: warning: explicit link request to 'include' could not be resolved
