@@ -1658,13 +1658,29 @@ private:
 class msgbox
 {
 public:
-    msgbox( gui& parent, const std::string& msg )
+    /// CTOR for simple message box with OK button
+    msgbox(
+        gui& parent,
+        const std::string& msg )
     {
-        MessageBox(parent.handle(),
+        myReturn = MessageBox(parent.handle(),
                    msg.c_str(),
                    "Message",
                    MB_OK);
     }
+    /// CTOR for message box with title and configurable buttons
+    msgbox(
+        gui& parent,
+        const std::string& msg,
+        const std::string& title,
+        unsigned int type )
+    {
+        myReturn = MessageBox(parent.handle(),
+                   msg.c_str(),
+                   title.c_str(),
+                   type );
+    }
+    int myReturn;                   ///< Button id clicked by user
 };
 
 /// A widget that displays a string.
@@ -2222,33 +2238,34 @@ public:
 };
 
 /// \brief A class for making windex objects.
-class maker {
-    public:
-
-/** Construct widget
-        @param[in] parent reference to parent window or widget
-*/
-template < class W, class P >
-static W& make( P& parent )
+class maker
 {
-    W* w = new W( (gui*)&parent );
+public:
 
-    // inherit background color from parent
-    w->bgcolor( parent.bgcolor() );
+    /** Construct widget
+            @param[in] parent reference to parent window or widget
+    */
+    template < class W, class P >
+    static W& make( P& parent )
+    {
+        W* w = new W( (gui*)&parent );
 
-    windex::get().Add( w );
-    return *w;
-}
+        // inherit background color from parent
+        w->bgcolor( parent.bgcolor() );
+
+        windex::get().Add( w );
+        return *w;
+    }
 
 /// Construct a top level window ( first call constructs application window )
-static gui&  make()
-{
-    windex::get().myGui.size();
+    static gui&  make()
+    {
+        windex::get().myGui.size();
 
-    gui* w = new gui();
-    windex::get().Add( w );
-    return *w;
-}
+        gui* w = new gui();
+        windex::get().Add( w );
+        return *w;
+    }
 };
 
 }
