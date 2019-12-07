@@ -34,12 +34,14 @@ public:
         const std::string& def )
     {
         myGrid.string( name, def );
+        myGrid.move( { 50,50, 200, myGrid.propCount() * myGrid.propHeight() } );
     }
     void choice(
         const std::string& name,
         const std::vector<std::string>& choice )
     {
         myGrid.choice( name, choice );
+        myGrid.move( { 50,50, 200, myGrid.propCount() * myGrid.propHeight() } );
     }
 
     void modal()

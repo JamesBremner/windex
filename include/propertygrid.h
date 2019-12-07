@@ -252,13 +252,13 @@ public:
         , myBGColor( 0xc8c8c8)
     {
         text("PG");
-        scroll();
 
         events().click([this]
         {
             visible();
         });
     }
+    /// Add string property
     void string(
         const std::string& name,
         const std::string& value )
@@ -266,6 +266,7 @@ public:
         property P( this, name, value );
         CommonConstruction( P );
     }
+    /// Add choice property
     void choice(
         const std::string& name,
         const std::vector< std::string >& choice )
@@ -273,6 +274,7 @@ public:
         property P( this, name, choice );
         CommonConstruction( P );
     }
+    /// Add boolean property
     void check(
         const std::string& name,
         bool f )
@@ -280,12 +282,20 @@ public:
         property P( this, name, f );
         CommonConstruction( P );
     }
+    /// Add categoty
     void category(
         const std::string& name )
     {
         property P( this, name );
         CommonConstruction( P );
     }
+    /// Add scrollbars
+    void scroll()
+    {
+        myfScroll = true;
+        gui::scroll();
+    }
+    /// Expand, or contract, category of properties
     void expand(
         const std::string name,
         bool fexpand = true )
@@ -344,8 +354,8 @@ public:
                 if( p->name() == category )
                 {
                     for( p++;
-                        p != myProperty.end();
-                        p++ )
+                            p != myProperty.end();
+                            p++ )
                     {
                         if( p->isCategory() )
                             return nullptr;
@@ -389,27 +399,28 @@ public:
     {
         return myWidth;
     }
+    int propCount() const
+    {
+        return (int) myProperty.size();
+    }
 private:
-    std::vector< property > myProperty;
-    int myHeight;               // height of a single property
-    int myWidth;
-    int myLabelWidth;
-    int myBGColor;
+    std::vector< property > myProperty;     // the properties in the grid
+    int myHeight;                           // height of a single property
+    int myWidth;                            // width of grid
+    int myLabelWidth;                       // width of property labels
+    int myBGColor;                          // grid background color
+    bool myfScroll;                         // true if scrollbars used
 
     void CommonConstruction( property& P )
     {
         P.labelWidth( myLabelWidth );
         P.bgcolor( myBGColor );
-//        P.move(
-//        {
-//            0, (int)myProperty.size() * myHeight,
-//            myWidth, myHeight
-//        } );
         myProperty.push_back( P );
 
-        scrollRange(
-            myWidth,
-            ((int)myProperty.size()+1) * myHeight);
+        if( myfScroll )
+            scrollRange(
+                myWidth,
+                ((int)myProperty.size()+1) * myHeight);
 
         visible();
     }
@@ -448,9 +459,10 @@ private:
                 P.show( false );
             }
         }
-        scrollRange(
-            myWidth,
-            index * myHeight);
+        if( myfScroll )
+            scrollRange(
+                myWidth,
+                index * myHeight);
         update();
     }
 };
