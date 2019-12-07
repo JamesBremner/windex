@@ -74,8 +74,6 @@ void choiceDemo()
             form,
             cb.SelectedText() );
     });
-    std::cout << "choice handle " << cb.handle()
-              <<" "<< cb.id() << "\n";
 
     // display a button
     button& btn = wex::maker::make<button>( form );
@@ -252,7 +250,7 @@ void RBDemo()
     rb3.text(group0labels[2]);
 
     // second group of radio buttons
-     static std::vector<std::string> group1labels { "X", "Y", "Z" };
+    static std::vector<std::string> group1labels { "X", "Y", "Z" };
     radiobutton& rb4 = wex::maker::make<radiobutton>(L);
     rb4.first();                // first in group of interacting buttons
     rb4.size( 80,30 );
@@ -279,7 +277,7 @@ void RBDemo()
             msg = group0labels[ coff ];
         else
             msg = "nothing";
-         coff = rb4.checkedOffset();
+        coff = rb4.checkedOffset();
         if( coff >= 0 )
             msg += " and " + group1labels[ coff ];
         else
@@ -425,6 +423,35 @@ void SliderDemo()
     {
         vlabel.text("vert value: " + std::to_string( pos ));
         vlabel.update();
+    });
+
+    form.show();
+}
+
+void DropDemo()
+{
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,500,400});
+    form.text("Drop files demo");
+
+    // widget for receiving dropped files
+    drop& dropper = wex::maker::make<wex::drop>( form );
+    dropper.move( 10,10,490,390 );
+    label& instructions = wex::maker::make<wex::label>( dropper );
+    instructions.move(30,30,400,200);
+    instructions.text("Drop files here");
+
+    // dropped files event handler
+    dropper.events().drop( [&](const std::vector<std::string>& files )
+    {
+        // display list of dropped files
+        std::string msg;
+        msg = "Files dropped:\n";
+        for( auto& f : files )
+            msg += f + "\n ";
+        instructions.text( msg );
+        instructions.update();
     });
 
     form.show();
@@ -707,6 +734,14 @@ int main()
     {
         window2file w2f;
         w2f.save( form, "demo.png" );
+    });
+
+    button& btndrop = wex::maker::make<button>( l );
+    btndrop.size(  150, 30 );
+    btndrop.text( "Drop files" );
+    btndrop.events().click([&]
+    {
+        DropDemo();
     });
 
     // show the application

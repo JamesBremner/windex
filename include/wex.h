@@ -9,6 +9,7 @@
 #include <cmath>
 #include <windows.h>
 #include <CommCtrl.h>
+#include <Shellapi.h>
 
 namespace wex
 {
@@ -48,6 +49,8 @@ public:
         mouseUp([] {});
         timer([] {});
         slid([](int pos) {});
+        dropStart([](HDROP hDrop) {});
+        drop([](const std::vector< std::string >& files) {});
     }
     bool onLeftdown()
     {
@@ -115,6 +118,14 @@ public:
     void onSlid(unsigned short id )
     {
         mySlidFunction( (int) id );
+    }
+    void onDropStart( HDROP hDrop )
+    {
+        myDropStartFunction( hDrop );
+    }
+    void onDrop( const std::vector< std::string >& files )
+    {
+        myDropFunction( files );
     }
     /////////////////////////// register event handlers /////////////////////
 
@@ -192,6 +203,16 @@ public:
     {
         mySlidFunction = f;
     }
+    /// register function to call when user drops files.  App code should NOT call this!
+    void dropStart( std::function<void( HDROP hDrop)> f )
+    {
+        myDropStartFunction = f;
+    }
+    /// register function to call when files dropped by user have been extracted.  App code use this!
+    void drop( std::function<void( const std::vector<std::string>& files)> f)
+    {
+        myDropFunction = f;
+    }
 private:
     bool myfClickPropogate;
 
@@ -207,6 +228,8 @@ private:
     std::function<void(void)> myTimerFunction;
     std::function<void(void)> myMouseUpFunction;
     std::function<void(int pos)> mySlidFunction;
+    std::function<void(HDROP hDrop)> myDropStartFunction;
+    std::function<void( const std::vector<std::string>& files)> myDropFunction;
 
     // event handlers registered by windex class
     std::function<void(void)> myClickFunWex;
@@ -861,6 +884,10 @@ public:
             case WM_TIMER:
                 events().onTimer();
                 return true;
+
+            case WM_DROPFILES:
+                events().onDropStart( (HDROP) wParam );
+                return true;
             }
 
         }
@@ -1113,6 +1140,68 @@ public:
         : gui( parent )
     {
         text("");
+    }
+};
+/** \brief A widget where users can drop files dragged from windows explorer.
+
+<pre>
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,500,400});
+    form.text("Drop files demo");
+
+    // widget for receiving dropped files
+    drop& dropper = wex::maker::make<wex::drop>( form );
+    dropper.move( 10,10,490,390 );
+    label& instructions = wex::maker::make<wex::label>( dropper );
+    instructions.move(30,30,400,200);
+    instructions.text("Drop files here");
+
+    // dropped files event handler
+    dropper.events().drop( [&](const std::vector<std::string>& files )
+    {
+        // display list of dropped files
+        std::string msg;
+        msg = "Files dropped:\n";
+        for( auto& f : files )
+            msg += f + "\n ";
+        instructions.text( msg );
+        instructions.update();
+    });
+
+    form.show();
+</pre>
+*/
+class drop  : public gui
+{
+public:
+    drop( gui* parent )
+        : gui( parent )
+    {
+        text("");
+
+        // register as drop recipient
+        DragAcceptFiles( myHandle, true );
+
+        // handle drop event
+        myEvents.dropStart([this](HDROP hDrop)
+        {
+            int count = DragQueryFileA( hDrop,0xFFFFFFFF,NULL,0 );
+            if( count )
+            {
+                // extract files from drop structure
+                std::vector< std::string > files;
+                char fname[ MAX_PATH ];
+                for( int k = 0; k < count; k++ )
+                {
+                    DragQueryFileA( hDrop, k, fname, MAX_PATH ) ;
+                    files.push_back( fname );
+                }
+                // call app code's event handler
+                myEvents.onDrop( files );
+            }
+            DragFinish( hDrop );
+        });
     }
 };
 
@@ -1664,9 +1753,9 @@ public:
         const std::string& msg )
     {
         myReturn = MessageBox(parent.handle(),
-                   msg.c_str(),
-                   "Message",
-                   MB_OK);
+                              msg.c_str(),
+                              "Message",
+                              MB_OK);
     }
     /// CTOR for message box with title and configurable buttons
     msgbox(
@@ -1676,9 +1765,9 @@ public:
         unsigned int type )
     {
         myReturn = MessageBox(parent.handle(),
-                   msg.c_str(),
-                   title.c_str(),
-                   type );
+                              msg.c_str(),
+                              title.c_str(),
+                              type );
     }
     int myReturn;                   ///< Button id clicked by user
 };
