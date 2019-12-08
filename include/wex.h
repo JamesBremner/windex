@@ -1803,6 +1803,14 @@ public:
         }
     }
 
+    void multiline()
+    {
+        SetWindowLongPtr(
+            myHandle,
+            GWL_STYLE,
+            GetWindowLongPtr( myHandle, GWL_STYLE) |  ES_MULTILINE );
+    }
+
     /// change text in textbox
     void text( const std::string& t )
     {
@@ -2155,7 +2163,8 @@ public:
                     myParent.handle(),
                     NULL    );
         // if user clicked item, execute associated function
-        if( 0 <= i && i < (int)CommandHandlers().size() )
+        // return of 0 indicates user clicked outside menu, rejecting all items
+        if( 1 <= i && i < (int)CommandHandlers().size() )
             CommandHandlers()[i]();
     }
     HMENU handle()
