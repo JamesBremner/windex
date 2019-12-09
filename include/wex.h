@@ -2468,6 +2468,11 @@ public:
     {
         return mySelect;
     }
+    // set width of tab buttons
+    void tabWidth( int w )
+    {
+        myTabWidth = w;
+    }
 private:
     std::vector< button* > myButton;
     std::vector< gui* > myPanel;
