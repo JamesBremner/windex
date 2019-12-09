@@ -2366,5 +2366,114 @@ public:
     }
 };
 
+/** \brief A widget where user can select which panel to display by clicking a tab button
+
+Usage:
+<pre>
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,400,400});
+    form.text("Tabbed Panel demo");
+
+    // construct tabbed panel
+    tabbed& tabs = maker::make<tabbed>( form );
+    tabs.move( 50,50, 300, 200 );
+
+    // add some demo panels
+    panel& cam1panel = maker::make<panel>( tabs );
+    label& cam1label = maker::make<label>( cam1panel );
+    cam1label.move(30,100, 100,20 );
+    cam1label.text("CAM1 panel");
+    tabs.add( "CAM1", cam1panel );
+
+    panel& cam2panel = maker::make<panel>( tabs );
+    label& cam2label = maker::make<label>( cam2panel );
+    cam2label.move(30,100, 100,20 );
+    cam2label.text("CAM2 panel");
+    tabs.add( "CAM2", cam2panel );
+
+    panel& cam3panel = maker::make<panel>( tabs );
+    label& cam3label = maker::make<label>( cam3panel );
+    cam3label.move(30,100, 100,20 );
+    cam3label.text("CAM3 panel");
+    tabs.add( "CAM3", cam3panel );
+
+    form.show();
+
+    // initially show the first panel
+    // must be donw after call to show, which displays the last panel added
+    tabs.select( 0 );
+</pre>
+*/
+class tabbed : public panel
+{
+public:
+    tabbed( gui* parent )
+        : panel( parent )
+        , myTabWidth( 50 )
+    {
+
+    }
+    /** add panel that can be displayed
+        @param[in] tabname text for button that brings up the panel
+        @param[in] panel to be displayed when tab selected.
+
+        Panel will be resized to fit neatly
+    */
+    void add(
+        const std::string& tabname,
+        gui& panel )
+    {
+        //resize the child panel so it fits neatly under the tab buttons
+        RECT rect;
+        GetClientRect( myHandle, &rect );
+        panel.move( 0,31, rect.right-rect.left, rect.bottom-rect.top - 30 );
+
+        button& btn = maker::make<button>( *this );
+        btn.text( tabname );
+        btn.move( myButton.size() * myTabWidth,
+                  0, myTabWidth, 30 );
+        myButton.push_back( &btn );
+        myPanel.push_back( &panel );
+        int tabIndex = myButton.size()-1;
+
+        btn.events().click([this,tabIndex ]( )
+        {
+            select( tabIndex );
+        });
+    }
+    /// select panel to displayed
+    void select( int i )
+    {
+        std::cout << "select " << i << "\n";
+
+        if( 0 > i || i >= (int)myButton.size() )
+            return;
+
+        for( auto b : myButton )
+        {
+            b->bgcolor( 0xC8C8C8 );
+            b->update();
+        }
+        for( auto p : myPanel )
+            p->show( false );
+
+        myButton[i]->bgcolor(0xFFFFFF);
+        myPanel[i]->show();
+        update();
+        mySelect = i;
+    }
+    /// zero-based index of panel currently selected
+    int select() const
+    {
+        return mySelect;
+    }
+private:
+    std::vector< button* > myButton;
+    std::vector< gui* > myPanel;
+    int myTabWidth;
+    int mySelect;
+};
+
 }
 

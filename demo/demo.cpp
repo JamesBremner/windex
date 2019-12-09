@@ -586,11 +586,43 @@ void PlotDemo()
 
     fm.show();
 }
-//
-//class topWindow : public wex::gui
-//{
-//
-//};
+
+void TabDemo()
+{
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,400,400});
+    form.text("Tabbed Panel demo");
+
+    // construct tabbed panel
+    tabbed& tabs = maker::make<tabbed>( form );
+    tabs.move( 50,50, 300, 200 );
+
+    // add some demo panels
+    panel& cam1panel = maker::make<panel>( tabs );
+    label& cam1label = maker::make<label>( cam1panel );
+    cam1label.move(30,100, 100,20 );
+    cam1label.text("CAM1 panel");
+    tabs.add( "CAM1", cam1panel );
+
+    panel& cam2panel = maker::make<panel>( tabs );
+    label& cam2label = maker::make<label>( cam2panel );
+    cam2label.move(30,100, 100,20 );
+    cam2label.text("CAM2 panel");
+    tabs.add( "CAM2", cam2panel );
+
+    panel& cam3panel = maker::make<panel>( tabs );
+    label& cam3label = maker::make<label>( cam3panel );
+    cam3label.move(30,100, 100,20 );
+    cam3label.text("CAM3 panel");
+    tabs.add( "CAM3", cam3panel );
+
+    form.show();
+
+    // initially show the first panel
+    // must be donw after call to show, which displays the last panel added
+    tabs.select( 0 );
+}
 
 
 
@@ -742,6 +774,14 @@ int main()
     btndrop.events().click([&]
     {
         DropDemo();
+    });
+
+    button& btntabs = wex::maker::make<button>( l );
+    btntabs.size(  150, 30 );
+    btntabs.text( "Tabbed Panel" );
+    btntabs.events().click([&]
+    {
+        TabDemo();
     });
 
     // show the application
