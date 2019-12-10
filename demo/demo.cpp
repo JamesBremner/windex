@@ -198,7 +198,7 @@ void PGDemo()
 void InputboxDemo( gui& form )
 {
     wex::inputbox ib;
-    ib.size( 400, 300 );
+    ib.gridWidth( 800 );
     ib.add("A","72");
     ib.add("B","4600");
     ib.choice("Choose", { "X", "Y"} );

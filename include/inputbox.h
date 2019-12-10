@@ -30,7 +30,7 @@ public:
     {
         windex::get().Add( this );
         text("inputbox");
-        move({100,100,300,300});
+        move( {100,100,300,300} );
         myGrid.move( { 50,50, 200, 60});
         myGrid.labelWidth( 50 );
         myGrid.bgcolor( 0xFFA0A0 );
@@ -52,14 +52,14 @@ public:
         const std::string& def )
     {
         myGrid.string( name, def );
-        myGrid.move( { 50,50, 200, myGrid.propCount() * myGrid.propHeight() } );
+        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
     }
     void choice(
         const std::string& name,
         const std::vector<std::string>& choice )
     {
         myGrid.choice( name, choice );
-        myGrid.move( { 50,50, 200, myGrid.propCount() * myGrid.propHeight() } );
+        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
     }
 
     void modal()
@@ -72,10 +72,10 @@ public:
         auto p = myGrid.find( name );
         return p->savedValue();
     }
-    void size( int w, int h )
+    void gridWidth( int w )
     {
-        gui::size( w, h );
-        myGrid.move( { 50,50, w-50, 60});
+        std::cout << "inputbox::gridWidth " << w << "\n";
+        myGrid.move( { 50,50, w, 60});
     }
     void labelWidth( int w )
     {
