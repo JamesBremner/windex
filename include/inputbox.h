@@ -72,6 +72,15 @@ public:
         auto p = myGrid.find( name );
         return p->savedValue();
     }
+    void size( int w, int h )
+    {
+        gui::size( w, h );
+        myGrid.move( { 50,50, w-50, 60});
+    }
+    void labelWidth( int w )
+    {
+        myGrid.labelWidth( w );
+    }
 private:
     propertyGrid myGrid;
     button& myOKButton;
