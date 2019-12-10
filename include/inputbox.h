@@ -2,11 +2,29 @@
 namespace wex
 {
 
-/// A popup window where user can edit a set of values
+/** \brief A popup window where user can edit a set of values.
+
+Usage:
+<pre>
+    wex::inputbox ib;
+    ib.add("A","72");
+    ib.add("B","4600");
+    ib.choice("Choose", { "X", "Y"} );
+    ib.showModal();
+
+    std::string msg =
+        "A is " + ib.value("A") +
+        ", B is " + ib.value("B") +
+        ", choice is " + ib.value("Choose");
+    msgbox(
+        form,
+        msg );
+</pre>
+*/
 class inputbox : public gui
 {
 public:
-    inputbox( gui& parent )
+    inputbox()
         : myGrid( propertyGrid( this ))
         , myOKButton( maker::make<button>(*this) )
     {

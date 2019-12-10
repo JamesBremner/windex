@@ -195,14 +195,9 @@ void PGDemo()
     form.showModal();
 }
 
-void InputboxDemo()
+void InputboxDemo( gui& form )
 {
-    // construct top level window
-    gui& form = wex::maker::make();
-    form.move({ 50,50,400,400});
-    form.text("A windex inputbox");
-
-    wex::inputbox ib( form );
+    wex::inputbox ib;
     ib.add("A","72");
     ib.add("B","4600");
     ib.choice("Choose", { "X", "Y"} );
@@ -215,10 +210,6 @@ void InputboxDemo()
     msgbox(
         form,
         msg );
-
-    // show the application
-    form.show();
-
 }
 void RBDemo()
 {
@@ -628,15 +619,8 @@ void TabDemo()
 
 int main()
 {
-//    topWindow tw;
-//
-//    if( typeid(tw) == typeid(topWindow) )
-//        std:: cout << "true\n";
-//    if( typeid(tw) != typeid(wex::gui) )
-//        std:: cout << "true\n";
 
     // construct top level application window
-    //gui& form = wex::windex::topWindow();
     gui& form = maker::make();
     form.move({ 50,50,400,500});
     form.text("Windex demos");
@@ -680,9 +664,9 @@ int main()
     button& btnib = wex::maker::make<button>( l );
     btnib.size(  150, 30 );
     btnib.text( "Inputbox" );
-    btnib.events().click([]
+    btnib.events().click([&]
     {
-        InputboxDemo();
+        InputboxDemo( form );
     });
 
     button& btnfb = wex::maker::make<button>( l );
