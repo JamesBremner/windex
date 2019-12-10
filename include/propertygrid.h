@@ -250,6 +250,7 @@ public:
         , myWidth( 300 )
         , myLabelWidth( 100 )
         , myBGColor( 0xc8c8c8)
+        , myfScroll( false )
     {
         text("PG");
 
