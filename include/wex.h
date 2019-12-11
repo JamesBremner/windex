@@ -2412,7 +2412,7 @@ public:
         : panel( parent )
         , myTabWidth( 50 )
     {
-
+        tabChanged( [](int tabIndex){});
     }
     /** add panel that can be displayed
         @param[in] tabname text for button that brings up the panel
@@ -2440,6 +2440,7 @@ public:
         btn.events().click([this,tabIndex ]( )
         {
             select( tabIndex );
+            myTabChangeFn( tabIndex );
         });
     }
     /// select panel to displayed
@@ -2468,16 +2469,25 @@ public:
     {
         return mySelect;
     }
-    // set width of tab buttons
+    /// set width of tab buttons
     void tabWidth( int w )
     {
         myTabWidth = w;
+    }
+    /** register function to call when tab has changed
+        This is only called when user changes the tab, not when app code call select() function
+        Zero-based tab index passed to register function when called
+    */
+    void tabChanged( std::function<void( int tabIndex )> f )
+    {
+        myTabChangeFn = f;
     }
 private:
     std::vector< button* > myButton;
     std::vector< gui* > myPanel;
     int myTabWidth;
     int mySelect;
+    std::function<void( int tabIndex )> myTabChangeFn;
 };
 
 }

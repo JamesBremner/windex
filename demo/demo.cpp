@@ -609,6 +609,13 @@ void TabDemo()
     cam3label.text("CAM3 panel");
     tabs.add( "CAM3", cam3panel );
 
+    tabs.tabChanged( [&]( int index )
+    {
+        msgbox mb(
+            form,
+            "tab changed to" + std::to_string( index )) ;
+    });
+
     form.show();
 
     // initially show the first panel
