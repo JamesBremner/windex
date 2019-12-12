@@ -115,6 +115,15 @@ public:
         it->second();
         return true;
     }
+    bool onChange(
+        unsigned short id )
+    {
+        auto it = mapControlFunction().find( std::make_pair(id,EN_CHANGE));
+        if( it == mapControlFunction().end() )
+            return true;
+        it->second();
+        return true;
+    }
     void onSlid(unsigned short id )
     {
         mySlidFunction( (int) id );
@@ -182,6 +191,13 @@ public:
     {
         mapControlFunction().insert(
             std::make_pair( std::make_pair( id, CBN_SELCHANGE), f ));
+    }
+    void change(
+        int id,
+        std::function<void(void)> f )
+    {
+        mapControlFunction().insert(
+            std::make_pair( std::make_pair( id, EN_CHANGE), f ));
     }
     void mouseMove( std::function<void(sMouse& m)> f )
     {
@@ -867,14 +883,16 @@ public:
                     myEvents.onScrollV( LOWORD (wParam) );
                 return true;
 
-
-
             case WM_COMMAND:
                 if( lParam )
                 {
                     if( HIWORD(wParam) == CBN_SELCHANGE )
                     {
                         return events().onSelect( LOWORD(wParam) );
+                    }
+                    else  if( HIWORD(wParam) == EN_CHANGE )
+                    {
+                        return events().onChange( LOWORD(wParam) );
                     }
                     return true;
                 }
@@ -2412,7 +2430,7 @@ public:
         : panel( parent )
         , myTabWidth( 50 )
     {
-        tabChanged( [](int tabIndex){});
+        tabChanged( [](int tabIndex) {});
     }
     /** add panel that can be displayed
         @param[in] tabname text for button that brings up the panel

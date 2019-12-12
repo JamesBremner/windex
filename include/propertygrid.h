@@ -25,6 +25,7 @@ public:
     {
         myLabel.text( myName );
         myEditbox.text( myValue );
+
     }
     property(
         gui* parent,
@@ -181,8 +182,20 @@ public:
         }
         return std::string("");
     }
+    /// set property value
+    void value( const std::string v )
+    {
+        switch( myType )
+        {
+        case eType::string:
+            myValue = v;
+            myEditbox.text( v );
+            myEditbox.update();
+            break;
+        }
+    }
 
-    // copy value from gui into myValue attribute
+    /// copy value from gui into myValue attribute
     void saveValue()
     {
         switch( myType )
@@ -220,6 +233,15 @@ public:
     void expand( bool f )
     {
         myCategoryExpanded.check( f );
+    }
+    void change( std::function<void()> f )
+    {
+        switch( myType )
+        {
+        case eType::string:
+            myEditbox.events().change( myEditbox.id(), f );
+            break;
+        }
     }
 private:
     std::string myName;
@@ -404,6 +426,11 @@ public:
     {
         return (int) myProperty.size();
     }
+    /// Register function to call when property value has changed
+    void change( std::function<void()> f )
+    {
+        onChange = f;
+    }
 private:
     std::vector< property > myProperty;     // the properties in the grid
     int myHeight;                           // height of a single property
@@ -411,6 +438,7 @@ private:
     int myLabelWidth;                       // width of property labels
     int myBGColor;                          // grid background color
     bool myfScroll;                         // true if scrollbars used
+    std::function<void()> onChange;         // funtion to call when property has changed
 
     void CommonConstruction( property& P )
     {
@@ -424,6 +452,11 @@ private:
                 ((int)myProperty.size()+1) * myHeight);
 
         visible();
+
+        P.change( [this]
+        {
+            onChange();
+        });
     }
     /** Show properties when category is expanded or collapsed
     */

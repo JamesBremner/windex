@@ -29,6 +29,10 @@ void helloworld()
     editbox& edit1 = maker::make<editbox>( form );
     edit1.move( {80, 20, 100, 30 } );
     edit1.text( "type value");
+    edit1.events().change( edit1.id(),[]
+    {
+        std::cout << "edit A changed\n" ;
+    });
     editbox& edit2 = maker::make<editbox>( form );
     edit2.move( {80, 60, 100, 30 } );
     edit2.text( "type value");
@@ -135,22 +139,22 @@ void PGDemo()
     pg.bgcolor( 0xFFA0A0 );
 
     // add properties
-    pg.category("Strings");
+    //pg.category("Strings");
     pg.string( "A", "72" );
     pg.string( "B", "4600" );
     pg.string( "C", "72" );
-    pg.string( "D", "4600" );
-    pg.string( "E", "4600" );
-    pg.string( "F", "4600" );
-    pg.string( "G", "4600" );
-    pg.string( "H", "4600" );
-    pg.string( "I", "4600" );
-    pg.string( "J", "4600" );
-    pg.string( "K", "4600" );
-    pg.string( "L", "4600" );
-    pg.string( "M", "4600" );
-    pg.string( "N", "4600" );
-    pg.string( "O", "4600" );
+//    pg.string( "D", "4600" );
+//    pg.string( "E", "4600" );
+//    pg.string( "F", "4600" );
+//    pg.string( "G", "4600" );
+//    pg.string( "H", "4600" );
+//    pg.string( "I", "4600" );
+//    pg.string( "J", "4600" );
+//    pg.string( "K", "4600" );
+//    pg.string( "L", "4600" );
+//    pg.string( "M", "4600" );
+//    pg.string( "N", "4600" );
+//    pg.string( "O", "4600" );
     pg.expand("Strings",false);
     pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
@@ -163,6 +167,11 @@ void PGDemo()
         pg.update();
         form.update();
     });
+
+    pg.change( []
+              {
+                 std::cout << "property value changed\n";
+              });
 
     // display a button
     button& btn = wex::maker::make<button>( form );
