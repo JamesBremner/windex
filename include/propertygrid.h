@@ -276,9 +276,14 @@ public:
     {
         text("PG");
 
+        // default event handlers
         events().click([this]
         {
             visible();
+        });
+        change( []
+        {
+
         });
     }
     /// Add string property
