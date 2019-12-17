@@ -496,6 +496,14 @@ public:
         DeleteObject( hFont );
     }
 
+    void textFontName( const std::string& fn )
+    {
+        strcpy(myLogfont.lfFaceName, "Courier");
+        HANDLE hFont = CreateFontIndirect (&myLogfont);
+        hFont = (HFONT)SelectObject (myHDC, hFont);
+        DeleteObject( hFont );
+    }
+
 private:
     HDC myHDC;
     int myPenThick;
