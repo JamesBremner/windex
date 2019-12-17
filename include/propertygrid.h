@@ -194,7 +194,16 @@ public:
             break;
         }
     }
-
+    void value( bool v )
+    {
+        switch( myType )
+        {
+        case eType::check:
+            myValue = std::to_string((int)v );
+            myCheckbox.check( v );
+            break;
+        }
+    }
     /// copy value from gui into myValue attribute
     void saveValue()
     {
@@ -234,12 +243,16 @@ public:
     {
         myCategoryExpanded.check( f );
     }
+    /// register function to call when property value changes
     void change( std::function<void()> f )
     {
         switch( myType )
         {
         case eType::string:
             myEditbox.events().change( myEditbox.id(), f );
+            break;
+        case eType::check:
+            myCheckbox.events().click( f );
             break;
         }
     }
