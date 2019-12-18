@@ -475,6 +475,18 @@ public:
             &rc,
             0 );
     }
+    void textCenterHz (
+        const std::string& t,
+        const std::vector<int>& v )
+    {
+        int ws = textWidthPixels( t );
+        int pad = (v[2]-ws)/2;
+        if( pad < 0 )
+            pad = 0;
+        std::vector<int> vc = v;
+        vc[0] += pad;
+        text( t, vc );
+    }
     /// Enable / disable drawing text in vertical orientation
     void textVertical( bool f = true )
     {
@@ -495,13 +507,23 @@ public:
         hFont = (HFONT)SelectObject (myHDC, hFont);
         DeleteObject( hFont );
     }
-
+    /// set text font name
     void textFontName( const std::string& fn )
     {
         strcpy(myLogfont.lfFaceName, "Courier");
         HANDLE hFont = CreateFontIndirect (&myLogfont);
         hFont = (HFONT)SelectObject (myHDC, hFont);
         DeleteObject( hFont );
+    }
+    int textWidthPixels( const std::string& t )
+    {
+        SIZE sz;
+        GetTextExtentPoint32A(
+            myHDC,
+            t.c_str(),
+            t.length(),
+            &sz );
+        return sz.cx;
     }
 
 private:

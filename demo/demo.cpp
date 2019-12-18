@@ -120,6 +120,11 @@ void drawDemo()
 
         S.fill();
         S.rectangle(  { 200,20,20,20});
+
+
+        S.textCenterHz("this is",{20,250,150,30});
+        S.textCenterHz("some centered",{20,280,150,30});
+        S.textCenterHz("text",{20,310,150,30});
     });
 
     form.show();
