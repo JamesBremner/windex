@@ -1416,12 +1416,34 @@ public:
     {
 
     }
-    /// Specify image to be used for button
-    void image( const std::string& fname )
+    /** Specify bitmap image to be used for button, read from file
+        @param[in] name of file
+    */
+    void imageFile( const std::string& name )
     {
         myBitmap  = (HBITMAP)LoadImage(
-                        NULL, fname.c_str(), IMAGE_BITMAP,
+                        NULL, name.c_str(), IMAGE_BITMAP,
                         0, 0, LR_LOADFROMFILE);
+    }
+    /** Specify bitmap image to be used for button, read from resource
+        @param[in] name of resource
+
+        The image is stored in the executable.
+
+        Specify images to be built into the executable in a .rc file
+
+    <pre>
+        MAINICON ICON "app.ico"
+        ZOOM_IN_BLACK BMP "zoom_in_black.bmp"
+        ZOOM_IN_RED BMP "zoom_in_red.bmp"
+    </pre>
+
+    */
+    void imageResource( const std::string& name )
+    {
+        myBitmap  = (HBITMAP)LoadImage(
+                        NULL, name.c_str(), IMAGE_BITMAP,
+                        0, 0, 0);
     }
 protected:
     HBITMAP myBitmap;
