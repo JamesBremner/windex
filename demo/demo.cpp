@@ -111,9 +111,9 @@ void drawDemo()
         S.color( 255,255,0 );
         S.text( "test", {50,50,50,25} );
         S.textVertical();
-        S.text( "vertical", {200,200,25,50});
+        S.text( "vertical", {200,200,50,100});
         S.textVertical( false );
-        S.text( "horizontal", {225, 225,25,50});
+        S.text( "horizontal", {225, 225,100,50});
         S.color(0,0,255);
         S.circle( 100,100,40);
         S.arc( 100,100,30, 0, 90 );

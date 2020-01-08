@@ -457,23 +457,20 @@ public:
     }
     /** Draw text.
     @param[in] t the text
-    @param[in] v vector of left, top, width, height
+    @param[in] v vector of left, top
     */
     void text(
         const std::string& t,
         const std::vector<int>& v )
     {
-        RECT rc;
-        rc.left = v[0];
-        rc.top  = v[1];
-        rc.right = v[0]+ v[2];
-        rc.bottom = v[1]+v[3];
-        DrawText(
+        if( (int)v.size() < 2 )
+            return;
+        TextOut(
             myHDC,
+            v[0],
+            v[1],
             t.c_str(),
-            -1,
-            &rc,
-            0 );
+            t.length() );
     }
     void textCenterHz (
         const std::string& t,
@@ -494,6 +491,7 @@ public:
             myLogfont.lfEscapement = 900;
         else
             myLogfont.lfEscapement = 0;
+        myLogfont.lfOrientation  = myLogfont.lfEscapement;
         HANDLE hFont = CreateFontIndirect (&myLogfont);
         hFont = (HFONT)SelectObject (myHDC, hFont);
         DeleteObject( hFont );
