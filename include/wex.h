@@ -488,7 +488,7 @@ public:
     void textVertical( bool f = true )
     {
         if( f )
-            myLogfont.lfEscapement = 900;
+            myLogfont.lfEscapement = 2700;
         else
             myLogfont.lfEscapement = 0;
         myLogfont.lfOrientation  = myLogfont.lfEscapement;
