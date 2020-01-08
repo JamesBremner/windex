@@ -1,15 +1,19 @@
 #pragma once
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <iostream>
 #include <thread>
 #include <vector>
 #include <map>
 #include <functional>
 #include <algorithm>
-#define _USE_MATH_DEFINES
-#include <cmath>
 #include <windows.h>
 #include <CommCtrl.h>
 #include <Shellapi.h>
+
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 
 namespace wex
 {
