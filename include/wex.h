@@ -1436,16 +1436,15 @@ public:
 
     <pre>
         MAINICON ICON "app.ico"
-        ZOOM_IN_BLACK BMP "zoom_in_black.bmp"
-        ZOOM_IN_RED BMP "zoom_in_red.bmp"
+        ZOOM_IN_BLACK BITMAP "zoom_in_black.bmp"
+        ZOOM_IN_RED BITMAP "zoom_in_red.bmp"
     </pre>
 
     */
     void imageResource( const std::string& name )
     {
-        myBitmap  = (HBITMAP)LoadImage(
-                        NULL, name.c_str(), IMAGE_BITMAP,
-                        0, 0, 0);
+        myBitmap  = LoadBitmap(
+                        GetModuleHandleA(NULL), name.c_str() );
     }
 protected:
     HBITMAP myBitmap;
