@@ -164,6 +164,17 @@ void PGDemo()
     pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
+    pg.tabList();
+
+        propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
+    pg2.move( { 10,300, 200, 200});
+    pg2.labelWidth( 50 );
+    pg2.bgcolor( 0xFFA0A0 );
+
+    // add properties
+    //pg.category("Strings");
+    pg2.string( "x", "72" );
+    pg2.string( "y", "4600" );
 
     form.events().resize([&](int w, int h)
     {

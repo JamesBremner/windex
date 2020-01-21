@@ -12,7 +12,7 @@
 #include <Shellapi.h>
 
 #ifndef M_PI
-    #define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846
 #endif
 
 namespace wex
@@ -787,8 +787,11 @@ public:
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            if ( ! IsDialogMessage(myHandle, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
         }
     }
 
@@ -974,10 +977,13 @@ public:
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-            if( ! myfModal )
-                break;
+            if ( ! IsDialogMessage(myHandle, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+                if( ! myfModal )
+                    break;
+            }
         }
     }
 

@@ -24,6 +24,10 @@ public:
         , myType( eType::string )
     {
         myLabel.text( myName );
+//        SetWindowLongPtr(
+//            myEditbox.handle(),
+//            GWL_STYLE,
+//            GetWindowLongPtr( myEditbox.handle(), GWL_STYLE) | WS_TABSTOP  );
         myEditbox.text( myValue );
 
     }
@@ -125,6 +129,22 @@ public:
     {
         myLabel.bgcolor( color );
     }
+
+    void tabList( bool f = true )
+    {
+        if( myType != eType::string )
+            return;
+        auto s = GetWindowLongPtr( myEditbox.handle(), GWL_STYLE);
+        if( f )
+            s |= WS_TABSTOP;
+        else
+            s &= ~WS_TABSTOP;
+        SetWindowLongPtr(
+            myEditbox.handle(),
+            GWL_STYLE,
+            s );
+    }
+
     void show( bool f = true )
     {
         myLabel.show( f );
@@ -280,7 +300,7 @@ class propertyGrid : public gui
 {
 public:
     propertyGrid( gui* parent )
-        : gui( parent )
+        : gui( parent,"windex",WS_CHILD,WS_EX_CONTROLPARENT )
         , myHeight( 25 )
         , myWidth( 300 )
         , myLabelWidth( 100 )
@@ -305,6 +325,7 @@ public:
         const std::string& value )
     {
         property P( this, name, value );
+
         CommonConstruction( P );
     }
     /// Add choice property
@@ -448,6 +469,12 @@ public:
     void change( std::function<void()> f )
     {
         onChange = f;
+    }
+
+    void tabList( bool f = true )
+    {
+        for( auto p : myProperty )
+            p.tabList( f );
     }
 private:
     std::vector< property > myProperty;     // the properties in the grid
