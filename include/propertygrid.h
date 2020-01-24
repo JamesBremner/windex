@@ -306,6 +306,7 @@ public:
         , myLabelWidth( 100 )
         , myBGColor( 0xc8c8c8)
         , myfScroll( false )
+        , myftabstop( false )
     {
         text("PG");
 
@@ -471,8 +472,17 @@ public:
         onChange = f;
     }
 
+    /** Enable tab stepping through the properties
+
+    Note: all windows need to have WS_EX_CONTROLPARENT style
+    otherwise the message pump hangs  https://stackoverflow.com/a/11090609/16582
+    */
     void tabList( bool f = true )
     {
+        // set flag so that any properties added later will have the tabstop style
+        myftabstop = f;
+
+        // add tabstop style to existing properties
         for( auto p : myProperty )
             p.tabList( f );
     }
@@ -483,6 +493,7 @@ private:
     int myLabelWidth;                       // width of property labels
     int myBGColor;                          // grid background color
     bool myfScroll;                         // true if scrollbars used
+    bool myftabstop;
     std::function<void()> onChange;         // funtion to call when property has changed
 
     void CommonConstruction( property& P )
@@ -502,6 +513,9 @@ private:
         {
             onChange();
         });
+
+        if( myftabstop )
+            P.tabList();
     }
     /** Show properties when category is expanded or collapsed
     */

@@ -551,7 +551,7 @@ public:
         , myfModal( false )
     {
         myID = NewID();
-        Create(NULL,"windex",WS_OVERLAPPEDWINDOW);
+        Create(NULL,"windex",WS_OVERLAPPEDWINDOW,WS_EX_CONTROLPARENT );
 
         /*  default resize event handler
             simply forces a refresh so partially visible widgets are correctly drawn
@@ -568,7 +568,7 @@ public:
         gui* parent,
         const char* window_class = "windex",
         unsigned long style = WS_CHILD,
-        unsigned long exstyle = 0 )
+        unsigned long exstyle = WS_EX_CONTROLPARENT )
         : myParent( parent )
         , myDeleteList( 0 )
     {
@@ -787,6 +787,13 @@ public:
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
         {
+//            std::cout << "gui::run " << msg.message << "\n";
+//            if( msg.message == 256 )
+//            {
+//                std::cout << "widget text: " << myText << "\n";
+//                int dbg = 0;
+//                continue;
+//            }
             if ( ! IsDialogMessage(myHandle, &msg))
             {
                 TranslateMessage(&msg);
