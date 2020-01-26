@@ -66,10 +66,15 @@ public:
     {
         showModal();
     }
-    /// get value saved in property attribute
+    /** get value saved in property attribute
+        @param[in] name of property
+        @return property value, if property not found "property not found"
+    */
     std::string value ( const std::string& name )
     {
         auto p = myGrid.find( name );
+        if( p == nullptr )
+            return "property not found";
         return p->savedValue();
     }
     void gridWidth( int w )
