@@ -12,7 +12,7 @@
 #include <Shellapi.h>
 
 #ifndef M_PI
-    #define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846
 #endif
 
 namespace wex
@@ -358,7 +358,10 @@ public:
             TRANSPARENT);
     }
 
-    /// Set pen thickness in pixels
+    /** Set pen thickness in pixels
+        @param[in] t thickness in pixels
+        This takes effect on the next call to color
+    */
     void penThick( int t )
     {
         myPenThick = t;
@@ -512,7 +515,7 @@ public:
     /// set text font name
     void textFontName( const std::string& fn )
     {
-        strcpy(myLogfont.lfFaceName, "Courier");
+        strcpy(myLogfont.lfFaceName, fn.c_str() );
         HANDLE hFont = CreateFontIndirect (&myLogfont);
         hFont = (HFONT)SelectObject (myHDC, hFont);
         DeleteObject( hFont );
