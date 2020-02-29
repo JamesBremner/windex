@@ -358,10 +358,7 @@ public:
             TRANSPARENT);
     }
 
-    /** Set pen thickness in pixels
-        @param[in] t thickness in pixels
-        This takes effect on the next call to color
-    */
+    /// Set pen thickness in pixels
     void penThick( int t )
     {
         myPenThick = t;
@@ -515,7 +512,7 @@ public:
     /// set text font name
     void textFontName( const std::string& fn )
     {
-        strcpy(myLogfont.lfFaceName, fn.c_str() );
+        strcpy(myLogfont.lfFaceName, "Courier");
         HANDLE hFont = CreateFontIndirect (&myLogfont);
         hFont = (HFONT)SelectObject (myHDC, hFont);
         DeleteObject( hFont );
@@ -554,7 +551,7 @@ public:
         , myfModal( false )
     {
         myID = NewID();
-        Create(NULL,"windex",WS_OVERLAPPEDWINDOW);
+        Create(NULL,"windex",WS_OVERLAPPEDWINDOW,WS_EX_CONTROLPARENT );
 
         /*  default resize event handler
             simply forces a refresh so partially visible widgets are correctly drawn
@@ -571,7 +568,7 @@ public:
         gui* parent,
         const char* window_class = "windex",
         unsigned long style = WS_CHILD,
-        unsigned long exstyle = 0 )
+        unsigned long exstyle = WS_EX_CONTROLPARENT )
         : myParent( parent )
         , myDeleteList( 0 )
     {
@@ -790,8 +787,18 @@ public:
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+//            std::cout << "gui::run " << msg.message << "\n";
+//            if( msg.message == 256 )
+//            {
+//                std::cout << "widget text: " << myText << "\n";
+//                int dbg = 0;
+//                continue;
+//            }
+            if ( ! IsDialogMessage(myHandle, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
         }
     }
 
@@ -921,7 +928,8 @@ public:
             case WM_COMMAND:
                 if( lParam )
                 {
-                    if( HIWORD(wParam) == CBN_SELCHANGE )
+                    if( HIWORD(wParam) == CBN_SELCHANGE
+                    || HIWORD(wParam) == LBN_SELCHANGE )
                     {
                         return events().onSelect( LOWORD(wParam) );
                     }
@@ -977,10 +985,13 @@ public:
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-            if( ! myfModal )
-                break;
+            if ( ! IsDialogMessage(myHandle, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+                if( ! myfModal )
+                    break;
+            }
         }
     }
 
@@ -2001,6 +2012,96 @@ public:
                    (WPARAM) 0, (LPARAM) 0);
     }
 };
+
+/// A widget where user can choose from a list of strings
+class list : public gui
+{
+public:
+    list( gui* parent )
+        : gui( parent, "listbox",
+               CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+    {
+    }
+    /// Override move to ensure column width is sufficient
+    void move( int x, int y, int w, int h )
+    {
+        gui::move( x, y, w, h );
+        SendMessageA(
+            handle(),
+            (UINT) LB_SETCOLUMNWIDTH,
+            (WPARAM) w,
+            (LPARAM) 0);
+    }
+    /// Add an option
+    void add( const std::string& s )
+    {
+        SendMessageA(
+            handle(),
+            (UINT) LB_ADDSTRING,
+            (WPARAM) 0,
+            (LPARAM) s.c_str());
+    }
+    /// Clear all options
+    void clear()
+    {
+        SendMessage(
+            handle(),
+            LB_RESETCONTENT,
+            (WPARAM)0, (LPARAM)0);
+    }
+    /** Select by index
+        @param[in] i index of item to selecct, -1 clears selection
+    */
+    void select( int i )
+    {
+        SendMessage(
+            handle(),
+            LB_SETCURSEL,
+            (WPARAM)i, (LPARAM)0);
+    }
+    /** Select by string
+        @param[in] s the string to select
+    */
+    void select( const std::string& s )
+    {
+        SendMessage(
+            handle(),
+            LB_SELECTSTRING,
+            (WPARAM)-1, (LPARAM)s.c_str());
+    }
+    /// get index of selected item
+    int SelectedIndex()
+    {
+        return SendMessage(
+                   handle(),
+                   (UINT) LB_GETCURSEL,
+                   (WPARAM) 0, (LPARAM) 0);
+    }
+    /// get text of selected item
+//    std::string SelectedText()
+//    {
+//        int i = SelectedIndex();
+//        if( i < 0 )
+//            return std::string("");
+//        char buf[256];
+//        SendMessage(
+//            handle(),
+//            (UINT) LB_GETLBTEXT,
+//            (WPARAM) i,
+//            (LPARAM) buf);
+//        return std::string( buf );
+//    }
+    /// get count of items
+    int count()
+    {
+        return SendMessage(
+                   handle(),
+                   (UINT)LB_GETCOUNT,
+                   (WPARAM) 0, (LPARAM) 0);
+    }
+};
+
+
 /// A class containing a database of the current gui elements
 class windex
 {
