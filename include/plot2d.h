@@ -677,6 +677,7 @@ private:
             if( t->size() > maxCount )
                 maxCount = t->size();
             double txmin, txmax, tymin, tymax;
+            txmin= txmax= tymin= tymax=0;
             t->bounds( txmin, txmax, tymin, tymax );
             if( txmin < myMinX )
                 myMinX = txmin;

@@ -25,6 +25,7 @@ public:
     {
         myLabel.text( myName );
         myEditbox.text( myValue );
+
     }
     property(
         gui* parent,
@@ -181,8 +182,33 @@ public:
         }
         return std::string("");
     }
-
-    // copy value from gui into myValue attribute
+    /// set property value
+    void value( const std::string v )
+    {
+        switch( myType )
+        {
+        case eType::string:
+            myValue = v;
+            myEditbox.text( v );
+            myEditbox.update();
+            break;
+        default:
+            break;
+        }
+    }
+    void value( bool v )
+    {
+        switch( myType )
+        {
+        case eType::check:
+            myValue = std::to_string((int)v );
+            myCheckbox.check( v );
+            break;
+        default:
+            break;
+        }
+    }
+    /// copy value from gui into myValue attribute
     void saveValue()
     {
         switch( myType )
@@ -221,6 +247,21 @@ public:
     {
         myCategoryExpanded.check( f );
     }
+    /// register function to call when property value changes
+    void change( std::function<void()> f )
+    {
+        switch( myType )
+        {
+        case eType::string:
+            myEditbox.events().change( myEditbox.id(), f );
+            break;
+        case eType::check:
+            myCheckbox.events().click( f );
+            break;
+        default:
+            break;
+        }
+    }
 private:
     std::string myName;
     std::string myValue;
@@ -250,15 +291,21 @@ public:
         , myWidth( 300 )
         , myLabelWidth( 100 )
         , myBGColor( 0xc8c8c8)
+        , myfScroll( false )
     {
         text("PG");
-        scroll();
 
+        // default event handlers
         events().click([this]
         {
             visible();
         });
+        change( []
+        {
+
+        });
     }
+    /// Add string property
     void string(
         const std::string& name,
         const std::string& value )
@@ -266,6 +313,7 @@ public:
         property P( this, name, value );
         CommonConstruction( P );
     }
+    /// Add choice property
     void choice(
         const std::string& name,
         const std::vector< std::string >& choice )
@@ -273,6 +321,7 @@ public:
         property P( this, name, choice );
         CommonConstruction( P );
     }
+    /// Add boolean property
     void check(
         const std::string& name,
         bool f )
@@ -280,12 +329,20 @@ public:
         property P( this, name, f );
         CommonConstruction( P );
     }
+    /// Add categoty
     void category(
         const std::string& name )
     {
         property P( this, name );
         CommonConstruction( P );
     }
+    /// Add scrollbars
+    void scroll()
+    {
+        myfScroll = true;
+        gui::scroll();
+    }
+    /// Expand, or contract, category of properties
     void expand(
         const std::string name,
         bool fexpand = true )
@@ -344,8 +401,8 @@ public:
                 if( p->name() == category )
                 {
                     for( p++;
-                        p != myProperty.end();
-                        p++ )
+                            p != myProperty.end();
+                            p++ )
                     {
                         if( p->isCategory() )
                             return nullptr;
@@ -389,29 +446,41 @@ public:
     {
         return myWidth;
     }
+    int propCount() const
+    {
+        return (int) myProperty.size();
+    }
+    /// Register function to call when property value has changed
+    void change( std::function<void()> f )
+    {
+        onChange = f;
+    }
 private:
-    std::vector< property > myProperty;
-    int myHeight;               // height of a single property
-    int myWidth;
-    int myLabelWidth;
-    int myBGColor;
+    std::vector< property > myProperty;     // the properties in the grid
+    int myHeight;                           // height of a single property
+    int myWidth;                            // width of grid
+    int myLabelWidth;                       // width of property labels
+    int myBGColor;                          // grid background color
+    bool myfScroll;                         // true if scrollbars used
+    std::function<void()> onChange;         // funtion to call when property has changed
 
     void CommonConstruction( property& P )
     {
         P.labelWidth( myLabelWidth );
         P.bgcolor( myBGColor );
-//        P.move(
-//        {
-//            0, (int)myProperty.size() * myHeight,
-//            myWidth, myHeight
-//        } );
         myProperty.push_back( P );
 
-        scrollRange(
-            myWidth,
-            ((int)myProperty.size()+1) * myHeight);
+        if( myfScroll )
+            scrollRange(
+                myWidth,
+                ((int)myProperty.size()+1) * myHeight);
 
         visible();
+
+        P.change( [this]
+        {
+            onChange();
+        });
     }
     /** Show properties when category is expanded or collapsed
     */
@@ -448,9 +517,10 @@ private:
                 P.show( false );
             }
         }
-        scrollRange(
-            myWidth,
-            index * myHeight);
+        if( myfScroll )
+            scrollRange(
+                myWidth,
+                index * myHeight);
         update();
     }
 };

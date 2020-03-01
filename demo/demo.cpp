@@ -29,6 +29,10 @@ void helloworld()
     editbox& edit1 = maker::make<editbox>( form );
     edit1.move( {80, 20, 100, 30 } );
     edit1.text( "type value");
+    edit1.events().change( edit1.id(),[]
+    {
+        std::cout << "edit A changed\n" ;
+    });
     editbox& edit2 = maker::make<editbox>( form );
     edit2.move( {80, 60, 100, 30 } );
     edit2.text( "type value");
@@ -74,8 +78,6 @@ void choiceDemo()
             form,
             cb.SelectedText() );
     });
-    std::cout << "choice handle " << cb.handle()
-              <<" "<< cb.id() << "\n";
 
     // display a button
     button& btn = wex::maker::make<button>( form );
@@ -87,6 +89,11 @@ void choiceDemo()
             form,
             cb.SelectedText() );
     });
+
+    list& listbox = wex::maker::make<list>( form );
+    listbox.move( 20,200,150,150 );
+    listbox.add("Alpha");
+    listbox.add("Beta");
 
     form.show();
 }
@@ -109,15 +116,20 @@ void drawDemo()
         S.color( 255,255,0 );
         S.text( "test", {50,50,50,25} );
         S.textVertical();
-        S.text( "vertical", {200,200,25,50});
+        S.text( "vertical", {200,200,50,100});
         S.textVertical( false );
-        S.text( "horizontal", {225, 225,25,50});
+        S.text( "horizontal", {225, 225,100,50});
         S.color(0,0,255);
         S.circle( 100,100,40);
         S.arc( 100,100,30, 0, 90 );
 
         S.fill();
         S.rectangle(  { 200,20,20,20});
+
+
+        S.textCenterHz("this is",{20,250,150,30});
+        S.textCenterHz("some centered",{20,280,150,30});
+        S.textCenterHz("text",{20,310,150,30});
     });
 
     form.show();
@@ -137,26 +149,37 @@ void PGDemo()
     pg.bgcolor( 0xFFA0A0 );
 
     // add properties
-    pg.category("Strings");
+    //pg.category("Strings");
     pg.string( "A", "72" );
     pg.string( "B", "4600" );
     pg.string( "C", "72" );
-    pg.string( "D", "4600" );
-    pg.string( "E", "4600" );
-    pg.string( "F", "4600" );
-    pg.string( "G", "4600" );
-    pg.string( "H", "4600" );
-    pg.string( "I", "4600" );
-    pg.string( "J", "4600" );
-    pg.string( "K", "4600" );
-    pg.string( "L", "4600" );
-    pg.string( "M", "4600" );
-    pg.string( "N", "4600" );
-    pg.string( "O", "4600" );
+//    pg.string( "D", "4600" );
+//    pg.string( "E", "4600" );
+//    pg.string( "F", "4600" );
+//    pg.string( "G", "4600" );
+//    pg.string( "H", "4600" );
+//    pg.string( "I", "4600" );
+//    pg.string( "J", "4600" );
+//    pg.string( "K", "4600" );
+//    pg.string( "L", "4600" );
+//    pg.string( "M", "4600" );
+//    pg.string( "N", "4600" );
+//    pg.string( "O", "4600" );
     pg.expand("Strings",false);
     pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
+//    pg.tabList();
+
+        propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
+    pg2.move( { 10,300, 200, 200});
+    pg2.labelWidth( 50 );
+    pg2.bgcolor( 0xFFA0A0 );
+
+    // add properties
+    //pg.category("Strings");
+    pg2.string( "x", "72" );
+    pg2.string( "y", "4600" );
 
     form.events().resize([&](int w, int h)
     {
@@ -165,6 +188,11 @@ void PGDemo()
         pg.update();
         form.update();
     });
+
+    pg.change( []
+              {
+                 std::cout << "property value changed\n";
+              });
 
     // display a button
     button& btn = wex::maker::make<button>( form );
@@ -197,14 +225,10 @@ void PGDemo()
     form.showModal();
 }
 
-void InputboxDemo()
+void InputboxDemo( gui& form )
 {
-    // construct top level window
-    gui& form = wex::maker::make();
-    form.move({ 50,50,400,400});
-    form.text("A windex inputbox");
-
-    wex::inputbox ib( form );
+    wex::inputbox ib;
+    ib.gridWidth( 800 );
     ib.add("A","72");
     ib.add("B","4600");
     ib.choice("Choose", { "X", "Y"} );
@@ -217,10 +241,6 @@ void InputboxDemo()
     msgbox(
         form,
         msg );
-
-    // show the application
-    form.show();
-
 }
 void RBDemo()
 {
@@ -252,7 +272,7 @@ void RBDemo()
     rb3.text(group0labels[2]);
 
     // second group of radio buttons
-     static std::vector<std::string> group1labels { "X", "Y", "Z" };
+    static std::vector<std::string> group1labels { "X", "Y", "Z" };
     radiobutton& rb4 = wex::maker::make<radiobutton>(L);
     rb4.first();                // first in group of interacting buttons
     rb4.size( 80,30 );
@@ -279,7 +299,7 @@ void RBDemo()
             msg = group0labels[ coff ];
         else
             msg = "nothing";
-         coff = rb4.checkedOffset();
+        coff = rb4.checkedOffset();
         if( coff >= 0 )
             msg += " and " + group1labels[ coff ];
         else
@@ -430,6 +450,35 @@ void SliderDemo()
     form.show();
 }
 
+void DropDemo()
+{
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,500,400});
+    form.text("Drop files demo");
+
+    // widget for receiving dropped files
+    drop& dropper = wex::maker::make<wex::drop>( form );
+    dropper.move( 10,10,490,390 );
+    label& instructions = wex::maker::make<wex::label>( dropper );
+    instructions.move(30,30,400,200);
+    instructions.text("Drop files here");
+
+    // dropped files event handler
+    dropper.events().drop( [&](const std::vector<std::string>& files )
+    {
+        // display list of dropped files
+        std::string msg;
+        msg = "Files dropped:\n";
+        for( auto& f : files )
+            msg += f + "\n ";
+        instructions.text( msg );
+        instructions.update();
+    });
+
+    form.show();
+}
+
 void MenuDemo()
 {
     // construct top level window
@@ -559,25 +608,57 @@ void PlotDemo()
 
     fm.show();
 }
-//
-//class topWindow : public wex::gui
-//{
-//
-//};
+
+void TabDemo()
+{
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,400,400});
+    form.text("Tabbed Panel demo");
+
+    // construct tabbed panel
+    tabbed& tabs = maker::make<tabbed>( form );
+    tabs.move( 50,50, 300, 200 );
+
+    // add some demo panels
+    panel& cam1panel = maker::make<panel>( tabs );
+    label& cam1label = maker::make<label>( cam1panel );
+    cam1label.move(30,100, 100,20 );
+    cam1label.text("CAM1 panel");
+    tabs.add( "CAM1", cam1panel );
+
+    panel& cam2panel = maker::make<panel>( tabs );
+    label& cam2label = maker::make<label>( cam2panel );
+    cam2label.move(30,100, 100,20 );
+    cam2label.text("CAM2 panel");
+    tabs.add( "CAM2", cam2panel );
+
+    panel& cam3panel = maker::make<panel>( tabs );
+    label& cam3label = maker::make<label>( cam3panel );
+    cam3label.move(30,100, 100,20 );
+    cam3label.text("CAM3 panel");
+    tabs.add( "CAM3", cam3panel );
+
+    tabs.tabChanged( [&]( int index )
+    {
+        msgbox mb(
+            form,
+            "tab changed to" + std::to_string( index )) ;
+    });
+
+    form.show();
+
+    // initially show the first panel
+    // must be donw after call to show, which displays the last panel added
+    tabs.select( 0 );
+}
 
 
 
 int main()
 {
-//    topWindow tw;
-//
-//    if( typeid(tw) == typeid(topWindow) )
-//        std:: cout << "true\n";
-//    if( typeid(tw) != typeid(wex::gui) )
-//        std:: cout << "true\n";
 
     // construct top level application window
-    //gui& form = wex::windex::topWindow();
     gui& form = maker::make();
     form.move({ 50,50,400,500});
     form.text("Windex demos");
@@ -621,9 +702,9 @@ int main()
     button& btnib = wex::maker::make<button>( l );
     btnib.size(  150, 30 );
     btnib.text( "Inputbox" );
-    btnib.events().click([]
+    btnib.events().click([&]
     {
-        InputboxDemo();
+        InputboxDemo( form );
     });
 
     button& btnfb = wex::maker::make<button>( l );
@@ -707,6 +788,22 @@ int main()
     {
         window2file w2f;
         w2f.save( form, "demo.png" );
+    });
+
+    button& btndrop = wex::maker::make<button>( l );
+    btndrop.size(  150, 30 );
+    btndrop.text( "Drop files" );
+    btndrop.events().click([&]
+    {
+        DropDemo();
+    });
+
+    button& btntabs = wex::maker::make<button>( l );
+    btntabs.size(  150, 30 );
+    btntabs.text( "Tabbed Panel" );
+    btntabs.events().click([&]
+    {
+        TabDemo();
     });
 
     // show the application

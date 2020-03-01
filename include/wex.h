@@ -1,14 +1,19 @@
 #pragma once
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <iostream>
 #include <thread>
 #include <vector>
 #include <map>
 #include <functional>
 #include <algorithm>
-#define _USE_MATH_DEFINES
-#include <cmath>
 #include <windows.h>
 #include <CommCtrl.h>
+#include <Shellapi.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 namespace wex
 {
@@ -48,6 +53,8 @@ public:
         mouseUp([] {});
         timer([] {});
         slid([](int pos) {});
+        dropStart([](HDROP hDrop) {});
+        drop([](const std::vector< std::string >& files) {});
     }
     bool onLeftdown()
     {
@@ -112,9 +119,26 @@ public:
         it->second();
         return true;
     }
+    bool onChange(
+        unsigned short id )
+    {
+        auto it = mapControlFunction().find( std::make_pair(id,EN_CHANGE));
+        if( it == mapControlFunction().end() )
+            return true;
+        it->second();
+        return true;
+    }
     void onSlid(unsigned short id )
     {
         mySlidFunction( (int) id );
+    }
+    void onDropStart( HDROP hDrop )
+    {
+        myDropStartFunction( hDrop );
+    }
+    void onDrop( const std::vector< std::string >& files )
+    {
+        myDropFunction( files );
     }
     /////////////////////////// register event handlers /////////////////////
 
@@ -172,6 +196,13 @@ public:
         mapControlFunction().insert(
             std::make_pair( std::make_pair( id, CBN_SELCHANGE), f ));
     }
+    void change(
+        int id,
+        std::function<void(void)> f )
+    {
+        mapControlFunction().insert(
+            std::make_pair( std::make_pair( id, EN_CHANGE), f ));
+    }
     void mouseMove( std::function<void(sMouse& m)> f )
     {
         myMouseMoveFunction = f;
@@ -192,6 +223,16 @@ public:
     {
         mySlidFunction = f;
     }
+    /// register function to call when user drops files.  App code should NOT call this!
+    void dropStart( std::function<void( HDROP hDrop)> f )
+    {
+        myDropStartFunction = f;
+    }
+    /// register function to call when files dropped by user have been extracted.  App code use this!
+    void drop( std::function<void( const std::vector<std::string>& files)> f)
+    {
+        myDropFunction = f;
+    }
 private:
     bool myfClickPropogate;
 
@@ -207,6 +248,8 @@ private:
     std::function<void(void)> myTimerFunction;
     std::function<void(void)> myMouseUpFunction;
     std::function<void(int pos)> mySlidFunction;
+    std::function<void(HDROP hDrop)> myDropStartFunction;
+    std::function<void( const std::vector<std::string>& files)> myDropFunction;
 
     // event handlers registered by windex class
     std::function<void(void)> myClickFunWex;
@@ -418,31 +461,41 @@ public:
     }
     /** Draw text.
     @param[in] t the text
-    @param[in] v vector of left, top, width, height
+    @param[in] v vector of left, top
     */
     void text(
         const std::string& t,
         const std::vector<int>& v )
     {
-        RECT rc;
-        rc.left = v[0];
-        rc.top  = v[1];
-        rc.right = v[0]+ v[2];
-        rc.bottom = v[1]+v[3];
-        DrawText(
+        if( (int)v.size() < 2 )
+            return;
+        TextOut(
             myHDC,
+            v[0],
+            v[1],
             t.c_str(),
-            -1,
-            &rc,
-            0 );
+            t.length() );
+    }
+    void textCenterHz (
+        const std::string& t,
+        const std::vector<int>& v )
+    {
+        int ws = textWidthPixels( t );
+        int pad = (v[2]-ws)/2;
+        if( pad < 0 )
+            pad = 0;
+        std::vector<int> vc = v;
+        vc[0] += pad;
+        text( t, vc );
     }
     /// Enable / disable drawing text in vertical orientation
     void textVertical( bool f = true )
     {
         if( f )
-            myLogfont.lfEscapement = 900;
+            myLogfont.lfEscapement = 2700;
         else
             myLogfont.lfEscapement = 0;
+        myLogfont.lfOrientation  = myLogfont.lfEscapement;
         HANDLE hFont = CreateFontIndirect (&myLogfont);
         hFont = (HFONT)SelectObject (myHDC, hFont);
         DeleteObject( hFont );
@@ -455,6 +508,24 @@ public:
         HANDLE hFont = CreateFontIndirect (&myLogfont);
         hFont = (HFONT)SelectObject (myHDC, hFont);
         DeleteObject( hFont );
+    }
+    /// set text font name
+    void textFontName( const std::string& fn )
+    {
+        strcpy(myLogfont.lfFaceName, "Courier");
+        HANDLE hFont = CreateFontIndirect (&myLogfont);
+        hFont = (HFONT)SelectObject (myHDC, hFont);
+        DeleteObject( hFont );
+    }
+    int textWidthPixels( const std::string& t )
+    {
+        SIZE sz;
+        GetTextExtentPoint32A(
+            myHDC,
+            t.c_str(),
+            t.length(),
+            &sz );
+        return sz.cx;
     }
 
 private:
@@ -480,7 +551,7 @@ public:
         , myfModal( false )
     {
         myID = NewID();
-        Create(NULL,"windex",WS_OVERLAPPEDWINDOW);
+        Create(NULL,"windex",WS_OVERLAPPEDWINDOW,WS_EX_CONTROLPARENT );
 
         /*  default resize event handler
             simply forces a refresh so partially visible widgets are correctly drawn
@@ -497,7 +568,7 @@ public:
         gui* parent,
         const char* window_class = "windex",
         unsigned long style = WS_CHILD,
-        unsigned long exstyle = 0 )
+        unsigned long exstyle = WS_EX_CONTROLPARENT )
         : myParent( parent )
         , myDeleteList( 0 )
     {
@@ -716,8 +787,18 @@ public:
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+//            std::cout << "gui::run " << msg.message << "\n";
+//            if( msg.message == 256 )
+//            {
+//                std::cout << "widget text: " << myText << "\n";
+//                int dbg = 0;
+//                continue;
+//            }
+            if ( ! IsDialogMessage(myHandle, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
         }
     }
 
@@ -844,14 +925,17 @@ public:
                     myEvents.onScrollV( LOWORD (wParam) );
                 return true;
 
-
-
             case WM_COMMAND:
                 if( lParam )
                 {
-                    if( HIWORD(wParam) == CBN_SELCHANGE )
+                    if( HIWORD(wParam) == CBN_SELCHANGE
+                    || HIWORD(wParam) == LBN_SELCHANGE )
                     {
                         return events().onSelect( LOWORD(wParam) );
+                    }
+                    else  if( HIWORD(wParam) == EN_CHANGE )
+                    {
+                        return events().onChange( LOWORD(wParam) );
                     }
                     return true;
                 }
@@ -860,6 +944,10 @@ public:
 
             case WM_TIMER:
                 events().onTimer();
+                return true;
+
+            case WM_DROPFILES:
+                events().onDropStart( (HDROP) wParam );
                 return true;
             }
 
@@ -897,10 +985,13 @@ public:
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-            if( ! myfModal )
-                break;
+            if ( ! IsDialogMessage(myHandle, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+                if( ! myfModal )
+                    break;
+            }
         }
     }
 
@@ -1115,6 +1206,68 @@ public:
         text("");
     }
 };
+/** \brief A widget where users can drop files dragged from windows explorer.
+
+<pre>
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,500,400});
+    form.text("Drop files demo");
+
+    // widget for receiving dropped files
+    drop& dropper = wex::maker::make<wex::drop>( form );
+    dropper.move( 10,10,490,390 );
+    label& instructions = wex::maker::make<wex::label>( dropper );
+    instructions.move(30,30,400,200);
+    instructions.text("Drop files here");
+
+    // dropped files event handler
+    dropper.events().drop( [&](const std::vector<std::string>& files )
+    {
+        // display list of dropped files
+        std::string msg;
+        msg = "Files dropped:\n";
+        for( auto& f : files )
+            msg += f + "\n ";
+        instructions.text( msg );
+        instructions.update();
+    });
+
+    form.show();
+</pre>
+*/
+class drop  : public gui
+{
+public:
+    drop( gui* parent )
+        : gui( parent )
+    {
+        text("");
+
+        // register as drop recipient
+        DragAcceptFiles( myHandle, true );
+
+        // handle drop event
+        myEvents.dropStart([this](HDROP hDrop)
+        {
+            int count = DragQueryFileA( hDrop,0xFFFFFFFF,NULL,0 );
+            if( count )
+            {
+                // extract files from drop structure
+                std::vector< std::string > files;
+                char fname[ MAX_PATH ];
+                for( int k = 0; k < count; k++ )
+                {
+                    DragQueryFileA( hDrop, k, fname, MAX_PATH ) ;
+                    files.push_back( fname );
+                }
+                // call app code's event handler
+                myEvents.onDrop( files );
+            }
+            DragFinish( hDrop );
+        });
+    }
+};
 
 /// A panel displaying a title and box around contents
 class groupbox : public panel
@@ -1279,12 +1432,33 @@ public:
     {
 
     }
-    /// Specify image to be used for button
-    void image( const std::string& fname )
+    /** Specify bitmap image to be used for button, read from file
+        @param[in] name of file
+    */
+    void imageFile( const std::string& name )
     {
         myBitmap  = (HBITMAP)LoadImage(
-                        NULL, fname.c_str(), IMAGE_BITMAP,
+                        NULL, name.c_str(), IMAGE_BITMAP,
                         0, 0, LR_LOADFROMFILE);
+    }
+    /** Specify bitmap image to be used for button, read from resource
+        @param[in] name of resource
+
+        The image is stored in the executable.
+
+        Specify images to be built into the executable in a .rc file
+
+    <pre>
+        MAINICON ICON "app.ico"
+        ZOOM_IN_BLACK BITMAP "zoom_in_black.bmp"
+        ZOOM_IN_RED BITMAP "zoom_in_red.bmp"
+    </pre>
+
+    */
+    void imageResource( const std::string& name )
+    {
+        myBitmap  = LoadBitmap(
+                        GetModuleHandleA(NULL), name.c_str() );
     }
 protected:
     HBITMAP myBitmap;
@@ -1658,13 +1832,29 @@ private:
 class msgbox
 {
 public:
-    msgbox( gui& parent, const std::string& msg )
+    /// CTOR for simple message box with OK button
+    msgbox(
+        gui& parent,
+        const std::string& msg )
     {
-        MessageBox(parent.handle(),
-                   msg.c_str(),
-                   "Message",
-                   MB_OK);
+        myReturn = MessageBox(parent.handle(),
+                              msg.c_str(),
+                              "Message",
+                              MB_OK);
     }
+    /// CTOR for message box with title and configurable buttons
+    msgbox(
+        gui& parent,
+        const std::string& msg,
+        const std::string& title,
+        unsigned int type )
+    {
+        myReturn = MessageBox(parent.handle(),
+                              msg.c_str(),
+                              title.c_str(),
+                              type );
+    }
+    int myReturn;                   ///< Button id clicked by user
 };
 
 /// A widget that displays a string.
@@ -1739,6 +1929,14 @@ public:
         {
             std::cout << "done\n";
         }
+    }
+
+    void multiline()
+    {
+        SetWindowLongPtr(
+            myHandle,
+            GWL_STYLE,
+            GetWindowLongPtr( myHandle, GWL_STYLE) |  ES_MULTILINE );
     }
 
     /// change text in textbox
@@ -1857,6 +2055,96 @@ public:
                    (WPARAM) 0, (LPARAM) 0);
     }
 };
+
+/// A widget where user can choose from a list of strings
+class list : public gui
+{
+public:
+    list( gui* parent )
+        : gui( parent, "listbox",
+               LBS_STANDARD | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+    {
+    }
+    /// Override move to ensure column width is sufficient
+    void move( int x, int y, int w, int h )
+    {
+        gui::move( x, y, w, h );
+        SendMessageA(
+            handle(),
+            (UINT) LB_SETCOLUMNWIDTH,
+            (WPARAM) w,
+            (LPARAM) 0);
+    }
+    /// Add an option
+    void add( const std::string& s )
+    {
+        SendMessageA(
+            handle(),
+            (UINT) LB_ADDSTRING,
+            (WPARAM) 0,
+            (LPARAM) s.c_str());
+    }
+    /// Clear all options
+    void clear()
+    {
+        SendMessage(
+            handle(),
+            LB_RESETCONTENT,
+            (WPARAM)0, (LPARAM)0);
+    }
+    /** Select by index
+        @param[in] i index of item to selecct, -1 clears selection
+    */
+    void select( int i )
+    {
+        SendMessage(
+            handle(),
+            LB_SETCURSEL,
+            (WPARAM)i, (LPARAM)0);
+    }
+    /** Select by string
+        @param[in] s the string to select
+    */
+    void select( const std::string& s )
+    {
+        SendMessage(
+            handle(),
+            LB_SELECTSTRING,
+            (WPARAM)-1, (LPARAM)s.c_str());
+    }
+    /// get index of selected item
+    int SelectedIndex()
+    {
+        return SendMessage(
+                   handle(),
+                   (UINT) LB_GETCURSEL,
+                   (WPARAM) 0, (LPARAM) 0);
+    }
+    /// get text of selected item
+//    std::string SelectedText()
+//    {
+//        int i = SelectedIndex();
+//        if( i < 0 )
+//            return std::string("");
+//        char buf[256];
+//        SendMessage(
+//            handle(),
+//            (UINT) LB_GETLBTEXT,
+//            (WPARAM) i,
+//            (LPARAM) buf);
+//        return std::string( buf );
+//    }
+    /// get count of items
+    int count()
+    {
+        return SendMessage(
+                   handle(),
+                   (UINT)LB_GETCOUNT,
+                   (WPARAM) 0, (LPARAM) 0);
+    }
+};
+
+
 /// A class containing a database of the current gui elements
 class windex
 {
@@ -2093,7 +2381,8 @@ public:
                     myParent.handle(),
                     NULL    );
         // if user clicked item, execute associated function
-        if( 0 <= i && i < (int)CommandHandlers().size() )
+        // return of 0 indicates user clicked outside menu, rejecting all items
+        if( 1 <= i && i < (int)CommandHandlers().size() )
             CommandHandlers()[i]();
     }
     HMENU handle()
@@ -2265,33 +2554,158 @@ public:
 };
 
 /// \brief A class for making windex objects.
-class maker {
-    public:
-
-/** Construct widget
-        @param[in] parent reference to parent window or widget
-*/
-template < class W, class P >
-static W& make( P& parent )
+class maker
 {
-    W* w = new W( (gui*)&parent );
+public:
 
-    // inherit background color from parent
-    w->bgcolor( parent.bgcolor() );
+    /** Construct widget
+            @param[in] parent reference to parent window or widget
+    */
+    template < class W, class P >
+    static W& make( P& parent )
+    {
+        W* w = new W( (gui*)&parent );
 
-    windex::get().Add( w );
-    return *w;
-}
+        // inherit background color from parent
+        w->bgcolor( parent.bgcolor() );
+
+        windex::get().Add( w );
+        return *w;
+    }
 
 /// Construct a top level window ( first call constructs application window )
-static gui&  make()
-{
-    windex::get().myGui.size();
+    static gui&  make()
+    {
+        windex::get().myGui.size();
 
-    gui* w = new gui();
-    windex::get().Add( w );
-    return *w;
-}
+        gui* w = new gui();
+        windex::get().Add( w );
+        return *w;
+    }
+};
+
+/** \brief A widget where user can select which panel to display by clicking a tab button
+
+Usage:
+<pre>
+    // construct top level window
+    gui& form = wex::maker::make();
+    form.move({ 50,50,400,400});
+    form.text("Tabbed Panel demo");
+
+    // construct tabbed panel
+    tabbed& tabs = maker::make<tabbed>( form );
+    tabs.move( 50,50, 300, 200 );
+
+    // add some demo panels
+    panel& cam1panel = maker::make<panel>( tabs );
+    label& cam1label = maker::make<label>( cam1panel );
+    cam1label.move(30,100, 100,20 );
+    cam1label.text("CAM1 panel");
+    tabs.add( "CAM1", cam1panel );
+
+    panel& cam2panel = maker::make<panel>( tabs );
+    label& cam2label = maker::make<label>( cam2panel );
+    cam2label.move(30,100, 100,20 );
+    cam2label.text("CAM2 panel");
+    tabs.add( "CAM2", cam2panel );
+
+    panel& cam3panel = maker::make<panel>( tabs );
+    label& cam3label = maker::make<label>( cam3panel );
+    cam3label.move(30,100, 100,20 );
+    cam3label.text("CAM3 panel");
+    tabs.add( "CAM3", cam3panel );
+
+    form.show();
+
+    // initially show the first panel
+    // must be donw after call to show, which displays the last panel added
+    tabs.select( 0 );
+</pre>
+*/
+class tabbed : public panel
+{
+public:
+    tabbed( gui* parent )
+        : panel( parent )
+        , myTabWidth( 50 )
+    {
+        tabChanged( [](int tabIndex) {});
+    }
+    /** add panel that can be displayed
+        @param[in] tabname text for button that brings up the panel
+        @param[in] panel to be displayed when tab selected.
+
+        Panel will be resized to fit neatly
+    */
+    void add(
+        const std::string& tabname,
+        gui& panel )
+    {
+        //resize the child panel so it fits neatly under the tab buttons
+        RECT rect;
+        GetClientRect( myHandle, &rect );
+        panel.move( 0,31, rect.right-rect.left, rect.bottom-rect.top - 30 );
+
+        button& btn = maker::make<button>( *this );
+        btn.text( tabname );
+        btn.move( myButton.size() * myTabWidth,
+                  0, myTabWidth, 30 );
+        myButton.push_back( &btn );
+        myPanel.push_back( &panel );
+        int tabIndex = myButton.size()-1;
+
+        btn.events().click([this,tabIndex ]( )
+        {
+            select( tabIndex );
+            myTabChangeFn( tabIndex );
+        });
+    }
+    /// select panel to displayed
+    void select( int i )
+    {
+        std::cout << "select " << i << "\n";
+
+        if( 0 > i || i >= (int)myButton.size() )
+            return;
+
+        for( auto b : myButton )
+        {
+            b->bgcolor( 0xC8C8C8 );
+            b->update();
+        }
+        for( auto p : myPanel )
+            p->show( false );
+
+        myButton[i]->bgcolor(0xFFFFFF);
+        myPanel[i]->show();
+        update();
+        mySelect = i;
+    }
+    /// zero-based index of panel currently selected
+    int select() const
+    {
+        return mySelect;
+    }
+    /// set width of tab buttons
+    void tabWidth( int w )
+    {
+        myTabWidth = w;
+    }
+    /** register function to call when tab has changed
+        This is only called when user changes the tab, not when app code call select() function
+        Zero-based tab index passed to register function when called
+    */
+    void tabChanged( std::function<void( int tabIndex )> f )
+    {
+        myTabChangeFn = f;
+    }
+private:
+    std::vector< button* > myButton;
+    std::vector< gui* > myPanel;
+    int myTabWidth;
+    int mySelect;
+    std::function<void( int tabIndex )> myTabChangeFn;
 };
 
 }
