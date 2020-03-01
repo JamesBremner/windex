@@ -169,7 +169,7 @@ void PGDemo()
     pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
-    pg.tabList();
+//    pg.tabList();
 
         propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
     pg2.move( { 10,300, 200, 200});

@@ -192,6 +192,8 @@ public:
             myEditbox.text( v );
             myEditbox.update();
             break;
+        default:
+            break;
         }
     }
     void value( bool v )
@@ -201,6 +203,8 @@ public:
         case eType::check:
             myValue = std::to_string((int)v );
             myCheckbox.check( v );
+            break;
+        default:
             break;
         }
     }
@@ -253,6 +257,8 @@ public:
             break;
         case eType::check:
             myCheckbox.events().click( f );
+            break;
+        default:
             break;
         }
     }
