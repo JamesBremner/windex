@@ -2019,7 +2019,7 @@ class list : public gui
 public:
     list( gui* parent )
         : gui( parent, "listbox",
-               CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+               LBS_STANDARD | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
     /// Override move to ensure column width is sufficient
