@@ -192,11 +192,15 @@ public:
             myEditbox.text( v );
             myEditbox.update();
             break;
+        case eType::choice:
+            myValue = v;
+            myCombobox.select( v );
+            break;
         default:
             break;
         }
     }
-    void value( bool v )
+    void value_bool( bool v )
     {
         switch( myType )
         {
@@ -205,6 +209,7 @@ public:
             myCheckbox.check( v );
             break;
         default:
+            // other property types ignore requests to change boolean vaue
             break;
         }
     }
@@ -305,21 +310,31 @@ public:
 
         });
     }
-    /// Add string property
-    void string(
+    /** Add string property
+        @param[in] name of property
+        @param[in] value initial value
+        @return reference to property
+    */
+    property& string(
         const std::string& name,
         const std::string& value )
     {
         property P( this, name, value );
         CommonConstruction( P );
+        return myProperty.back();
     }
-    /// Add choice property
-    void choice(
+    /** Add choice property
+        @param[in] name of property
+        @param[in] choice vector of choices to be selected from
+        @return reference to property
+    */
+    property& choice(
         const std::string& name,
         const std::vector< std::string >& choice )
     {
         property P( this, name, choice );
         CommonConstruction( P );
+        return myProperty.back();
     }
     /// Add boolean property
     void check(
@@ -381,6 +396,7 @@ public:
     {
         for( auto& p : myProperty )
         {
+            //std::cout << "property::find " << name <<" "<< p.name() << "\n";
             if( p.name() == name )
                 return &p;
         }
