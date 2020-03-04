@@ -929,7 +929,7 @@ public:
                 if( lParam )
                 {
                     if( HIWORD(wParam) == CBN_SELCHANGE
-                    || HIWORD(wParam) == LBN_SELCHANGE )
+                            || HIWORD(wParam) == LBN_SELCHANGE )
                     {
                         return events().onSelect( LOWORD(wParam) );
                     }
@@ -2446,17 +2446,30 @@ public:
     /** CTOR
         @param[in] g gui element that will receive the events
         @param[in] intervalmsecs time between events
+        @param[in] id
 
-        The events will begin immediatly
+        The events will begin immediatly on construction
+        and stop on destruction - don't let the timer go out of scope!
     */
-    timer( gui& g, int intervalmsecs )
+    timer( gui& g, int intervalmsecs, int id = 1 )
+        : myGUI( g )
+        , myID( id )
     {
         SetTimer(
-            g.handle(),             // handle to  window
-            1,            // timer identifier
-            intervalmsecs,                 //  interval ms
-            (TIMERPROC) NULL);     // no timer callback
+            myGUI.handle(),             // handle to  window
+            myID,                       // timer identifier
+            intervalmsecs,              //  interval ms
+            (TIMERPROC) NULL);          // no timer callback
     }
+    ~timer()
+    {
+        KillTimer(
+            myGUI.handle(),
+            myID );
+    }
+private:
+    gui& myGUI;
+    int myID;
 };
 /** \brief A widget which user can drag to change a value.
 
