@@ -2446,7 +2446,7 @@ public:
     /** CTOR
         @param[in] g gui element that will receive the events
         @param[in] intervalmsecs time between events
-        @param[in] id
+        @param[in] id number
 
         The events will begin immediatly on construction
         and stop on destruction - don't let the timer go out of scope!

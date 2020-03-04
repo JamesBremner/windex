@@ -1,10 +1,10 @@
 var classwex_1_1gui =
 [
     [ "gui", "classwex_1_1gui.html#ae8ced09227dcf59687bad25b5ac407e7", null ],
-    [ "gui", "classwex_1_1gui.html#a526ac78a5cc1e4beb1c25f6eb7c27c22", null ],
+    [ "gui", "classwex_1_1gui.html#a7f0e7176dd175c8f759e4a90390d9a1d", null ],
     [ "~gui", "classwex_1_1gui.html#a5d6375913354d88b0d0f7484bc1dd277", null ],
     [ "bgcolor", "classwex_1_1gui.html#adaf4ee784a232178cc304f1a35208345", null ],
-    [ "bgcolor", "classwex_1_1gui.html#aff3a9edef5c476013b68108089e6b5a2", null ],
+    [ "bgcolor", "classwex_1_1gui.html#a6b7804e4f2675d4bb526c99587ca9649", null ],
     [ "child", "classwex_1_1gui.html#a147be1d7a983f4bab441e204f4925671", null ],
     [ "children", "classwex_1_1gui.html#aa1a0301b5f6edf96a98140909865385f", null ],
     [ "Create", "classwex_1_1gui.html#a35ecd0dadb78b8590a56814370ed65a3", null ],
@@ -28,7 +28,7 @@ var classwex_1_1gui =
     [ "showModal", "classwex_1_1gui.html#a73d78d0c4a9dfc91560022389adefc62", null ],
     [ "size", "classwex_1_1gui.html#a4e86a5cbef36f92585b08ff500cd250e", null ],
     [ "text", "classwex_1_1gui.html#ae652dc8654d0baaa1f3b513c2cb85f0b", null ],
-    [ "text", "classwex_1_1gui.html#a65eb9fc8581c94397961736698b56677", null ],
+    [ "text", "classwex_1_1gui.html#a77bfc43c5ed8d0472271f55f5bbf7645", null ],
     [ "tooltip", "classwex_1_1gui.html#a8d37830b595daa127a11c82f0aa2d167", null ],
     [ "update", "classwex_1_1gui.html#a12afe321b01f6fabf33a06920a033dbc", null ],
     [ "WindowMessageHandler", "classwex_1_1gui.html#a7142035ad0833b3e6c754eafd9e46e73", null ],

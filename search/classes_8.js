@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['panel',['panel',['../classwex_1_1panel.html',1,'wex']]],
-  ['plot',['plot',['../classwex_1_1plot_1_1plot.html',1,'wex::plot']]],
-  ['property',['property',['../classwex_1_1property.html',1,'wex']]],
-  ['propertygrid',['propertyGrid',['../classwex_1_1property_grid.html',1,'wex']]]
+  ['maker',['maker',['../classwex_1_1maker.html',1,'wex']]],
+  ['menu',['menu',['../classwex_1_1menu.html',1,'wex']]],
+  ['menubar',['menubar',['../classwex_1_1menubar.html',1,'wex']]],
+  ['msgbox',['msgbox',['../classwex_1_1msgbox.html',1,'wex']]]
 ];

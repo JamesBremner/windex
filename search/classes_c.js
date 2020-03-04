@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['windex',['windex',['../classwex_1_1windex.html',1,'wex']]],
-  ['window2file',['window2file',['../classwex_1_1window2file.html',1,'wex']]]
+  ['tabbed',['tabbed',['../classwex_1_1tabbed.html',1,'wex']]],
+  ['timer',['timer',['../classwex_1_1timer.html',1,'wex']]],
+  ['trace',['trace',['../classwex_1_1plot_1_1trace.html',1,'wex::plot']]]
 ];

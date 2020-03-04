@@ -1,6 +1,7 @@
 var classwex_1_1editbox =
 [
     [ "editbox", "classwex_1_1editbox.html#a3bdafc8d99f0b805d4263621a689ab89", null ],
+    [ "multiline", "classwex_1_1editbox.html#a2121081828375647ac7c7300990c1f8d", null ],
     [ "notification", "classwex_1_1editbox.html#a91b72f2cb84528ace73f556be7d61ebd", null ],
     [ "readonly", "classwex_1_1editbox.html#a25d708c209570ae7a1d9d75095a1663d", null ],
     [ "text", "classwex_1_1editbox.html#acbe15d8899012eb161eb911d35333b41", null ],

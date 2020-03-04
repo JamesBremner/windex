@@ -6,12 +6,15 @@ var hierarchy =
       [ "wex::button", "classwex_1_1button.html", null ],
       [ "wex::checkbox", "classwex_1_1checkbox.html", null ],
       [ "wex::choice", "classwex_1_1choice.html", null ],
+      [ "wex::drop", "classwex_1_1drop.html", null ],
       [ "wex::editbox", "classwex_1_1editbox.html", null ],
       [ "wex::inputbox", "classwex_1_1inputbox.html", null ],
       [ "wex::label", "classwex_1_1label.html", null ],
+      [ "wex::list", "classwex_1_1list.html", null ],
       [ "wex::panel", "classwex_1_1panel.html", [
         [ "wex::groupbox", "classwex_1_1groupbox.html", null ],
-        [ "wex::layout", "classwex_1_1layout.html", null ]
+        [ "wex::layout", "classwex_1_1layout.html", null ],
+        [ "wex::tabbed", "classwex_1_1tabbed.html", null ]
       ] ],
       [ "wex::plot::plot", "classwex_1_1plot_1_1plot.html", null ],
       [ "wex::propertyGrid", "classwex_1_1property_grid.html", null ],
