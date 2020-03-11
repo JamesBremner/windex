@@ -125,6 +125,10 @@ public:
     {
         myLabel.bgcolor( color );
     }
+    void tooltip( const std::string& tip )
+    {
+        myLabel.tooltip( tip );
+    }
     void show( bool f = true )
     {
         myLabel.show( f );

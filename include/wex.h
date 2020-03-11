@@ -1867,7 +1867,50 @@ public:
 
     }
 };
-/// A widget where user can enter a string.
+/** \brief A widget where user can enter a string.
+<pre>
+    // construct top level window
+    gui& form = maker::make();
+    form.move({ 50,50,400,400});
+    form.text("Label and Editbox demo");
+
+    // display labels
+    label& lbA = maker::make<label>( form );
+    lbA.move( {20, 20, 100, 30 } );
+    lbA.text("A:");
+    label& lbB = maker::make<label>( form );
+    lbB.move( {20, 60, 100, 30 } );
+    lbB.text("B:");
+
+    // display textboxes
+    editbox& edit1 = maker::make<editbox>( form );
+    edit1.move( {80, 20, 100, 30 } );
+    edit1.text( "type value");
+    editbox& edit2 = maker::make<editbox>( form );
+    edit2.move( {80, 60, 100, 30 } );
+    edit2.text( "type value");
+
+    // display a button
+    button& btn = wex::maker::make<button>( form );
+    btn.move( {20, 100, 150, 30 } );
+    btn.text( "Show values entered" );
+    btn.tooltip("tooltip explaining button function");
+
+    // popup a message box when button is clicked
+    // showing the value entered in textbox
+    btn.events().click([&]
+    {
+        std::string msg =
+        "A is " + edit1.text() +
+        ", B is " + edit2.text();
+        msgbox(
+            form,
+            msg );
+    });
+
+    form.show();
+</pre>
+*/
 class editbox : public gui
 {
 public:
@@ -2069,7 +2112,9 @@ public:
             LB_SELECTSTRING,
             (WPARAM)-1, (LPARAM)s.c_str());
     }
-    /// get index of selected item
+    /** get index of selected item
+        @return 0-based index, or -1 if no selection
+    */
     int SelectedIndex()
     {
         return SendMessage(
@@ -2346,6 +2391,18 @@ public:
     {
         return myM;
     }
+    void check( int index, bool f = true )
+    {
+        unsigned int uCheck;
+        if( f )
+            uCheck = MF_BYPOSITION | MF_CHECKED;
+        else
+            uCheck = MF_BYPOSITION | MF_UNCHECKED;
+        auto ret = CheckMenuItem(
+            myM,
+            index,
+            uCheck );
+    }
 private:
     HMENU myM;
     gui& myParent;
@@ -2403,7 +2460,7 @@ public:
     /** CTOR
         @param[in] g gui element that will receive the events
         @param[in] intervalmsecs time between events
-        @param[in] id
+        @param[in] id number
 
         The events will begin immediatly on construction
         and stop on destruction - don't let the timer go out of scope!

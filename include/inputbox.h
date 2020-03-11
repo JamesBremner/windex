@@ -1,3 +1,4 @@
+#pragma once
 #include "propertygrid.h"
 namespace wex
 {
