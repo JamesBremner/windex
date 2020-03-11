@@ -2398,7 +2398,7 @@ public:
             uCheck = MF_BYPOSITION | MF_CHECKED;
         else
             uCheck = MF_BYPOSITION | MF_UNCHECKED;
-        auto ret = CheckMenuItem(
+        CheckMenuItem(
             myM,
             index,
             uCheck );

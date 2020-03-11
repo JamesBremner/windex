@@ -642,6 +642,11 @@ public:
         }
     }
 
+    void clear()
+    {
+        myTrace.clear();
+    }
+
 private:
 
     ///window where plot will be drawn
