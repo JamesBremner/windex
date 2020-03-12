@@ -15,6 +15,7 @@ var classwex_1_1property =
     [ "savedValue", "classwex_1_1property.html#a236b6ea0bfee80653935d6e105f1605d", null ],
     [ "saveValue", "classwex_1_1property.html#ac48b30ad1874a4f975977965ca2ffa77", null ],
     [ "show", "classwex_1_1property.html#a041a6502daf124a3b43c67ebe481bda9", null ],
+    [ "tooltip", "classwex_1_1property.html#a4b1a3504a6cb793cb355be74a4d11dc9", null ],
     [ "update", "classwex_1_1property.html#a49fb480857d47dc7e474f533fded9a51", null ],
     [ "value", "classwex_1_1property.html#adee5f27e52299f3cb5117ec3a0f5a8ea", null ],
     [ "value", "classwex_1_1property.html#ab94dd45443b8e12974925a2cf7382013", null ],

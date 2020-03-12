@@ -1,5 +1,8 @@
 var NAVTREEINDEX1 =
 {
+"classwex_1_1slider.html#ade1fe2112757e034ac76994f54811027":[0,0,0,23,3],
+"classwex_1_1slider.html#af5a9f2d37aca7dde33896e49c037519a":[0,0,0,23,4],
+"classwex_1_1tabbed.html":[0,0,0,25],
 "classwex_1_1tabbed.html#a12dcb6f7158dfd3f0a535311bfd8024d":[0,0,0,25,2],
 "classwex_1_1tabbed.html#a491da3eca40d3b4c208ec2be9ab0bbd8":[0,0,0,25,1],
 "classwex_1_1tabbed.html#a686444b24a32272e52c24ec408cdb9cd":[0,0,0,25,3],
