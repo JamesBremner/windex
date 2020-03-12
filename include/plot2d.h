@@ -629,6 +629,7 @@ public:
         myAxis->Grid( enable );
     }
 
+    /** get step size along x-axis */
     float xinc()
     {
         return myXinc;
@@ -642,6 +643,7 @@ public:
         }
     }
 
+    /// Remove all traces from plot
     void clear()
     {
         myTrace.clear();

@@ -125,9 +125,32 @@ public:
     {
         myLabel.bgcolor( color );
     }
-    void tooltip( const std::string& tip )
+    /** Add pop help message when mouse hovers over property label
+        @param[in] tip the help message
+        @return property reference
+    */
+    property& tooltip( const std::string& tip )
     {
         myLabel.tooltip( tip );
+        return *this;
+    }
+    /** Set property to be readonly
+        @param[in] f true if property should be readonly, default true
+        @return property reference
+
+        A property defaults to editable when constructed.
+    */
+    property& readonly( bool f = true )
+    {
+        switch( myType )
+        {
+        case eType::string:
+            myEditbox.readonly( f );
+            break;
+        default:
+            break;
+        }
+        return *this;
     }
     void show( bool f = true )
     {
