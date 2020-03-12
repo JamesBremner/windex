@@ -1,3 +1,5 @@
+#pragma once
+
 #include <algorithm>
 
 namespace wex
@@ -638,6 +640,11 @@ public:
         {
             std::cout << "debugtsize " << t->size() << "\n";
         }
+    }
+
+    void clear()
+    {
+        myTrace.clear();
     }
 
 private:

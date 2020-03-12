@@ -433,6 +433,8 @@ public:
     @param[in] r radius, pixels
     @param[in] sa start angle degrees anti-clockwise from 3 o'clock
     @param[in] se end angle degrees anti-clockwise from 3 o'clock
+
+    The arc is drawn from sa to se in the anti-clockwise direction.
     */
     void arc(
         int x, int y, double r,
@@ -443,9 +445,9 @@ public:
         int xr =round( x+r );
         int yb =round( y+r );
         int xs =round( x + r * cos(sa * M_PI/180) );
-        int ys =round( y + r * sin(sa * M_PI/180) );
+        int ys =round( y - r * sin(sa * M_PI/180) );
         int xe =round( x + r * cos(ea * M_PI/180) );
-        int ye =round( y + r * sin(ea * M_PI/180) );
+        int ye =round( y - r * sin(ea * M_PI/180) );
         Arc(
             myHDC,
             xl,yt,xr,yb,xs,ys,xe,ye );
@@ -2112,7 +2114,9 @@ public:
             LB_SELECTSTRING,
             (WPARAM)-1, (LPARAM)s.c_str());
     }
-    /// get index of selected item
+    /** get index of selected item
+        @return 0-based index, or -1 if no selection
+    */
     int SelectedIndex()
     {
         return SendMessage(
@@ -2388,6 +2392,18 @@ public:
     HMENU handle()
     {
         return myM;
+    }
+    void check( int index, bool f = true )
+    {
+        unsigned int uCheck;
+        if( f )
+            uCheck = MF_BYPOSITION | MF_CHECKED;
+        else
+            uCheck = MF_BYPOSITION | MF_UNCHECKED;
+        CheckMenuItem(
+            myM,
+            index,
+            uCheck );
     }
 private:
     HMENU myM;
