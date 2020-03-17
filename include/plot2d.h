@@ -630,6 +630,11 @@ public:
         myAxis->Grid( enable );
     }
 
+    int traceCount() const
+    {
+        return (int) myTrace.size();
+    }
+
     /** get step size along x-axis */
     float xinc() const
     {
