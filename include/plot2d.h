@@ -535,6 +535,7 @@ public:
     */
     plot( gui* parent )
         : gui( parent )
+        , myfFit( true )
     {
         text("Plot");
 
@@ -630,9 +631,22 @@ public:
     }
 
     /** get step size along x-axis */
-    float xinc()
+    float xinc() const
     {
         return myXinc;
+    }
+
+    /* get data bounds
+        @return vector of doubles { minX, minY, maxX, maxY
+    */
+    std::vector<double> bounds() const
+    {
+        std::vector<double> ret;
+        ret.push_back( myMinX );
+        ret.push_back( myMinY );
+        ret.push_back( myMaxX );
+        ret.push_back( myMaxY );
+        return ret;
     }
 
     void debug()
@@ -647,6 +661,23 @@ public:
     void clear()
     {
         myTrace.clear();
+    }
+
+    /** Disable auto-fit scaling and set Y minumum, maximum
+        @param[in] min enforced min Y
+        @param[in] max enforced max Y
+    */
+    void axisYminmax( double min, double max )
+    {
+        myfFit = false;
+        myMinY = min;
+        myMaxY = max;
+    }
+
+    /// Enable auto-fit scaling
+    void autoFit()
+    {
+        myfFit = true;
     }
 
 private:
@@ -667,6 +698,8 @@ private:
     int myXOffset;
     int myYOffset;
 
+    bool myfFit;            /// true if scale should fit plot to window
+
     /** calculate scaling factors so plot will fit in window client area
         @param[in] w width
         @param[in] h height
@@ -677,28 +710,11 @@ private:
         w *= 0.9;
         h *= 0.95;
 
-        int maxCount = 0;
-        myTrace[0]->bounds(
-            myMinX, myMaxX,
-            myMinY, myMaxY );
-        for( auto& t : myTrace )
+        if( myfFit )
         {
-            if( t->size() > maxCount )
-                maxCount = t->size();
-            double txmin, txmax, tymin, tymax;
-            txmin= txmax= tymin= tymax=0;
-            t->bounds( txmin, txmax, tymin, tymax );
-            if( txmin < myMinX )
-                myMinX = txmin;
-            if( txmax > myMaxX )
-                myMaxX = txmax;
-            if( tymin < myMinY )
-                myMinY = tymin;
-            if( tymax > myMaxY )
-                myMaxY = tymax;
+            CalulateDataBounds();
         }
-        if( ! maxCount )
-            return;
+
         if( fabs( myMaxX - myMinX) < 0.0001 )
             myXScale = 1;
         else
@@ -715,6 +731,27 @@ private:
         scale::get().bounds( myMinX, myMaxX, myMinY, myMaxY );
 
         //std::cout << myMinY <<" "<< myMaxY <<" "<< myScale;
+    }
+
+    void CalulateDataBounds()
+    {
+        myTrace[0]->bounds(
+            myMinX, myMaxX,
+            myMinY, myMaxY );
+        for( auto& t : myTrace )
+        {
+            double txmin, txmax, tymin, tymax;
+            txmin= txmax= tymin= tymax=0;
+            t->bounds( txmin, txmax, tymin, tymax );
+            if( txmin < myMinX )
+                myMinX = txmin;
+            if( txmax > myMaxX )
+                myMaxX = txmax;
+            if( tymin < myMinY )
+                myMinY = tymin;
+            if( tymax > myMaxY )
+                myMaxY = tymax;
+        }
     }
 };
 
