@@ -343,7 +343,7 @@ private:
 
 };
 /// @cond
-/** \brief Draw decorated vertical line on LHS of plot for Y-axis
+/** \brief Draw decorated axis line
 
     This class is internal and none of its methods should be
     called by the application code
@@ -380,9 +380,9 @@ public:
                 mx = scale::get().maxY();
             }
             int ymn_px = scale::get().Y2Pixel( mn );
-            S.text( std::to_string((int)mn), { 5,ymn_px,50,15});
-
             int ymx_px = scale::get().Y2Pixel( mx );
+
+            S.text( std::to_string((int)mn), { 5,ymn_px,50,15});
             S.text( std::to_string((int)mx), { 5,ymx_px,50,15});
 
             S.line( { 2, ymn_px,
@@ -441,10 +441,16 @@ public:
                 mx = scale::get().maxX();
             }
             int xmn_px = scale::get().X2Pixel( mn );
-            S.text( std::to_string((int)mn), {xmn_px, ypos+3, 50,15});
-
             int xmx_px = scale::get().X2Pixel( mx );
-            S.text( std::to_string((int)mx), {xmx_px, ypos+3, 50,15});
+
+            if( ! myMinXLabel.length() )
+                S.text( std::to_string((int)mn), {xmn_px, ypos+3, 50,15});
+            else
+                S.text( myMinXLabel, {xmn_px, ypos+3, 50,15});
+            if( ! myMaxXLabel.length() )
+                S.text( std::to_string((int)mx), {xmx_px, ypos+3, 50,15});
+            else
+                S.text( myMaxXLabel, {xmx_px, ypos+3, 50,15});
 
             S.line( { xmn_px, ypos,
                       xmx_px, ypos
@@ -460,10 +466,20 @@ public:
         myfGrid = f;
     }
 
+    void XLabels(
+        const std::string min,
+        const std::string max )
+    {
+        myMinXLabel = min;
+        myMaxXLabel = max;
+    }
+
 private:
     bool myfGrid;
     bool myfX;              // true for x-axis
     gui& myParent;
+    std::string myMinXLabel;
+    std::string myMaxXLabel;
 };
 /// @endcond
 
@@ -683,6 +699,13 @@ public:
     void autoFit()
     {
         myfFit = true;
+    }
+
+    void XLabels(
+        const std::string min,
+        const std::string max )
+    {
+        myAxisX->XLabels( min, max );
     }
 
 private:

@@ -421,6 +421,7 @@ public:
         }
         else
         {
+//            std::cout << "wex rectangle fill "  << v[0]<<" "<< v[1]<<" "<<  v[0]+v[2]<<" "<<  v[1]+v[3] << "\n";
             Rectangle(
                 myHDC,
                 v[0], v[1], v[0]+v[2], v[1]+v[3] );
@@ -2117,27 +2118,28 @@ public:
     /** get index of selected item
         @return 0-based index, or -1 if no selection
     */
-    int SelectedIndex()
+    int selectedIndex()
     {
         return SendMessage(
                    handle(),
                    (UINT) LB_GETCURSEL,
                    (WPARAM) 0, (LPARAM) 0);
     }
+
     /// get text of selected item
-//    std::string SelectedText()
-//    {
-//        int i = SelectedIndex();
-//        if( i < 0 )
-//            return std::string("");
-//        char buf[256];
-//        SendMessage(
-//            handle(),
-//            (UINT) LB_GETLBTEXT,
-//            (WPARAM) i,
-//            (LPARAM) buf);
-//        return std::string( buf );
-//    }
+    std::string selectedText()
+    {
+        int i = selectedIndex();
+        if( i < 0 )
+            return std::string("");
+        char buf[256];
+        SendMessage(
+            handle(),
+            (UINT) LB_GETTEXT,
+            (WPARAM) i,
+            (LPARAM) buf);
+        return std::string( buf );
+    }
     /// get count of items
     int count()
     {
