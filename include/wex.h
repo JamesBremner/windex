@@ -432,7 +432,7 @@ public:
 
     @param[in] point array of points, such as x0,y0,x1,y1,x2,y2,x3,y3...
     */
-    void polygen( const std::vector<int>& v )
+    void polygon( const std::vector<int>& v )
     {
         Polygon(myHDC, (const POINT*)&(v[0]), v.size()/2);
     }

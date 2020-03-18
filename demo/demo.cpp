@@ -100,7 +100,6 @@ void choiceDemo()
 
 void drawDemo()
 {
-
     // construct top level  window
     gui& form = wex::maker::make();
     form.move({ 50,50,400,400});
@@ -125,6 +124,7 @@ void drawDemo()
 
         S.fill();
         S.rectangle(  { 200,20,20,20});
+        S.polygon( { 200,60, 220,60, 210,80 });
 
 
         S.textCenterHz("this is",{20,250,150,30});
