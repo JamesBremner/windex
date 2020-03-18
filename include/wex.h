@@ -427,6 +427,17 @@ public:
                 v[0], v[1], v[0]+v[2], v[1]+v[3] );
         }
     }
+
+    /** Draw Polygon
+
+    @param[in] point array of points, such as x0,y0,x1,y1,x2,y2,x3,y3...
+    */
+    void polygen( const std::vector<int>& v )
+    {
+        Polygon(myHDC, (const POINT*)&(v[0]), v.size()/2);
+    }
+
+
     /** Draw Arc of circle
 
     @param[in] x for center, pixels 0 at left of window
