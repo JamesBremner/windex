@@ -2076,7 +2076,8 @@ class list : public gui
 public:
     list( gui* parent )
         : gui( parent, "listbox",
-               LBS_STANDARD | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+               LBS_NOTIFY | WS_VSCROLL | WS_BORDER |
+                WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
     /// Override move to ensure column width is sufficient
