@@ -1069,6 +1069,16 @@ public:
         MoveWindow( myHandle,
                     x, y, w, h, false);
     }
+    std::vector<int> size()
+    {
+        RECT r;
+        GetClientRect(myHandle,&r);
+        std::vector<int> ret
+        {
+            r.right - r.left, r.bottom - r.top
+        };
+        return ret;
+    }
 
 /// Get event handler
     eventhandler& events()
@@ -2083,7 +2093,7 @@ public:
     list( gui* parent )
         : gui( parent, "listbox",
                LBS_NOTIFY | WS_VSCROLL | WS_BORDER |
-                WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+               WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
     /// Override move to ensure column width is sufficient

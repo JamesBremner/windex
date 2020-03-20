@@ -156,6 +156,11 @@ public:
         return (int) myY.size();
     }
 
+    double value( double xfraction )
+    {
+        return myY[ (int) ( xfraction * myY.size() ) ];
+    }
+
 private:
 
     friend plot;
@@ -340,7 +345,6 @@ private:
         }
     }
 
-
 };
 /// @cond
 /** \brief Draw decorated axis line
@@ -484,7 +488,7 @@ public:
         }
     }
 
-    void Grid( bool f )
+    void grid( bool f )
     {
         myfGrid = f;
     }
@@ -674,10 +678,10 @@ public:
 
 
     /** \brief Enable display of grid markings */
-    void Grid( bool enable )
+    void grid( bool enable )
     {
-        myAxis->Grid( enable );
-        myAxisX->Grid( enable );
+        myAxis->grid( enable );
+        myAxisX->grid( enable );
     }
 
     int traceCount() const
@@ -747,6 +751,11 @@ public:
         int max )
     {
         myAxisX->XValues( min, max );
+    }
+
+    std::vector< trace* >& traces()
+    {
+        return myTrace;
     }
 
 private:
