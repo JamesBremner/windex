@@ -243,6 +243,7 @@ private:
     {
         shapes S( ps );
         S.color( myColor );
+        S.penThick( 20 );
 
         bool first = true;
         int xi    = 0;
@@ -276,7 +277,6 @@ private:
                     (int)prevX, (int)prev,
                     (int)x, (int)ys
                 });
-//                   myColor);
 
                 prevX = x;
                 prev = ys;
@@ -403,11 +403,14 @@ public:
                          tick_length, ymn_px
                         });
 
-//            if( myfGrid )
-//                for( int k=5; k<graph.width(); k=k+10 )
+//                if( myfGrid )
 //                {
-//                    graph.set_pixel(k, y0_px, colors::blue );
-//                    graph.set_pixel(k+1, y0_px, colors::blue );
+//
+//                    for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
+//                    {
+//                        S.pixel(k, y0_px );
+//                        S.pixel(k+1, y0_px );
+//                    }
 //                }
             }
             else
@@ -419,12 +422,12 @@ public:
                     S.line( {2, y,
                              tick_length, y
                             });
-//                if( myfGrid )
-//                    for( int k=5; k<graph.width(); k=k+10 )
-//                    {
-//                        graph.set_pixel(k, y, colors::blue );
-//                        graph.set_pixel(k+1, y, colors::blue );
-//                    }
+//                    if( myfGrid )
+//                        for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
+//                        {
+//                            S.pixel(k, y );
+//                            S.pixel(k+1, y );
+//                        }
                 }
             }
         }
@@ -455,11 +458,31 @@ public:
             S.line( { xmn_px, ypos,
                       xmx_px, ypos
                     });
+
+            if( myfGrid )
+            {
+                int tickCount = 8;
+                int xtickinc = ( xmx_px - xmn_px ) / tickCount;
+                int xtickValueinc = ( myMaxXValue - myMinXValue ) / tickCount;
+                for( int kxtick = 0; kxtick <= tickCount; kxtick++ )
+                {
+                    int x = xmn_px + xtickinc * kxtick;
+
+                    S.text(
+                        std::to_string( myMinXValue + xtickValueinc * kxtick),
+                    {
+                        x, ypos+1, 50, 15
+                    });
+
+                    for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
+                    {
+                        S.pixel(x, k );
+                        S.pixel(x, k+1 );
+                    }
+                }
+            }
         }
-
     }
-
-
 
     void Grid( bool f )
     {
@@ -474,12 +497,22 @@ public:
         myMaxXLabel = max;
     }
 
+    void XValues(
+        int min,
+        int max )
+    {
+        myMinXValue = min;
+        myMaxXValue = max;
+    }
+
 private:
     bool myfGrid;
     bool myfX;              // true for x-axis
     gui& myParent;
     std::string myMinXLabel;
     std::string myMaxXLabel;
+    int myMinXValue;
+    int myMaxXValue;
 };
 /// @endcond
 
@@ -644,6 +677,7 @@ public:
     void Grid( bool enable )
     {
         myAxis->Grid( enable );
+        myAxisX->Grid( enable );
     }
 
     int traceCount() const
@@ -706,6 +740,13 @@ public:
         const std::string max )
     {
         myAxisX->XLabels( min, max );
+    }
+
+    void XValues(
+        int min,
+        int max )
+    {
+        myAxisX->XValues( min, max );
     }
 
 private:
