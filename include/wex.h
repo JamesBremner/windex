@@ -816,10 +816,13 @@ public:
         }
     }
 
-    /// Add tooltip that pops up helpfully when mouse cursor hovers ober widget
-    void tooltip( const std::string& text )
+    /** Add tooltip that pops up helpfully when mouse cursor hovers ober widget
+        @param[in] text of tooltip
+        @param[in] width of multiline tooltip, default single line
+    */
+    void tooltip( const std::string& text, int width = 0 )
     {
-        // Create the tooltip. g_hInst is the global instance handle.
+        // Create the tooltip.
         HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
                                       WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
                                       CW_USEDEFAULT, CW_USEDEFAULT,
@@ -834,6 +837,9 @@ public:
         toolInfo.uId = (UINT_PTR)myHandle;
         toolInfo.lpszText = (char*)text.c_str();
         SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+
+        if( width > 0 )
+            SendMessage(hwndTip, TTM_SETMAXTIPWIDTH, 0, 30);
     }
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
