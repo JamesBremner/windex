@@ -1,3 +1,4 @@
+#pragma once
 #include "propertygrid.h"
 namespace wex
 {
@@ -59,6 +60,13 @@ public:
         const std::vector<std::string>& choice )
     {
         myGrid.choice( name, choice );
+        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
+    }
+    void check(
+        const std::string& name,
+        bool def )
+    {
+        myGrid.check( name, def );
         myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
     }
 

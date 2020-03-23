@@ -145,6 +145,34 @@ public:
             s );
     }
 
+    /** Add pop help message when mouse hovers over property label
+        @param[in] tip the help message
+        @return property reference
+    */
+    property& tooltip( const std::string& tip )
+    {
+        myLabel.tooltip( tip );
+        return *this;
+    }
+    /** Set property to be readonly
+        @param[in] f true if property should be readonly, default true
+        @return property reference
+
+        A property defaults to editable when constructed.
+    */
+    property& readonly( bool f = true )
+    {
+        switch( myType )
+        {
+        case eType::string:
+            myEditbox.readonly( f );
+            break;
+        default:
+            break;
+        }
+        return *this;
+    }
+
     void show( bool f = true )
     {
         myLabel.show( f );
@@ -212,15 +240,24 @@ public:
             myEditbox.text( v );
             myEditbox.update();
             break;
+        case eType::choice:
+            myValue = v;
+            myCombobox.select( v );
+            break;
+        default:
+            break;
         }
     }
-    void value( bool v )
+    void value_bool( bool v )
     {
         switch( myType )
         {
         case eType::check:
             myValue = std::to_string((int)v );
             myCheckbox.check( v );
+            break;
+        default:
+            // other property types ignore requests to change boolean vaue
             break;
         }
     }
@@ -274,6 +311,8 @@ public:
         case eType::check:
             myCheckbox.events().click( f );
             break;
+        default:
+            break;
         }
     }
 private:
@@ -320,22 +359,32 @@ public:
 
         });
     }
-    /// Add string property
-    void string(
+    /** Add string property
+        @param[in] name of property
+        @param[in] value initial value
+        @return reference to property
+    */
+    property& string(
         const std::string& name,
         const std::string& value )
     {
         property P( this, name, value );
 
         CommonConstruction( P );
+        return myProperty.back();
     }
-    /// Add choice property
-    void choice(
+    /** Add choice property
+        @param[in] name of property
+        @param[in] choice vector of choices to be selected from
+        @return reference to property
+    */
+    property& choice(
         const std::string& name,
         const std::vector< std::string >& choice )
     {
         property P( this, name, choice );
         CommonConstruction( P );
+        return myProperty.back();
     }
     /// Add boolean property
     void check(
@@ -397,6 +446,7 @@ public:
     {
         for( auto& p : myProperty )
         {
+            //std::cout << "property::find " << name <<" "<< p.name() << "\n";
             if( p.name() == name )
                 return &p;
         }

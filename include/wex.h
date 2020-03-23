@@ -421,11 +421,23 @@ public:
         }
         else
         {
+//            std::cout << "wex rectangle fill "  << v[0]<<" "<< v[1]<<" "<<  v[0]+v[2]<<" "<<  v[1]+v[3] << "\n";
             Rectangle(
                 myHDC,
                 v[0], v[1], v[0]+v[2], v[1]+v[3] );
         }
     }
+
+    /** Draw Polygon
+
+    @param[in] point array of points, such as x0,y0,x1,y1,x2,y2,x3,y3...
+    */
+    void polygon( const std::vector<int>& v )
+    {
+        Polygon(myHDC, (const POINT*)&(v[0]), v.size()/2);
+    }
+
+
     /** Draw Arc of circle
 
     @param[in] x for center, pixels 0 at left of window
@@ -433,6 +445,8 @@ public:
     @param[in] r radius, pixels
     @param[in] sa start angle degrees anti-clockwise from 3 o'clock
     @param[in] se end angle degrees anti-clockwise from 3 o'clock
+
+    The arc is drawn from sa to se in the anti-clockwise direction.
     */
     void arc(
         int x, int y, double r,
@@ -443,9 +457,9 @@ public:
         int xr =round( x+r );
         int yb =round( y+r );
         int xs =round( x + r * cos(sa * M_PI/180) );
-        int ys =round( y + r * sin(sa * M_PI/180) );
+        int ys =round( y - r * sin(sa * M_PI/180) );
         int xe =round( x + r * cos(ea * M_PI/180) );
-        int ye =round( y + r * sin(ea * M_PI/180) );
+        int ye =round( y - r * sin(ea * M_PI/180) );
         Arc(
             myHDC,
             xl,yt,xr,yb,xs,ys,xe,ye );
@@ -802,10 +816,13 @@ public:
         }
     }
 
-    /// Add tooltip that pops up helpfully when mouse cursor hovers ober widget
-    void tooltip( const std::string& text )
+    /** Add tooltip that pops up helpfully when mouse cursor hovers ober widget
+        @param[in] text of tooltip
+        @param[in] width of multiline tooltip, default single line
+    */
+    void tooltip( const std::string& text, int width = 0 )
     {
-        // Create the tooltip. g_hInst is the global instance handle.
+        // Create the tooltip.
         HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
                                       WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
                                       CW_USEDEFAULT, CW_USEDEFAULT,
@@ -820,6 +837,9 @@ public:
         toolInfo.uId = (UINT_PTR)myHandle;
         toolInfo.lpszText = (char*)text.c_str();
         SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+
+        if( width > 0 )
+            SendMessage(hwndTip, TTM_SETMAXTIPWIDTH, 0, 30);
     }
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -928,7 +948,8 @@ public:
             case WM_COMMAND:
                 if( lParam )
                 {
-                    if( HIWORD(wParam) == CBN_SELCHANGE )
+                    if( HIWORD(wParam) == CBN_SELCHANGE
+                            || HIWORD(wParam) == LBN_SELCHANGE )
                     {
                         return events().onSelect( LOWORD(wParam) );
                     }
@@ -1047,6 +1068,16 @@ public:
     {
         MoveWindow( myHandle,
                     x, y, w, h, false);
+    }
+    std::vector<int> size()
+    {
+        RECT r;
+        GetClientRect(myHandle,&r);
+        std::vector<int> ret
+        {
+            r.right - r.left, r.bottom - r.top
+        };
+        return ret;
     }
 
 /// Get event handler
@@ -1866,7 +1897,50 @@ public:
 
     }
 };
-/// A widget where user can enter a string.
+/** \brief A widget where user can enter a string.
+<pre>
+    // construct top level window
+    gui& form = maker::make();
+    form.move({ 50,50,400,400});
+    form.text("Label and Editbox demo");
+
+    // display labels
+    label& lbA = maker::make<label>( form );
+    lbA.move( {20, 20, 100, 30 } );
+    lbA.text("A:");
+    label& lbB = maker::make<label>( form );
+    lbB.move( {20, 60, 100, 30 } );
+    lbB.text("B:");
+
+    // display textboxes
+    editbox& edit1 = maker::make<editbox>( form );
+    edit1.move( {80, 20, 100, 30 } );
+    edit1.text( "type value");
+    editbox& edit2 = maker::make<editbox>( form );
+    edit2.move( {80, 60, 100, 30 } );
+    edit2.text( "type value");
+
+    // display a button
+    button& btn = wex::maker::make<button>( form );
+    btn.move( {20, 100, 150, 30 } );
+    btn.text( "Show values entered" );
+    btn.tooltip("tooltip explaining button function");
+
+    // popup a message box when button is clicked
+    // showing the value entered in textbox
+    btn.events().click([&]
+    {
+        std::string msg =
+        "A is " + edit1.text() +
+        ", B is " + edit2.text();
+        msgbox(
+            form,
+            msg );
+    });
+
+    form.show();
+</pre>
+*/
 class editbox : public gui
 {
 public:
@@ -2011,6 +2085,100 @@ public:
                    (WPARAM) 0, (LPARAM) 0);
     }
 };
+
+/// A widget where user can choose from a list of strings
+class list : public gui
+{
+public:
+    list( gui* parent )
+        : gui( parent, "listbox",
+               LBS_NOTIFY | WS_VSCROLL | WS_BORDER |
+               WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+    {
+    }
+    /// Override move to ensure column width is sufficient
+    void move( int x, int y, int w, int h )
+    {
+        gui::move( x, y, w, h );
+        SendMessageA(
+            handle(),
+            (UINT) LB_SETCOLUMNWIDTH,
+            (WPARAM) w,
+            (LPARAM) 0);
+    }
+    /// Add an option
+    void add( const std::string& s )
+    {
+        SendMessageA(
+            handle(),
+            (UINT) LB_ADDSTRING,
+            (WPARAM) 0,
+            (LPARAM) s.c_str());
+    }
+    /// Clear all options
+    void clear()
+    {
+        SendMessage(
+            handle(),
+            LB_RESETCONTENT,
+            (WPARAM)0, (LPARAM)0);
+    }
+    /** Select by index
+        @param[in] i index of item to selecct, -1 clears selection
+    */
+    void select( int i )
+    {
+        SendMessage(
+            handle(),
+            LB_SETCURSEL,
+            (WPARAM)i, (LPARAM)0);
+    }
+    /** Select by string
+        @param[in] s the string to select
+    */
+    void select( const std::string& s )
+    {
+        SendMessage(
+            handle(),
+            LB_SELECTSTRING,
+            (WPARAM)-1, (LPARAM)s.c_str());
+    }
+    /** get index of selected item
+        @return 0-based index, or -1 if no selection
+    */
+    int selectedIndex()
+    {
+        return SendMessage(
+                   handle(),
+                   (UINT) LB_GETCURSEL,
+                   (WPARAM) 0, (LPARAM) 0);
+    }
+
+    /// get text of selected item
+    std::string selectedText()
+    {
+        int i = selectedIndex();
+        if( i < 0 )
+            return std::string("");
+        char buf[256];
+        SendMessage(
+            handle(),
+            (UINT) LB_GETTEXT,
+            (WPARAM) i,
+            (LPARAM) buf);
+        return std::string( buf );
+    }
+    /// get count of items
+    int count()
+    {
+        return SendMessage(
+                   handle(),
+                   (UINT)LB_GETCOUNT,
+                   (WPARAM) 0, (LPARAM) 0);
+    }
+};
+
+
 /// A class containing a database of the current gui elements
 class windex
 {
@@ -2255,6 +2423,18 @@ public:
     {
         return myM;
     }
+    void check( int index, bool f = true )
+    {
+        unsigned int uCheck;
+        if( f )
+            uCheck = MF_BYPOSITION | MF_CHECKED;
+        else
+            uCheck = MF_BYPOSITION | MF_UNCHECKED;
+        CheckMenuItem(
+            myM,
+            index,
+            uCheck );
+    }
 private:
     HMENU myM;
     gui& myParent;
@@ -2312,17 +2492,30 @@ public:
     /** CTOR
         @param[in] g gui element that will receive the events
         @param[in] intervalmsecs time between events
+        @param[in] id number
 
-        The events will begin immediatly
+        The events will begin immediatly on construction
+        and stop on destruction - don't let the timer go out of scope!
     */
-    timer( gui& g, int intervalmsecs )
+    timer( gui& g, int intervalmsecs, int id = 1 )
+        : myGUI( g )
+        , myID( id )
     {
         SetTimer(
-            g.handle(),             // handle to  window
-            1,            // timer identifier
-            intervalmsecs,                 //  interval ms
-            (TIMERPROC) NULL);     // no timer callback
+            myGUI.handle(),             // handle to  window
+            myID,                       // timer identifier
+            intervalmsecs,              //  interval ms
+            (TIMERPROC) NULL);          // no timer callback
     }
+    ~timer()
+    {
+        KillTimer(
+            myGUI.handle(),
+            myID );
+    }
+private:
+    gui& myGUI;
+    int myID;
 };
 /** \brief A widget which user can drag to change a value.
 

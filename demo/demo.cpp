@@ -90,12 +90,16 @@ void choiceDemo()
             cb.SelectedText() );
     });
 
+    list& listbox = wex::maker::make<list>( form );
+    listbox.move( 20,200,150,150 );
+    listbox.add("Alpha");
+    listbox.add("Beta");
+
     form.show();
 }
 
 void drawDemo()
 {
-
     // construct top level  window
     gui& form = wex::maker::make();
     form.move({ 50,50,400,400});
@@ -120,6 +124,7 @@ void drawDemo()
 
         S.fill();
         S.rectangle(  { 200,20,20,20});
+        S.polygon( { 200,60, 220,60, 210,80 });
 
 
         S.textCenterHz("this is",{20,250,150,30});
@@ -165,6 +170,7 @@ void PGDemo()
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
     pg.tabList();
+
 
         propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
     pg2.move( { 10,300, 200, 200});
