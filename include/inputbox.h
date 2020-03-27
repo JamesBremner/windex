@@ -34,7 +34,7 @@ public:
         move( {100,100,300,300} );
         myGrid.move( { 50,50, 200, 60});
         myGrid.labelWidth( 50 );
-        myGrid.bgcolor( 0xFFA0A0 );
+        myGrid.bgcolor( 0xFFFFFF );
         myGrid.tabList();
         myOKButton.move( { 100,200, 50, 40 } );
         myOKButton.text("OK");

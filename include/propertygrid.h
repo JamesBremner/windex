@@ -231,7 +231,7 @@ public:
         return std::string("");
     }
     /// set property value
-    void value( const std::string v )
+    property& value( const std::string v )
     {
         switch( myType )
         {
@@ -247,6 +247,7 @@ public:
         default:
             break;
         }
+        return *this;
     }
     void value_bool( bool v )
     {
