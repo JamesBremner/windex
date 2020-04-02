@@ -51,7 +51,7 @@ public:
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
         mouseUp([] {});
-        timer([] {});
+        timer([](int id) {});
         slid([](int pos) {});
         dropStart([](HDROP hDrop) {});
         drop([](const std::vector< std::string >& files) {});
@@ -106,9 +106,9 @@ public:
     {
         myMouseWheelFunction( dist );
     }
-    void onTimer()
+    void onTimer( int id )
     {
-        myTimerFunction();
+        myTimerFunction( id );
     }
     bool onSelect(
         unsigned short id )
@@ -215,7 +215,7 @@ public:
     {
         myMouseUpFunction = f;
     }
-    void timer( std::function<void(void)> f )
+    void timer( std::function<void(int id)> f )
     {
         myTimerFunction = f;
     }
@@ -245,7 +245,7 @@ private:
     std::map< int, std::function<void(void)> > myMapMenuFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
-    std::function<void(void)> myTimerFunction;
+    std::function<void(int id)> myTimerFunction;
     std::function<void(void)> myMouseUpFunction;
     std::function<void(int pos)> mySlidFunction;
     std::function<void(HDROP hDrop)> myDropStartFunction;
@@ -963,7 +963,7 @@ public:
                 return true;
 
             case WM_TIMER:
-                events().onTimer();
+                events().onTimer( (int) wParam );
                 return true;
 
             case WM_DROPFILES:

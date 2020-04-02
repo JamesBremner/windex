@@ -598,7 +598,7 @@ void PlotDemo()
         t1.color( 0xFF0000 );
 
         // create timer handler to provide new data regularly
-        fm.events().timer([&]
+        fm.events().timer([&](int id)
         {
             static int p = 0;
             t1.add( 10 * sin( p++ / 10.0 ) );
