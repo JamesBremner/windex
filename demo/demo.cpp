@@ -604,7 +604,10 @@ void PlotDemo()
             t1.add( 10 * sin( p++ / 10.0 ) );
             thePlot.update();
         });
-        timer t( fm, 10 );
+
+        // construct timer as static so the destructor is not called
+        // when it goes out of scope
+        static timer t( fm, 10 );
     });
 
     fm.show();
