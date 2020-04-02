@@ -34,7 +34,8 @@ public:
         move( {100,100,300,300} );
         myGrid.move( { 50,50, 200, 60});
         myGrid.labelWidth( 50 );
-        myGrid.bgcolor( 0xFFA0A0 );
+        myGrid.bgcolor( 0xFFFFFF );
+        myGrid.tabList();
         myOKButton.move( { 100,200, 50, 40 } );
         myOKButton.text("OK");
         myOKButton.events().click([this]
@@ -60,6 +61,13 @@ public:
         const std::vector<std::string>& choice )
     {
         myGrid.choice( name, choice );
+        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
+    }
+    void check(
+        const std::string& name,
+        bool def )
+    {
+        myGrid.check( name, def );
         myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
     }
 

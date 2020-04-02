@@ -156,6 +156,11 @@ public:
         return (int) myY.size();
     }
 
+    double value( double xfraction )
+    {
+        return myY[ (int) ( xfraction * myY.size() ) ];
+    }
+
 private:
 
     friend plot;
@@ -243,6 +248,7 @@ private:
     {
         shapes S( ps );
         S.color( myColor );
+        S.penThick( 20 );
 
         bool first = true;
         int xi    = 0;
@@ -276,7 +282,6 @@ private:
                     (int)prevX, (int)prev,
                     (int)x, (int)ys
                 });
-//                   myColor);
 
                 prevX = x;
                 prev = ys;
@@ -340,10 +345,9 @@ private:
         }
     }
 
-
 };
 /// @cond
-/** \brief Draw decorated vertical line on LHS of plot for Y-axis
+/** \brief Draw decorated axis line
 
     This class is internal and none of its methods should be
     called by the application code
@@ -380,9 +384,9 @@ public:
                 mx = scale::get().maxY();
             }
             int ymn_px = scale::get().Y2Pixel( mn );
-            S.text( std::to_string((int)mn), { 5,ymn_px,50,15});
-
             int ymx_px = scale::get().Y2Pixel( mx );
+
+            S.text( std::to_string((int)mn), { 5,ymn_px,50,15});
             S.text( std::to_string((int)mx), { 5,ymx_px,50,15});
 
             S.line( { 2, ymn_px,
@@ -403,11 +407,14 @@ public:
                          tick_length, ymn_px
                         });
 
-//            if( myfGrid )
-//                for( int k=5; k<graph.width(); k=k+10 )
+//                if( myfGrid )
 //                {
-//                    graph.set_pixel(k, y0_px, colors::blue );
-//                    graph.set_pixel(k+1, y0_px, colors::blue );
+//
+//                    for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
+//                    {
+//                        S.pixel(k, y0_px );
+//                        S.pixel(k+1, y0_px );
+//                    }
 //                }
             }
             else
@@ -419,12 +426,12 @@ public:
                     S.line( {2, y,
                              tick_length, y
                             });
-//                if( myfGrid )
-//                    for( int k=5; k<graph.width(); k=k+10 )
-//                    {
-//                        graph.set_pixel(k, y, colors::blue );
-//                        graph.set_pixel(k+1, y, colors::blue );
-//                    }
+//                    if( myfGrid )
+//                        for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
+//                        {
+//                            S.pixel(k, y );
+//                            S.pixel(k+1, y );
+//                        }
                 }
             }
         }
@@ -441,29 +448,75 @@ public:
                 mx = scale::get().maxX();
             }
             int xmn_px = scale::get().X2Pixel( mn );
-            S.text( std::to_string((int)mn), {xmn_px, ypos+3, 50,15});
-
             int xmx_px = scale::get().X2Pixel( mx );
-            S.text( std::to_string((int)mx), {xmx_px, ypos+3, 50,15});
+
+            if( ! myMinXLabel.length() )
+                S.text( std::to_string((int)mn), {xmn_px, ypos+3, 50,15});
+            else
+                S.text( myMinXLabel, {xmn_px, ypos+3, 50,15});
+            if( ! myMaxXLabel.length() )
+                S.text( std::to_string((int)mx), {xmx_px, ypos+3, 50,15});
+            else
+                S.text( myMaxXLabel, {xmx_px, ypos+3, 50,15});
 
             S.line( { xmn_px, ypos,
                       xmx_px, ypos
                     });
-        }
 
+            if( myfGrid )
+            {
+                int tickCount = 8;
+                int xtickinc = ( xmx_px - xmn_px ) / tickCount;
+                int xtickValueinc = ( myMaxXValue - myMinXValue ) / tickCount;
+                for( int kxtick = 0; kxtick <= tickCount; kxtick++ )
+                {
+                    int x = xmn_px + xtickinc * kxtick;
+
+                    S.text(
+                        std::to_string( myMinXValue + xtickValueinc * kxtick),
+                    {
+                        x, ypos+1, 50, 15
+                    });
+
+                    for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
+                    {
+                        S.pixel(x, k );
+                        S.pixel(x, k+1 );
+                    }
+                }
+            }
+        }
     }
 
-
-
-    void Grid( bool f )
+    void grid( bool f )
     {
         myfGrid = f;
+    }
+
+    void XLabels(
+        const std::string min,
+        const std::string max )
+    {
+        myMinXLabel = min;
+        myMaxXLabel = max;
+    }
+
+    void XValues(
+        int min,
+        int max )
+    {
+        myMinXValue = min;
+        myMaxXValue = max;
     }
 
 private:
     bool myfGrid;
     bool myfX;              // true for x-axis
     gui& myParent;
+    std::string myMinXLabel;
+    std::string myMaxXLabel;
+    int myMinXValue;
+    int myMaxXValue;
 };
 /// @endcond
 
@@ -535,6 +588,7 @@ public:
     */
     plot( gui* parent )
         : gui( parent )
+        , myfFit( true )
     {
         text("Plot");
 
@@ -624,14 +678,34 @@ public:
 
 
     /** \brief Enable display of grid markings */
-    void Grid( bool enable )
+    void grid( bool enable )
     {
-        myAxis->Grid( enable );
+        myAxis->grid( enable );
+        myAxisX->grid( enable );
     }
 
-    float xinc()
+    int traceCount() const
+    {
+        return (int) myTrace.size();
+    }
+
+    /** get step size along x-axis */
+    float xinc() const
     {
         return myXinc;
+    }
+
+    /* get data bounds
+        @return vector of doubles { minX, minY, maxX, maxY
+    */
+    std::vector<double> bounds() const
+    {
+        std::vector<double> ret;
+        ret.push_back( myMinX );
+        ret.push_back( myMinY );
+        ret.push_back( myMaxX );
+        ret.push_back( myMaxY );
+        return ret;
     }
 
     void debug()
@@ -642,9 +716,46 @@ public:
         }
     }
 
+    /// Remove all traces from plot
     void clear()
     {
         myTrace.clear();
+    }
+
+    /** Disable auto-fit scaling and set Y minumum, maximum
+        @param[in] min enforced min Y
+        @param[in] max enforced max Y
+    */
+    void axisYminmax( double min, double max )
+    {
+        myfFit = false;
+        myMinY = min;
+        myMaxY = max;
+    }
+
+    /// Enable auto-fit scaling
+    void autoFit()
+    {
+        myfFit = true;
+    }
+
+    void XLabels(
+        const std::string min,
+        const std::string max )
+    {
+        myAxisX->XLabels( min, max );
+    }
+
+    void XValues(
+        int min,
+        int max )
+    {
+        myAxisX->XValues( min, max );
+    }
+
+    std::vector< trace* >& traces()
+    {
+        return myTrace;
     }
 
 private:
@@ -665,6 +776,8 @@ private:
     int myXOffset;
     int myYOffset;
 
+    bool myfFit;            /// true if scale should fit plot to window
+
     /** calculate scaling factors so plot will fit in window client area
         @param[in] w width
         @param[in] h height
@@ -675,28 +788,11 @@ private:
         w *= 0.9;
         h *= 0.95;
 
-        int maxCount = 0;
-        myTrace[0]->bounds(
-            myMinX, myMaxX,
-            myMinY, myMaxY );
-        for( auto& t : myTrace )
+        if( myfFit )
         {
-            if( t->size() > maxCount )
-                maxCount = t->size();
-            double txmin, txmax, tymin, tymax;
-            txmin= txmax= tymin= tymax=0;
-            t->bounds( txmin, txmax, tymin, tymax );
-            if( txmin < myMinX )
-                myMinX = txmin;
-            if( txmax > myMaxX )
-                myMaxX = txmax;
-            if( tymin < myMinY )
-                myMinY = tymin;
-            if( tymax > myMaxY )
-                myMaxY = tymax;
+            CalulateDataBounds();
         }
-        if( ! maxCount )
-            return;
+
         if( fabs( myMaxX - myMinX) < 0.0001 )
             myXScale = 1;
         else
@@ -713,6 +809,27 @@ private:
         scale::get().bounds( myMinX, myMaxX, myMinY, myMaxY );
 
         //std::cout << myMinY <<" "<< myMaxY <<" "<< myScale;
+    }
+
+    void CalulateDataBounds()
+    {
+        myTrace[0]->bounds(
+            myMinX, myMaxX,
+            myMinY, myMaxY );
+        for( auto& t : myTrace )
+        {
+            double txmin, txmax, tymin, tymax;
+            txmin= txmax= tymin= tymax=0;
+            t->bounds( txmin, txmax, tymin, tymax );
+            if( txmin < myMinX )
+                myMinX = txmin;
+            if( txmax > myMaxX )
+                myMaxX = txmax;
+            if( tymin < myMinY )
+                myMinY = tymin;
+            if( tymax > myMaxY )
+                myMaxY = tymax;
+        }
     }
 };
 

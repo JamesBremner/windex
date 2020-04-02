@@ -51,7 +51,7 @@ public:
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
         mouseUp([] {});
-        timer([] {});
+        timer([](int id) {});
         slid([](int pos) {});
         dropStart([](HDROP hDrop) {});
         drop([](const std::vector< std::string >& files) {});
@@ -106,9 +106,9 @@ public:
     {
         myMouseWheelFunction( dist );
     }
-    void onTimer()
+    void onTimer( int id )
     {
-        myTimerFunction();
+        myTimerFunction( id );
     }
     bool onSelect(
         unsigned short id )
@@ -215,7 +215,7 @@ public:
     {
         myMouseUpFunction = f;
     }
-    void timer( std::function<void(void)> f )
+    void timer( std::function<void(int id)> f )
     {
         myTimerFunction = f;
     }
@@ -245,7 +245,7 @@ private:
     std::map< int, std::function<void(void)> > myMapMenuFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
-    std::function<void(void)> myTimerFunction;
+    std::function<void(int id)> myTimerFunction;
     std::function<void(void)> myMouseUpFunction;
     std::function<void(int pos)> mySlidFunction;
     std::function<void(HDROP hDrop)> myDropStartFunction;
@@ -421,11 +421,23 @@ public:
         }
         else
         {
+//            std::cout << "wex rectangle fill "  << v[0]<<" "<< v[1]<<" "<<  v[0]+v[2]<<" "<<  v[1]+v[3] << "\n";
             Rectangle(
                 myHDC,
                 v[0], v[1], v[0]+v[2], v[1]+v[3] );
         }
     }
+
+    /** Draw Polygon
+
+    @param[in] point array of points, such as x0,y0,x1,y1,x2,y2,x3,y3...
+    */
+    void polygon( const std::vector<int>& v )
+    {
+        Polygon(myHDC, (const POINT*)&(v[0]), v.size()/2);
+    }
+
+
     /** Draw Arc of circle
 
     @param[in] x for center, pixels 0 at left of window
@@ -804,10 +816,13 @@ public:
         }
     }
 
-    /// Add tooltip that pops up helpfully when mouse cursor hovers ober widget
-    void tooltip( const std::string& text )
+    /** Add tooltip that pops up helpfully when mouse cursor hovers ober widget
+        @param[in] text of tooltip
+        @param[in] width of multiline tooltip, default single line
+    */
+    void tooltip( const std::string& text, int width = 0 )
     {
-        // Create the tooltip. g_hInst is the global instance handle.
+        // Create the tooltip.
         HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
                                       WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
                                       CW_USEDEFAULT, CW_USEDEFAULT,
@@ -822,6 +837,9 @@ public:
         toolInfo.uId = (UINT_PTR)myHandle;
         toolInfo.lpszText = (char*)text.c_str();
         SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+
+        if( width > 0 )
+            SendMessage(hwndTip, TTM_SETMAXTIPWIDTH, 0, 30);
     }
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -945,7 +963,7 @@ public:
                 return true;
 
             case WM_TIMER:
-                events().onTimer();
+                events().onTimer( (int) wParam );
                 return true;
 
             case WM_DROPFILES:
@@ -1050,6 +1068,16 @@ public:
     {
         MoveWindow( myHandle,
                     x, y, w, h, false);
+    }
+    std::vector<int> size()
+    {
+        RECT r;
+        GetClientRect(myHandle,&r);
+        std::vector<int> ret
+        {
+            r.right - r.left, r.bottom - r.top
+        };
+        return ret;
     }
 
 /// Get event handler
@@ -2064,7 +2092,8 @@ class list : public gui
 public:
     list( gui* parent )
         : gui( parent, "listbox",
-               LBS_STANDARD | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
+               LBS_NOTIFY | WS_VSCROLL | WS_BORDER |
+               WS_CHILD | WS_OVERLAPPED | WS_VISIBLE )
     {
     }
     /// Override move to ensure column width is sufficient
@@ -2117,27 +2146,28 @@ public:
     /** get index of selected item
         @return 0-based index, or -1 if no selection
     */
-    int SelectedIndex()
+    int selectedIndex()
     {
         return SendMessage(
                    handle(),
                    (UINT) LB_GETCURSEL,
                    (WPARAM) 0, (LPARAM) 0);
     }
+
     /// get text of selected item
-//    std::string SelectedText()
-//    {
-//        int i = SelectedIndex();
-//        if( i < 0 )
-//            return std::string("");
-//        char buf[256];
-//        SendMessage(
-//            handle(),
-//            (UINT) LB_GETLBTEXT,
-//            (WPARAM) i,
-//            (LPARAM) buf);
-//        return std::string( buf );
-//    }
+    std::string selectedText()
+    {
+        int i = selectedIndex();
+        if( i < 0 )
+            return std::string("");
+        char buf[256];
+        SendMessage(
+            handle(),
+            (UINT) LB_GETTEXT,
+            (WPARAM) i,
+            (LPARAM) buf);
+        return std::string( buf );
+    }
     /// get count of items
     int count()
     {
@@ -2450,7 +2480,7 @@ private:
 
 <pre>
     myDriveTimer = new wex::timer( fm, 50 );
-    fm.events().timer([this]
+    fm.events().timer([this](int id)
     {
         ... code to run when timer event occurs ...
     });
@@ -2466,6 +2496,8 @@ public:
 
         The events will begin immediatly on construction
         and stop on destruction - don't let the timer go out of scope!
+
+        The id number will be passed as a parameter to the event handler
     */
     timer( gui& g, int intervalmsecs, int id = 1 )
         : myGUI( g )

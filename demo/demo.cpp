@@ -100,7 +100,6 @@ void choiceDemo()
 
 void drawDemo()
 {
-
     // construct top level  window
     gui& form = wex::maker::make();
     form.move({ 50,50,400,400});
@@ -125,6 +124,7 @@ void drawDemo()
 
         S.fill();
         S.rectangle(  { 200,20,20,20});
+        S.polygon( { 200,60, 220,60, 210,80 });
 
 
         S.textCenterHz("this is",{20,250,150,30});
@@ -169,7 +169,8 @@ void PGDemo()
     pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
-//    pg.tabList();
+    pg.tabList();
+
 
         propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
     pg2.move( { 10,300, 200, 200});
@@ -597,13 +598,16 @@ void PlotDemo()
         t1.color( 0xFF0000 );
 
         // create timer handler to provide new data regularly
-        fm.events().timer([&]
+        fm.events().timer([&](int id)
         {
             static int p = 0;
             t1.add( 10 * sin( p++ / 10.0 ) );
             thePlot.update();
         });
-        timer t( fm, 10 );
+
+        // construct timer as static so the destructor is not called
+        // when it goes out of scope
+        static timer t( fm, 10 );
     });
 
     fm.show();

@@ -24,6 +24,10 @@ public:
         , myType( eType::string )
     {
         myLabel.text( myName );
+//        SetWindowLongPtr(
+//            myEditbox.handle(),
+//            GWL_STYLE,
+//            GetWindowLongPtr( myEditbox.handle(), GWL_STYLE) | WS_TABSTOP  );
         myEditbox.text( myValue );
 
     }
@@ -125,10 +129,50 @@ public:
     {
         myLabel.bgcolor( color );
     }
-    void tooltip( const std::string& tip )
+
+    void tabList( bool f = true )
+    {
+        if( myType != eType::string )
+            return;
+        auto s = GetWindowLongPtr( myEditbox.handle(), GWL_STYLE);
+        if( f )
+            s |= WS_TABSTOP;
+        else
+            s &= ~WS_TABSTOP;
+        SetWindowLongPtr(
+            myEditbox.handle(),
+            GWL_STYLE,
+            s );
+    }
+
+    /** Add pop help message when mouse hovers over property label
+        @param[in] tip the help message
+        @return property reference
+    */
+    property& tooltip( const std::string& tip )
     {
         myLabel.tooltip( tip );
+        return *this;
     }
+    /** Set property to be readonly
+        @param[in] f true if property should be readonly, default true
+        @return property reference
+
+        A property defaults to editable when constructed.
+    */
+    property& readonly( bool f = true )
+    {
+        switch( myType )
+        {
+        case eType::string:
+            myEditbox.readonly( f );
+            break;
+        default:
+            break;
+        }
+        return *this;
+    }
+
     void show( bool f = true )
     {
         myLabel.show( f );
@@ -187,7 +231,7 @@ public:
         return std::string("");
     }
     /// set property value
-    void value( const std::string v )
+    property& value( const std::string v )
     {
         switch( myType )
         {
@@ -203,6 +247,7 @@ public:
         default:
             break;
         }
+        return *this;
     }
     void value_bool( bool v )
     {
@@ -295,12 +340,13 @@ class propertyGrid : public gui
 {
 public:
     propertyGrid( gui* parent )
-        : gui( parent )
+        : gui( parent,"windex",WS_CHILD,WS_EX_CONTROLPARENT )
         , myHeight( 25 )
         , myWidth( 300 )
         , myLabelWidth( 100 )
         , myBGColor( 0xc8c8c8)
         , myfScroll( false )
+        , myftabstop( false )
     {
         text("PG");
 
@@ -324,6 +370,7 @@ public:
         const std::string& value )
     {
         property P( this, name, value );
+
         CommonConstruction( P );
         return myProperty.back();
     }
@@ -475,6 +522,21 @@ public:
     {
         onChange = f;
     }
+
+    /** Enable tab stepping through the properties
+
+    Note: all windows need to have WS_EX_CONTROLPARENT style
+    otherwise the message pump hangs  https://stackoverflow.com/a/11090609/16582
+    */
+    void tabList( bool f = true )
+    {
+        // set flag so that any properties added later will have the tabstop style
+        myftabstop = f;
+
+        // add tabstop style to existing properties
+        for( auto p : myProperty )
+            p.tabList( f );
+    }
 private:
     std::vector< property > myProperty;     // the properties in the grid
     int myHeight;                           // height of a single property
@@ -482,6 +544,7 @@ private:
     int myLabelWidth;                       // width of property labels
     int myBGColor;                          // grid background color
     bool myfScroll;                         // true if scrollbars used
+    bool myftabstop;
     std::function<void()> onChange;         // funtion to call when property has changed
 
     void CommonConstruction( property& P )
@@ -501,6 +564,9 @@ private:
         {
             onChange();
         });
+
+        if( myftabstop )
+            P.tabList();
     }
     /** Show properties when category is expanded or collapsed
     */
