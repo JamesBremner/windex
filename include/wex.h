@@ -2480,7 +2480,7 @@ private:
 
 <pre>
     myDriveTimer = new wex::timer( fm, 50 );
-    fm.events().timer([this]
+    fm.events().timer([this](int id)
     {
         ... code to run when timer event occurs ...
     });
@@ -2496,6 +2496,8 @@ public:
 
         The events will begin immediatly on construction
         and stop on destruction - don't let the timer go out of scope!
+
+        The id number will be passed as a parameter to the event handler
     */
     timer( gui& g, int intervalmsecs, int id = 1 )
         : myGUI( g )
