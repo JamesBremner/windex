@@ -15,6 +15,7 @@ var classwex_1_1property_grid =
     [ "saveValues", "classwex_1_1property_grid.html#a8c41f80dc0f8955821bb74a42976ae67", null ],
     [ "scroll", "classwex_1_1property_grid.html#aa2ebe654b706b4d03a09e585072366bb", null ],
     [ "string", "classwex_1_1property_grid.html#a841e14772fedde579e895bbc981579d4", null ],
+    [ "tabList", "classwex_1_1property_grid.html#a9b6fe6e2dc4d51df59cfe3bef10c9266", null ],
     [ "update", "classwex_1_1property_grid.html#a7982de0d0ce0a9480c603872e11e93f2", null ],
     [ "value", "classwex_1_1property_grid.html#aa9d7db95673d02289822c873be55c460", null ],
     [ "width", "classwex_1_1property_grid.html#a39174237a9d96004b07a1a97076f7242", null ]

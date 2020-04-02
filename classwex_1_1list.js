@@ -7,5 +7,6 @@ var classwex_1_1list =
     [ "move", "classwex_1_1list.html#a5d9988b6abde8054fe1c1887f627d665", null ],
     [ "select", "classwex_1_1list.html#a873db8191d06c5699a5bd3bbd8284bfe", null ],
     [ "select", "classwex_1_1list.html#ad4e6fb52257611fe5b1d3cf49ca32336", null ],
-    [ "SelectedIndex", "classwex_1_1list.html#aeb538c385c0763418d26a130f0b8ecdb", null ]
+    [ "selectedIndex", "classwex_1_1list.html#a6df5f0067037ca4c01842be4efb08f1d", null ],
+    [ "selectedText", "classwex_1_1list.html#a0cd4c909e7da85fca60fc8a446d265d3", null ]
 ];

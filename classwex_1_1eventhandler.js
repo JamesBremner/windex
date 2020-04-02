@@ -26,11 +26,11 @@ var classwex_1_1eventhandler =
     [ "onScrollV", "classwex_1_1eventhandler.html#a78012aaeeca31417a62630a2b60f9189", null ],
     [ "onSelect", "classwex_1_1eventhandler.html#a7131625eafed2c7aa4051bead49650a6", null ],
     [ "onSlid", "classwex_1_1eventhandler.html#ac76f35c2bc43986eb99931842e60ecda", null ],
-    [ "onTimer", "classwex_1_1eventhandler.html#aa406e6fc5c80ecdb118f4d633d8fa17b", null ],
+    [ "onTimer", "classwex_1_1eventhandler.html#ab43755f8ffe1bae73e6ef1bd246e6f55", null ],
     [ "resize", "classwex_1_1eventhandler.html#a1db594a6413ea3f7baecdefdfe77062a", null ],
     [ "scrollH", "classwex_1_1eventhandler.html#a401f6f46352fbe1dcfcdfee310d517d6", null ],
     [ "scrollV", "classwex_1_1eventhandler.html#a468d9a350d9693ba4d2b31bb9aca83f4", null ],
     [ "select", "classwex_1_1eventhandler.html#ab8554229bade31390ec7efa810da5b91", null ],
     [ "slid", "classwex_1_1eventhandler.html#aa2a247d34e03f769d2db1c06f7d7dbc9", null ],
-    [ "timer", "classwex_1_1eventhandler.html#ab7fe9057fc93928e16f59a5be21ac977", null ]
+    [ "timer", "classwex_1_1eventhandler.html#abf4cd182ea44e50164b384de41678601", null ]
 ];

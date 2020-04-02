@@ -103,7 +103,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Generate events at regularly timed intervals. </p>
 <pre>
     myDriveTimer = new <a class="el" href="classwex_1_1timer.html" title="Generate events at regularly timed intervals. ">wex::timer( fm, 50 )</a>;
-    fm.events().timer([this]
+    fm.events().timer([this](int id)
     {
         ... code to run when timer event occurs ...
     });
@@ -157,7 +157,8 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>The events will begin immediatly on construction and stop on destruction - don't let the timer go out of scope! </p>
+<p>The events will begin immediatly on construction and stop on destruction - don't let the timer go out of scope!</p>
+<p>The id number will be passed as a parameter to the event handler </p>
 
 </div>
 </div>
@@ -170,7 +171,7 @@ Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1timer.html">timer</a></li>
-    <li class="footer">Generated on Thu Mar 12 2020 13:59:53 for windex by
+    <li class="footer">Generated on Thu Apr 2 2020 10:49:06 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

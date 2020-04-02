@@ -12,12 +12,14 @@ var classwex_1_1property =
     [ "labelWidth", "classwex_1_1property.html#a32c6e3f81740f1b2182ff34cb5ccd1d3", null ],
     [ "move", "classwex_1_1property.html#a29c4c1d6070b177d4051d3d9127296b0", null ],
     [ "name", "classwex_1_1property.html#a5f09cee622d542f287d1460e6cc5c855", null ],
+    [ "readonly", "classwex_1_1property.html#af5f30e22ac107c49dd1e661c93899d03", null ],
     [ "savedValue", "classwex_1_1property.html#a236b6ea0bfee80653935d6e105f1605d", null ],
     [ "saveValue", "classwex_1_1property.html#ac48b30ad1874a4f975977965ca2ffa77", null ],
     [ "show", "classwex_1_1property.html#a041a6502daf124a3b43c67ebe481bda9", null ],
-    [ "tooltip", "classwex_1_1property.html#a4b1a3504a6cb793cb355be74a4d11dc9", null ],
+    [ "tabList", "classwex_1_1property.html#ab0d5cd5bf7a064a9a2f3dad55e32be7c", null ],
+    [ "tooltip", "classwex_1_1property.html#a01c2b7d5969876cfd1e9ef8259ba643b", null ],
     [ "update", "classwex_1_1property.html#a49fb480857d47dc7e474f533fded9a51", null ],
     [ "value", "classwex_1_1property.html#adee5f27e52299f3cb5117ec3a0f5a8ea", null ],
-    [ "value", "classwex_1_1property.html#ab94dd45443b8e12974925a2cf7382013", null ],
+    [ "value", "classwex_1_1property.html#a5dc5c39ed60aa8eacf0695c8e473e184", null ],
     [ "value_bool", "classwex_1_1property.html#a1fc20c29259a2c69ec2f256ce2ad44c4", null ]
 ];
