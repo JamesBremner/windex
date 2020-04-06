@@ -606,11 +606,11 @@ public:
         text("???"+std::to_string(myID));
 
         // inherit font from parent
-        myLogFont = parent->logfont();
+        parent->font( myLogFont, myFont );
         SendMessage(
             myHandle,
             WM_SETFONT,
-            (WPARAM)CreateFontIndirect(&myLogFont),
+            (WPARAM)myFont,
             0 );
     }
     virtual ~gui()
@@ -628,11 +628,6 @@ public:
     children_t& children()
     {
         return myChild;
-    }
-
-    LOGFONT logfont()
-    {
-        return myLogFont;
     }
 
     gui* find( int id )
@@ -658,6 +653,10 @@ public:
     void fontHeight( int h )
     {
         myLogFont.lfHeight = h;
+        DeleteObject( myFont );
+        myFont = CreateFontIndirectA( &myLogFont );
+        for( auto w : myChild )
+            w->setfont( myLogFont, myFont );
     }
 
     /** Change icon
@@ -1131,6 +1130,18 @@ public:
         myDeleteList = list;
     }
 
+    void setfont( LOGFONT& logfont, HFONT& font )
+    {
+        myLogFont = logfont;
+        myFont    = font;
+        SendMessage(
+            myHandle,
+            WM_SETFONT,
+            (WPARAM)myFont,
+            0 );
+        for( auto w : myChild )
+            w->setfont( myLogFont, myFont );
+    }
 
 
 protected:
@@ -1176,6 +1187,20 @@ protected:
                        NULL        // Additional application data
                    );
     }
+
+    /** get font details
+        @param[out] logfont logical font
+        @param[out] font
+
+       Used by child window constructor
+       to inherit font from parent.
+    */
+    void font( LOGFONT& logfont, HFONT& font )
+    {
+        logfont = myLogFont;
+        font    = myFont;
+    }
+
     virtual void draw( PAINTSTRUCT& ps )
     {
         SetBkColor(
@@ -1183,10 +1208,7 @@ protected:
             myBGColor );
         if( myParent )
         {
-
-            HANDLE hFont = CreateFontIndirect (&myLogFont);
-            hFont = (HFONT)SelectObject (ps.hdc, hFont);
-            DeleteObject( hFont );
+            DeleteObject( (HFONT)SelectObject (ps.hdc, myFont) );
 
             RECT r( ps.rcPaint );
             r.left += 1;
@@ -1349,6 +1371,7 @@ public:
     }
     virtual void draw( PAINTSTRUCT& ps )
     {
+        DeleteObject( (HFONT)SelectObject (ps.hdc, myFont) );
         gui::draw( ps );
         DrawEdge(
             ps.hdc,
@@ -1543,9 +1566,7 @@ protected:
                 ps.hdc,
                 myBGColor );
 
-            HANDLE hFont = CreateFontIndirect (&myLogFont);
-            hFont = (HFONT)SelectObject (ps.hdc, hFont);
-            DeleteObject( hFont );
+            DeleteObject( (HFONT)SelectObject (ps.hdc, myFont) );
 
             RECT r( ps.rcPaint );
             r.left += 1;
@@ -1937,7 +1958,6 @@ public:
     label( gui* parent )
         : gui( parent )
     {
-
     }
 };
 /** \brief A widget where user can enter a string.
