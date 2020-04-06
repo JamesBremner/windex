@@ -15,6 +15,7 @@ void helloworld()
     // construct top level window
     gui& form = maker::make();
     form.move({ 50,50,400,400});
+    form.fontHeight( 25 );
     form.text("Label and Editbox demo");
 
     // display labels
@@ -39,7 +40,7 @@ void helloworld()
 
     // display a button
     button& btn = wex::maker::make<button>( form );
-    btn.move( {20, 100, 150, 30 } );
+    btn.move( {20, 100, 200, 30 } );
     btn.text( "Show values entered" );
     btn.tooltip("tooltip explaining button function");
 
@@ -666,6 +667,7 @@ int main()
     gui& form = maker::make();
     form.move({ 50,50,400,500});
     form.text("Windex demos");
+    form.fontHeight( 20 );
 
     // construct layout to arrange buttons in a grid
     // layout& l = wex::make<layout>( form );

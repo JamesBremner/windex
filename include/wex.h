@@ -576,6 +576,13 @@ public:
         {
             update();
         });
+
+        myLogFont = { 0 };
+        GetObject(
+            GetStockObject(DEFAULT_GUI_FONT),
+            sizeof(myLogFont),&myLogFont);
+        myFont = CreateFontIndirectA( &myLogFont );
+
     }
 /// Construct child of a parent
     gui(
@@ -586,10 +593,25 @@ public:
         : myParent( parent )
         , myDeleteList( 0 )
     {
+        // get a new unique ID
         myID = NewID();
+
+        // create the window as requested
         Create( parent->handle(), window_class, style, exstyle, myID );
+
+        // tell the parent that it has a new child
         parent->child( this );
+
+        // by default show text with ID ( helps debugging )
         text("???"+std::to_string(myID));
+
+        // inherit font from parent
+        myLogFont = parent->logfont();
+        SendMessage(
+            myHandle,
+            WM_SETFONT,
+            (WPARAM)CreateFontIndirect(&myLogFont),
+            0 );
     }
     virtual ~gui()
     {
@@ -606,6 +628,11 @@ public:
     children_t& children()
     {
         return myChild;
+    }
+
+    LOGFONT logfont()
+    {
+        return myLogFont;
     }
 
     gui* find( int id )
@@ -626,6 +653,11 @@ public:
         myBGColor = color;
         DeleteObject( myBGBrush);
         myBGBrush = CreateSolidBrush( color );
+    }
+
+    void fontHeight( int h )
+    {
+        myLogFont.lfHeight = h;
     }
 
     /** Change icon
@@ -1107,6 +1139,8 @@ protected:
     eventhandler myEvents;
     int myBGColor;
     HBRUSH myBGBrush;
+    LOGFONT myLogFont;
+    HFONT myFont;
     std::vector< HWND >* myDeleteList;
     std::string myText;
     int myID;
@@ -1149,6 +1183,11 @@ protected:
             myBGColor );
         if( myParent )
         {
+
+            HANDLE hFont = CreateFontIndirect (&myLogFont);
+            hFont = (HFONT)SelectObject (ps.hdc, hFont);
+            DeleteObject( hFont );
+
             RECT r( ps.rcPaint );
             r.left += 1;
             r.top  += 1;
@@ -1503,6 +1542,10 @@ protected:
             SetBkColor(
                 ps.hdc,
                 myBGColor );
+
+            HANDLE hFont = CreateFontIndirect (&myLogFont);
+            hFont = (HFONT)SelectObject (ps.hdc, hFont);
+            DeleteObject( hFont );
 
             RECT r( ps.rcPaint );
             r.left += 1;
