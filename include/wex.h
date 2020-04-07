@@ -1795,6 +1795,7 @@ public:
 
     virtual void draw( PAINTSTRUCT& ps )
     {
+        SelectObject (ps.hdc, myFont);
         SetBkColor(
             ps.hdc,
             myBGColor );
@@ -1881,6 +1882,7 @@ public:
     }
     virtual void draw( PAINTSTRUCT& ps )
     {
+        //SelectObject (ps.hdc, myFont);
         SetBkColor(
             ps.hdc,
             myBGColor );
@@ -1888,13 +1890,15 @@ public:
         int cbg = r.bottom-r.top-2;
         r.left += cbg+5;
         r.top  += 1;
-        DrawText(
-            ps.hdc,
-            myText.c_str(),
-            -1,
-            &r,
-            0);
+//        DrawText(
+//            ps.hdc,
+//            myText.c_str(),
+//            -1,
+//            &r,
+//            0);
         shapes S( ps );
+        S.textHeight( myLogFont.lfHeight);
+        S.text( myText, { r.left, r.top, r.right, r.bottom } );
         S.rectangle( { 0,0, cbg, cbg} );
         S.penThick( 3 );
         S.color( 0 );
