@@ -2492,14 +2492,19 @@ public:
     {
         return myM;
     }
-    void check( int index, bool f = true )
+    /** Set or unset check mark beside menu item
+        @param[in] index 0-based index of menu item
+        @param[in] f true if menu item is to be checked, default true
+        @return true if the menu item was previously checked
+    */
+    bool check( int index, bool f = true )
     {
         unsigned int uCheck;
         if( f )
             uCheck = MF_BYPOSITION | MF_CHECKED;
         else
             uCheck = MF_BYPOSITION | MF_UNCHECKED;
-        CheckMenuItem(
+        return MF_CHECKED == CheckMenuItem(
             myM,
             index,
             uCheck );
