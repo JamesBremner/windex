@@ -650,6 +650,7 @@ public:
         myBGBrush = CreateSolidBrush( color );
     }
 
+    /// Change font height for this and all child windows
     void fontHeight( int h )
     {
         myLogFont.lfHeight = h;
@@ -1130,6 +1131,7 @@ public:
         myDeleteList = list;
     }
 
+/// change font for this and all child windows
     void setfont( LOGFONT& logfont, HFONT& font )
     {
         myLogFont = logfont;
@@ -1208,7 +1210,7 @@ protected:
             myBGColor );
         if( myParent )
         {
-            DeleteObject( (HFONT)SelectObject (ps.hdc, myFont) );
+            SelectObject (ps.hdc, myFont);
 
             RECT r( ps.rcPaint );
             r.left += 1;
@@ -1371,7 +1373,7 @@ public:
     }
     virtual void draw( PAINTSTRUCT& ps )
     {
-        DeleteObject( (HFONT)SelectObject (ps.hdc, myFont) );
+        SelectObject (ps.hdc, myFont);
         gui::draw( ps );
         DrawEdge(
             ps.hdc,
@@ -1566,7 +1568,7 @@ protected:
                 ps.hdc,
                 myBGColor );
 
-            DeleteObject( (HFONT)SelectObject (ps.hdc, myFont) );
+            SelectObject (ps.hdc, myFont);
 
             RECT r( ps.rcPaint );
             r.left += 1;
