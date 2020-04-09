@@ -556,7 +556,7 @@ private:
 class gui
 {
 public:
-    /// Construct top level with no parent
+    /// Construct top level window with no parent
     gui()
         : myParent( NULL )
         , myBGColor( 0xC8C8C8 )
@@ -565,7 +565,11 @@ public:
         , myfModal( false )
     {
         myID = NewID();
-        Create(NULL,"windex",WS_OVERLAPPEDWINDOW,WS_EX_CONTROLPARENT );
+        Create(
+               NULL,
+               "windex",
+               WS_OVERLAPPEDWINDOW, WS_EX_CONTROLPARENT,
+               0 );
 
         /*  default resize event handler
             simply forces a refresh so partially visible widgets are correctly drawn
@@ -577,6 +581,11 @@ public:
             update();
         });
 
+        /*  Construct font, initialized with default GUI font
+
+            Each top level window keeps a font and associated logfont
+            so that the font can be changed and inhetited by all child windows
+        */
         myLogFont = { 0 };
         GetObject(
             GetStockObject(DEFAULT_GUI_FONT),
@@ -620,16 +629,19 @@ public:
             myDeleteList->push_back( myHandle );
     }
 
-// register child on this window
+    /// register child on this window
     void child( gui* w )
     {
         myChild.push_back( w );
     }
+
+    /// get vector of children
     children_t& children()
     {
         return myChild;
     }
 
+    /// find child window with specified id
     gui* find( int id )
     {
         for( auto w : myChild )
@@ -656,8 +668,7 @@ public:
         myLogFont.lfHeight = h;
         DeleteObject( myFont );
         myFont = CreateFontIndirectA( &myLogFont );
-        for( auto w : myChild )
-            w->setfont( myLogFont, myFont );
+        setfont( myLogFont, myFont );
     }
 
     /** Change icon
@@ -799,7 +810,7 @@ public:
     }
 
     /** Get mouse status
-        @return sMouse structure containing x and y positions, etx
+        @return sMouse structure containing x and y positions, etc
     */
     sMouse getMouseStatus()
     {
@@ -848,7 +859,7 @@ public:
         }
     }
 
-    /** Add tooltip that pops up helpfully when mouse cursor hovers ober widget
+    /** Add tooltip that pops up helpfully when mouse cursor hovers over widget
         @param[in] text of tooltip
         @param[in] width of multiline tooltip, default single line
     */
