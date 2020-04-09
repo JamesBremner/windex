@@ -666,8 +666,13 @@ public:
     void fontHeight( int h )
     {
         myLogFont.lfHeight = h;
-        DeleteObject( myFont );
-        myFont = CreateFontIndirectA( &myLogFont );
+        createNewFont();
+        setfont( myLogFont, myFont );
+    }
+    void fontName( const std::string& name )
+    {
+        strcpy( myLogFont.lfFaceName, name.c_str() );
+        createNewFont();
         setfont( myLogFont, myFont );
     }
 
@@ -1212,6 +1217,13 @@ protected:
     {
         logfont = myLogFont;
         font    = myFont;
+    }
+
+    /// Replace font used by this and child windows from logfont
+    void createNewFont()
+    {
+        DeleteObject( myFont );
+        myFont = CreateFontIndirectA( &myLogFont );
     }
 
     virtual void draw( PAINTSTRUCT& ps )
