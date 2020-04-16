@@ -36,7 +36,7 @@ public:
         myGrid.labelWidth( 50 );
         myGrid.bgcolor( 0xFFFFFF );
         myGrid.tabList();
-        myOKButton.move( { 100,200, 50, 40 } );
+       //myOKButton.move( { 100,300, 50, 40 } );
         myOKButton.text("OK");
         myOKButton.events().click([this]
         {
@@ -71,9 +71,20 @@ public:
         return myGrid.check( name, def );
     }
 
-    void modal()
+    /** Show inputbox and suspend all other windows interactions until this is closed
+
+    The property grid has been expanded to fit the properties as they were added
+    this will adjust the form size and OK button size to accomodate the grid
+    */
+    void showModal()
     {
-        showModal();
+        /// adjust for grid size
+        auto wh = myGrid.size();
+        move( {100,100,300,wh[1]+200} );
+        myOKButton.move( { 100,wh[1]+80, 50, 40 } );
+
+        // base class showModal
+        gui::showModal();
     }
     /** get value saved in property attribute
         @param[in] name of property
