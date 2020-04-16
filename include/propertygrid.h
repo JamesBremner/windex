@@ -387,13 +387,18 @@ public:
         CommonConstruction( P );
         return myProperty.back();
     }
-    /// Add boolean property
-    void check(
+    /** Add boolean property
+        @param[in] name of property
+        @param[in] f default
+        @return reference to property
+    */
+    property& check(
         const std::string& name,
         bool f )
     {
         property P( this, name, f );
         CommonConstruction( P );
+        return myProperty.back();
     }
     /// Add categoty
     void category(

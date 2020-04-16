@@ -49,26 +49,26 @@ public:
             DestroyWindow(myHandle);
         });
     }
-    void add(
+    wex::property& add(
         const std::string& name,
         const std::string& def )
     {
-        myGrid.string( name, def );
-        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
+        ExpandForAdditionalProperty();
+        return myGrid.string( name, def );
     }
-    void choice(
+    wex::property& choice(
         const std::string& name,
         const std::vector<std::string>& choice )
     {
-        myGrid.choice( name, choice );
-        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
+        ExpandForAdditionalProperty();
+        return myGrid.choice( name, choice );
     }
-    void check(
+    wex::property& check(
         const std::string& name,
         bool def )
     {
-        myGrid.check( name, def );
-        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
+        ExpandForAdditionalProperty();
+        return myGrid.check( name, def );
     }
 
     void modal()
@@ -98,5 +98,13 @@ public:
 private:
     propertyGrid myGrid;
     button& myOKButton;
+
+    void ExpandForAdditionalProperty()
+    {
+        myGrid.move( { 50, 50,
+                       myGrid.width(),
+                       ( myGrid.propCount() + 1 ) * myGrid.propHeight()
+                     } );
+    }
 };
 }
