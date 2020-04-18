@@ -128,9 +128,9 @@ void drawDemo()
         S.polygon( { 200,60, 220,60, 210,80 });
 
 
-        S.textCenterHz("this is",{20,250,150,30});
-        S.textCenterHz("some centered",{20,280,150,30});
-        S.textCenterHz("text",{20,310,150,30});
+        S.textCenterHz("this is", {20,250,150,30});
+        S.textCenterHz("some centered", {20,280,150,30});
+        S.textCenterHz("text", {20,310,150,30});
     });
 
     form.show();
@@ -173,7 +173,7 @@ void PGDemo()
     pg.tabList();
 
 
-        propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
+    propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
     pg2.move( { 10,300, 200, 200});
     pg2.labelWidth( 50 );
     pg2.bgcolor( 0xFFA0A0 );
@@ -192,9 +192,9 @@ void PGDemo()
     });
 
     pg.change( []
-              {
-                 std::cout << "property value changed\n";
-              });
+    {
+        std::cout << "property value changed\n";
+    });
 
     // display a button
     button& btn = wex::maker::make<button>( form );
@@ -553,6 +553,8 @@ void PlotDemo()
 
         // provide some data for first trace
         std::vector< double > d1 { 10, 15, 20, 25, 30, 25, 20, 15, 10 };
+        for( double& d : d1 )
+            d = d / 1000;
         t1.set( d1 );
 
         // plot in blue
@@ -560,6 +562,8 @@ void PlotDemo()
 
         // provide data for second trace
         std::vector< double > d2 { 20, 30, 40, 50, 60, 50, 40, 30, 20 };
+        for( double& d : d2 )
+            d = d / 1000;
         t2.set( d2 );
 
         // plot in red

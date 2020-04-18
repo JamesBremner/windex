@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <limits>
 
 namespace wex
 {
@@ -25,7 +26,7 @@ public:
         myYOffset = yo;
         myYScale  = ys;
     }
-    void bounds( int XMin, int XMax, int YMin, int YMax )
+    void bounds( double XMin, double XMax, double YMin, double YMax )
     {
         myXMin = XMin;
         myXMax = XMax;
@@ -48,11 +49,11 @@ public:
     {
         return myXMax;
     }
-    int minY() const
+    double minY() const
     {
         return myYMin;
     }
-    int maxY() const
+    double maxY() const
     {
         return myYMax;
     }
@@ -60,7 +61,7 @@ private:
     double myXScale, myYScale;
     int myXOffset;
     int myYOffset;
-    int myXMin, myXMax, myYMin, myYMax;
+    double myXMin, myXMax, myYMin, myYMax;
 };
 /// @endcond
 /** \brief Single trace to be plotted
@@ -376,18 +377,17 @@ public:
         S.color( 0xFFFFFF - myParent.bgcolor() );
         if( ! myfX )
         {
-            double mn = 10 * ( scale::get().minY() / 10 );
-            double mx = 10 * ( scale::get().maxY() / 10 );
-            if( mx-mn < 2 )
-            {
-                mn = scale::get().minY();
-                mx = scale::get().maxY();
-            }
-            int ymn_px = scale::get().Y2Pixel( mn );
-            int ymx_px = scale::get().Y2Pixel( mx );
+            // Y-axis
 
-            S.text( std::to_string((int)mn), { 5,ymn_px,50,15});
-            S.text( std::to_string((int)mx), { 5,ymx_px,50,15});
+            double mn, mx;
+            int ymn_px, ymx_px;
+            std::string smn, smx;
+            YMinMaxLabel(
+                mn, ymn_px, smn,
+                mx, ymx_px, smx );
+
+            S.text( smn, { 5,ymn_px-20,50,15});
+            S.text( smx, { 5,ymx_px,50,15});
 
             S.line( { 2, ymn_px,
                       2, ymx_px
@@ -420,7 +420,7 @@ public:
             else
             {
                 int yinc = ( ymn_px - ymx_px ) / 4;
-                for( int ky = 0; ky < 4; ky++ )
+                for( int ky = 0; ky < 5; ky++ )
                 {
                     int y = ymx_px + ky * yinc;
                     S.line( {2, y,
@@ -517,6 +517,52 @@ private:
     std::string myMaxXLabel;
     int myMinXValue;
     int myMaxXValue;
+
+    /** Calculate Y-axis parameters
+        @param[out] mn value at bottom of Y-axis
+        @param[out] ypxMin pixel at bottom of Y-axis
+        @param[out] ylbMin label at bottom of Y-axis
+        @param[out] mx value at top of Y-axis
+        @param[out] ypxMax pixel at top of Y-axis
+        @param[out] ylbMax label at top of Y-axis
+    */
+    void YMinMaxLabel(
+        double& mn, int& ypxMin, std::string& ylbMin,
+        double& mx, int& ypxMax, std::string& ylbMax )
+    {
+        mn = 10 * ( scale::get().minY() / 10 );
+        mx = 10 * ( scale::get().maxY() / 10 );
+
+        // if the range less than 2 whole numbers
+        // do not round the mmin, max values
+        if( mx-mn < 2 )
+        {
+            mn = scale::get().minY();
+            mx = scale::get().maxY();
+        }
+
+        ypxMin = scale::get().Y2Pixel( mn );
+        ypxMax = scale::get().Y2Pixel( mx );
+
+        // label to nearest whole number
+        ylbMin = std::to_string((int)mn);
+        ylbMax = std::to_string((int)mx);
+
+        // label at high precision if absolute values less than 1
+        if( fabs(mn) < 1  )
+        {
+            ylbMin = std::to_string(mn);
+
+            // if minimum is close to zero, relative to maximum
+            // just label it "0"
+            if( fabs(mn) / fabs(mx) < 0.02  )
+                ylbMin = "0";
+        }
+        if( fabs(mx) < 1 )
+        {
+            ylbMax = std::to_string(mx);
+        }
+    }
 };
 /// @endcond
 
@@ -819,7 +865,8 @@ private:
         for( auto& t : myTrace )
         {
             double txmin, txmax, tymin, tymax;
-            txmin= txmax= tymin= tymax=0;
+            txmin= txmax= tymax=0;
+            tymin = std::numeric_limits<double>::max();
             t->bounds( txmin, txmax, tymin, tymax );
             if( txmin < myMinX )
                 myMinX = txmin;
