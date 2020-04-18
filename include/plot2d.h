@@ -440,13 +440,13 @@ public:
             // x-axis
             int ypos = ps.rcPaint.bottom - 20;
 
-            double mn = 10 * (scale::get().minX() / 10 );
-            double mx = 10 * ( scale::get().maxX() / 10 );
-            if( mx-mn < 2 )
-            {
-                mn = scale::get().minX();
-                mx = scale::get().maxX();
-            }
+//            double mn = 10 * (scale::get().minX() / 10 );
+//            double mx = 10 * ( scale::get().maxX() / 10 );
+//            if( mx-mn < 2 )
+//            {
+                double mn = scale::get().minX();
+                double mx = scale::get().maxX();
+            //}
             int xmn_px = scale::get().X2Pixel( mn );
             int xmx_px = scale::get().X2Pixel( mx );
 
@@ -467,13 +467,13 @@ public:
             {
                 int tickCount = 8;
                 int xtickinc = ( xmx_px - xmn_px ) / tickCount;
-                int xtickValueinc = ( myMaxXValue - myMinXValue ) / tickCount;
+                double xtickValueinc = ( myMaxXValue - myMinXValue ) / (double)tickCount;
                 for( int kxtick = 0; kxtick <= tickCount; kxtick++ )
                 {
                     int x = xmn_px + xtickinc * kxtick;
 
                     S.text(
-                        std::to_string( myMinXValue + xtickValueinc * kxtick),
+                        std::to_string( myMinXValue + xtickValueinc * kxtick).substr(0,4),
                     {
                         x, ypos+1, 50, 15
                     });
