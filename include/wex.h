@@ -563,13 +563,14 @@ public:
         , myBGBrush( CreateSolidBrush( myBGColor ))
         , myDeleteList( 0 )
         , myfModal( false )
+        , myfEnabled( true )
     {
         myID = NewID();
         Create(
-               NULL,
-               "windex",
-               WS_OVERLAPPEDWINDOW, WS_EX_CONTROLPARENT,
-               0 );
+            NULL,
+            "windex",
+            WS_OVERLAPPEDWINDOW, WS_EX_CONTROLPARENT,
+            0 );
 
         /*  default resize event handler
             simply forces a refresh so partially visible widgets are correctly drawn
@@ -601,6 +602,7 @@ public:
         unsigned long exstyle = WS_EX_CONTROLPARENT )
         : myParent( parent )
         , myDeleteList( 0 )
+        , myfEnabled( true )
     {
         // get a new unique ID
         myID = NewID();
@@ -660,6 +662,11 @@ public:
         myBGColor = color;
         DeleteObject( myBGBrush);
         myBGBrush = CreateSolidBrush( color );
+    }
+    /// Enable/Disable, default enable
+    void enable( bool f = true )
+    {
+        myfEnabled = f;
     }
 
     /// Change font height for this and all child windows
@@ -1175,6 +1182,7 @@ protected:
     int myID;
     std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
     bool myfModal;                          ///< true if element is being shown as modal
+    bool myfEnabled;                         ///< true if not disabled
 
 
     /** Create the managed window
@@ -1883,6 +1891,8 @@ public:
         // toggle the boolean value when clicked
         events().clickWex([this]
         {
+            if( ! myfEnabled )
+                return;
             myValue = ! myValue;
             update();
         });
@@ -2528,9 +2538,9 @@ public:
         else
             uCheck = MF_BYPOSITION | MF_UNCHECKED;
         return MF_CHECKED == CheckMenuItem(
-            myM,
-            index,
-            uCheck );
+                   myM,
+                   index,
+                   uCheck );
     }
 private:
     HMENU myM;

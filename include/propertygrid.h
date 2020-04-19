@@ -162,6 +162,7 @@ public:
     */
     property& readonly( bool f = true )
     {
+        myCheckbox.enable( ! f );
         switch( myType )
         {
         case eType::string:
