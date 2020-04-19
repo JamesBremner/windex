@@ -1970,7 +1970,7 @@ public:
         gui& parent,
         const std::string& msg )
     {
-        myReturn = MessageBox(parent.handle(),
+        myReturn = MessageBox(NULL,
                               msg.c_str(),
                               "Message",
                               MB_OK);

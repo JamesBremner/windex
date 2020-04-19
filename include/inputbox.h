@@ -49,6 +49,10 @@ public:
             DestroyWindow(myHandle);
         });
     }
+    void clear()
+    {
+        myGrid.clear();
+    }
     wex::property& add(
         const std::string& name,
         const std::string& def )
@@ -96,6 +100,10 @@ public:
         if( p == nullptr )
             return "property not found";
         return p->savedValue();
+    }
+    bool isChecked( const std::string& name )
+    {
+        return myGrid.isChecked( name );
     }
     void gridWidth( int w )
     {

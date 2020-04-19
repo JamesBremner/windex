@@ -231,6 +231,13 @@ public:
         }
         return std::string("");
     }
+
+    bool isChecked()
+    {
+        if( myType == eType::check )
+            return myCheckbox.isChecked();
+        return false;
+    }
     /// set property value
     property& value( const std::string v )
     {
@@ -360,6 +367,10 @@ public:
         {
 
         });
+    }
+    void clear()
+    {
+        myProperty.clear();
     }
     /** Add string property
         @param[in] name of property
@@ -500,6 +511,14 @@ public:
         }
         std::string v = p->value();
         return p->value();
+    }
+
+    bool isChecked( const std::string& name )
+    {
+        property* p = find( name );
+        if( ! p )
+            return false;
+        return p->isChecked();
     }
 
     /// save values in all property textboxes in the property's myValue attribute
