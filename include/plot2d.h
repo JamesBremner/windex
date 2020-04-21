@@ -830,6 +830,9 @@ private:
     */
     void CalcScale( int w, int h )
     {
+        // minimum data range that will produce sensible plots
+        const double minDataRange = 0.000001;
+
         //std::cout << "Plot::CalcScale " << w << " " << h << "\n";
         w *= 0.9;
         h *= 0.95;
@@ -843,7 +846,7 @@ private:
             myXScale = 1;
         else
             myXScale = 0.9 * w / ( myMaxX - myMinX );
-        if( fabs( myMaxY - myMinY ) < 0.0001 )
+        if( fabs( myMaxY - myMinY ) < minDataRange )
             myYScale = 1;
         else
             myYScale = 0.9 * h / ( myMaxY - myMinY );
