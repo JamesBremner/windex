@@ -157,8 +157,14 @@ public:
         return (int) myY.size();
     }
 
+    /** y value at fractional position along x-axis
+        @param[in] xfraction x-axis position 0 to 1
+        @return y value at position, 0 if xfraction outside range 0 to 1
+    */
     double value( double xfraction )
     {
+        if( 0 > xfraction || xfraction > 1 )
+            return 0;
         return myY[ (int) ( xfraction * myY.size() ) ];
     }
 
@@ -455,9 +461,9 @@ public:
             else
                 S.text( myMinXLabel, {xmn_px, ypos+3, 50,15});
             if( ! myMaxXLabel.length() )
-                S.text( std::to_string((int)mx), {xmx_px, ypos+3, 50,15});
+                S.text( std::to_string((int)mx), {xmx_px-25, ypos+3, 50,15});
             else
-                S.text( myMaxXLabel, {xmx_px, ypos+3, 50,15});
+                S.text( myMaxXLabel, {xmx_px-25, ypos+3, 50,15});
 
             S.line( { xmn_px, ypos,
                       xmx_px, ypos
@@ -834,7 +840,9 @@ private:
         const double minDataRange = 0.000001;
 
         //std::cout << "Plot::CalcScale " << w << " " << h << "\n";
-        w *= 0.9;
+
+        // leave room for Y-axis on left and a small margin in the right
+        w -= 70;
         h *= 0.95;
 
         if( myfFit )
@@ -845,13 +853,14 @@ private:
         if( fabs( myMaxX - myMinX) < 0.0001 )
             myXScale = 1;
         else
-            myXScale = 0.9 * w / ( myMaxX - myMinX );
+            myXScale = w / ( myMaxX - myMinX );
         if( fabs( myMaxY - myMinY ) < minDataRange )
             myYScale = 1;
         else
             myYScale = 0.9 * h / ( myMaxY - myMinY );
 
-        myXOffset = 0.05 * w;
+        // leave room for Y-axis
+        myXOffset = 50;
         myYOffset = h - 10 + myYScale * myMinY;
 
         scale::get().set( myXOffset, myXScale, myYOffset, myYScale );
