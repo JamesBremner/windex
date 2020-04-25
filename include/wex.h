@@ -979,12 +979,8 @@ public:
             break;
 
             case WM_SIZE:
-                if( wParam == SIZE_RESTORED)
-                {
-                    myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
-                    return true;
-                }
-                return false;
+                myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
+                return true;
 
             case WM_HSCROLL:
                 if( lParam )
