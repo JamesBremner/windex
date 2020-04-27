@@ -44,6 +44,7 @@ public:
         // initialize functions with no-ops
         click([] {});
         clickWex([] {});
+        clickRight([] {});
         draw([](PAINTSTRUCT& ps) {});
         resize([](int w, int h) {});
         scrollH([](int c) {});
@@ -61,6 +62,10 @@ public:
         myClickFunWex();
         myClickFunctionApp();
         return ! myfClickPropogate;
+    }
+    void onRightDown()
+    {
+        myClickRightFunction();
     }
     void onMouseUp()
     {
@@ -145,6 +150,8 @@ public:
     /** register click event handler
         @param[in] f the function to call when user clicks on gui in order to process event
         @param[in] propogate specify that event should propogate to parent window after processing, default is false
+
+        A click occurs when the left mouse button is pressed
     */
     void click(
         std::function<void(void)> f,
@@ -153,6 +160,14 @@ public:
         myClickFunctionApp = f;
         myfClickPropogate = propogate;
     }
+    /** register a function to do some housekeeping when clicked, before calling handler registered by application code
+        @param[in] f the function to call
+
+        This should NOT be called by application code.
+
+        For example, this looks after the check mark in checkboxes
+        or the removal of the filled in dot of the other radio buttons in a group
+    */
     void clickWex( std::function<void(void)> f )
     {
         myClickFunWex = f;
@@ -161,6 +176,11 @@ public:
     void clickPropogate( bool f = true)
     {
         myfClickPropogate = f;
+    }
+
+    void clickRight( std::function<void(void)> f )
+    {
+        myClickRightFunction = f;
     }
 
     void draw( std::function<void(PAINTSTRUCT& ps)> f )
@@ -238,6 +258,7 @@ private:
 
     // event handlers registered by application code
     std::function<void(void)> myClickFunctionApp;
+    std::function<void(void)> myClickRightFunction;
     std::function<void(PAINTSTRUCT& ps)> myDrawFunction;
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
@@ -946,7 +967,6 @@ public:
             return true;
 
             case WM_LBUTTONDOWN:
-            case WM_RBUTTONDOWN:
                 //std::cout << "click on " << myText << "\n";
                 if( myEvents.onLeftdown() )
                     return true;
@@ -958,6 +978,10 @@ public:
                                 uMsg, wParam, lParam ))
                         return true;
                 }
+                break;
+
+            case WM_RBUTTONDOWN:
+                myEvents.onRightDown();
                 break;
 
             case WM_LBUTTONUP:
