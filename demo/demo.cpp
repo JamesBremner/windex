@@ -561,7 +561,7 @@ void PlotDemo()
         t1.color( 0x0000FF );
 
         // provide data for second trace
-        std::vector< double > d2 { 20, 30, 40, 50, 60, 50, 40, 30, 20 };
+        std::vector< double > d2 { 20, 59, 60, 59, 20 };
         for( double& d : d2 )
             d = d / 1000;
         t2.set( d2 );

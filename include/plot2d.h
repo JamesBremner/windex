@@ -41,6 +41,14 @@ public:
     {
         return myYOffset - myYScale * y;
     }
+    double Pixel2X( int x ) const
+    {
+        return ((double)( x - myXOffset )) / myXScale;
+    }
+    double Pixel2Y( int y ) const
+    {
+        return ((double)(  myYOffset - y )) / myYScale;
+    }
     int minX() const
     {
         return myXMin;
@@ -262,7 +270,6 @@ private:
 //        float xinc = myPlot->xinc();
         double prevX, prev;
 
-
         switch( myType )
         {
         case eType::plot:
@@ -450,8 +457,8 @@ public:
 //            double mx = 10 * ( scale::get().maxX() / 10 );
 //            if( mx-mn < 2 )
 //            {
-                double mn = scale::get().minX();
-                double mx = scale::get().maxX();
+            double mn = scale::get().minX();
+            double mx = scale::get().maxX();
             //}
             int xmn_px = scale::get().X2Pixel( mn );
             int xmx_px = scale::get().X2Pixel( mx );
@@ -585,6 +592,26 @@ Each trace can be of one of three types:
 Any number of plot and scatter traces can be shown together,
 only one realtime trace may be present in a plot.
 
+ZOOM
+
+To zoom into a selected area of the plot
+click on the top left of the area and drag the mouse to the bottom right.
+The plot will draw a box around the area selected.
+When the left button is released, the plot will zoom in to show just the selected area.
+To restore auto-fit, right click on the plot.
+
+If application code is required to use the right click ( e.g. for a context pop-up menu )
+the event handler must first call the plot method autofit.
+<pre>
+    myPlotB.events().clickRight([&]
+    {
+        myPlotB.autoFit();
+        ...
+    });
+</pre>
+
+Sample plot application:
+
 <pre>
 #include "wex.h"
 #include "plot2d.h"
@@ -641,6 +668,8 @@ public:
     plot( gui* parent )
         : gui( parent )
         , myfFit( true )
+        , myfDrag( false )
+        , myfZoom( false )
     {
         text("Plot");
 
@@ -666,6 +695,61 @@ public:
                 // draw a trace
                 t->update( ps );
             }
+
+            if( isGoodDrag() )
+            {
+                // display selected area by drawing a box around it
+                wex::shapes S(ps);
+
+                // contrast to background color
+                S.color( 0xFFFFFF ^ bgcolor() );
+
+                S.line( { myStartDragX, myStartDragY, myStopDragX, myStartDragY } );
+                S.line( { myStopDragX, myStartDragY, myStopDragX, myStopDragY } );
+                S.line( { myStopDragX, myStopDragY, myStartDragX, myStopDragY } );
+                S.line( { myStartDragX, myStopDragY, myStartDragX, myStartDragY } );
+            }
+        });
+
+        events().click([&]
+        {
+            // start dragging for selected area
+            auto m = getMouseStatus();
+            myStartDragX = m.x;
+            myStartDragY = m.y;
+            myStopDragX = -1;
+            myfDrag = true;
+        });
+        events().mouseMove([&](wex::sMouse& m)
+        {
+            // extend selected area as mouse is dragged
+            if( ! myfDrag )
+                return;
+            myStopDragX = m.x;
+            myStopDragY = m.y;
+            update();
+        });
+        events().mouseUp([&]
+        {
+            // check if user has completed a good drag operation
+            if( isGoodDrag() )
+            {
+                myZoomXMin = scale::get()
+                .Pixel2X( myStartDragX );
+                myZoomXMax = scale::get().Pixel2X( myStopDragX );
+                myZoomYMax = scale::get().Pixel2Y( myStartDragY );
+                myZoomYMin = scale::get().Pixel2Y( myStopDragY );
+                myfZoom = true;
+                //std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
+                //std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
+            }
+            myfDrag = false;
+            update();
+        });
+        events().clickRight([&]
+        {
+            // restore autofit
+            autoFit();
         });
 
         myAxis = new axis( *this );
@@ -785,10 +869,13 @@ public:
         myMaxY = max;
     }
 
-    /// Enable auto-fit scaling
+    /// Enable auto-fit scaling and remove any zoom setting
     void autoFit()
     {
         myfFit = true;
+        myfDrag = false;
+        myfZoom = false;
+        update();
     }
 
     void XLabels(
@@ -830,6 +917,18 @@ private:
 
     bool myfFit;            /// true if scale should fit plot to window
 
+    bool myfDrag;
+    bool myfZoom;
+    int myStartDragX;
+    int myStartDragY;
+    int myStopDragX;
+    int myStopDragY;
+    double myZoomXMin;
+    double myZoomXMax;
+    double myZoomYMin;
+    double myZoomYMax;
+    //std::function<void(void)> myClickRightFunction;
+
     /** calculate scaling factors so plot will fit in window client area
         @param[in] w width
         @param[in] h height
@@ -841,10 +940,6 @@ private:
 
         //std::cout << "Plot::CalcScale " << w << " " << h << "\n";
 
-        // leave room for Y-axis on left and a small margin in the right
-        w -= 70;
-        h *= 0.95;
-
         if( myfFit )
         {
             CalulateDataBounds();
@@ -853,24 +948,32 @@ private:
         if( fabs( myMaxX - myMinX) < 0.0001 )
             myXScale = 1;
         else
-            myXScale = w / ( myMaxX - myMinX );
+            myXScale = (w-70) / ( myMaxX - myMinX );
         if( fabs( myMaxY - myMinY ) < minDataRange )
             myYScale = 1;
         else
-            myYScale = 0.9 * h / ( myMaxY - myMinY );
+            myYScale = (h-70) / ( myMaxY - myMinY );
 
-        // leave room for Y-axis
-        myXOffset = 50;
-        myYOffset = h - 10 + myYScale * myMinY;
+        myXOffset = 50 - myXScale * myMinX;
+        myYOffset = h - 20 + myYScale * myMinY;
 
         scale::get().set( myXOffset, myXScale, myYOffset, myYScale );
         scale::get().bounds( myMinX, myMaxX, myMinY, myMaxY );
 
-        //std::cout << myMinY <<" "<< myMaxY <<" "<< myScale;
+        //std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
+        //std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
     }
 
     void CalulateDataBounds()
     {
+        if( myfZoom )
+        {
+            myMinX = myZoomXMin;
+            myMaxX = myZoomXMax;
+            myMinY = myZoomYMin;
+            myMaxY = myZoomYMax;
+            return;
+        }
         myTrace[0]->bounds(
             myMinX, myMaxX,
             myMinY, myMaxY );
@@ -889,6 +992,13 @@ private:
             if( tymax > myMaxY )
                 myMaxY = tymax;
         }
+    }
+    bool isGoodDrag()
+    {
+        return ( myfDrag
+                 && myStopDragX > 0
+                 && myStopDragX > myStartDragX
+                 && myStopDragY > myStartDragY );
     }
 };
 
