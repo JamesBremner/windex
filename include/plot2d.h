@@ -399,17 +399,17 @@ public:
                 mn, ymn_px, smn,
                 mx, ymx_px, smx );
 
-            S.text( smn, { 5,ymn_px-20,50,15});
-            S.text( smx, { 5,ymx_px,50,15});
+            S.text( smn, { 0,ymn_px-20,50,15});
+            S.text( smx, { 0,ymx_px,50,15});
 
-            S.line( { 2, ymn_px,
-                      2, ymx_px
+            S.line( { 50, ymn_px,
+                      50, ymx_px
                     });
 
             if( mn * mx < 0 )
             {
-                S.line( {2, ymx_px,
-                         5, ymx_px
+                S.line( {50-tick_length, ymx_px,
+                         50, ymx_px
                         });
                 int y0_px = scale::get().Y2Pixel( 0 );
                 S.text( "0", { 5, y0_px - 15, 50,15 } );
@@ -436,9 +436,18 @@ public:
                 for( int ky = 0; ky < 5; ky++ )
                 {
                     int y = ymx_px + ky * yinc;
-                    S.line( {2, y,
-                             tick_length, y
+                    S.line( {50-tick_length, y,
+                             50, y
                             });
+//                    if( ky != 0 && ky != 4 )
+//                    {
+//                        double v = mn + ( 5 - ky ) * ( mx - mn ) / 5 ;
+//                        S.text(
+//                               label( v ),
+//                               {
+//                                   0, y, 50,15
+//                               });
+//                    }
 //                    if( myfGrid )
 //                        for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
 //                        {
@@ -557,24 +566,34 @@ private:
         ypxMin = scale::get().Y2Pixel( mn );
         ypxMax = scale::get().Y2Pixel( mx );
 
-        // label to nearest whole number
-        ylbMin = std::to_string((int)mn);
-        ylbMax = std::to_string((int)mx);
-
-        // label at high precision if absolute values less than 1
         if( fabs(mn) < 1  )
         {
-            ylbMin = std::to_string(mn);
-
             // if minimum is close to zero, relative to maximum
             // just label it "0"
             if( fabs(mn) / fabs(mx) < 0.02  )
                 ylbMin = "0";
+            else
+                ylbMin = label( mn );
         }
-        if( fabs(mx) < 1 )
-        {
-            ylbMax = std::to_string(mx);
-        }
+
+        ylbMax = label( mx );
+    }
+    const std::string label( double v )
+    {
+        std::string l = std::to_string((int)v);
+        double av = fabs(v);
+        if( av >= 1 )
+            return l;
+        l = std::to_string( v );
+        int count = 6;
+        if( av >= 0.1 )
+            count = 4;
+        else if( av >= 0.01 )
+            count = 5;
+        else if( av >= 0.001)
+            count = 6;
+        l = l.substr(0,count);
+        return l;
     }
 };
 /// @endcond

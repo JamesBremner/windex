@@ -637,6 +637,9 @@ public:
         // by default show text with ID ( helps debugging )
         text("???"+std::to_string(myID));
 
+        // inherit background color from parent
+        bgcolor( parent->bgcolor() );
+
         // inherit font from parent
         parent->font( myLogFont, myFont );
         SendMessage(
@@ -2339,7 +2342,7 @@ public:
     }
 
     /// Add new gui element
-    void Add( gui * g )
+    gui* Add( gui * g )
     {
         // delete any destroyed elements
         Delete();
@@ -2351,6 +2354,8 @@ public:
         myGui.insert( std::make_pair( g->handle(), g ));
 
         //std::cout << "windexAdd " << myGui.size() <<" in "<< this << "\n";
+
+        return g;
     }
 
     mgui_t myGui;                       ///< map of existing gui elements
@@ -2748,27 +2753,20 @@ public:
 
     /** Construct widget
             @param[in] parent reference to parent window or widget
+            @return reference to new widget
     */
     template < class W, class P >
     static W& make( P& parent )
     {
-        W* w = new W( (gui*)&parent );
-
-        // inherit background color from parent
-        w->bgcolor( parent.bgcolor() );
-
-        windex::get().Add( w );
-        return *w;
+         return *((W*)windex::get().Add( new W( (gui*)&parent ) ));
     }
 
-/// Construct a top level window ( first call constructs application window )
+    /** Construct a top level window ( first call constructs application window )
+        @return reference to new window
+    */
     static gui&  make()
     {
-        windex::get().myGui.size();
-
-        gui* w = new gui();
-        windex::get().Add( w );
-        return *w;
+        return * windex::get().Add( new gui() );
     }
 };
 
