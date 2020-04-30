@@ -553,8 +553,8 @@ void PlotDemo()
 
         // provide some data for first trace
         std::vector< double > d1 { 10, 15, 20, 25, 30, 25, 20, 15, 10 };
-        for( double& d : d1 )
-            d = d / 1000;
+//        for( double& d : d1 )
+//            d = d / 1000;
         t1.set( d1 );
 
         // plot in blue
@@ -562,8 +562,8 @@ void PlotDemo()
 
         // provide data for second trace
         std::vector< double > d2 { 20, 59, 60, 59, 20 };
-        for( double& d : d2 )
-            d = d / 1000;
+//        for( double& d : d2 )
+//            d = d / 1000;
         t2.set( d2 );
 
         // plot in red

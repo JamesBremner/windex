@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sstream>
+#include <iomanip>
 #include <algorithm>
 #include <limits>
 
@@ -384,77 +386,35 @@ public:
     /// draw
     void update( PAINTSTRUCT& ps )
     {
-        const int tick_length = 10;
-
         shapes S( ps );
         S.color( 0xFFFFFF - myParent.bgcolor() );
         if( ! myfX )
         {
             // Y-axis
 
-            double mn, mx;
-            int ymn_px, ymx_px;
-            std::string smn, smx;
-            YMinMaxLabel(
-                mn, ymn_px, smn,
-                mx, ymx_px, smx );
-
-            S.text( smn, { 0,ymn_px-20,50,15});
-            S.text( smx, { 0,ymx_px,50,15});
-
-            S.line( { 50, ymn_px,
-                      50, ymx_px
+            double mn = scale::get().minY();
+            double mx = scale::get().maxY();
+            S.line( { 50, scale::get().Y2Pixel( mn ),
+                      50, scale::get().Y2Pixel( mx )
                     });
-
-            if( mn * mx < 0 )
+            for( double y : tickValues( mn, mx ) )
             {
-                S.line( {50-tick_length, ymx_px,
-                         50, ymx_px
-                        });
-                int y0_px = scale::get().Y2Pixel( 0 );
-                S.text( "0", { 5, y0_px - 15, 50,15 } );
-                S.line( {2, y0_px,
-                         tick_length, y0_px
-                        });
-                S.line( {2, ymn_px,
-                         tick_length, ymn_px
-                        });
-
-//                if( myfGrid )
-//                {
-//
-//                    for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
-//                    {
-//                        S.pixel(k, y0_px );
-//                        S.pixel(k+1, y0_px );
-//                    }
-//                }
-            }
-            else
-            {
-                int yinc = ( ymn_px - ymx_px ) / 4;
-                for( int ky = 0; ky < 5; ky++ )
+                int yp = scale::get().Y2Pixel( y );
+                S.text( numberformat( y ),
                 {
-                    int y = ymx_px + ky * yinc;
-                    S.line( {50-tick_length, y,
-                             50, y
-                            });
-//                    if( ky != 0 && ky != 4 )
-//                    {
-//                        double v = mn + ( 5 - ky ) * ( mx - mn ) / 5 ;
-//                        S.text(
-//                               label( v ),
-//                               {
-//                                   0, y, 50,15
-//                               });
-//                    }
-//                    if( myfGrid )
-//                        for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
-//                        {
-//                            S.pixel(k, y );
-//                            S.pixel(k+1, y );
-//                        }
-                }
+                    0, yp-8, 50, 15
+                });
+                S.line( {50, yp,
+                         60, yp
+                        } );
+                if( myfGrid )
+                    for( int kp = 65;
+                            kp < scale::get().X2Pixel(scale::get().maxX() );
+                            kp += 25 )
+                    {
+                        S.pixel( kp, yp );
+                        S.pixel( kp+1, yp );
+                    }
             }
         }
         else
@@ -500,7 +460,10 @@ public:
                         x, ypos+1, 50, 15
                     });
 
-                    for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
+                    for(
+                        int k=scale::get().Y2Pixel(scale::get().maxY());
+                        k<scale::get().Y2Pixel(scale::get().minY() );
+                        k=k+25 )
                     {
                         S.pixel(x, k );
                         S.pixel(x, k+1 );
@@ -540,60 +503,52 @@ private:
     int myMinXValue;
     int myMaxXValue;
 
-    /** Calculate Y-axis parameters
-        @param[out] mn value at bottom of Y-axis
-        @param[out] ypxMin pixel at bottom of Y-axis
-        @param[out] ylbMin label at bottom of Y-axis
-        @param[out] mx value at top of Y-axis
-        @param[out] ypxMax pixel at top of Y-axis
-        @param[out] ylbMax label at top of Y-axis
-    */
-    void YMinMaxLabel(
-        double& mn, int& ypxMin, std::string& ylbMin,
-        double& mx, int& ypxMax, std::string& ylbMax )
+    std::vector< double > tickValues(
+        double mn, double mx )
     {
-        mn = 10 * ( scale::get().minY() / 10 );
-        mx = 10 * ( scale::get().maxY() / 10 );
-
-        // if the range less than 2 whole numbers
-        // do not round the mmin, max values
-        if( mx-mn < 2 )
+        std::vector< double > vl;
+        double range = mx - mn;
+        double inc = range / 4;
+        double tick;
+        if( inc > 1 )
         {
-            mn = scale::get().minY();
-            mx = scale::get().maxY();
+            inc = ( int ) inc;
+            tick  = ( int ) mn;
         }
-
-        ypxMin = scale::get().Y2Pixel( mn );
-        ypxMax = scale::get().Y2Pixel( mx );
-
-        if( fabs(mn) < 1  )
+        else
         {
-            // if minimum is close to zero, relative to maximum
-            // just label it "0"
-            if( fabs(mn) / fabs(mx) < 0.02  )
-                ylbMin = "0";
-            else
-                ylbMin = label( mn );
+            tick = mn;
         }
-
-        ylbMax = label( mx );
+        while( true )
+        {
+            double v = tick;
+            if( v > 100)
+                v = ((int) v / 100 ) * 100;
+            else if( v > 10 )
+                v = ((int) v / 10 ) * 10;
+            vl.push_back( v );
+            tick += inc;
+            if( tick >= mx )
+                break;
+        }
+        vl.push_back( mx );
+        return vl;
     }
-    const std::string label( double v )
+    /** format number with 2 significant digits
+    https://stackoverflow.com/a/17211620/16582
+    */
+    std::string numberformat(double f)
     {
-        std::string l = std::to_string((int)v);
-        double av = fabs(v);
-        if( av >= 1 )
-            return l;
-        l = std::to_string( v );
-        int count = 6;
-        if( av >= 0.1 )
-            count = 4;
-        else if( av >= 0.01 )
-            count = 5;
-        else if( av >= 0.001)
-            count = 6;
-        l = l.substr(0,count);
-        return l;
+        if (f == 0)
+        {
+            return "0";
+        }
+        int n = 2;          // number of significant digits
+        int d = (int)::floor(::log10(f < 0 ? -f : f))+1; /*digits before decimal point*/
+        double order = ::pow(10., n - d);
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
+        return ss.str();
     }
 };
 /// @endcond
