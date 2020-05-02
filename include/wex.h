@@ -918,7 +918,7 @@ public:
         SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
 
         if( width > 0 )
-            SendMessage(hwndTip, TTM_SETMAXTIPWIDTH, 0, 30);
+            SendMessage(hwndTip, TTM_SETMAXTIPWIDTH, 0, width );
     }
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

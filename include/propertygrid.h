@@ -147,11 +147,12 @@ public:
 
     /** Add pop help message when mouse hovers over property label
         @param[in] tip the help message
+        @param[in] width of multiline tooltip, default single line
         @return property reference
     */
-    property& tooltip( const std::string& tip )
+    property& tooltip( const std::string& tip, int width = 0 )
     {
-        myLabel.tooltip( tip );
+        myLabel.tooltip( tip, width );
         return *this;
     }
     /** Set property to be readonly
