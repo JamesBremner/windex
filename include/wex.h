@@ -1591,6 +1591,7 @@ public:
     }
     /** Specify bitmap image to be used for button, read from resource
         @param[in] name of resource
+        @return 0 for no error
 
         The image is stored in the executable.
 
@@ -1602,11 +1603,22 @@ public:
         ZOOM_IN_RED BITMAP "zoom_in_red.bmp"
     </pre>
 
+        On error, will set button to blank.
+
     */
-    void imageResource( const std::string& name )
+    int imageResource( const std::string& name )
     {
+        int ret = 0;
+        auto h = GetModuleHandleA(NULL);
+        if( ! h )
+            ret = 1;
         myBitmap  = LoadBitmap(
-                        GetModuleHandleA(NULL), name.c_str() );
+                        h, name.c_str() );
+        if( ! myBitmap )
+            ret = 2;
+        if( ret )
+            text("");
+        return ret;
     }
 protected:
     HBITMAP myBitmap;
