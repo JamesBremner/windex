@@ -27,7 +27,7 @@ class inputbox : public gui
 public:
     inputbox()
         : myGrid( propertyGrid( this ))
-        , myOKButton( make<button>(*this) )
+        , myOKButton( maker::make<button>(*this) )
     {
         windex::get().Add( this );
         text("inputbox");

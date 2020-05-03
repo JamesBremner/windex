@@ -1357,14 +1357,14 @@ public:
 
 <pre>
     // construct top level window
-    gui& form = wex::make();
+    gui& form = wex::maker::make();
     form.move({ 50,50,500,400});
     form.text("Drop files demo");
 
     // widget for receiving dropped files
-    drop& dropper = wex::make<wex::drop>( form );
+    drop& dropper = wex::maker::make<wex::drop>( form );
     dropper.move( 10,10,490,390 );
-    label& instructions = wex::make<wex::label>( dropper );
+    label& instructions = wex::maker::make<wex::label>( dropper );
     instructions.move(30,30,400,200);
     instructions.text("Drop files here");
 
@@ -1674,45 +1674,45 @@ protected:
 
 <pre>
     // construct top level window
-    gui& form = wex::make();
+    gui& form = wex::maker::make();
     form.move({ 50,50,400,400});
     form.text("A windex radiobutton");
 
-    wex::groupbox& P = wex::make<wex::groupbox>( form );
+    wex::groupbox& P = wex::maker::make<wex::groupbox>( form );
     P.move( 5, 5, 350,200 );
 
     // use laypout to atomatically arrange buttons in columns
-    wex::layout& L = wex::make<wex::layout>(P  );
+    wex::layout& L = wex::maker::make<wex::layout>(P  );
     L.move( 50, 50,300,190);
     L.grid( 2 );                // specify 2 columns
     L.colfirst();               // specify column first order
 
     // first group of radiobuttons
-    radiobutton& rb1 = wex::make<radiobutton>(L);
+    radiobutton& rb1 = wex::maker::make<radiobutton>(L);
     rb1.first();                // first in group of interacting buttons
     rb1.move( {20,20,100,30} );
     rb1.text("Alpha");
-    radiobutton& rb2 = wex::make<radiobutton>(L);
+    radiobutton& rb2 = wex::maker::make<radiobutton>(L);
     rb2.move( {20,60,100,30} );
     rb2.text("Beta");
-    radiobutton& rb3 = wex::make<radiobutton>(L);
+    radiobutton& rb3 = wex::maker::make<radiobutton>(L);
     rb3.move( {20,100,100,30} );
     rb3.text("Gamma");
 
     // second group of radio buttons
-    radiobutton& rb4 = wex::make<radiobutton>(L);
+    radiobutton& rb4 = wex::maker::make<radiobutton>(L);
     rb4.first();                // first in group of interacting buttons
     rb4.size( 80,30 );
     rb4.text("X");
-    radiobutton& rb5 = wex::make<radiobutton>(L);
+    radiobutton& rb5 = wex::maker::make<radiobutton>(L);
     rb5.size( 80,30 );
     rb5.text("Y");
-    radiobutton& rb6 = wex::make<radiobutton>(L);
+    radiobutton& rb6 = wex::maker::make<radiobutton>(L);
     rb6.size( 80,30 );
     rb6.text("Z");
 
     // display a button
-    button& btn = wex::make<button>( form );
+    button& btn = wex::maker::make<button>( form );
     btn.move( {20, 250, 150, 30 } );
     btn.text( "Show values entered" );
 
@@ -2037,28 +2037,28 @@ public:
 /** \brief A widget where user can enter a string.
 <pre>
     // construct top level window
-    gui& form = make();
+    gui& form = maker::make();
     form.move({ 50,50,400,400});
     form.text("Label and Editbox demo");
 
     // display labels
-    label& lbA = make<label>( form );
+    label& lbA = maker::make<label>( form );
     lbA.move( {20, 20, 100, 30 } );
     lbA.text("A:");
-    label& lbB = make<label>( form );
+    label& lbB = maker::make<label>( form );
     lbB.move( {20, 60, 100, 30 } );
     lbB.text("B:");
 
     // display textboxes
-    editbox& edit1 = make<editbox>( form );
+    editbox& edit1 = maker::make<editbox>( form );
     edit1.move( {80, 20, 100, 30 } );
     edit1.text( "type value");
-    editbox& edit2 = make<editbox>( form );
+    editbox& edit2 = maker::make<editbox>( form );
     edit2.move( {80, 60, 100, 30 } );
     edit2.text( "type value");
 
     // display a button
-    button& btn = wex::make<button>( form );
+    button& btn = wex::maker::make<button>( form );
     btn.move( {20, 100, 150, 30 } );
     btn.text( "Show values entered" );
     btn.tooltip("tooltip explaining button function");
@@ -2759,35 +2759,16 @@ public:
 };
 
 /// \brief A class for making windex objects.
-//class maker
-//{
-//public:
-//
-//    /** Construct widget
-//            @param[in] parent reference to parent window or widget
-//            @return reference to new widget
-//    */
-//    template < class W, class P >
-//    static W& make( P& parent )
-//    {
-//         return *((W*)windex::get().Add( new W( (gui*)&parent ) ));
-//    }
-//
-//    /** Construct a top level window ( first call constructs application window )
-//        @return reference to new window
-//    */
-//    static gui&  make()
-//    {
-//        return * windex::get().Add( new gui() );
-//    }
-//};
+class maker
+{
+public:
 
     /** Construct widget
             @param[in] parent reference to parent window or widget
             @return reference to new widget
     */
     template < class W, class P >
-    W& make( P& parent )
+    static W& make( P& parent )
     {
          return *((W*)windex::get().Add( new W( (gui*)&parent ) ));
     }
@@ -2795,40 +2776,40 @@ public:
     /** Construct a top level window ( first call constructs application window )
         @return reference to new window
     */
-     gui&  make()
+    static gui&  make()
     {
         return * windex::get().Add( new gui() );
     }
-
+};
 
 /** \brief A widget where user can select which panel to display by clicking a tab button
 
 Usage:
 <pre>
     // construct top level window
-    gui& form = wex::make();
+    gui& form = wex::maker::make();
     form.move({ 50,50,400,400});
     form.text("Tabbed Panel demo");
 
     // construct tabbed panel
-    tabbed& tabs = make<tabbed>( form );
+    tabbed& tabs = maker::make<tabbed>( form );
     tabs.move( 50,50, 300, 200 );
 
     // add some demo panels
-    panel& cam1panel = make<panel>( tabs );
-    label& cam1label = make<label>( cam1panel );
+    panel& cam1panel = maker::make<panel>( tabs );
+    label& cam1label = maker::make<label>( cam1panel );
     cam1label.move(30,100, 100,20 );
     cam1label.text("CAM1 panel");
     tabs.add( "CAM1", cam1panel );
 
-    panel& cam2panel = make<panel>( tabs );
-    label& cam2label = make<label>( cam2panel );
+    panel& cam2panel = maker::make<panel>( tabs );
+    label& cam2label = maker::make<label>( cam2panel );
     cam2label.move(30,100, 100,20 );
     cam2label.text("CAM2 panel");
     tabs.add( "CAM2", cam2panel );
 
-    panel& cam3panel = make<panel>( tabs );
-    label& cam3label = make<label>( cam3panel );
+    panel& cam3panel = maker::make<panel>( tabs );
+    label& cam3label = maker::make<label>( cam3panel );
     cam3label.move(30,100, 100,20 );
     cam3label.text("CAM3 panel");
     tabs.add( "CAM3", cam3panel );
@@ -2864,7 +2845,7 @@ public:
         GetClientRect( myHandle, &rect );
         panel.move( 0,31, rect.right-rect.left, rect.bottom-rect.top - 30 );
 
-        button& btn = make<button>( *this );
+        button& btn = maker::make<button>( *this );
         btn.text( tabname );
         btn.move( myButton.size() * myTabWidth,
                   0, myTabWidth, 30 );
