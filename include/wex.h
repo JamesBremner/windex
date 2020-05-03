@@ -589,6 +589,7 @@ public:
         , myDeleteList( 0 )
         , myfModal( false )
         , myfEnabled( true )
+        , myToolTip( NULL )
     {
         myID = NewID();
         Create(
@@ -619,12 +620,12 @@ public:
         myFont = CreateFontIndirectA( &myLogFont );
 
     }
-/** Construct child of a parent
+    /** Construct child of a parent
 
-    Application code should NOT use this constructor directly,
-    nor that of any sepecilaization classes.  Intead use maker::make().
+        Application code should NOT use this constructor directly,
+        nor that of any sepecilaization classes.  Intead use maker::make().
 
-*/
+    */
     gui(
         gui* parent,
         const char* window_class = "windex",
@@ -633,6 +634,7 @@ public:
         : myParent( parent )
         , myDeleteList( 0 )
         , myfEnabled( true )
+        , myToolTip( NULL )
     {
         // get a new unique ID
         myID = NewID();
@@ -910,24 +912,34 @@ public:
     */
     void tooltip( const std::string& text, int width = 0 )
     {
-        // Create the tooltip.
-        HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
-                                      WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
-                                      CW_USEDEFAULT, CW_USEDEFAULT,
-                                      CW_USEDEFAULT, CW_USEDEFAULT,
-                                      myHandle, NULL, NULL, NULL);
-
-        // Associate the tooltip with the tool.
         TOOLINFO toolInfo = { 0 };
         toolInfo.cbSize = sizeof(toolInfo);
         toolInfo.hwnd = myHandle;
         toolInfo.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
         toolInfo.uId = (UINT_PTR)myHandle;
         toolInfo.lpszText = (char*)text.c_str();
-        SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+
+        // check for existing tooltip
+        if( ! myToolTip )
+        {
+            // Create the tooltip.
+            myToolTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
+                                       WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
+                                       CW_USEDEFAULT, CW_USEDEFAULT,
+                                       CW_USEDEFAULT, CW_USEDEFAULT,
+                                       myHandle, NULL, NULL, NULL);
+            SendMessage(myToolTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+        }
+
+        else
+
+            // change tooltip
+            SendMessage(myToolTip, TTM_UPDATETIPTEXT, 0, (LPARAM)&toolInfo);
+
+        //std::cout << "tooltip: " << width << "\n" << text << "\n";
 
         if( width > 0 )
-            SendMessage(hwndTip, TTM_SETMAXTIPWIDTH, 0, width );
+            SendMessage(myToolTip, TTM_SETMAXTIPWIDTH, 0, width );
     }
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -1215,6 +1227,7 @@ protected:
     std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
     bool myfModal;                          ///< true if element is being shown as modal
     bool myfEnabled;                         ///< true if not disabled
+    HWND myToolTip;                         /// handle to tooltip control for this gui element
 
 
     /** Create the managed window
@@ -2790,7 +2803,7 @@ public:
     template < class W, class P >
     static W& make( P& parent )
     {
-         return *((W*)windex::get().Add( new W( (gui*)&parent ) ));
+        return *((W*)windex::get().Add( new W( (gui*)&parent ) ));
     }
 
     /** Construct a top level window ( first call constructs application window )
