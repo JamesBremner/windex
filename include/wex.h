@@ -577,7 +577,11 @@ private:
 class gui
 {
 public:
-    /// Construct top level window with no parent
+    /** Construct top level window with no parent
+
+    Application code should NOT use this constructor directly,
+    nor that of any sepecilaization classes.  Intead use maker::make().
+    */
     gui()
         : myParent( NULL )
         , myBGColor( 0xC8C8C8 )
@@ -615,7 +619,12 @@ public:
         myFont = CreateFontIndirectA( &myLogFont );
 
     }
-/// Construct child of a parent
+/** Construct child of a parent
+
+    Application code should NOT use this constructor directly,
+    nor that of any sepecilaization classes.  Intead use maker::make().
+
+*/
     gui(
         gui* parent,
         const char* window_class = "windex",
@@ -2316,7 +2325,13 @@ public:
 };
 
 
-/// A class containing a database of the current gui elements
+/** A class containing a database of the current gui elements
+
+This looks after directing messages to their intended gui element.
+
+It should NOT be used by application code.
+
+*/
 class windex
 {
 public:
@@ -2758,7 +2773,12 @@ public:
     }
 };
 
-/// \brief A class for making windex objects.
+/** A class for making windex objects.
+
+Use the methods of this class to create windex objects,
+NOT the constructors of the objects.
+
+*/
 class maker
 {
 public:
