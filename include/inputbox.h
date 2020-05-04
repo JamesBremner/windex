@@ -84,7 +84,7 @@ public:
     {
         /// adjust for grid size
         auto wh = myGrid.size();
-        move( {100,100,300,wh[1]+200} );
+        move( {100,100,wh[0]+100,wh[1]+200} );
         myOKButton.move( { 100,wh[1]+80, 50, 40 } );
 
         // base class showModal
