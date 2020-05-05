@@ -45,8 +45,7 @@ public:
             // before destroying the window extract values from gui into property attributes
             myGrid.saveValues();
 
-            myfModal = false;
-            DestroyWindow(myHandle);
+            endModal();
         });
     }
     void clear()

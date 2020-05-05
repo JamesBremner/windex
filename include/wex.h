@@ -1113,6 +1113,12 @@ public:
             }
         }
     }
+    /// Stop modal interaction and close window
+    void endModal()
+    {
+        myfModal = false;
+        DestroyWindow(myHandle);
+    }
 
     /** force widget to redraw completely
 
