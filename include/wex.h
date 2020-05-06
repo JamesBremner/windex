@@ -2745,7 +2745,7 @@ public:
     slider( gui* parent )
         : gui( parent, "msctls_trackbar32",
                WS_CHILD | WS_OVERLAPPED | WS_VISIBLE |
-               TBS_AUTOTICKS | TBS_TRANSPARENTBKGND )
+               TBS_AUTOTICKS | TBS_TRANSPARENTBKGND | TBS_FIXEDLENGTH )
     {
     }
     /** Specify the range values used
@@ -2789,6 +2789,16 @@ public:
             myHandle,
             TBM_SETPOS,
             (WPARAM) true, (LPARAM) pos );
+    }
+    /// Change thumbnail size ( the arrow that slides along the track )
+    void thumbsize( int p )
+    {
+        SendMessage(
+            myHandle,
+            TBM_SETTHUMBLENGTH,
+            (WPARAM) p,
+            (LPARAM) 0 );
+
     }
 };
 
