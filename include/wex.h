@@ -2802,6 +2802,41 @@ public:
     }
 };
 
+class clock : public gui
+{
+public:
+    clock( gui* parent )
+        : gui( parent )
+        , myMax( 10 )
+    {
+
+    }
+    void range( int max )
+    {
+        myMax = max;
+    }
+    protected:
+    virtual void draw( PAINTSTRUCT& ps )
+    {
+        int w = ps.rcPaint.right - ps.rcPaint.left;
+        int h = ps.rcPaint.bottom - ps.rcPaint.top;
+        int x0 = ps.rcPaint.left + w / 2;
+        int y0 = ps.rcPaint.top + h / 2;
+        shapes S( ps );
+        S.circle( x0, y0, w / 2 );
+        int inc = myMax / 10;
+        int theta = 120;
+        for( int k = 1; k <= 10; k++ ) {
+        int x = x0 - sin( theta + (k-1)*30 ) * w /2;
+        int y = y0 + cos( theta + (k-1)*30 ) * h /2;
+        S.text( std::to_string( k * inc ), { x,y,30,30});
+        }
+    }
+    private:
+
+        int myMax;
+};
+
 /** A class for making windex objects.
 
 Use the methods of this class to create windex objects,
