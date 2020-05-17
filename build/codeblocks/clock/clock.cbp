@@ -31,14 +31,16 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add directory="$(#WINDEX)" />
 		</Compiler>
-				<Linker>
-					<Add option="-static" />
-					<Add option="-static-libgcc" />
-					<Add library="gdi32" />
-					<Add library="comdlg32" />
-					<Add library="gdiplus" />
+		<Linker>
+			<Add option="-static" />
+			<Add option="-static-libgcc" />
+			<Add library="gdi32" />
+			<Add library="comdlg32" />
+			<Add library="gdiplus" />
 		</Linker>
+		<Unit filename="../../../include/wex.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

@@ -492,7 +492,11 @@ public:
     */
     void circle( int x0, int y0, double r )
     {
-        arc( x0, y0, r, 0, 0 );
+        int ir = r;
+        Ellipse(
+            myHDC,
+            x0-ir, y0-ir,
+            x0+ir, y0+ir );
     }
     /** Draw text.
     @param[in] t the text
@@ -2815,7 +2819,12 @@ public:
     {
         myMax = max;
     }
-    protected:
+
+    void value( double v )
+    {
+        myValue = v;
+    }
+protected:
     virtual void draw( PAINTSTRUCT& ps )
     {
         int w = ps.rcPaint.right - ps.rcPaint.left;
@@ -2825,16 +2834,26 @@ public:
         shapes S( ps );
         S.circle( x0, y0, w / 2 );
         int inc = myMax / 10;
-        int theta = 120;
-        for( int k = 1; k <= 10; k++ ) {
-        int x = x0 - sin( theta + (k-1)*30 ) * w /2;
-        int y = y0 + cos( theta + (k-1)*30 ) * h /2;
-        S.text( std::to_string( k * inc ), { x,y,30,30});
+        int theta = 30;
+        double r = w / 2 - 20;
+        for( int k = 1; k <= 10; k++ )
+        {
+            theta += 20;
+            double rads = 0.0174533 * theta;
+            int x = x0 - sin( rads ) * r;
+            int y = y0 + cos( rads ) * r;
+            S.text( std::to_string( k * inc ), { x,y,30,30});
         }
+        theta = 30 + 200 * myValue / myMax;
+        double rads = 0.0174533 * theta;
+        S.penThick( 3 );
+        S.color( 0 );
+        S.line( { x0,y0, x0 - sin( rads ) * r * 0.9, y0 + cos( rads ) * r * 0.9 });
     }
-    private:
+private:
 
-        int myMax;
+    int myMax;
+    double myValue;
 };
 
 /** A class for making windex objects.
