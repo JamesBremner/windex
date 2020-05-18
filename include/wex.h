@@ -2835,14 +2835,22 @@ protected:
         S.circle( x0, y0, w / 2 );
         int inc = myMax / 10;
         int theta = 30;
-        double r = w / 2 - 20;
+        double r = w;
+        if( h <   w + 100 )
+            r = h - 100;
+        r /= 2;
+        std::cout << "radius  " << r << "\n";
         for( int k = 1; k <= 10; k++ )
         {
             theta += 20;
             double rads = 0.0174533 * theta;
-            int x = x0 - sin( rads ) * r;
-            int y = y0 + cos( rads ) * r;
+            int x = x0 - sin( rads ) * r * 0.9;
+            int y = y0 + cos( rads ) * r * 0.9;
             S.text( std::to_string( k * inc ), { x,y,30,30});
+            S.line( { x, y,
+                   x0 - sin( rads ) * r,
+                   y0 + cos( rads ) * r });
+
         }
         theta = 30 + 200 * myValue / myMax;
         double rads = 0.0174533 * theta;

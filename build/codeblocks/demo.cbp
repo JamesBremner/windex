@@ -41,7 +41,7 @@
 			<Add library="comdlg32" />
 			<Add library="gdiplus" />
 		</Linker>
-		<Unit filename="../../demo/com.cpp" />
+		<Unit filename="../../demo/demo.cpp" />
 		<Unit filename="../../include/com.h" />
 		<Unit filename="../../include/inputbox.h" />
 		<Unit filename="../../include/plot2d.h" />
