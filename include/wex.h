@@ -2045,7 +2045,6 @@ class msgbox
 public:
     /// CTOR for simple message box with OK button
     msgbox(
-        gui& parent,
         const std::string& msg )
     {
         myReturn = MessageBox(NULL,
