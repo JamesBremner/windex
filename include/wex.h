@@ -49,6 +49,7 @@ public:
         resize([](int w, int h) {});
         scrollH([](int c) {});
         scrollV([](int c) {});
+        keydown([] {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
         mouseUp([] {});
@@ -94,6 +95,10 @@ public:
         {
             fp->second();
         }
+    }
+    void onKeydown()
+    {
+        myKeydownFunction();
     }
     void onMouseMove( WPARAM wParam, LPARAM lParam )
     {
@@ -223,6 +228,10 @@ public:
         mapControlFunction().insert(
             std::make_pair( std::make_pair( id, EN_CHANGE), f ));
     }
+    void keydown( std::function<void(void)> f )
+    {
+        myKeydownFunction = f;
+    }
     void mouseMove( std::function<void(sMouse& m)> f )
     {
         myMouseMoveFunction = f;
@@ -264,6 +273,7 @@ private:
     std::function<void(int code)> myScrollHFunction;
     std::function<void(int code)> myScrollVFunction;
     std::map< int, std::function<void(void)> > myMapMenuFunction;
+    std::function<void(void)> myKeydownFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
     std::function<void(int id)> myTimerFunction;
@@ -948,7 +958,8 @@ public:
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
+//        if( uMsg != 132  && uMsg != 275 )
+//            std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
         if( hwnd == myHandle )
         {
             switch (uMsg)
@@ -1071,6 +1082,10 @@ public:
 
             case WM_DROPFILES:
                 events().onDropStart( (HDROP) wParam );
+                return true;
+
+            case WM_KEYDOWN:
+                events().onKeydown();
                 return true;
             }
 
@@ -2034,7 +2049,6 @@ class msgbox
 public:
     /// CTOR for simple message box with OK button
     msgbox(
-        gui& parent,
         const std::string& msg )
     {
         myReturn = MessageBox(NULL,

@@ -125,6 +125,10 @@ public:
 
         myY = y;
     }
+    std::vector< double > get() const
+    {
+        return myY;
+    }
 
     /** \brief add new value to real time data
         @param[in] y the new data point
