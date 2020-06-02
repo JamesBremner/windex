@@ -2,32 +2,34 @@
 #include <iostream>
 #include <windows.h>
 #include <vector>
+#include <future>
+#include <functional>
 
 
-class tester
-{
-public:
-    std::future< void > myFuture;
-
-    void test( int& x )
-    {
-
-    }
-    void test2( std::vector<unsigned char>& buffer )
-    {
-
-    }
-    void callasync(
-        int& x,
-        std::vector<unsigned char>& buffer )
-    {
-        myFuture = std::async(
-                       std::launch::async,              // insist on starting immediatly
-                       &tester::test,
-                       this,
-                       std::ref( x ) );
-    }
-};
+//class tester
+//{
+//public:
+//    std::future< void > myFuture;
+//
+//    void test( int& x )
+//    {
+//
+//    }
+//    void test2( std::vector<unsigned char>& buffer )
+//    {
+//
+//    }
+//    void callasync(
+//        int& x,
+//        std::vector<unsigned char>& buffer )
+//    {
+//        myFuture = std::async(
+//                       std::launch::async,              // insist on starting immediatly
+//                       &tester::test,
+//                       this,
+//                       std::ref( x ) );
+//    }
+//};
 
 
 namespace wex

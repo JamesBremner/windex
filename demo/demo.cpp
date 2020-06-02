@@ -49,12 +49,11 @@ void helloworld()
     // showing the value entered in textbox
     btn.events().click([&]
     {
-        std::string msg =
+        std::string m =
         "A is " + edit1.text() +
         ", B is " + edit2.text();
-        msgbox(
-            form,
-            msg );
+        msgbox mb(
+            m );
     });
 
     form.show();
@@ -75,8 +74,7 @@ void choiceDemo()
     cb.select(-1);
     cb.events().select( cb.id(), [&]
     {
-        msgbox(
-            form,
+        msgbox mb(
             cb.SelectedText() );
     });
 
@@ -86,8 +84,7 @@ void choiceDemo()
     btn.text( "Show values selected" );
     btn.events().click([&]
     {
-        msgbox(
-            form,
+        msgbox mb(
             cb.SelectedText() );
     });
 
@@ -214,14 +211,13 @@ void PGDemo()
             msg += "true";
         else
             msg += "false";
-        msgbox(
-            form,
+        msgbox mb(
             msg );
     });
 
     pg.events().click([&]
     {
-        msgbox( form, "pg click");
+        msgbox mb( "pg click");
     });
 
     form.showModal();
@@ -240,8 +236,7 @@ void InputboxDemo( gui& form )
         "A is " + ib.value("A") +
         ", B is " + ib.value("B") +
         ", choice is " + ib.value("Choose");
-    msgbox(
-        form,
+    msgbox mb(
         msg );
 }
 void RBDemo()
@@ -307,8 +302,7 @@ void RBDemo()
         else
             msg = " and nothing";
 
-        msgbox(
-            form,
+        msgbox mb(
             msg );
     });
 
@@ -329,9 +323,9 @@ void CBDemo()
     rb1.events().click([&]
     {
         if( rb1.isChecked() )
-            msgbox( form, "Alpha clicked true") ;
+            msgbox mb( "Alpha clicked true") ;
         else
-            msgbox( form, "Alpha clicked false") ;
+            msgbox mb( "Alpha clicked false") ;
     });
     checkbox& rb2 = wex::maker::make<checkbox>(form);
     rb2.plus();
@@ -358,8 +352,7 @@ void CBDemo()
         if( rb3.isChecked() )
             msg += " Gamma ";
         msg += " are checked";
-        msgbox(
-            form,
+        msgbox mb(
             msg );
     });
 
@@ -493,7 +486,7 @@ void MenuDemo()
     menu f( form );
     f.append("open",[&]
     {
-        msgbox(form,"File open");
+        msgbox mb("File open");
     });
     f.append("save");
     mb.append("File", f );
@@ -651,7 +644,6 @@ void TabDemo()
     tabs.tabChanged( [&]( int index )
     {
         msgbox mb(
-            form,
             "tab changed to" + std::to_string( index )) ;
     });
 
@@ -723,7 +715,7 @@ int main()
     btnfb.events().click([&]
     {
         filebox fb( form );
-        msgbox( form,
+        msgbox mb(
                 fb.path() );
     });
 

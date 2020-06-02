@@ -426,24 +426,17 @@ public:
             // x-axis
             int ypos = ps.rcPaint.bottom - 20;
 
-//            double mn = 10 * (scale::get().minX() / 10 );
-//            double mx = 10 * ( scale::get().maxX() / 10 );
-//            if( mx-mn < 2 )
-//            {
             double mn = scale::get().minX();
             double mx = scale::get().maxX();
-            //}
+
             int xmn_px = scale::get().X2Pixel( mn );
             int xmx_px = scale::get().X2Pixel( mx );
 
-            if( ! myMinXLabel.length() )
-                S.text( std::to_string((int)mn), {xmn_px, ypos+3, 50,15});
-            else
-                S.text( myMinXLabel, {xmn_px, ypos+3, 50,15});
-            if( ! myMaxXLabel.length() )
-                S.text( std::to_string((int)mx), {xmx_px-25, ypos+3, 50,15});
-            else
-                S.text( myMaxXLabel, {xmx_px-25, ypos+3, 50,15});
+            float xmin_label_value = myXStartValue;
+            float xmax_label_value = myXStartValue + myXScaleValue * ( mx - mn );
+
+            S.text( std::to_string((int)xmin_label_value), {xmn_px, ypos+3, 50,15});
+            S.text( std::to_string((int)xmax_label_value), {xmx_px-25, ypos+3, 50,15});
 
             S.line( { xmn_px, ypos,
                       xmx_px, ypos
@@ -453,13 +446,13 @@ public:
             {
                 int tickCount = 8;
                 int xtickinc = ( xmx_px - xmn_px ) / tickCount;
-                double xtickValueinc = ( myMaxXValue - myMinXValue ) / (double)tickCount;
                 for( int kxtick = 0; kxtick <= tickCount; kxtick++ )
                 {
                     int x = xmn_px + xtickinc * kxtick;
-
+                    float tick_label_value = myXStartValue + myXScaleValue * (int)scale::get().Pixel2X( x );
+                    //std::cout << kxtick <<" "<< tick_label_value <<" "<< myXStartValue <<" "<<myXScaleValue<<" "<< xxxx <<  "\n";
                     S.text(
-                        std::to_string( myMinXValue + xtickValueinc * kxtick).substr(0,4),
+                        std::to_string( tick_label_value ).substr(0,4),
                     {
                         x, ypos+1, 50, 15
                     });
@@ -474,6 +467,7 @@ public:
                     }
                 }
             }
+
         }
     }
 
@@ -490,12 +484,18 @@ public:
         myMaxXLabel = max;
     }
 
+    /** Set conversion from y value index to x user units
+        @param[in] start x user value of first y-value
+        @param[in] scale to convert from index to user value
+
+        Used to label the x-axis
+    */
     void XValues(
-        int min,
-        int max )
+        float start,
+        float scale )
     {
-        myMinXValue = min;
-        myMaxXValue = max;
+        myXStartValue = start;
+        myXScaleValue = scale;
     }
 
 private:
@@ -506,6 +506,8 @@ private:
     std::string myMaxXLabel;
     int myMinXValue;
     int myMaxXValue;
+    float myXStartValue;
+    float myXScaleValue;
 
     std::vector< double > tickValues(
         double mn, double mx )
@@ -701,11 +703,7 @@ public:
         events().mouseMove([&](wex::sMouse& m)
         {
             // extend selected area as mouse is dragged
-            if( ! myfDrag )
-                return;
-            myStopDragX = m.x;
-            myStopDragY = m.y;
-            update();
+            dragExtend( m );
         });
         events().mouseUp([&]
         {
@@ -862,7 +860,14 @@ public:
     {
         myAxisX->XLabels( min, max );
     }
-
+    void dragExtend( sMouse& m )
+    {
+        if( ! myfDrag )
+            return;
+        myStopDragX = m.x;
+        myStopDragY = m.y;
+        update();
+    }
     void XValues(
         int min,
         int max )
@@ -873,6 +878,11 @@ public:
     std::vector< trace* >& traces()
     {
         return myTrace;
+    }
+
+    bool isZoomed()
+    {
+        return myfZoom;
     }
 
 private:
@@ -938,7 +948,7 @@ private:
         scale::get().set( myXOffset, myXScale, myYOffset, myYScale );
         scale::get().bounds( myMinX, myMaxX, myMinY, myMaxY );
 
-        //std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
+        std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
         //std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
     }
 
@@ -950,8 +960,7 @@ private:
             myMaxX = myZoomXMax;
             myMinY = myZoomYMin;
             myMaxY = myZoomYMax;
-            return;
-        }
+        } else {
         myTrace[0]->bounds(
             myMinX, myMaxX,
             myMinY, myMaxY );
@@ -969,6 +978,7 @@ private:
                 myMinY = tymin;
             if( tymax > myMaxY )
                 myMaxY = tymax;
+        }
         }
     }
     bool isGoodDrag()
