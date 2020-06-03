@@ -5,6 +5,9 @@
 #include <algorithm>
 #include <limits>
 
+// minimum data range that will produce sensible plots
+#define minDataRange  0.000001
+
 namespace wex
 {
 namespace plot
@@ -514,6 +517,13 @@ private:
     {
         std::vector< double > vl;
         double range = mx - mn;
+        if( range < minDataRange )
+        {
+            // plot is single valued
+            // display just one tick
+            vl.push_back( mn );
+            return vl;
+        }
         double inc = range / 4;
         double tick;
         if( inc > 1 )
@@ -923,9 +933,6 @@ private:
     */
     void CalcScale( int w, int h )
     {
-        // minimum data range that will produce sensible plots
-        const double minDataRange = 0.000001;
-
         //std::cout << "Plot::CalcScale " << w << " " << h << "\n";
 
         if( myfFit )
@@ -960,25 +967,27 @@ private:
             myMaxX = myZoomXMax;
             myMinY = myZoomYMin;
             myMaxY = myZoomYMax;
-        } else {
-        myTrace[0]->bounds(
-            myMinX, myMaxX,
-            myMinY, myMaxY );
-        for( auto& t : myTrace )
-        {
-            double txmin, txmax, tymin, tymax;
-            txmin= txmax= tymax=0;
-            tymin = std::numeric_limits<double>::max();
-            t->bounds( txmin, txmax, tymin, tymax );
-            if( txmin < myMinX )
-                myMinX = txmin;
-            if( txmax > myMaxX )
-                myMaxX = txmax;
-            if( tymin < myMinY )
-                myMinY = tymin;
-            if( tymax > myMaxY )
-                myMaxY = tymax;
         }
+        else
+        {
+            myTrace[0]->bounds(
+                myMinX, myMaxX,
+                myMinY, myMaxY );
+            for( auto& t : myTrace )
+            {
+                double txmin, txmax, tymin, tymax;
+                txmin= txmax= tymax=0;
+                tymin = std::numeric_limits<double>::max();
+                t->bounds( txmin, txmax, tymin, tymax );
+                if( txmin < myMinX )
+                    myMinX = txmin;
+                if( txmax > myMaxX )
+                    myMaxX = txmax;
+                if( tymin < myMinY )
+                    myMinY = tymin;
+                if( tymax > myMaxY )
+                    myMaxY = tymax;
+            }
         }
     }
     bool isGoodDrag()
