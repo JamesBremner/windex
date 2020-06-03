@@ -95,10 +95,47 @@ public:
         DWORD dwEventMask;
         unsigned char c;
         DWORD NoBytesRead;
+        DWORD errors;
+        _COMSTAT comstat;
+
+        myRcvbuffer.clear();
+
+        // check for bytes waiting to be read
+        ClearCommError(
+            myHandle,
+            &errors,
+            &comstat );
+        int bytesWaiting = comstat.cbInQue;
+        if( bytesWaiting )
+        {
+            if( bytesWaiting >= bytes )
+            {
+                // all bytes needed are already waiting
+                myRcvbuffer.resize( bytes );
+                ReadFile(
+                    myHandle,             //Handle of the Serial port
+                    myRcvbuffer.data(),
+                    myRcvbuffer.size(),        //Size
+                    &NoBytesRead,           //Number of bytes read
+                    NULL);
+                    return;
+            }
+            else
+            {
+                // some of needed bytes are waiting
+                myRcvbuffer.resize( bytesWaiting );
+                ReadFile(
+                    myHandle,             //Handle of the Serial port
+                    myRcvbuffer.data(),
+                    myRcvbuffer.size(),        //Size
+                    &NoBytesRead,           //Number of bytes read
+                    NULL);
+                bytes -= bytesWaiting;
+            }
+        }
 
         SetCommMask(myHandle, EV_RXCHAR);
         WaitCommEvent(myHandle, &dwEventMask, NULL);
-        myRcvbuffer.clear();
         do
         {
             ReadFile(
@@ -135,7 +172,7 @@ public:
                        bytes );
     }
 
-    int write( std::vector<unsigned char>& buffer )
+    int write( const std::vector<unsigned char>& buffer )
     {
         std::cout << "buffersize " <<  buffer.size() << "\n";
         DWORD dNoOfBytesWritten;
