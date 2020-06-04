@@ -89,56 +89,48 @@ public:
 
 
 
-    /// blocking read from COM port
+    /** blocking read from COM port
+        @param[in] needed byte count
+        Data will be read into myRcvbuffer vector
+    */
     void read( int needed )
     {
-        DWORD dwEventMask;
         DWORD NoBytesRead;
-        DWORD errors;
-        _COMSTAT comstat;
 
-        myRcvbuffer.clear();
+        int chunk;          // size of next chunk of data to be read
+        int totalBytesRead = 0;
 
+        // ensure there is room for the data read
+        myRcvbuffer.resize( needed );
+
+        // loop reading chunks of data as they arrive
         while( needed > 0 )
         {
-            // check for bytes waiting to be read
-            ClearCommError(
-                myHandle,
-                &errors,
-                &comstat );
-            int waiting = comstat.cbInQue;
+            // wait for data
+            int waiting = waitForData();
 
-            if( waiting )
+            if( waiting >= needed )
             {
-                if( waiting >= needed )
-                {
-                    // all bytes needed are already waiting
-                    myRcvbuffer.resize( needed );
-                    ReadFile(
-                        myHandle,             //Handle of the Serial port
-                        myRcvbuffer.data(),
-                        myRcvbuffer.size(),        //Size
-                        &NoBytesRead,           //Number of bytes read
-                        NULL);
-                    return;
-                }
-                else
-                {
-                    // some of needed bytes are waiting
-                    myRcvbuffer.resize( waiting );
-                    ReadFile(
-                        myHandle,             //Handle of the Serial port
-                        myRcvbuffer.data(),
-                        myRcvbuffer.size(),        //Size
-                        &NoBytesRead,           //Number of bytes read
-                        NULL);
-                    needed -= waiting;
-                }
+                // read all we need
+                chunk = needed;
+            }
+            else
+            {
+                // read all that is available
+                chunk = waiting;
             }
 
-            // wait for some data to arrive
-            SetCommMask(myHandle, EV_RXCHAR);
-            WaitCommEvent(myHandle, &dwEventMask, NULL);
+            // read chunk
+            ReadFile(
+                myHandle,                               //Handle of the Serial port
+                myRcvbuffer.data() + totalBytesRead,    // pointer to buffer
+                chunk,                                   // amount to read
+                &NoBytesRead,                            //Number of bytes read
+                NULL);
+
+            // update data counts
+            totalBytesRead += chunk;
+            needed -= chunk;
         }
     }
 
@@ -149,7 +141,7 @@ public:
     }
 
 
-    /// non-blocking read from COM port
+/// non-blocking read from COM port
     void read_async(
         int bytes,
         std::function<void(void )> readHandler )
@@ -184,5 +176,28 @@ private:
     HANDLE myHandle;
     std::future< void > myFuture;
     std::vector<unsigned char> myRcvbuffer;
+
+    int waitForData()
+    {
+        DWORD dwEventMask;
+        _COMSTAT comstat;
+        DWORD errors;
+
+        while( 1 )
+        {
+            // check for bytes waiting to be read
+            ClearCommError(
+                myHandle,
+                &errors,
+                &comstat );
+            int waiting = comstat.cbInQue;
+            if( waiting )
+                return waiting;
+
+            // wait for some data to arrive
+            SetCommMask(myHandle, EV_RXCHAR);
+            WaitCommEvent(myHandle, &dwEventMask, NULL);
+        }
+    }
 };
 }
