@@ -80,8 +80,12 @@ public:
         dcbSerialParams.Parity   = NOPARITY;  // Setting Parity = None
         SetCommState(myHandle, &dcbSerialParams);
 
+        // empty the input buffer
+        PurgeComm(myHandle,PURGE_RXCLEAR);
+
         return true;
     }
+
     bool isOpen()
     {
         return myHandle != 0;
@@ -141,16 +145,38 @@ public:
     }
 
 
-/// non-blocking read from COM port
+/** non-blocking read from COM port
+    @param[in] bytes byte count to be read
+    @param[in] readHandler
+
+  This will return imediatly.
+  When the specified bytes have been read
+  the readhandler will be run IN A SEPARATE THREAD.
+
+*/
     void read_async(
         int bytes,
         std::function<void(void )> readHandler )
     {
+        // store read handler to run when read is complete
+        myReadHandler = readHandler;
+
+        // start blocking read in own thread
         myFuture = std::async(
                        std::launch::async,              // insist on starting immediatly
                        &com::read,
                        this,
                        bytes );
+
+        // start waiting for read completion in own thread
+        myThread = new std::thread(read_sync_wait, this);
+
+        /* There are now two threads running
+            one doing the reading
+            and the other waiting for the read to be finished
+
+            We can return now and get on with something else
+        */
     }
 
     int write( const std::vector<unsigned char>& buffer )
@@ -175,6 +201,8 @@ private:
     std::string myPortNumber;
     HANDLE myHandle;
     std::future< void > myFuture;
+    std::thread*        myThread;
+    std::function<void(void )> myReadHandler;
     std::vector<unsigned char> myRcvbuffer;
 
     int waitForData()
@@ -198,6 +226,21 @@ private:
             SetCommMask(myHandle, EV_RXCHAR);
             WaitCommEvent(myHandle, &dwEventMask, NULL);
         }
+    }
+    void read_sync_wait()
+    {
+        // check if read is complete from time to time
+        const int check_interval_msecs = 50;
+        while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout) {
+            //std::cout << '.' << std::flush;
+            // read still running, loop and check again after an interval
+        }
+
+        // read complete, run the read handler
+        myReadHandler();
+
+        // return, terminating the wait thread
+        return;
     }
 };
 }
