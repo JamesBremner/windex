@@ -57,6 +57,7 @@ public:
         slid([](int pos) {});
         dropStart([](HDROP hDrop) {});
         drop([](const std::vector< std::string >& files) {});
+        asyncReadComplete([](int id) {});
     }
     bool onLeftdown()
     {
@@ -149,6 +150,10 @@ public:
     void onDrop( const std::vector< std::string >& files )
     {
         myDropFunction( files );
+    }
+    void onAsyncReadComplete( int id )
+    {
+        myAsyncReadCompleteFunction( id );
     }
     /////////////////////////// register event handlers /////////////////////
 
@@ -262,6 +267,13 @@ public:
     {
         myDropFunction = f;
     }
+    /** register function to call when an asynchronous read completes.
+        The function parameter identifies the com glass that completed the read
+    */
+    void asyncReadComplete( std::function<void(int id)> f )
+    {
+        myAsyncReadCompleteFunction = f;
+    }
 private:
     bool myfClickPropogate;
 
@@ -281,6 +293,7 @@ private:
     std::function<void(int pos)> mySlidFunction;
     std::function<void(HDROP hDrop)> myDropStartFunction;
     std::function<void( const std::vector<std::string>& files)> myDropFunction;
+    std::function<void( int id )> myAsyncReadCompleteFunction;
 
     // event handlers registered by windex class
     std::function<void(void)> myClickFunWex;
@@ -604,6 +617,7 @@ public:
         , myfModal( false )
         , myfEnabled( true )
         , myToolTip( NULL )
+        , myAsyncReadCompleteMsgID( 0 )
     {
         myID = NewID();
         Create(
@@ -1087,8 +1101,11 @@ public:
             case WM_KEYDOWN:
                 events().onKeydown();
                 return true;
-            }
 
+            case WM_USER+1:
+                events().onAsyncReadComplete( wParam );
+                return true;
+            }
         }
         else
         {
@@ -1236,6 +1253,9 @@ public:
         for( auto w : myChild )
             w->setfont( myLogFont, myFont );
     }
+    void setAsyncReadCompleteMsgID( int id ) {
+    myAsyncReadCompleteMsgID = id;
+    }
 
 
 protected:
@@ -1253,6 +1273,7 @@ protected:
     bool myfModal;                          ///< true if element is being shown as modal
     bool myfEnabled;                         ///< true if not disabled
     HWND myToolTip;                         /// handle to tooltip control for this gui element
+    unsigned int myAsyncReadCompleteMsgID;
 
 
     /** Create the managed window

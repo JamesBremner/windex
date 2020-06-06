@@ -4,45 +4,20 @@
 #include <vector>
 #include <future>
 #include <functional>
-
-
-//class tester
-//{
-//public:
-//    std::future< void > myFuture;
-//
-//    void test( int& x )
-//    {
-//
-//    }
-//    void test2( std::vector<unsigned char>& buffer )
-//    {
-//
-//    }
-//    void callasync(
-//        int& x,
-//        std::vector<unsigned char>& buffer )
-//    {
-//        myFuture = std::async(
-//                       std::launch::async,              // insist on starting immediatly
-//                       &tester::test,
-//                       this,
-//                       std::ref( x ) );
-//    }
-//};
-
+#include "wex.h"
 
 namespace wex
 {
 
 // https://www.xanthium.in/Serial-Port-Programming-using-Win32-API
-class com
+class com : public gui
 {
 public:
-    com()
-        : myHandle( 0 )
-    {
+    com( gui* parent )
+        : gui( parent )
+        , myHandle( 0 )
 
+    {
     }
     void port( const std::string& port )
     {
@@ -145,22 +120,17 @@ public:
     }
 
 
-/** non-blocking read from COM port
-    @param[in] bytes byte count to be read
-    @param[in] readHandler
+    /** non-blocking read from COM port
+        @param[in] bytes byte count to be read
 
-  This will return imediatly.
-  When the specified bytes have been read
-  the readhandler will be run IN A SEPARATE THREAD.
+      This will return imediatly.
+      When the specified bytes have been read
+      a message, id = WM_USER+1, will be sento to the parent window
 
-*/
+    */
     void read_async(
-        int bytes,
-        std::function<void(void )> readHandler )
+        int bytes )
     {
-        // store read handler to run when read is complete
-        myReadHandler = readHandler;
-
         // start blocking read in own thread
         myFuture = std::async(
                        std::launch::async,              // insist on starting immediatly
@@ -202,7 +172,6 @@ private:
     HANDLE myHandle;
     std::future< void > myFuture;
     std::thread*        myThread;
-    std::function<void(void )> myReadHandler;
     std::vector<unsigned char> myRcvbuffer;
 
     int waitForData()
@@ -231,13 +200,20 @@ private:
     {
         // check if read is complete from time to time
         const int check_interval_msecs = 50;
-        while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout) {
+        while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
+        {
             //std::cout << '.' << std::flush;
             // read still running, loop and check again after an interval
         }
 
-        // read complete, run the read handler
-        myReadHandler();
+        // read complete
+
+        PostMessageA(
+            myParent->handle(),
+            WM_USER+1,
+            myID,
+            0 );
+
 
         // return, terminating the wait thread
         return;
