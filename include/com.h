@@ -9,16 +9,19 @@
 namespace wex
 {
 
-// https://www.xanthium.in/Serial-Port-Programming-using-Win32-API
 class com : public gui
 {
 public:
+    /** CTOR
+        @param[in] parent window which will receive messages when async read have completed
+    */
     com( gui* parent )
         : gui( parent )
-        , myHandle( 0 )
+        , myCOMHandle( 0 )
 
     {
     }
+    /// Set port number to wgich connection will be made
     void port( const std::string& port )
     {
         if( atoi( port.c_str() ) < 10 )
@@ -26,12 +29,15 @@ public:
         else
             myPortNumber = "\\\\.\\COM" + port;
     }
+    /** Open connection to port
+        @return true if succesful
+    */
     bool open()
     {
         if ( ! myPortNumber.length() )
             return false;
 
-        myHandle = CreateFile(
+        myCOMHandle = CreateFile(
                        myPortNumber.c_str(),                //port name
                        GENERIC_READ | GENERIC_WRITE, //Read/Write
                        0,                            // No Sharing
@@ -40,33 +46,32 @@ public:
                        0,            // Non Overlapped I/O
                        NULL);        // Null for Comm Devices
 
-        if (myHandle == INVALID_HANDLE_VALUE)
+        if (myCOMHandle == INVALID_HANDLE_VALUE)
         {
-            myHandle = 0;
+            myCOMHandle = 0;
             return false;
         }
 
         DCB dcbSerialParams = { 0 }; // Initializing DCB structure
         dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
-        GetCommState(myHandle, &dcbSerialParams);
+        GetCommState(myCOMHandle, &dcbSerialParams);
         dcbSerialParams.BaudRate = CBR_9600;  // Setting BaudRate = 9600
         dcbSerialParams.ByteSize = 8;         // Setting ByteSize = 8
         dcbSerialParams.StopBits = ONESTOPBIT;// Setting StopBits = 1
         dcbSerialParams.Parity   = NOPARITY;  // Setting Parity = None
-        SetCommState(myHandle, &dcbSerialParams);
+        SetCommState(myCOMHandle, &dcbSerialParams);
 
         // empty the input buffer
-        PurgeComm(myHandle,PURGE_RXCLEAR);
+        PurgeComm(myCOMHandle,PURGE_RXCLEAR);
 
         return true;
     }
 
+    /// true if connected
     bool isOpen()
     {
-        return myHandle != 0;
+        return myCOMHandle != 0;
     }
-
-
 
     /** blocking read from COM port
         @param[in] needed byte count
@@ -101,7 +106,7 @@ public:
 
             // read chunk
             ReadFile(
-                myHandle,                               //Handle of the Serial port
+                myCOMHandle,                               //Handle of the Serial port
                 myRcvbuffer.data() + totalBytesRead,    // pointer to buffer
                 chunk,                                   // amount to read
                 &NoBytesRead,                            //Number of bytes read
@@ -113,12 +118,12 @@ public:
         }
     }
 
+    /// get reference to buffer containg data that was read
     std::vector<unsigned char>
     readData()
     {
         return myRcvbuffer;
     }
-
 
     /** non-blocking read from COM port
         @param[in] bytes byte count to be read
@@ -149,11 +154,12 @@ public:
         */
     }
 
+    /// Write buffer of data to the COM port
     int write( const std::vector<unsigned char>& buffer )
     {
         std::cout << "buffersize " <<  buffer.size() << "\n";
         DWORD dNoOfBytesWritten;
-        WriteFile(myHandle,        // Handle to the Serial port
+        WriteFile(myCOMHandle,        // Handle to the Serial port
                   buffer.data(),     // Data to be written to the port
                   buffer.size(),  //No of bytes to write
                   &dNoOfBytesWritten, //Bytes written
@@ -161,6 +167,8 @@ public:
         std::cout << "write " << dNoOfBytesWritten << "\n";
         return dNoOfBytesWritten;
     }
+
+    ///  Write string of data to the COM port
     int write( const std::string& msg )
     {
         std::vector<unsigned char> buffer( msg.size() );
@@ -169,7 +177,7 @@ public:
     }
 private:
     std::string myPortNumber;
-    HANDLE myHandle;
+    HANDLE myCOMHandle;
     std::future< void > myFuture;
     std::thread*        myThread;
     std::vector<unsigned char> myRcvbuffer;
@@ -184,7 +192,7 @@ private:
         {
             // check for bytes waiting to be read
             ClearCommError(
-                myHandle,
+                myCOMHandle,
                 &errors,
                 &comstat );
             int waiting = comstat.cbInQue;
@@ -192,8 +200,8 @@ private:
                 return waiting;
 
             // wait for some data to arrive
-            SetCommMask(myHandle, EV_RXCHAR);
-            WaitCommEvent(myHandle, &dwEventMask, NULL);
+            SetCommMask(myCOMHandle, EV_RXCHAR);
+            WaitCommEvent(myCOMHandle, &dwEventMask, NULL);
         }
     }
     void read_sync_wait()
