@@ -218,7 +218,7 @@ private:
 
         PostMessageA(
             myParent->handle(),
-            WM_USER+1,
+            WM_INPUT,
             myID,
             0 );
 
