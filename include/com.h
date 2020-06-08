@@ -38,16 +38,18 @@ public:
             return false;
 
         myCOMHandle = CreateFile(
-                       myPortNumber.c_str(),                //port name
-                       GENERIC_READ | GENERIC_WRITE, //Read/Write
-                       0,                            // No Sharing
-                       NULL,                         // No Security
-                       OPEN_EXISTING,// Open existing port only
-                       0,            // Non Overlapped I/O
-                       NULL);        // Null for Comm Devices
+                          myPortNumber.c_str(),                //port name
+                          GENERIC_READ | GENERIC_WRITE, //Read/Write
+                          0,                            // No Sharing
+                          NULL,                         // No Security
+                          OPEN_EXISTING,// Open existing port only
+                          FILE_FLAG_OVERLAPPED,
+                          //0,
+                          NULL);        // Null for Comm Devices
 
         if (myCOMHandle == INVALID_HANDLE_VALUE)
         {
+            std::cout << "Cannot open COM\n";
             myCOMHandle = 0;
             return false;
         }
@@ -105,16 +107,25 @@ public:
             }
 
             // read chunk
-            ReadFile(
-                myCOMHandle,                               //Handle of the Serial port
-                myRcvbuffer.data() + totalBytesRead,    // pointer to buffer
-                chunk,                                   // amount to read
-                &NoBytesRead,                            //Number of bytes read
-                NULL);
+            _OVERLAPPED over;
+            memset(&over, 0, sizeof(over));
+            bool ret = ReadFile(
+                           myCOMHandle,                               //Handle of the Serial port
+                           myRcvbuffer.data() + totalBytesRead,    // pointer to buffer
+                           chunk,                                   // amount to read
+                           &NoBytesRead,                            //Number of bytes read
+                           &over );
+            if( ! ret )
+            {
+                throw std::runtime_error("windex com read block failed "
+                                         + std::to_string( GetLastError() ));
+            }
 
             // update data counts
             totalBytesRead += chunk;
             needed -= chunk;
+
+            //std::cout << "COM read block read " << totalBytesRead << "\n";
         }
     }
 
@@ -136,6 +147,8 @@ public:
     void read_async(
         int bytes )
     {
+        //std::cout << "com read_async " << bytes << "\n";
+
         // start blocking read in own thread
         myFuture = std::async(
                        std::launch::async,              // insist on starting immediatly
@@ -158,12 +171,20 @@ public:
     int write( const std::vector<unsigned char>& buffer )
     {
         std::cout << "buffersize " <<  buffer.size() << "\n";
+        _OVERLAPPED over;
+        memset(&over, 0, sizeof(over));
         DWORD dNoOfBytesWritten;
-        WriteFile(myCOMHandle,        // Handle to the Serial port
-                  buffer.data(),     // Data to be written to the port
-                  buffer.size(),  //No of bytes to write
-                  &dNoOfBytesWritten, //Bytes written
-                  NULL);
+        bool ret = WriteFile(
+                       myCOMHandle,        // Handle to the Serial port
+                       buffer.data(),     // Data to be written to the port
+                       buffer.size(),  //No of bytes to write
+                       &dNoOfBytesWritten, //Bytes written
+                       &over);
+        if( ! ret )
+        {
+            std::cout << "write failed " << GetLastError() << "\n";
+            return 0;
+        }
         std::cout << "write " << dNoOfBytesWritten << "\n";
         return dNoOfBytesWritten;
     }
@@ -221,7 +242,6 @@ private:
             WM_INPUT,
             myID,
             0 );
-
 
         // return, terminating the wait thread
         return;
