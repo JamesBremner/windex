@@ -2883,15 +2883,17 @@ protected:
             int y = y0 + cos( rads ) * r * 0.9;
             S.text( std::to_string( k * inc ), { x,y,30,30});
             S.line( { x, y,
-                   x0 - sin( rads ) * r,
-                   y0 + cos( rads ) * r });
+                   (int)(x0 - sin( rads ) * r),
+                   (int)(y0 + cos( rads ) * r) });
 
         }
         theta = 30 + 200 * myValue / myMax;
         double rads = 0.0174533 * theta;
         S.penThick( 3 );
         S.color( 0 );
-        S.line( { x0,y0, x0 - sin( rads ) * r * 0.9, y0 + cos( rads ) * r * 0.9 });
+        S.line( { x0,y0,
+               (int)( x0 - sin( rads ) * r * 0.9),
+               (int)( y0 + cos( rads ) * r * 0.9 )});
     }
 private:
 
