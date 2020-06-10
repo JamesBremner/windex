@@ -36,7 +36,7 @@ public:
         myGrid.labelWidth( 50 );
         myGrid.bgcolor( 0xFFFFFF );
         myGrid.tabList();
-        myOKButton.move( { 100,200, 50, 40 } );
+       //myOKButton.move( { 100,300, 50, 40 } );
         myOKButton.text("OK");
         myOKButton.events().click([this]
         {
@@ -45,35 +45,49 @@ public:
             // before destroying the window extract values from gui into property attributes
             myGrid.saveValues();
 
-            myfModal = false;
-            DestroyWindow(myHandle);
+            endModal();
         });
     }
-    void add(
+    void clear()
+    {
+        myGrid.clear();
+    }
+    wex::property& add(
         const std::string& name,
         const std::string& def )
     {
-        myGrid.string( name, def );
-        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
+        ExpandForAdditionalProperty();
+        return myGrid.string( name, def );
     }
-    void choice(
+    wex::property& choice(
         const std::string& name,
         const std::vector<std::string>& choice )
     {
-        myGrid.choice( name, choice );
-        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
+        ExpandForAdditionalProperty();
+        return myGrid.choice( name, choice );
     }
-    void check(
+    wex::property& check(
         const std::string& name,
         bool def )
     {
-        myGrid.check( name, def );
-        myGrid.move( { 50,50, myGrid.width(), myGrid.propCount() * myGrid.propHeight() } );
+        ExpandForAdditionalProperty();
+        return myGrid.check( name, def );
     }
 
-    void modal()
+    /** Show inputbox and suspend all other windows interactions until this is closed
+
+    The property grid has been expanded to fit the properties as they were added
+    this will adjust the form size and OK button size to accomodate the grid
+    */
+    void showModal()
     {
-        showModal();
+        /// adjust for grid size
+        auto wh = myGrid.size();
+        move( {100,100,wh[0]+100,wh[1]+200} );
+        myOKButton.move( { 100,wh[1]+80, 50, 40 } );
+
+        // base class showModal
+        gui::showModal();
     }
     /** get value saved in property attribute
         @param[in] name of property
@@ -85,6 +99,10 @@ public:
         if( p == nullptr )
             return "property not found";
         return p->savedValue();
+    }
+    bool isChecked( const std::string& name )
+    {
+        return myGrid.isChecked( name );
     }
     void gridWidth( int w )
     {
@@ -98,5 +116,13 @@ public:
 private:
     propertyGrid myGrid;
     button& myOKButton;
+
+    void ExpandForAdditionalProperty()
+    {
+        myGrid.move( { 50, 50,
+                       myGrid.width(),
+                       ( myGrid.propCount() + 1 ) * myGrid.propHeight()
+                     } );
+    }
 };
 }

@@ -1,6 +1,12 @@
 #pragma once
 
+#include <sstream>
+#include <iomanip>
 #include <algorithm>
+#include <limits>
+
+// minimum data range that will produce sensible plots
+#define minDataRange  0.000001
 
 namespace wex
 {
@@ -25,7 +31,7 @@ public:
         myYOffset = yo;
         myYScale  = ys;
     }
-    void bounds( int XMin, int XMax, int YMin, int YMax )
+    void bounds( double XMin, double XMax, double YMin, double YMax )
     {
         myXMin = XMin;
         myXMax = XMax;
@@ -40,6 +46,14 @@ public:
     {
         return myYOffset - myYScale * y;
     }
+    double Pixel2X( int x ) const
+    {
+        return ((double)( x - myXOffset )) / myXScale;
+    }
+    double Pixel2Y( int y ) const
+    {
+        return ((double)(  myYOffset - y )) / myYScale;
+    }
     int minX() const
     {
         return myXMin;
@@ -48,11 +62,11 @@ public:
     {
         return myXMax;
     }
-    int minY() const
+    double minY() const
     {
         return myYMin;
     }
-    int maxY() const
+    double maxY() const
     {
         return myYMax;
     }
@@ -60,7 +74,7 @@ private:
     double myXScale, myYScale;
     int myXOffset;
     int myYOffset;
-    int myXMin, myXMax, myYMin, myYMax;
+    double myXMin, myXMax, myYMin, myYMax;
 };
 /// @endcond
 /** \brief Single trace to be plotted
@@ -114,6 +128,10 @@ public:
 
         myY = y;
     }
+    std::vector< double > get() const
+    {
+        return myY;
+    }
 
     /** \brief add new value to real time data
         @param[in] y the new data point
@@ -156,8 +174,14 @@ public:
         return (int) myY.size();
     }
 
+    /** y value at fractional position along x-axis
+        @param[in] xfraction x-axis position 0 to 1
+        @return y value at position, 0 if xfraction outside range 0 to 1
+    */
     double value( double xfraction )
     {
+        if( 0 > xfraction || xfraction > 1 )
+            return 0;
         return myY[ (int) ( xfraction * myY.size() ) ];
     }
 
@@ -254,7 +278,6 @@ private:
         int xi    = 0;
 //        float xinc = myPlot->xinc();
         double prevX, prev;
-
 
         switch( myType )
         {
@@ -370,69 +393,35 @@ public:
     /// draw
     void update( PAINTSTRUCT& ps )
     {
-        const int tick_length = 10;
-
         shapes S( ps );
         S.color( 0xFFFFFF - myParent.bgcolor() );
         if( ! myfX )
         {
-            double mn = 10 * ( scale::get().minY() / 10 );
-            double mx = 10 * ( scale::get().maxY() / 10 );
-            if( mx-mn < 2 )
-            {
-                mn = scale::get().minY();
-                mx = scale::get().maxY();
-            }
-            int ymn_px = scale::get().Y2Pixel( mn );
-            int ymx_px = scale::get().Y2Pixel( mx );
+            // Y-axis
 
-            S.text( std::to_string((int)mn), { 5,ymn_px,50,15});
-            S.text( std::to_string((int)mx), { 5,ymx_px,50,15});
-
-            S.line( { 2, ymn_px,
-                      2, ymx_px
+            double mn = scale::get().minY();
+            double mx = scale::get().maxY();
+            S.line( { 50, scale::get().Y2Pixel( mn ),
+                      50, scale::get().Y2Pixel( mx )
                     });
-
-            if( mn * mx < 0 )
+            for( double y : tickValues( mn, mx ) )
             {
-                S.line( {2, ymx_px,
-                         5, ymx_px
-                        });
-                int y0_px = scale::get().Y2Pixel( 0 );
-                S.text( "0", { 5, y0_px - 15, 50,15 } );
-                S.line( {2, y0_px,
-                         tick_length, y0_px
-                        });
-                S.line( {2, ymn_px,
-                         tick_length, ymn_px
-                        });
-
-//                if( myfGrid )
-//                {
-//
-//                    for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
-//                    {
-//                        S.pixel(k, y0_px );
-//                        S.pixel(k+1, y0_px );
-//                    }
-//                }
-            }
-            else
-            {
-                int yinc = ( ymn_px - ymx_px ) / 4;
-                for( int ky = 0; ky < 4; ky++ )
+                int yp = scale::get().Y2Pixel( y );
+                S.text( numberformat( y ),
                 {
-                    int y = ymx_px + ky * yinc;
-                    S.line( {2, y,
-                             tick_length, y
-                            });
-//                    if( myfGrid )
-//                        for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
-//                        {
-//                            S.pixel(k, y );
-//                            S.pixel(k+1, y );
-//                        }
-                }
+                    0, yp-8, 50, 15
+                });
+                S.line( {50, yp,
+                         60, yp
+                        } );
+                if( myfGrid )
+                    for( int kp = 65;
+                            kp < scale::get().X2Pixel(scale::get().maxX() );
+                            kp += 25 )
+                    {
+                        S.pixel( kp, yp );
+                        S.pixel( kp+1, yp );
+                    }
             }
         }
         else
@@ -440,24 +429,17 @@ public:
             // x-axis
             int ypos = ps.rcPaint.bottom - 20;
 
-            double mn = 10 * (scale::get().minX() / 10 );
-            double mx = 10 * ( scale::get().maxX() / 10 );
-            if( mx-mn < 2 )
-            {
-                mn = scale::get().minX();
-                mx = scale::get().maxX();
-            }
+            double mn = scale::get().minX();
+            double mx = scale::get().maxX();
+
             int xmn_px = scale::get().X2Pixel( mn );
             int xmx_px = scale::get().X2Pixel( mx );
 
-            if( ! myMinXLabel.length() )
-                S.text( std::to_string((int)mn), {xmn_px, ypos+3, 50,15});
-            else
-                S.text( myMinXLabel, {xmn_px, ypos+3, 50,15});
-            if( ! myMaxXLabel.length() )
-                S.text( std::to_string((int)mx), {xmx_px, ypos+3, 50,15});
-            else
-                S.text( myMaxXLabel, {xmx_px, ypos+3, 50,15});
+            float xmin_label_value = myXStartValue;
+            float xmax_label_value = myXStartValue + myXScaleValue * ( mx - mn );
+
+            S.text( std::to_string((int)xmin_label_value), {xmn_px, ypos+3, 50,15});
+            S.text( std::to_string((int)xmax_label_value), {xmx_px-25, ypos+3, 50,15});
 
             S.line( { xmn_px, ypos,
                       xmx_px, ypos
@@ -467,24 +449,28 @@ public:
             {
                 int tickCount = 8;
                 int xtickinc = ( xmx_px - xmn_px ) / tickCount;
-                int xtickValueinc = ( myMaxXValue - myMinXValue ) / tickCount;
                 for( int kxtick = 0; kxtick <= tickCount; kxtick++ )
                 {
                     int x = xmn_px + xtickinc * kxtick;
-
+                    float tick_label_value = myXStartValue + myXScaleValue * (int)scale::get().Pixel2X( x );
+                    //std::cout << kxtick <<" "<< tick_label_value <<" "<< myXStartValue <<" "<<myXScaleValue<<" "<< xxxx <<  "\n";
                     S.text(
-                        std::to_string( myMinXValue + xtickValueinc * kxtick),
+                        std::to_string( tick_label_value ).substr(0,4),
                     {
                         x, ypos+1, 50, 15
                     });
 
-                    for( int k=5; k<ps.rcPaint.bottom - ps.rcPaint.top; k=k+10 )
+                    for(
+                        int k=scale::get().Y2Pixel(scale::get().maxY());
+                        k<scale::get().Y2Pixel(scale::get().minY() );
+                        k=k+25 )
                     {
                         S.pixel(x, k );
                         S.pixel(x, k+1 );
                     }
                 }
             }
+
         }
     }
 
@@ -501,12 +487,18 @@ public:
         myMaxXLabel = max;
     }
 
+    /** Set conversion from y value index to x user units
+        @param[in] start x user value of first y-value
+        @param[in] scale to convert from index to user value
+
+        Used to label the x-axis
+    */
     void XValues(
-        int min,
-        int max )
+        float start,
+        float scale )
     {
-        myMinXValue = min;
-        myMaxXValue = max;
+        myXStartValue = start;
+        myXScaleValue = scale;
     }
 
 private:
@@ -517,6 +509,63 @@ private:
     std::string myMaxXLabel;
     int myMinXValue;
     int myMaxXValue;
+    float myXStartValue;
+    float myXScaleValue;
+
+    std::vector< double > tickValues(
+        double mn, double mx )
+    {
+        std::vector< double > vl;
+        double range = mx - mn;
+        if( range < minDataRange )
+        {
+            // plot is single valued
+            // display just one tick
+            vl.push_back( mn );
+            return vl;
+        }
+        double inc = range / 4;
+        double tick;
+        if( inc > 1 )
+        {
+            inc = ( int ) inc;
+            tick  = ( int ) mn;
+        }
+        else
+        {
+            tick = mn;
+        }
+        while( true )
+        {
+            double v = tick;
+            if( v > 100)
+                v = ((int) v / 100 ) * 100;
+            else if( v > 10 )
+                v = ((int) v / 10 ) * 10;
+            vl.push_back( v );
+            tick += inc;
+            if( tick >= mx )
+                break;
+        }
+        vl.push_back( mx );
+        return vl;
+    }
+    /** format number with 2 significant digits
+    https://stackoverflow.com/a/17211620/16582
+    */
+    std::string numberformat(double f)
+    {
+        if (f == 0)
+        {
+            return "0";
+        }
+        int n = 2;          // number of significant digits
+        int d = (int)::floor(::log10(f < 0 ? -f : f))+1; /*digits before decimal point*/
+        double order = ::pow(10., n - d);
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
+        return ss.str();
+    }
 };
 /// @endcond
 
@@ -532,6 +581,26 @@ Each trace can be of one of three types:
 
 Any number of plot and scatter traces can be shown together,
 only one realtime trace may be present in a plot.
+
+ZOOM
+
+To zoom into a selected area of the plot
+click on the top left of the area and drag the mouse to the bottom right.
+The plot will draw a box around the area selected.
+When the left button is released, the plot will zoom in to show just the selected area.
+To restore auto-fit, right click on the plot.
+
+If application code is required to use the right click ( e.g. for a context pop-up menu )
+the event handler must first call the plot method autofit.
+<pre>
+    myPlotB.events().clickRight([&]
+    {
+        myPlotB.autoFit();
+        ...
+    });
+</pre>
+
+Sample plot application:
 
 <pre>
 #include "wex.h"
@@ -589,6 +658,8 @@ public:
     plot( gui* parent )
         : gui( parent )
         , myfFit( true )
+        , myfDrag( false )
+        , myfZoom( false )
     {
         text("Plot");
 
@@ -614,6 +685,57 @@ public:
                 // draw a trace
                 t->update( ps );
             }
+
+            if( isGoodDrag() )
+            {
+                // display selected area by drawing a box around it
+                wex::shapes S(ps);
+
+                // contrast to background color
+                S.color( 0xFFFFFF ^ bgcolor() );
+
+                S.line( { myStartDragX, myStartDragY, myStopDragX, myStartDragY } );
+                S.line( { myStopDragX, myStartDragY, myStopDragX, myStopDragY } );
+                S.line( { myStopDragX, myStopDragY, myStartDragX, myStopDragY } );
+                S.line( { myStartDragX, myStopDragY, myStartDragX, myStartDragY } );
+            }
+        });
+
+        events().click([&]
+        {
+            // start dragging for selected area
+            auto m = getMouseStatus();
+            myStartDragX = m.x;
+            myStartDragY = m.y;
+            myStopDragX = -1;
+            myfDrag = true;
+        });
+        events().mouseMove([&](wex::sMouse& m)
+        {
+            // extend selected area as mouse is dragged
+            dragExtend( m );
+        });
+        events().mouseUp([&]
+        {
+            // check if user has completed a good drag operation
+            if( isGoodDrag() )
+            {
+                myZoomXMin = scale::get()
+                .Pixel2X( myStartDragX );
+                myZoomXMax = scale::get().Pixel2X( myStopDragX );
+                myZoomYMax = scale::get().Pixel2Y( myStartDragY );
+                myZoomYMin = scale::get().Pixel2Y( myStopDragY );
+                myfZoom = true;
+                //std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
+                //std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
+            }
+            myfDrag = false;
+            update();
+        });
+        events().clickRight([&]
+        {
+            // restore autofit
+            autoFit();
         });
 
         myAxis = new axis( *this );
@@ -733,10 +855,13 @@ public:
         myMaxY = max;
     }
 
-    /// Enable auto-fit scaling
+    /// Enable auto-fit scaling and remove any zoom setting
     void autoFit()
     {
         myfFit = true;
+        myfDrag = false;
+        myfZoom = false;
+        update();
     }
 
     void XLabels(
@@ -745,7 +870,14 @@ public:
     {
         myAxisX->XLabels( min, max );
     }
-
+    void dragExtend( sMouse& m )
+    {
+        if( ! myfDrag )
+            return;
+        myStopDragX = m.x;
+        myStopDragY = m.y;
+        update();
+    }
     void XValues(
         int min,
         int max )
@@ -756,6 +888,11 @@ public:
     std::vector< trace* >& traces()
     {
         return myTrace;
+    }
+
+    bool isZoomed()
+    {
+        return myfZoom;
     }
 
 private:
@@ -778,6 +915,18 @@ private:
 
     bool myfFit;            /// true if scale should fit plot to window
 
+    bool myfDrag;
+    bool myfZoom;
+    int myStartDragX;
+    int myStartDragY;
+    int myStopDragX;
+    int myStopDragY;
+    double myZoomXMin;
+    double myZoomXMax;
+    double myZoomYMin;
+    double myZoomYMax;
+    //std::function<void(void)> myClickRightFunction;
+
     /** calculate scaling factors so plot will fit in window client area
         @param[in] w width
         @param[in] h height
@@ -785,8 +934,6 @@ private:
     void CalcScale( int w, int h )
     {
         //std::cout << "Plot::CalcScale " << w << " " << h << "\n";
-        w *= 0.9;
-        h *= 0.95;
 
         if( myfFit )
         {
@@ -796,40 +943,59 @@ private:
         if( fabs( myMaxX - myMinX) < 0.0001 )
             myXScale = 1;
         else
-            myXScale = 0.9 * w / ( myMaxX - myMinX );
-        if( fabs( myMaxY - myMinY ) < 0.0001 )
+            myXScale = (w-70) / ( myMaxX - myMinX );
+        if( fabs( myMaxY - myMinY ) < minDataRange )
             myYScale = 1;
         else
-            myYScale = 0.9 * h / ( myMaxY - myMinY );
+            myYScale = (h-70) / ( myMaxY - myMinY );
 
-        myXOffset = 0.05 * w;
-        myYOffset = h - 10 + myYScale * myMinY;
+        myXOffset = 50 - myXScale * myMinX;
+        myYOffset = h - 20 + myYScale * myMinY;
 
         scale::get().set( myXOffset, myXScale, myYOffset, myYScale );
         scale::get().bounds( myMinX, myMaxX, myMinY, myMaxY );
 
-        //std::cout << myMinY <<" "<< myMaxY <<" "<< myScale;
+        std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
+        //std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
     }
 
     void CalulateDataBounds()
     {
-        myTrace[0]->bounds(
-            myMinX, myMaxX,
-            myMinY, myMaxY );
-        for( auto& t : myTrace )
+        if( myfZoom )
         {
-            double txmin, txmax, tymin, tymax;
-            txmin= txmax= tymin= tymax=0;
-            t->bounds( txmin, txmax, tymin, tymax );
-            if( txmin < myMinX )
-                myMinX = txmin;
-            if( txmax > myMaxX )
-                myMaxX = txmax;
-            if( tymin < myMinY )
-                myMinY = tymin;
-            if( tymax > myMaxY )
-                myMaxY = tymax;
+            myMinX = myZoomXMin;
+            myMaxX = myZoomXMax;
+            myMinY = myZoomYMin;
+            myMaxY = myZoomYMax;
         }
+        else
+        {
+            myTrace[0]->bounds(
+                myMinX, myMaxX,
+                myMinY, myMaxY );
+            for( auto& t : myTrace )
+            {
+                double txmin, txmax, tymin, tymax;
+                txmin= txmax= tymax=0;
+                tymin = std::numeric_limits<double>::max();
+                t->bounds( txmin, txmax, tymin, tymax );
+                if( txmin < myMinX )
+                    myMinX = txmin;
+                if( txmax > myMaxX )
+                    myMaxX = txmax;
+                if( tymin < myMinY )
+                    myMinY = tymin;
+                if( tymax > myMaxY )
+                    myMaxY = tymax;
+            }
+        }
+    }
+    bool isGoodDrag()
+    {
+        return ( myfDrag
+                 && myStopDragX > 0
+                 && myStopDragX > myStartDragX
+                 && myStopDragY > myStartDragY );
     }
 };
 

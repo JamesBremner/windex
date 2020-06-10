@@ -147,11 +147,12 @@ public:
 
     /** Add pop help message when mouse hovers over property label
         @param[in] tip the help message
+        @param[in] width of multiline tooltip, default single line
         @return property reference
     */
-    property& tooltip( const std::string& tip )
+    property& tooltip( const std::string& tip, int width = 0 )
     {
-        myLabel.tooltip( tip );
+        myLabel.tooltip( tip, width );
         return *this;
     }
     /** Set property to be readonly
@@ -162,6 +163,7 @@ public:
     */
     property& readonly( bool f = true )
     {
+        myCheckbox.enable( ! f );
         switch( myType )
         {
         case eType::string:
@@ -229,6 +231,13 @@ public:
             break;
         }
         return std::string("");
+    }
+
+    bool isChecked()
+    {
+        if( myType == eType::check )
+            return myCheckbox.isChecked();
+        return false;
     }
     /// set property value
     property& value( const std::string v )
@@ -360,6 +369,10 @@ public:
 
         });
     }
+    void clear()
+    {
+        myProperty.clear();
+    }
     /** Add string property
         @param[in] name of property
         @param[in] value initial value
@@ -387,13 +400,18 @@ public:
         CommonConstruction( P );
         return myProperty.back();
     }
-    /// Add boolean property
-    void check(
+    /** Add boolean property
+        @param[in] name of property
+        @param[in] f default
+        @return reference to property
+    */
+    property& check(
         const std::string& name,
         bool f )
     {
         property P( this, name, f );
         CommonConstruction( P );
+        return myProperty.back();
     }
     /// Add categoty
     void category(
@@ -494,6 +512,14 @@ public:
         }
         std::string v = p->value();
         return p->value();
+    }
+
+    bool isChecked( const std::string& name )
+    {
+        property* p = find( name );
+        if( ! p )
+            return false;
+        return p->isChecked();
     }
 
     /// save values in all property textboxes in the property's myValue attribute

@@ -15,6 +15,7 @@ void helloworld()
     // construct top level window
     gui& form = maker::make();
     form.move({ 50,50,400,400});
+    form.fontHeight( 25 );
     form.text("Label and Editbox demo");
 
     // display labels
@@ -39,7 +40,7 @@ void helloworld()
 
     // display a button
     button& btn = wex::maker::make<button>( form );
-    btn.move( {20, 100, 150, 30 } );
+    btn.move( {20, 100, 200, 30 } );
     btn.text( "Show values entered" );
     btn.tooltip("tooltip explaining button function");
 
@@ -48,12 +49,11 @@ void helloworld()
     // showing the value entered in textbox
     btn.events().click([&]
     {
-        std::string msg =
+        std::string m =
         "A is " + edit1.text() +
         ", B is " + edit2.text();
-        msgbox(
-            form,
-            msg );
+        msgbox mb(
+            m );
     });
 
     form.show();
@@ -74,8 +74,7 @@ void choiceDemo()
     cb.select(-1);
     cb.events().select( cb.id(), [&]
     {
-        msgbox(
-            form,
+        msgbox mb(
             cb.SelectedText() );
     });
 
@@ -85,8 +84,7 @@ void choiceDemo()
     btn.text( "Show values selected" );
     btn.events().click([&]
     {
-        msgbox(
-            form,
+        msgbox mb(
             cb.SelectedText() );
     });
 
@@ -127,9 +125,9 @@ void drawDemo()
         S.polygon( { 200,60, 220,60, 210,80 });
 
 
-        S.textCenterHz("this is",{20,250,150,30});
-        S.textCenterHz("some centered",{20,280,150,30});
-        S.textCenterHz("text",{20,310,150,30});
+        S.textCenterHz("this is", {20,250,150,30});
+        S.textCenterHz("some centered", {20,280,150,30});
+        S.textCenterHz("text", {20,310,150,30});
     });
 
     form.show();
@@ -172,7 +170,7 @@ void PGDemo()
     pg.tabList();
 
 
-        propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
+    propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
     pg2.move( { 10,300, 200, 200});
     pg2.labelWidth( 50 );
     pg2.bgcolor( 0xFFA0A0 );
@@ -191,9 +189,9 @@ void PGDemo()
     });
 
     pg.change( []
-              {
-                 std::cout << "property value changed\n";
-              });
+    {
+        std::cout << "property value changed\n";
+    });
 
     // display a button
     button& btn = wex::maker::make<button>( form );
@@ -213,14 +211,13 @@ void PGDemo()
             msg += "true";
         else
             msg += "false";
-        msgbox(
-            form,
+        msgbox mb(
             msg );
     });
 
     pg.events().click([&]
     {
-        msgbox( form, "pg click");
+        msgbox mb( "pg click");
     });
 
     form.showModal();
@@ -239,8 +236,7 @@ void InputboxDemo( gui& form )
         "A is " + ib.value("A") +
         ", B is " + ib.value("B") +
         ", choice is " + ib.value("Choose");
-    msgbox(
-        form,
+    msgbox mb(
         msg );
 }
 void RBDemo()
@@ -306,8 +302,7 @@ void RBDemo()
         else
             msg = " and nothing";
 
-        msgbox(
-            form,
+        msgbox mb(
             msg );
     });
 
@@ -328,9 +323,9 @@ void CBDemo()
     rb1.events().click([&]
     {
         if( rb1.isChecked() )
-            msgbox( form, "Alpha clicked true") ;
+            msgbox mb( "Alpha clicked true") ;
         else
-            msgbox( form, "Alpha clicked false") ;
+            msgbox mb( "Alpha clicked false") ;
     });
     checkbox& rb2 = wex::maker::make<checkbox>(form);
     rb2.plus();
@@ -357,8 +352,7 @@ void CBDemo()
         if( rb3.isChecked() )
             msg += " Gamma ";
         msg += " are checked";
-        msgbox(
-            form,
+        msgbox mb(
             msg );
     });
 
@@ -492,7 +486,7 @@ void MenuDemo()
     menu f( form );
     f.append("open",[&]
     {
-        msgbox(form,"File open");
+        msgbox mb("File open");
     });
     f.append("save");
     mb.append("File", f );
@@ -552,13 +546,17 @@ void PlotDemo()
 
         // provide some data for first trace
         std::vector< double > d1 { 10, 15, 20, 25, 30, 25, 20, 15, 10 };
+//        for( double& d : d1 )
+//            d = d / 1000;
         t1.set( d1 );
 
         // plot in blue
         t1.color( 0x0000FF );
 
         // provide data for second trace
-        std::vector< double > d2 { 20, 30, 40, 50, 60, 50, 40, 30, 20 };
+        std::vector< double > d2 { 20, 59, 60, 59, 20 };
+//        for( double& d : d2 )
+//            d = d / 1000;
         t2.set( d2 );
 
         // plot in red
@@ -646,7 +644,6 @@ void TabDemo()
     tabs.tabChanged( [&]( int index )
     {
         msgbox mb(
-            form,
             "tab changed to" + std::to_string( index )) ;
     });
 
@@ -666,6 +663,7 @@ int main()
     gui& form = maker::make();
     form.move({ 50,50,400,500});
     form.text("Windex demos");
+    form.fontHeight( 20 );
 
     // construct layout to arrange buttons in a grid
     // layout& l = wex::make<layout>( form );
@@ -717,7 +715,7 @@ int main()
     btnfb.events().click([&]
     {
         filebox fb( form );
-        msgbox( form,
+        msgbox mb(
                 fb.path() );
     });
 

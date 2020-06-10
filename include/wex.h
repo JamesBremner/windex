@@ -44,10 +44,12 @@ public:
         // initialize functions with no-ops
         click([] {});
         clickWex([] {});
+        clickRight([] {});
         draw([](PAINTSTRUCT& ps) {});
         resize([](int w, int h) {});
         scrollH([](int c) {});
         scrollV([](int c) {});
+        keydown([] {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
         mouseUp([] {});
@@ -55,12 +57,17 @@ public:
         slid([](int pos) {});
         dropStart([](HDROP hDrop) {});
         drop([](const std::vector< std::string >& files) {});
+        asyncReadComplete([](int id) {});
     }
     bool onLeftdown()
     {
         myClickFunWex();
         myClickFunctionApp();
         return ! myfClickPropogate;
+    }
+    void onRightDown()
+    {
+        myClickRightFunction();
     }
     void onMouseUp()
     {
@@ -89,6 +96,10 @@ public:
         {
             fp->second();
         }
+    }
+    void onKeydown()
+    {
+        myKeydownFunction();
     }
     void onMouseMove( WPARAM wParam, LPARAM lParam )
     {
@@ -140,11 +151,17 @@ public:
     {
         myDropFunction( files );
     }
+    void onAsyncReadComplete( int id )
+    {
+        myAsyncReadCompleteFunction( id );
+    }
     /////////////////////////// register event handlers /////////////////////
 
     /** register click event handler
         @param[in] f the function to call when user clicks on gui in order to process event
         @param[in] propogate specify that event should propogate to parent window after processing, default is false
+
+        A click occurs when the left mouse button is pressed
     */
     void click(
         std::function<void(void)> f,
@@ -153,6 +170,14 @@ public:
         myClickFunctionApp = f;
         myfClickPropogate = propogate;
     }
+    /** register a function to do some housekeeping when clicked, before calling handler registered by application code
+        @param[in] f the function to call
+
+        This should NOT be called by application code.
+
+        For example, this looks after the check mark in checkboxes
+        or the removal of the filled in dot of the other radio buttons in a group
+    */
     void clickWex( std::function<void(void)> f )
     {
         myClickFunWex = f;
@@ -161,6 +186,11 @@ public:
     void clickPropogate( bool f = true)
     {
         myfClickPropogate = f;
+    }
+
+    void clickRight( std::function<void(void)> f )
+    {
+        myClickRightFunction = f;
     }
 
     void draw( std::function<void(PAINTSTRUCT& ps)> f )
@@ -203,6 +233,10 @@ public:
         mapControlFunction().insert(
             std::make_pair( std::make_pair( id, EN_CHANGE), f ));
     }
+    void keydown( std::function<void(void)> f )
+    {
+        myKeydownFunction = f;
+    }
     void mouseMove( std::function<void(sMouse& m)> f )
     {
         myMouseMoveFunction = f;
@@ -233,16 +267,25 @@ public:
     {
         myDropFunction = f;
     }
+    /** register function to call when an asynchronous read completes.
+        The function parameter identifies the com glass that completed the read
+    */
+    void asyncReadComplete( std::function<void(int id)> f )
+    {
+        myAsyncReadCompleteFunction = f;
+    }
 private:
     bool myfClickPropogate;
 
     // event handlers registered by application code
     std::function<void(void)> myClickFunctionApp;
+    std::function<void(void)> myClickRightFunction;
     std::function<void(PAINTSTRUCT& ps)> myDrawFunction;
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
     std::function<void(int code)> myScrollVFunction;
     std::map< int, std::function<void(void)> > myMapMenuFunction;
+    std::function<void(void)> myKeydownFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
     std::function<void(int id)> myTimerFunction;
@@ -250,6 +293,7 @@ private:
     std::function<void(int pos)> mySlidFunction;
     std::function<void(HDROP hDrop)> myDropStartFunction;
     std::function<void( const std::vector<std::string>& files)> myDropFunction;
+    std::function<void( int id )> myAsyncReadCompleteFunction;
 
     // event handlers registered by windex class
     std::function<void(void)> myClickFunWex;
@@ -471,7 +515,11 @@ public:
     */
     void circle( int x0, int y0, double r )
     {
-        arc( x0, y0, r, 0, 0 );
+        int ir = r;
+        Ellipse(
+            myHDC,
+            x0-ir, y0-ir,
+            x0+ir, y0+ir );
     }
     /** Draw text.
     @param[in] t the text
@@ -556,16 +604,27 @@ private:
 class gui
 {
 public:
-    /// Construct top level with no parent
+    /** Construct top level window with no parent
+
+    Application code should NOT use this constructor directly,
+    nor that of any sepecilaization classes.  Intead use maker::make().
+    */
     gui()
         : myParent( NULL )
         , myBGColor( 0xC8C8C8 )
         , myBGBrush( CreateSolidBrush( myBGColor ))
         , myDeleteList( 0 )
         , myfModal( false )
+        , myfEnabled( true )
+        , myToolTip( NULL )
+        , myAsyncReadCompleteMsgID( 0 )
     {
         myID = NewID();
-        Create(NULL,"windex",WS_OVERLAPPEDWINDOW,WS_EX_CONTROLPARENT );
+        Create(
+            NULL,
+            "windex",
+            WS_OVERLAPPEDWINDOW, WS_EX_CONTROLPARENT,
+            0 );
 
         /*  default resize event handler
             simply forces a refresh so partially visible widgets are correctly drawn
@@ -576,8 +635,25 @@ public:
         {
             update();
         });
+
+        /*  Construct font, initialized with default GUI font
+
+            Each top level window keeps a font and associated logfont
+            so that the font can be changed and inhetited by all child windows
+        */
+        myLogFont = { 0 };
+        GetObject(
+            GetStockObject(DEFAULT_GUI_FONT),
+            sizeof(myLogFont),&myLogFont);
+        myFont = CreateFontIndirectA( &myLogFont );
+
     }
-/// Construct child of a parent
+    /** Construct child of a parent
+
+        Application code should NOT use this constructor directly,
+        nor that of any sepecilaization classes.  Intead use maker::make().
+
+    */
     gui(
         gui* parent,
         const char* window_class = "windex",
@@ -585,11 +661,31 @@ public:
         unsigned long exstyle = WS_EX_CONTROLPARENT )
         : myParent( parent )
         , myDeleteList( 0 )
+        , myfEnabled( true )
+        , myToolTip( NULL )
     {
+        // get a new unique ID
         myID = NewID();
+
+        // create the window as requested
         Create( parent->handle(), window_class, style, exstyle, myID );
+
+        // tell the parent that it has a new child
         parent->child( this );
+
+        // by default show text with ID ( helps debugging )
         text("???"+std::to_string(myID));
+
+        // inherit background color from parent
+        bgcolor( parent->bgcolor() );
+
+        // inherit font from parent
+        parent->font( myLogFont, myFont );
+        SendMessage(
+            myHandle,
+            WM_SETFONT,
+            (WPARAM)myFont,
+            0 );
     }
     virtual ~gui()
     {
@@ -598,16 +694,19 @@ public:
             myDeleteList->push_back( myHandle );
     }
 
-// register child on this window
+    /// register child on this window
     void child( gui* w )
     {
         myChild.push_back( w );
     }
+
+    /// get vector of children
     children_t& children()
     {
         return myChild;
     }
 
+    /// find child window with specified id
     gui* find( int id )
     {
         for( auto w : myChild )
@@ -626,6 +725,25 @@ public:
         myBGColor = color;
         DeleteObject( myBGBrush);
         myBGBrush = CreateSolidBrush( color );
+    }
+    /// Enable/Disable, default enable
+    void enable( bool f = true )
+    {
+        myfEnabled = f;
+    }
+
+    /// Change font height for this and all child windows
+    void fontHeight( int h )
+    {
+        myLogFont.lfHeight = h;
+        createNewFont();
+        setfont( myLogFont, myFont );
+    }
+    void fontName( const std::string& name )
+    {
+        strcpy( myLogFont.lfFaceName, name.c_str() );
+        createNewFont();
+        setfont( myLogFont, myFont );
     }
 
     /** Change icon
@@ -767,7 +885,7 @@ public:
     }
 
     /** Get mouse status
-        @return sMouse structure containing x and y positions, etx
+        @return sMouse structure containing x and y positions, etc
     */
     sMouse getMouseStatus()
     {
@@ -816,35 +934,46 @@ public:
         }
     }
 
-    /** Add tooltip that pops up helpfully when mouse cursor hovers ober widget
+    /** Add tooltip that pops up helpfully when mouse cursor hovers over widget
         @param[in] text of tooltip
         @param[in] width of multiline tooltip, default single line
     */
     void tooltip( const std::string& text, int width = 0 )
     {
-        // Create the tooltip.
-        HWND hwndTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
-                                      WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
-                                      CW_USEDEFAULT, CW_USEDEFAULT,
-                                      CW_USEDEFAULT, CW_USEDEFAULT,
-                                      myHandle, NULL, NULL, NULL);
-
-        // Associate the tooltip with the tool.
         TOOLINFO toolInfo = { 0 };
         toolInfo.cbSize = sizeof(toolInfo);
         toolInfo.hwnd = myHandle;
         toolInfo.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
         toolInfo.uId = (UINT_PTR)myHandle;
         toolInfo.lpszText = (char*)text.c_str();
-        SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+
+        // check for existing tooltip
+        if( ! myToolTip )
+        {
+            // Create the tooltip.
+            myToolTip = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
+                                       WS_POPUP |TTS_ALWAYSTIP | TTS_BALLOON,
+                                       CW_USEDEFAULT, CW_USEDEFAULT,
+                                       CW_USEDEFAULT, CW_USEDEFAULT,
+                                       myHandle, NULL, NULL, NULL);
+            SendMessage(myToolTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+        }
+
+        else
+
+            // change tooltip
+            SendMessage(myToolTip, TTM_UPDATETIPTEXT, 0, (LPARAM)&toolInfo);
+
+        //std::cout << "tooltip: " << width << "\n" << text << "\n";
 
         if( width > 0 )
-            SendMessage(hwndTip, TTM_SETMAXTIPWIDTH, 0, 30);
+            SendMessage(myToolTip, TTM_SETMAXTIPWIDTH, 0, width );
     }
 
     virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        //std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
+//        if( uMsg != 132  && uMsg != 275 )
+//            std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
         if( hwnd == myHandle )
         {
             switch (uMsg)
@@ -891,7 +1020,6 @@ public:
             return true;
 
             case WM_LBUTTONDOWN:
-            case WM_RBUTTONDOWN:
                 //std::cout << "click on " << myText << "\n";
                 if( myEvents.onLeftdown() )
                     return true;
@@ -903,6 +1031,10 @@ public:
                                 uMsg, wParam, lParam ))
                         return true;
                 }
+                break;
+
+            case WM_RBUTTONDOWN:
+                myEvents.onRightDown();
                 break;
 
             case WM_LBUTTONUP:
@@ -924,12 +1056,8 @@ public:
             break;
 
             case WM_SIZE:
-                if( wParam == SIZE_RESTORED)
-                {
-                    myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
-                    return true;
-                }
-                return false;
+                myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
+                return true;
 
             case WM_HSCROLL:
                 if( lParam )
@@ -969,8 +1097,15 @@ public:
             case WM_DROPFILES:
                 events().onDropStart( (HDROP) wParam );
                 return true;
-            }
 
+            case WM_KEYDOWN:
+                events().onKeydown();
+                return true;
+
+            case WM_APP+1:
+                events().onAsyncReadComplete( wParam );
+                return true;
+            }
         }
         else
         {
@@ -1013,6 +1148,12 @@ public:
                     break;
             }
         }
+    }
+    /// Stop modal interaction and close window
+    void endModal()
+    {
+        myfModal = false;
+        DestroyWindow(myHandle);
     }
 
     /** force widget to redraw completely
@@ -1099,6 +1240,22 @@ public:
         myDeleteList = list;
     }
 
+/// change font for this and all child windows
+    void setfont( LOGFONT& logfont, HFONT& font )
+    {
+        myLogFont = logfont;
+        myFont    = font;
+        SendMessage(
+            myHandle,
+            WM_SETFONT,
+            (WPARAM)myFont,
+            0 );
+        for( auto w : myChild )
+            w->setfont( myLogFont, myFont );
+    }
+    void setAsyncReadCompleteMsgID( int id ) {
+    myAsyncReadCompleteMsgID = id;
+    }
 
 
 protected:
@@ -1107,11 +1264,16 @@ protected:
     eventhandler myEvents;
     int myBGColor;
     HBRUSH myBGBrush;
+    LOGFONT myLogFont;
+    HFONT myFont;
     std::vector< HWND >* myDeleteList;
     std::string myText;
     int myID;
     std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
     bool myfModal;                          ///< true if element is being shown as modal
+    bool myfEnabled;                         ///< true if not disabled
+    HWND myToolTip;                         /// handle to tooltip control for this gui element
+    unsigned int myAsyncReadCompleteMsgID;
 
 
     /** Create the managed window
@@ -1142,6 +1304,27 @@ protected:
                        NULL        // Additional application data
                    );
     }
+
+    /** get font details
+        @param[out] logfont logical font
+        @param[out] font
+
+       Used by child window constructor
+       to inherit font from parent.
+    */
+    void font( LOGFONT& logfont, HFONT& font )
+    {
+        logfont = myLogFont;
+        font    = myFont;
+    }
+
+    /// Replace font used by this and child windows from logfont
+    void createNewFont()
+    {
+        DeleteObject( myFont );
+        myFont = CreateFontIndirectA( &myLogFont );
+    }
+
     virtual void draw( PAINTSTRUCT& ps )
     {
         SetBkColor(
@@ -1149,6 +1332,8 @@ protected:
             myBGColor );
         if( myParent )
         {
+            SelectObject (ps.hdc, myFont);
+
             RECT r( ps.rcPaint );
             r.left += 1;
             r.top  += 1;
@@ -1310,6 +1495,7 @@ public:
     }
     virtual void draw( PAINTSTRUCT& ps )
     {
+        SelectObject (ps.hdc, myFont);
         gui::draw( ps );
         DrawEdge(
             ps.hdc,
@@ -1473,6 +1659,7 @@ public:
     }
     /** Specify bitmap image to be used for button, read from resource
         @param[in] name of resource
+        @return 0 for no error
 
         The image is stored in the executable.
 
@@ -1484,11 +1671,22 @@ public:
         ZOOM_IN_RED BITMAP "zoom_in_red.bmp"
     </pre>
 
+        On error, will set button to blank.
+
     */
-    void imageResource( const std::string& name )
+    int imageResource( const std::string& name )
     {
+        int ret = 0;
+        auto h = GetModuleHandleA(NULL);
+        if( ! h )
+            ret = 1;
         myBitmap  = LoadBitmap(
-                        GetModuleHandleA(NULL), name.c_str() );
+                        h, name.c_str() );
+        if( ! myBitmap )
+            ret = 2;
+        if( ret )
+            text("");
+        return ret;
     }
 protected:
     HBITMAP myBitmap;
@@ -1503,6 +1701,8 @@ protected:
             SetBkColor(
                 ps.hdc,
                 myBGColor );
+
+            SelectObject (ps.hdc, myFont);
 
             RECT r( ps.rcPaint );
             r.left += 1;
@@ -1729,6 +1929,7 @@ public:
 
     virtual void draw( PAINTSTRUCT& ps )
     {
+        SelectObject (ps.hdc, myFont);
         SetBkColor(
             ps.hdc,
             myBGColor );
@@ -1793,6 +1994,8 @@ public:
         // toggle the boolean value when clicked
         events().clickWex([this]
         {
+            if( ! myfEnabled )
+                return;
             myValue = ! myValue;
             update();
         });
@@ -1815,6 +2018,7 @@ public:
     }
     virtual void draw( PAINTSTRUCT& ps )
     {
+        //SelectObject (ps.hdc, myFont);
         SetBkColor(
             ps.hdc,
             myBGColor );
@@ -1822,13 +2026,15 @@ public:
         int cbg = r.bottom-r.top-2;
         r.left += cbg+5;
         r.top  += 1;
-        DrawText(
-            ps.hdc,
-            myText.c_str(),
-            -1,
-            &r,
-            0);
+//        DrawText(
+//            ps.hdc,
+//            myText.c_str(),
+//            -1,
+//            &r,
+//            0);
         shapes S( ps );
+        S.textHeight( myLogFont.lfHeight);
+        S.text( myText, { r.left, r.top, r.right, r.bottom } );
         S.rectangle( { 0,0, cbg, cbg} );
         S.penThick( 3 );
         S.color( 0 );
@@ -1864,10 +2070,9 @@ class msgbox
 public:
     /// CTOR for simple message box with OK button
     msgbox(
-        gui& parent,
         const std::string& msg )
     {
-        myReturn = MessageBox(parent.handle(),
+        myReturn = MessageBox(NULL,
                               msg.c_str(),
                               "Message",
                               MB_OK);
@@ -1894,7 +2099,6 @@ public:
     label( gui* parent )
         : gui( parent )
     {
-
     }
 };
 /** \brief A widget where user can enter a string.
@@ -2179,7 +2383,13 @@ public:
 };
 
 
-/// A class containing a database of the current gui elements
+/** A class containing a database of the current gui elements
+
+This looks after directing messages to their intended gui element.
+
+It should NOT be used by application code.
+
+*/
 class windex
 {
 public:
@@ -2217,7 +2427,7 @@ public:
     }
 
     /// Add new gui element
-    void Add( gui * g )
+    gui* Add( gui * g )
     {
         // delete any destroyed elements
         Delete();
@@ -2229,6 +2439,8 @@ public:
         myGui.insert( std::make_pair( g->handle(), g ));
 
         //std::cout << "windexAdd " << myGui.size() <<" in "<< this << "\n";
+
+        return g;
     }
 
     mgui_t myGui;                       ///< map of existing gui elements
@@ -2423,17 +2635,22 @@ public:
     {
         return myM;
     }
-    void check( int index, bool f = true )
+    /** Set or unset check mark beside menu item
+        @param[in] index 0-based index of menu item
+        @param[in] f true if menu item is to be checked, default true
+        @return true if the menu item was previously checked
+    */
+    bool check( int index, bool f = true )
     {
         unsigned int uCheck;
         if( f )
             uCheck = MF_BYPOSITION | MF_CHECKED;
         else
             uCheck = MF_BYPOSITION | MF_UNCHECKED;
-        CheckMenuItem(
-            myM,
-            index,
-            uCheck );
+        return MF_CHECKED == CheckMenuItem(
+                   myM,
+                   index,
+                   uCheck );
     }
 private:
     HMENU myM;
@@ -2567,7 +2784,7 @@ public:
     slider( gui* parent )
         : gui( parent, "msctls_trackbar32",
                WS_CHILD | WS_OVERLAPPED | WS_VISIBLE |
-               TBS_AUTOTICKS | TBS_TRANSPARENTBKGND )
+               TBS_AUTOTICKS | TBS_TRANSPARENTBKGND | TBS_FIXEDLENGTH )
     {
     }
     /** Specify the range values used
@@ -2612,36 +2829,104 @@ public:
             TBM_SETPOS,
             (WPARAM) true, (LPARAM) pos );
     }
+    /// Change thumbnail size ( the arrow that slides along the track )
+    void thumbsize( int p )
+    {
+        SendMessage(
+            myHandle,
+            TBM_SETTHUMBLENGTH,
+            (WPARAM) p,
+            (LPARAM) 0 );
+
+    }
 };
 
-/// \brief A class for making windex objects.
+class clock : public gui
+{
+public:
+    clock( gui* parent )
+        : gui( parent )
+        , myMax( 10 )
+    {
+
+    }
+    void range( int max )
+    {
+        myMax = max;
+    }
+
+    void value( double v )
+    {
+        myValue = v;
+    }
+protected:
+    virtual void draw( PAINTSTRUCT& ps )
+    {
+        int w = ps.rcPaint.right - ps.rcPaint.left;
+        int h = ps.rcPaint.bottom - ps.rcPaint.top;
+        int x0 = ps.rcPaint.left + w / 2;
+        int y0 = ps.rcPaint.top + h / 2;
+        shapes S( ps );
+        S.circle( x0, y0, w / 2 );
+        int inc = myMax / 10;
+        int theta = 30;
+        double r = w;
+        if( h <   w + 100 )
+            r = h - 100;
+        r /= 2;
+        std::cout << "radius  " << r << "\n";
+        for( int k = 1; k <= 10; k++ )
+        {
+            theta += 20;
+            double rads = 0.0174533 * theta;
+            int x = x0 - sin( rads ) * r * 0.9;
+            int y = y0 + cos( rads ) * r * 0.9;
+            S.text( std::to_string( k * inc ), { x,y,30,30});
+            S.line( { x, y,
+                   (int)(x0 - sin( rads ) * r),
+                   (int)(y0 + cos( rads ) * r) });
+
+        }
+        theta = 30 + 200 * myValue / myMax;
+        double rads = 0.0174533 * theta;
+        S.penThick( 3 );
+        S.color( 0 );
+        S.line( { x0,y0,
+               (int)( x0 - sin( rads ) * r * 0.9),
+               (int)( y0 + cos( rads ) * r * 0.9 )});
+    }
+private:
+
+    int myMax;
+    double myValue;
+};
+
+/** A class for making windex objects.
+
+Use the methods of this class to create windex objects,
+NOT the constructors of the objects.
+
+*/
 class maker
 {
 public:
 
     /** Construct widget
             @param[in] parent reference to parent window or widget
+            @return reference to new widget
     */
     template < class W, class P >
     static W& make( P& parent )
     {
-        W* w = new W( (gui*)&parent );
-
-        // inherit background color from parent
-        w->bgcolor( parent.bgcolor() );
-
-        windex::get().Add( w );
-        return *w;
+        return *((W*)windex::get().Add( new W( (gui*)&parent ) ));
     }
 
-/// Construct a top level window ( first call constructs application window )
+    /** Construct a top level window ( first call constructs application window )
+        @return reference to new window
+    */
     static gui&  make()
     {
-        windex::get().myGui.size();
-
-        gui* w = new gui();
-        windex::get().Add( w );
-        return *w;
+        return * windex::get().Add( new gui() );
     }
 };
 
