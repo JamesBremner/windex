@@ -6,6 +6,8 @@ var hierarchy =
       [ "wex::button", "classwex_1_1button.html", null ],
       [ "wex::checkbox", "classwex_1_1checkbox.html", null ],
       [ "wex::choice", "classwex_1_1choice.html", null ],
+      [ "wex::clock", "classwex_1_1clock.html", null ],
+      [ "wex::com", "classwex_1_1com.html", null ],
       [ "wex::drop", "classwex_1_1drop.html", null ],
       [ "wex::editbox", "classwex_1_1editbox.html", null ],
       [ "wex::inputbox", "classwex_1_1inputbox.html", null ],

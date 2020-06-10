@@ -101,7 +101,8 @@ INPUT                  = \
 	"..\..\..\include\wex.h" \
 	"..\..\..\include\plot2d.h" \
 	"..\..\..\include\propertygrid.h" \
-	"..\..\..\include\window2file.h"
+	"..\..\..\include\window2file.h" \
+	"..\..\..\include\com.h"
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          =
 RECURSIVE              = NO

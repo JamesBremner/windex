@@ -1,8 +1,8 @@
-C:/Users/James/code/windex/include/wex.h:441: warning: argument 'se' of command @param is not found in the argument list of wex::shapes::arc(int x, int y, double r, double sa, double ea)
-C:/Users/James/code/windex/include/wex.h:451: warning: The following parameters of wex::shapes::arc(int x, int y, double r, double sa, double ea) are not documented:
+C:/Users/James/code/windex/include/wex.h:485: warning: argument 'se' of command @param is not found in the argument list of wex::shapes::arc(int x, int y, double r, double sa, double ea)
+C:/Users/James/code/windex/include/wex.h:485: warning: The following parameters of wex::shapes::arc(int x, int y, double r, double sa, double ea) are not documented:
   parameter 'ea'
-C:/Users/James/code/windex/include/wex.h:431: warning: argument 'point' of command @param is not found in the argument list of wex::shapes::polygon(const std::vector< int > &v)
-C:/Users/James/code/windex/include/wex.h:435: warning: The following parameters of wex::shapes::polygon(const std::vector< int > &v) are not documented:
+C:/Users/James/code/windex/include/wex.h:475: warning: argument 'point' of command @param is not found in the argument list of wex::shapes::polygon(const std::vector< int > &v)
+C:/Users/James/code/windex/include/wex.h:475: warning: The following parameters of wex::shapes::polygon(const std::vector< int > &v) are not documented:
   parameter 'v'
-C:/Users/James/code/windex/include/plot2d.h:537: warning: explicit link request to 'include' could not be resolved
-C:/Users/James/code/windex/include/plot2d.h:538: warning: explicit link request to 'include' could not be resolved
+C:/Users/James/code/windex/include/plot2d.h:606: warning: explicit link request to 'include' could not be resolved
+C:/Users/James/code/windex/include/plot2d.h:607: warning: explicit link request to 'include' could not be resolved

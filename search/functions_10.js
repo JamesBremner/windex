@@ -7,7 +7,8 @@ var searchData=
   ['textfontname',['textFontName',['../classwex_1_1shapes.html#a15fe0b95cdf3734e80396063522276cf',1,'wex::shapes']]],
   ['textheight',['textHeight',['../classwex_1_1shapes.html#a48ae9c484082d78fca2b5284f1f4cc82',1,'wex::shapes']]],
   ['textvertical',['textVertical',['../classwex_1_1shapes.html#a56de559f7b367afaaf846c8c5298b3d4',1,'wex::shapes']]],
+  ['thumbsize',['thumbsize',['../classwex_1_1slider.html#a778e77b3128fd6fb9969a6d15bd04129',1,'wex::slider']]],
   ['timer',['timer',['../classwex_1_1timer.html#aa464ae257c3ae820cc58316d857f00dc',1,'wex::timer']]],
-  ['tooltip',['tooltip',['../classwex_1_1gui.html#a255b44718c4a36b7d18b9ac25c5900db',1,'wex::gui::tooltip()'],['../classwex_1_1property.html#a01c2b7d5969876cfd1e9ef8259ba643b',1,'wex::property::tooltip()']]],
+  ['tooltip',['tooltip',['../classwex_1_1gui.html#a255b44718c4a36b7d18b9ac25c5900db',1,'wex::gui::tooltip()'],['../classwex_1_1property.html#a91deb90b4607e659f89121a276b5cb68',1,'wex::property::tooltip()']]],
   ['transparent',['transparent',['../classwex_1_1shapes.html#a665cd16dbcc39330be5d26619a106746',1,'wex::shapes']]]
 ];
