@@ -371,7 +371,7 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>CTOR. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">parent</td><td>window which will receive messages when async read have completed </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">parent</td><td>window which will receive messages when async read has completed </td></tr>
   </table>
   </dd>
 </dl>
@@ -430,10 +430,11 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>blocking read from COM port </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">needed</td><td>byte count, -1 to read whatever becomes available Data will be read into myRcvbuffer vector </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">needed</td><td>byte count, -1 to read whatever becomes available</td></tr>
   </table>
   </dd>
 </dl>
+<p>Data will be read into a vector of bytes, com::ReadData() provides a reference to this. </p>
 
 </div>
 </div>
@@ -466,7 +467,10 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   </table>
   </dd>
 </dl>
-<p>This will return imediatly. When the specified bytes have been read a message, id = WM_APP+1, will be sent to the parent window </p>
+<p>This will return imediatly.</p>
+<p>When the specified bytes have been read the parent window event &lt;pr&gt;asyncReadComplete will invoke its read handler in the thread that created the parent window. No multithreading is required by the application code.</p>
+<p>This uses the message </p>
+<pre>id = WM_APP+1</pre><p>, which must NOT be used anywhere in the application code. </p>
 
 </div>
 </div>
@@ -479,7 +483,7 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1com.html">com</a></li>
-    <li class="footer">Generated on Wed Jun 10 2020 12:51:32 for windex by
+    <li class="footer">Generated on Wed Jun 10 2020 15:34:49 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
