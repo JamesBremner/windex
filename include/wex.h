@@ -1102,7 +1102,7 @@ public:
                 events().onKeydown();
                 return true;
 
-            case WM_INPUT:
+            case WM_APP+1:
                 events().onAsyncReadComplete( wParam );
                 return true;
             }

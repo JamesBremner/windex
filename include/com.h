@@ -141,7 +141,7 @@ public:
 
       This will return imediatly.
       When the specified bytes have been read
-      a message, id = WM_USER+1, will be sento to the parent window
+      a message, id = WM_APP+1, will be sent to the parent window
 
     */
     void read_async(
@@ -236,10 +236,13 @@ private:
         }
 
         // read complete
+        // send WM_APP+1 message to parent window
+        // which will be handled, not in this thread,
+        // but in the thread that created the window.
 
         PostMessageA(
             myParent->handle(),
-            WM_INPUT,
+            WM_APP+1,
             myID,
             0 );
 
