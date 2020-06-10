@@ -34,8 +34,17 @@
 			<Add option="-fexceptions" />
 			<Add directory="$(#windex)" />
 		</Compiler>
+		<Linker>
+			<Add option="-static-libstdc++" />
+			<Add option="-static-libgcc" />
+			<Add option="-static" />
+			<Add library="gdi32" />
+			<Add library="comdlg32" />
+			<Add library="ws2_32" />
+		</Linker>
 		<Unit filename="../../../demo/com.cpp" />
 		<Unit filename="../../../include/com.h" />
+		<Unit filename="../../../include/wex.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

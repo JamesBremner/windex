@@ -8,7 +8,10 @@
 
 namespace wex
 {
+/**  @brief read / write to COM serial port
 
+For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com.cpp
+*/
 class com : public gui
 {
 public:
@@ -76,7 +79,7 @@ public:
     }
 
     /** blocking read from COM port
-        @param[in] needed byte count
+        @param[in] needed byte count, -1 to read whatever becomes available
         Data will be read into myRcvbuffer vector
     */
     void read( int needed )
@@ -87,15 +90,22 @@ public:
         int totalBytesRead = 0;
 
         // ensure there is room for the data read
-        myRcvbuffer.resize( needed );
+        if( needed > 0 )
+            myRcvbuffer.resize( needed );
 
         // loop reading chunks of data as they arrive
-        while( needed > 0 )
+        do
         {
             // wait for data
             int waiting = waitForData();
 
-            if( waiting >= needed )
+            if( needed < 0 )
+            {
+                needed = waiting;
+                chunk = waiting;
+                myRcvbuffer.resize( needed );
+            }
+            else if( waiting >= needed )
             {
                 // read all we need
                 chunk = needed;
@@ -126,7 +136,7 @@ public:
             needed -= chunk;
 
             //std::cout << "COM read block read " << totalBytesRead << "\n";
-        }
+        } while( needed > 0 );
     }
 
     /// get reference to buffer containg data that was read
@@ -137,7 +147,7 @@ public:
     }
 
     /** non-blocking read from COM port
-        @param[in] bytes byte count to be read
+        @param[in] bytes byte count to be read, -1 to read whatever becomes available
 
       This will return imediatly.
       When the specified bytes have been read
