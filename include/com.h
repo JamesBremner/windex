@@ -16,7 +16,7 @@ class com : public gui
 {
 public:
     /** CTOR
-        @param[in] parent window which will receive messages when async read have completed
+        @param[in] parent window which will receive messages when async read has completed
     */
     com( gui* parent )
         : gui( parent )
@@ -80,7 +80,10 @@ public:
 
     /** blocking read from COM port
         @param[in] needed byte count, -1 to read whatever becomes available
-        Data will be read into myRcvbuffer vector
+
+        Data will be read into a vector of bytes,
+        com::ReadData() provides a reference to this.
+
     */
     void read( int needed )
     {
@@ -150,8 +153,14 @@ public:
         @param[in] bytes byte count to be read, -1 to read whatever becomes available
 
       This will return imediatly.
+
       When the specified bytes have been read
-      a message, id = WM_APP+1, will be sent to the parent window
+      the parent window event <pr>asyncReadComplete</pre>
+      will invoke its read handler in the thread that created the parent window.
+      No multithreading is required by the application code.
+
+      This uses the message <pre>id = WM_APP+1</pre>,
+      which must NOT be used anywhere in the application code.
 
     */
     void read_async(
