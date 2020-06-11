@@ -1,6 +1,7 @@
 var classwex_1_1com =
 [
     [ "com", "classwex_1_1com.html#a1c7760e830f62a867bb21f36b0f55725", null ],
+    [ "DeviceControlString", "classwex_1_1com.html#ad2f77e8a2a54e45c037eb34a69f61dae", null ],
     [ "isOpen", "classwex_1_1com.html#aee892641a5b7813ad9e419594ecb00fa", null ],
     [ "open", "classwex_1_1com.html#a91bba49affba4cebbd3097667934878c", null ],
     [ "port", "classwex_1_1com.html#a5b2a2c185ee1b1aca9cc7db05db44bf1", null ],

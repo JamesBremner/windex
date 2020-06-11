@@ -1,10 +1,10 @@
+C:/Users/James/code/windex/include/com.h:180: warning: Unsupported xml/html tag <pr> found
+C:/Users/James/code/windex/include/com.h:180: warning: found </pre> tag without matching <pre>
 C:/Users/James/code/windex/include/wex.h:485: warning: argument 'se' of command @param is not found in the argument list of wex::shapes::arc(int x, int y, double r, double sa, double ea)
-C:/Users/James/code/windex/include/wex.h:485: warning: The following parameters of wex::shapes::arc(int x, int y, double r, double sa, double ea) are not documented:
+C:/Users/James/code/windex/include/wex.h:495: warning: The following parameters of wex::shapes::arc(int x, int y, double r, double sa, double ea) are not documented:
   parameter 'ea'
 C:/Users/James/code/windex/include/wex.h:475: warning: argument 'point' of command @param is not found in the argument list of wex::shapes::polygon(const std::vector< int > &v)
-C:/Users/James/code/windex/include/wex.h:475: warning: The following parameters of wex::shapes::polygon(const std::vector< int > &v) are not documented:
+C:/Users/James/code/windex/include/wex.h:479: warning: The following parameters of wex::shapes::polygon(const std::vector< int > &v) are not documented:
   parameter 'v'
-C:/Users/James/code/windex/include/com.h:157: warning: Unsupported xml/html tag <pr> found
-C:/Users/James/code/windex/include/com.h:157: warning: found </pre> tag without matching <pre>
 C:/Users/James/code/windex/include/plot2d.h:606: warning: explicit link request to 'include' could not be resolved
 C:/Users/James/code/windex/include/plot2d.h:607: warning: explicit link request to 'include' could not be resolved

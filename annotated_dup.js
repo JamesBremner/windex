@@ -8,6 +8,8 @@ var annotated_dup =
       [ "button", "classwex_1_1button.html", "classwex_1_1button" ],
       [ "checkbox", "classwex_1_1checkbox.html", "classwex_1_1checkbox" ],
       [ "choice", "classwex_1_1choice.html", "classwex_1_1choice" ],
+      [ "clock", "classwex_1_1clock.html", "classwex_1_1clock" ],
+      [ "com", "classwex_1_1com.html", "classwex_1_1com" ],
       [ "drop", "classwex_1_1drop.html", "classwex_1_1drop" ],
       [ "editbox", "classwex_1_1editbox.html", "classwex_1_1editbox" ],
       [ "eventhandler", "classwex_1_1eventhandler.html", "classwex_1_1eventhandler" ],
