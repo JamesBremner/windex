@@ -24,7 +24,7 @@ public:
 
     {
     }
-    /// Set port number to wgich connection will be made
+    /// Set port number to which connection will be made
     void port( const std::string& port )
     {
         if( atoi( port.c_str() ) < 10 )
@@ -32,8 +32,37 @@ public:
         else
             myPortNumber = "\\\\.\\COM" + port;
     }
+
+    /** Configure device
+        @param[in] controlString The device-control information.
+
+        The device must be open.
+
+        Control sring format
+        [baud=b][parity=p][data=d][stop=s][to={on|off}][xon={on|off}][odsr={on|off}][octs={on|off}][dtr={on|off|hs}][rts={on|off|hs|tg}][idsr={on|off}]
+
+        For example, the following string specifies a baud rate of 1200, no parity, 8 data bits, and 1 stop bit:
+
+        baud=1200 parity=N data=8 stop=1
+    */
+    void DeviceControlString( const std::string& controlString )
+    {
+        DCB dcbSerialParams;
+        if( ! myCOMHandle )
+            return;
+        if( ! BuildCommDCBA(
+                    controlString.c_str(),
+                    &dcbSerialParams ) )
+            return;
+        SetCommState(myCOMHandle, &dcbSerialParams);
+    }
+
     /** Open connection to port
         @return true if succesful
+
+        Opens with default configuration "baud=9600 parity=N data=8 stop=1"
+
+        Reconfigure with DeviceControlString()
     */
     bool open()
     {
@@ -57,14 +86,7 @@ public:
             return false;
         }
 
-        DCB dcbSerialParams = { 0 }; // Initializing DCB structure
-        dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
-        GetCommState(myCOMHandle, &dcbSerialParams);
-        dcbSerialParams.BaudRate = CBR_9600;  // Setting BaudRate = 9600
-        dcbSerialParams.ByteSize = 8;         // Setting ByteSize = 8
-        dcbSerialParams.StopBits = ONESTOPBIT;// Setting StopBits = 1
-        dcbSerialParams.Parity   = NOPARITY;  // Setting Parity = None
-        SetCommState(myCOMHandle, &dcbSerialParams);
+        DeviceControlString("baud=9600 parity=N data=8 stop=1");
 
         // empty the input buffer
         PurgeComm(myCOMHandle,PURGE_RXCLEAR);
@@ -139,7 +161,8 @@ public:
             needed -= chunk;
 
             //std::cout << "COM read block read " << totalBytesRead << "\n";
-        } while( needed > 0 );
+        }
+        while( needed > 0 );
     }
 
     /// get reference to buffer containg data that was read
