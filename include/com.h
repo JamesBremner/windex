@@ -212,7 +212,7 @@ public:
     /// Write buffer of data to the COM port
     int write( const std::vector<unsigned char>& buffer )
     {
-        std::cout << "buffersize " <<  buffer.size() << "\n";
+        //std::cout << "buffersize " <<  buffer.size() << "\n";
         _OVERLAPPED over;
         memset(&over, 0, sizeof(over));
         DWORD dNoOfBytesWritten;
@@ -227,7 +227,7 @@ public:
             std::cout << "write failed " << GetLastError() << "\n";
             return 0;
         }
-        std::cout << "write " << dNoOfBytesWritten << "\n";
+        //std::cout << "write " << dNoOfBytesWritten << "\n";
         return dNoOfBytesWritten;
     }
 
