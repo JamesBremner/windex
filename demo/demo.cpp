@@ -419,10 +419,10 @@ void SliderDemo()
     vlabel.move( 320, 110, 100,30 );
     vlabel.text("");
 
-    wex::guage& hg = wex::maker::make<wex::guage>(form);
+    wex::gauge& hg = wex::maker::make<wex::gauge>(form);
     hg.move(200,150, 200,200 );
     hg.range(100);
-    wex::guage& hv = wex::maker::make<wex::guage>(form);
+    wex::gauge& hv = wex::maker::make<wex::gauge>(form);
     hv.move(200,350, 200,200 );
 
     // construct horizontal slider
