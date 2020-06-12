@@ -2841,10 +2841,10 @@ public:
     }
 };
 
-class clock : public gui
+class guage : public gui
 {
 public:
-    clock( gui* parent )
+    guage( gui* parent )
         : gui( parent )
         , myMax( 10 )
     {
@@ -2871,16 +2871,17 @@ protected:
         int inc = myMax / 10;
         int theta = 30;
         double r = w;
-        if( h <   w + 100 )
-            r = h - 100;
+        if( h <   w )
+            r = h;
+        r *= 0.95;
         r /= 2;
         std::cout << "radius  " << r << "\n";
         for( int k = 1; k <= 10; k++ )
         {
             theta += 20;
             double rads = 0.0174533 * theta;
-            int x = x0 - sin( rads ) * r * 0.9;
-            int y = y0 + cos( rads ) * r * 0.9;
+            int x = x0 - sin( rads ) * r * 0.8;
+            int y = y0 + cos( rads ) * r * 0.8;
             S.text( std::to_string( k * inc ), { x,y,30,30});
             S.line( { x, y,
                    (int)(x0 - sin( rads ) * r),

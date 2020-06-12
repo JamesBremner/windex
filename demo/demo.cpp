@@ -408,16 +408,22 @@ void SliderDemo()
 {
     // construct top level window
     gui& form = wex::maker::make();
-    form.move({ 50,50,500,400});
+    form.move({ 50,50,500,700});
     form.text("Slider demo");
 
     // construct labels to display values when sliders are moved
     wex::label& label = wex::maker::make<wex::label>(form);
-    label.move( 200, 200, 100,30 );
+    label.move( 200, 110, 100,30 );
     label.text("");
     wex::label& vlabel = wex::maker::make<wex::label>(form);
-    vlabel.move( 200, 240, 100,30 );
+    vlabel.move( 320, 110, 100,30 );
     vlabel.text("");
+
+    wex::guage& hg = wex::maker::make<wex::guage>(form);
+    hg.move(200,150, 200,200 );
+    hg.range(100);
+    wex::guage& hv = wex::maker::make<wex::guage>(form);
+    hv.move(200,350, 200,200 );
 
     // construct horizontal slider
     wex::slider& S = wex::maker::make<wex::slider>( form );
@@ -428,6 +434,8 @@ void SliderDemo()
     {
         label.text("horiz value: " + std::to_string( pos ));
         label.update();
+        hg.value( pos );
+        hg.update();
     });
 
     // construct vertical slider
@@ -440,6 +448,8 @@ void SliderDemo()
     {
         vlabel.text("vert value: " + std::to_string( pos ));
         vlabel.update();
+        hv.value( pos );
+        hv.update();
     });
 
     form.show();
@@ -777,7 +787,7 @@ int main()
 
     button& btnslider = wex::maker::make<button>( l );
     btnslider.size(  150, 30 );
-    btnslider.text( "Slider" );
+    btnslider.text( "Slider Guage" );
     btnslider.events().click([&]
     {
         SliderDemo();
