@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>windex: wex::layout Class Reference</title>
+<title>windex: wex::gauge Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,7 +62,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('classwex_1_1layout.html','');});
+$(document).ready(function(){initNavTree('classwex_1_1gauge.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -82,40 +82,31 @@ $(document).ready(function(){initNavTree('classwex_1_1layout.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classwex_1_1layout-members.html">List of all members</a>  </div>
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="classwex_1_1gauge-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">wex::layout Class Reference</div>  </div>
+<div class="title">wex::gauge Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>A panel which arranges the widgets it contains in a grid.  
- <a href="classwex_1_1layout.html#details">More...</a></p>
+<p>Widget to display a value on a circular clock face.  
+ <a href="classwex_1_1gauge.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="wex_8h_source.html">wex.h</a>&gt;</code></p>
 
-<p>Inherits <a class="el" href="classwex_1_1panel.html">wex::panel</a>.</p>
+<p>Inherits <a class="el" href="classwex_1_1gui.html">wex::gui</a>.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab1ff4b35e8d525cd589c28b74e5f272c"><td class="memItemLeft" align="right" valign="top"><a id="ab1ff4b35e8d525cd589c28b74e5f272c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>layout</b> (<a class="el" href="classwex_1_1gui.html">gui</a> *parent)</td></tr>
-<tr class="separator:ab1ff4b35e8d525cd589c28b74e5f272c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a061dc69496286b3d874f35a3cc275586"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1layout.html#a061dc69496286b3d874f35a3cc275586">grid</a> (int cols)</td></tr>
-<tr class="memdesc:a061dc69496286b3d874f35a3cc275586"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specify number of cols to use for layout.  <a href="#a061dc69496286b3d874f35a3cc275586">More...</a><br /></td></tr>
-<tr class="separator:a061dc69496286b3d874f35a3cc275586"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8072675d7f3d4d78ee460f4e01d1f679"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1layout.html#a8072675d7f3d4d78ee460f4e01d1f679">colWidths</a> (const std::vector&lt; int &gt; &amp;vw)</td></tr>
-<tr class="memdesc:a8072675d7f3d4d78ee460f4e01d1f679"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specify column widths.  <a href="#a8072675d7f3d4d78ee460f4e01d1f679">More...</a><br /></td></tr>
-<tr class="separator:a8072675d7f3d4d78ee460f4e01d1f679"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3139deccc9c1c8defb44d2ee7ade18e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1layout.html#aa3139deccc9c1c8defb44d2ee7ade18e">colfirst</a> (bool f=true)</td></tr>
-<tr class="memdesc:aa3139deccc9c1c8defb44d2ee7ade18e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specify that widgets should be added to fill columns first.  <a href="#aa3139deccc9c1c8defb44d2ee7ade18e">More...</a><br /></td></tr>
-<tr class="separator:aa3139deccc9c1c8defb44d2ee7ade18e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7878be732d9f2faf7b9495417bc97300"><td class="memItemLeft" align="right" valign="top"><a id="a7878be732d9f2faf7b9495417bc97300"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>draw</b> (PAINTSTRUCT &amp;ps)</td></tr>
-<tr class="separator:a7878be732d9f2faf7b9495417bc97300"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classwex_1_1panel"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classwex_1_1panel')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classwex_1_1panel.html">wex::panel</a></td></tr>
-<tr class="memitem:a4d87ee9ed57c26286ac6911e406b77e9 inherit pub_methods_classwex_1_1panel"><td class="memItemLeft" align="right" valign="top"><a id="a4d87ee9ed57c26286ac6911e406b77e9"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>panel</b> (<a class="el" href="classwex_1_1gui.html">gui</a> *parent)</td></tr>
-<tr class="separator:a4d87ee9ed57c26286ac6911e406b77e9 inherit pub_methods_classwex_1_1panel"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ae315905e4cba4091e0c829587c331a"><td class="memItemLeft" align="right" valign="top"><a id="a6ae315905e4cba4091e0c829587c331a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>gauge</b> (<a class="el" href="classwex_1_1gui.html">gui</a> *parent)</td></tr>
+<tr class="separator:a6ae315905e4cba4091e0c829587c331a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a678361033d1d1c11127f7d12859c4d6f"><td class="memItemLeft" align="right" valign="top"><a id="a678361033d1d1c11127f7d12859c4d6f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>range</b> (int max)</td></tr>
+<tr class="separator:a678361033d1d1c11127f7d12859c4d6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad80fc207415028b5b0dfda6e93d51d53"><td class="memItemLeft" align="right" valign="top"><a id="ad80fc207415028b5b0dfda6e93d51d53"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>value</b> (double v)</td></tr>
+<tr class="separator:ad80fc207415028b5b0dfda6e93d51d53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classwex_1_1gui"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classwex_1_1gui')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classwex_1_1gui.html">wex::gui</a></td></tr>
 <tr class="memitem:ae8ced09227dcf59687bad25b5ac407e7 inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#ae8ced09227dcf59687bad25b5ac407e7">gui</a> ()</td></tr>
 <tr class="memdesc:ae8ced09227dcf59687bad25b5ac407e7 inherit pub_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct top level window with no parent.  <a href="classwex_1_1gui.html#ae8ced09227dcf59687bad25b5ac407e7">More...</a><br /></td></tr>
@@ -233,8 +224,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setAsyncReadCompleteMsgID</b> (int id)</td></tr>
 <tr class="separator:ac2628f76bfb4e1aa4ada59c2723033ce inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:aaa2033e0ab0bd3cbe296240a97a83d3d"><td class="memItemLeft" align="right" valign="top"><a id="aaa2033e0ab0bd3cbe296240a97a83d3d"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>draw</b> (PAINTSTRUCT &amp;ps)</td></tr>
+<tr class="separator:aaa2033e0ab0bd3cbe296240a97a83d3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classwex_1_1gui"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classwex_1_1gui')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classwex_1_1gui.html">wex::gui</a></td></tr>
 <tr class="memitem:a35ecd0dadb78b8590a56814370ed65a3 inherit pro_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a35ecd0dadb78b8590a56814370ed65a3">Create</a> (HWND parent, const char *window_class, DWORD style, DWORD exstyle=0, int id=0)</td></tr>
 <tr class="memdesc:a35ecd0dadb78b8590a56814370ed65a3 inherit pro_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the managed window.  <a href="classwex_1_1gui.html#a35ecd0dadb78b8590a56814370ed65a3">More...</a><br /></td></tr>
@@ -252,6 +246,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a806001980af480dfe597e4a84107ff07 inherit pro_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="a806001980af480dfe597e4a84107ff07"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>scrollMove</b> (SCROLLINFO &amp;si, int code)</td></tr>
 <tr class="separator:a806001980af480dfe597e4a84107ff07 inherit pro_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_classwex_1_1gui"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classwex_1_1gui')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classwex_1_1gui.html">wex::gui</a></td></tr>
 <tr class="memitem:afc5922d198c63ffb3faa56b4525d0a80 inherit pro_attribs_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="afc5922d198c63ffb3faa56b4525d0a80"></a>
 HWND&#160;</td><td class="memItemRight" valign="bottom"><b>myHandle</b></td></tr>
@@ -304,118 +301,8 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="separator:a2013c49c970bb19ea2ee67fcea042568 inherit pro_attribs_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A panel which arranges the widgets it contains in a grid. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa3139deccc9c1c8defb44d2ee7ade18e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3139deccc9c1c8defb44d2ee7ade18e">&#9670;&nbsp;</a></span>colfirst()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void wex::layout::colfirst </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>f</em> = <code>true</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Specify that widgets should be added to fill columns first. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">f</td><td>column first flag, defaault true</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>By default ( if this method is not called ) rows are filled first</p>
-<pre>
- 1    2
- 3    4
- 5    6
- </pre><p>In column first, the widgets are added like this</p>
-<pre>
- 1    4
- 2    5
- 3    6
- </pre> 
-</div>
-</div>
-<a id="a8072675d7f3d4d78ee460f4e01d1f679"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8072675d7f3d4d78ee460f4e01d1f679">&#9670;&nbsp;</a></span>colWidths()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void wex::layout::colWidths </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
-          <td class="paramname"><em>vw</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Specify column widths. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">vw</td><td>vector of widths for each column </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a061dc69496286b3d874f35a3cc275586"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a061dc69496286b3d874f35a3cc275586">&#9670;&nbsp;</a></span>grid()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void wex::layout::grid </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>cols</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Specify number of cols to use for layout. </p>
-<p>The child windows will be laid out in the specified number of columns with the required number of rows to show them all.</p>
-<p>The space between columns and rows will be adjusted so that all child windows will be visible.</p>
-<p>The size of the child windows will not be altered. </p>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<div class="textblock"><p>Widget to display a value on a circular clock face. </p>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="wex_8h_source.html">wex.h</a></li>
 </ul>
 </div><!-- contents -->
@@ -423,8 +310,8 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1layout.html">layout</a></li>
-    <li class="footer">Generated on Fri Jun 12 2020 13:37:49 for windex by
+    <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1gauge.html">gauge</a></li>
+    <li class="footer">Generated on Fri Jun 12 2020 13:37:48 for windex by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

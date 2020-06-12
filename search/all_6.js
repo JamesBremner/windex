@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['gauge',['gauge',['../classwex_1_1gauge.html',1,'wex']]],
   ['get',['get',['../classwex_1_1windex.html#a1399a141f4efa2f0522b14363f014eed',1,'wex::windex']]],
   ['getmousestatus',['getMouseStatus',['../classwex_1_1gui.html#ad6555f709577418760b1485f2c1b8ebb',1,'wex::gui']]],
   ['grid',['grid',['../classwex_1_1layout.html#a061dc69496286b3d874f35a3cc275586',1,'wex::layout::grid()'],['../classwex_1_1plot_1_1plot.html#a70b248f875aaff62944052109e8d09f4',1,'wex::plot::plot::grid()']]],
