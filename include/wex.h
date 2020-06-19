@@ -58,6 +58,7 @@ public:
         dropStart([](HDROP hDrop) {});
         drop([](const std::vector< std::string >& files) {});
         asyncReadComplete([](int id) {});
+        tcpServerAccept([]{});
     }
     bool onLeftdown()
     {
@@ -154,6 +155,10 @@ public:
     void onAsyncReadComplete( int id )
     {
         myAsyncReadCompleteFunction( id );
+    }
+    void onTcpServerAccept()
+    {
+        myTcpServerAcceptFunction();
     }
     /////////////////////////// register event handlers /////////////////////
 
@@ -274,6 +279,10 @@ public:
     {
         myAsyncReadCompleteFunction = f;
     }
+    void tcpServerAccept( std::function<void(void)> f )
+    {
+        myTcpServerAcceptFunction = f;
+    }
 private:
     bool myfClickPropogate;
 
@@ -294,6 +303,7 @@ private:
     std::function<void(HDROP hDrop)> myDropStartFunction;
     std::function<void( const std::vector<std::string>& files)> myDropFunction;
     std::function<void( int id )> myAsyncReadCompleteFunction;
+    std::function<void(void)>myTcpServerAcceptFunction;
 
     // event handlers registered by windex class
     std::function<void(void)> myClickFunWex;
@@ -1104,6 +1114,10 @@ public:
 
             case WM_APP+1:
                 events().onAsyncReadComplete( wParam );
+                return true;
+
+            case WM_APP+2:
+                events().onTcpServerAccept();
                 return true;
             }
         }

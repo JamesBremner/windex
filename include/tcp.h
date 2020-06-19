@@ -1,9 +1,12 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <windows.h>
+#include <future>
+#include "wex.h"
 
 namespace wex
 {
-class tcp
+class tcp  : public gui
 {
 public:
     enum class eType
@@ -11,10 +14,9 @@ public:
         client,
         server,
     };
-    tcp()
-        : myType( eType::client )
+    tcp( gui* parent )
+        : gui( parent )
         ,mySocket( INVALID_SOCKET )
-
     {
         // Initialize Winsock
         WSADATA wsaData;
@@ -24,7 +26,7 @@ public:
         }
     }
     void client(
-        const std::string& ipaddr = "localhost",
+        const std::string& ipaddr = "127.0.0.1",
         const std::string& port = "27654" )
     {
         myType = eType::client;
@@ -52,6 +54,7 @@ public:
             throw std::runtime_error("socket failed" );
         }
 
+        std::cout <<"try connect to " << ipaddr <<":"<< port << "\n";
         if( ::connect(
                     mySocket,
                     result->ai_addr,
@@ -66,6 +69,7 @@ public:
     void server( const std::string& port = "27654" )
     {
         myType = eType::server;
+        myPort = port;
         struct addrinfo *result = NULL,
                              hints;
 
@@ -110,17 +114,50 @@ public:
             mySocket = INVALID_SOCKET;
             throw std::runtime_error("listen failed" );
         }
-        std::cout << "listening for client on port " << port << "\n";
+        std::cout << "=>accept\n";
 
-        SOCKET ClientSocket = accept(mySocket, NULL, NULL);
-        if (ClientSocket == INVALID_SOCKET) {
-             throw std::runtime_error("accept  failed" );
-        }
-        std::cout << "clent accepted\n";
+        // start blocking accept in own thread
+        myFuture = std::async(
+                       std::launch::async,              // insist on starting immediatly
+                       &tcp::accept,
+                       this );
+
+        // start waiting for read completion in own thread
+        myThread = new std::thread(accept_wait, this);
     }
 
 private:
     eType myType;
+    std::string myPort;
     SOCKET mySocket;
+    SOCKET myClientSocket;
+    std::future< void > myFuture;
+    std::thread*        myThread;
+
+
+
+    void accept()
+    {
+        std::cout << "listening for client on port " << myPort << "\n";
+
+        myClientSocket = ::accept(mySocket, NULL, NULL);
+        if (myClientSocket != INVALID_SOCKET)
+        {
+            std::cout << "clent accepted\n";
+        }
+    }
+    void accept_wait()
+    {
+        const int check_interval_msecs = 50;
+        while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
+        {
+
+        }
+        PostMessageA(
+            myParent->handle(),
+            WM_APP+2,
+            myID,
+            0 );
+    }
 };
 }
