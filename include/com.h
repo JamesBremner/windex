@@ -100,6 +100,26 @@ public:
         return myCOMHandle != 0;
     }
 
+    int baud()
+    {
+        if( ! isOpen() )
+            return 0;
+        DCB dcbSerialParams = { 0 }; // Initializing DCB structure
+        dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
+        GetCommState(myCOMHandle, &dcbSerialParams);
+        return dcbSerialParams.BaudRate;
+    }
+    void baud( int rate )
+    {
+        if( ! isOpen() )
+            return;
+        DCB dcbSerialParams = { 0 }; // Initializing DCB structure
+        dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
+        GetCommState(myCOMHandle, &dcbSerialParams);
+        dcbSerialParams.BaudRate = rate;
+        SetCommState(myCOMHandle, &dcbSerialParams);
+    }
+
     /** blocking read from COM port
         @param[in] needed byte count, -1 to read whatever becomes available
 

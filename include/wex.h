@@ -33,6 +33,13 @@ struct  sMouse
     bool shift;
 };
 
+enum eventMsgID
+{
+    asyncReadComplete = WM_APP+1,
+    tcpServerAccept,
+    tcpServerReadComplete,
+};
+
 
 /// A class where application code can register functions to be called when an event occurs
 class eventhandler
@@ -58,6 +65,8 @@ public:
         dropStart([](HDROP hDrop) {});
         drop([](const std::vector< std::string >& files) {});
         asyncReadComplete([](int id) {});
+        tcpServerAccept([]{});
+        tcpServerReadComplete([]{});
     }
     bool onLeftdown()
     {
@@ -154,6 +163,14 @@ public:
     void onAsyncReadComplete( int id )
     {
         myAsyncReadCompleteFunction( id );
+    }
+    void onTcpServerAccept()
+    {
+        myTcpServerAcceptFunction();
+    }
+    void onTcpServerReadComplete()
+    {
+        myTcpServerReadCompleteFunction();
     }
     /////////////////////////// register event handlers /////////////////////
 
@@ -274,6 +291,14 @@ public:
     {
         myAsyncReadCompleteFunction = f;
     }
+    void tcpServerAccept( std::function<void(void)> f )
+    {
+        myTcpServerAcceptFunction = f;
+    }
+    void tcpServerReadComplete( std::function<void(void)> f )
+    {
+        myTcpServerReadCompleteFunction = f;
+    }
 private:
     bool myfClickPropogate;
 
@@ -294,6 +319,8 @@ private:
     std::function<void(HDROP hDrop)> myDropStartFunction;
     std::function<void( const std::vector<std::string>& files)> myDropFunction;
     std::function<void( int id )> myAsyncReadCompleteFunction;
+    std::function<void(void)>myTcpServerAcceptFunction;
+    std::function<void(void)>myTcpServerReadCompleteFunction;
 
     // event handlers registered by windex class
     std::function<void(void)> myClickFunWex;
@@ -1102,8 +1129,16 @@ public:
                 events().onKeydown();
                 return true;
 
-            case WM_APP+1:
+            case eventMsgID::asyncReadComplete:
                 events().onAsyncReadComplete( wParam );
+                return true;
+
+            case eventMsgID::tcpServerAccept:
+                events().onTcpServerAccept();
+                return true;
+
+            case eventMsgID::tcpServerReadComplete:
+                events().onTcpServerReadComplete();
                 return true;
             }
         }
