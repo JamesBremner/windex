@@ -32,11 +32,15 @@ var classwex_1_1eventhandler =
     [ "onScrollV", "classwex_1_1eventhandler.html#a78012aaeeca31417a62630a2b60f9189", null ],
     [ "onSelect", "classwex_1_1eventhandler.html#a7131625eafed2c7aa4051bead49650a6", null ],
     [ "onSlid", "classwex_1_1eventhandler.html#ac76f35c2bc43986eb99931842e60ecda", null ],
+    [ "onTcpServerAccept", "classwex_1_1eventhandler.html#acf96f99a77f5d08aa2b4c5fa1b505937", null ],
+    [ "onTcpServerReadComplete", "classwex_1_1eventhandler.html#aab4e878fd2f1dd6cee74c9cf849ead97", null ],
     [ "onTimer", "classwex_1_1eventhandler.html#ab43755f8ffe1bae73e6ef1bd246e6f55", null ],
     [ "resize", "classwex_1_1eventhandler.html#a1db594a6413ea3f7baecdefdfe77062a", null ],
     [ "scrollH", "classwex_1_1eventhandler.html#a401f6f46352fbe1dcfcdfee310d517d6", null ],
     [ "scrollV", "classwex_1_1eventhandler.html#a468d9a350d9693ba4d2b31bb9aca83f4", null ],
     [ "select", "classwex_1_1eventhandler.html#ab8554229bade31390ec7efa810da5b91", null ],
     [ "slid", "classwex_1_1eventhandler.html#aa2a247d34e03f769d2db1c06f7d7dbc9", null ],
+    [ "tcpServerAccept", "classwex_1_1eventhandler.html#affb4f510313547e4520336e46ce567a1", null ],
+    [ "tcpServerReadComplete", "classwex_1_1eventhandler.html#a9620ca2f6525af8ae5ea268aec4efc11", null ],
     [ "timer", "classwex_1_1eventhandler.html#abf4cd182ea44e50164b384de41678601", null ]
 ];

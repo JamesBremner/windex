@@ -28,12 +28,13 @@ var annotated =
       [ "menubar", "classwex_1_1menubar.html", "classwex_1_1menubar" ],
       [ "timer", "classwex_1_1timer.html", "classwex_1_1timer" ],
       [ "slider", "classwex_1_1slider.html", "classwex_1_1slider" ],
-      [ "clock", "classwex_1_1clock.html", "classwex_1_1clock" ],
+      [ "gauge", "classwex_1_1gauge.html", "classwex_1_1gauge" ],
       [ "maker", "classwex_1_1maker.html", null ],
       [ "tabbed", "classwex_1_1tabbed.html", "classwex_1_1tabbed" ],
       [ "property", "classwex_1_1property.html", "classwex_1_1property" ],
       [ "propertyGrid", "classwex_1_1property_grid.html", "classwex_1_1property_grid" ],
       [ "window2file", "classwex_1_1window2file.html", "classwex_1_1window2file" ],
-      [ "com", "classwex_1_1com.html", "classwex_1_1com" ]
+      [ "com", "classwex_1_1com.html", "classwex_1_1com" ],
+      [ "tcp", "classwex_1_1tcp.html", "classwex_1_1tcp" ]
     ] ]
 ];

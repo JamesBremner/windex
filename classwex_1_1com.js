@@ -1,6 +1,8 @@
 var classwex_1_1com =
 [
     [ "com", "classwex_1_1com.html#a1c7760e830f62a867bb21f36b0f55725", null ],
+    [ "baud", "classwex_1_1com.html#a18053ff63728ceccbf7dce0cc3d2ee53", null ],
+    [ "baud", "classwex_1_1com.html#a041da4574288872449e048eef5958abd", null ],
     [ "DeviceControlString", "classwex_1_1com.html#ad2f77e8a2a54e45c037eb34a69f61dae", null ],
     [ "isOpen", "classwex_1_1com.html#aee892641a5b7813ad9e419594ecb00fa", null ],
     [ "open", "classwex_1_1com.html#a91bba49affba4cebbd3097667934878c", null ],

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['path',['path',['../classwex_1_1filebox.html#a3ddf3950a7af50786fb7bc4d84472d09',1,'wex::filebox']]],
+  ['path',['path',['../classwex_1_1filebox.html#ab3edd4e59e4973bd8eeddc398964f596',1,'wex::filebox']]],
   ['penthick',['penThick',['../classwex_1_1shapes.html#a08b1a2691cf2269729914de1bea0b30b',1,'wex::shapes']]],
   ['pixel',['pixel',['../classwex_1_1shapes.html#acbea31a4f58f95722b4f26323b05e9c4',1,'wex::shapes']]],
   ['plot',['plot',['../classwex_1_1plot_1_1plot.html#aa6eb2c8ed4cfb7723e1be1d27f757569',1,'wex::plot::plot']]],
