@@ -6,6 +6,7 @@
 
 namespace wex
 {
+/** \brief Read/Write to TCP/IP socket, client or server */
 class tcp  : public gui
 {
 public:
@@ -14,6 +15,9 @@ public:
         client,
         server,
     };
+    /** CTOR
+        @param[in] parent windows that will receive event messages
+    */
     tcp( gui* parent )
         : gui( parent )
         ,mySocket( INVALID_SOCKET )
@@ -25,6 +29,10 @@ public:
             throw std::runtime_error("Winsock init failed");
         }
     }
+    /** Create client socket
+        @param[in] ipaddr IP address of server, defaults to same computer
+        @param[in] port defaults to 27654
+    */
     void client(
         const std::string& ipaddr = "127.0.0.1",
         const std::string& port = "27654" )
@@ -66,6 +74,14 @@ public:
             throw std::runtime_error("connect failed "+std::to_string(WSAGetLastError()) );
         }
     }
+    /** Create server socket
+        @param[in] port, defaults to 27654
+
+        Starts listening for client connection.
+        Returns immediatly
+        throws runtime_error exception on error
+        sends eventMsgID::tcpServerAccept message to parent window when new client accepted
+    */
     void server( const std::string& port = "27654" )
     {
         myType = eType::server;
@@ -122,8 +138,48 @@ public:
                        &tcp::accept,
                        this );
 
-        // start waiting for read completion in own thread
+        // start waiting for accept completion in own thread
         myThread = new std::thread(accept_wait, this);
+    }
+
+    /// true if valid connection
+    bool isConnected()
+    {
+        return mySocket != INVALID_SOCKET;
+    }
+
+    /** send message to server
+        @param[in] msg
+    */
+    void send(const std::string& msg )
+    {
+        if( mySocket == INVALID_SOCKET )
+            return;
+        ::send(mySocket, msg.c_str(), (int) msg.length(), 0);
+    }
+    /// get socket connected to client
+    SOCKET& clientSocket()
+    {
+        return myClientSocket;
+    }
+    /** asynchronous read message from client
+        @param[in] s socket connected to client
+    */
+    void read( SOCKET& s )
+    {
+        if( s == INVALID_SOCKET )
+            return;
+        myFuture = std::async(
+                       std::launch::async,              // insist on starting immediatly
+                       &tcp::read_block,
+                       this,
+                       std::ref( s ) );
+        myThread = new std::thread(read_wait, this);
+    }
+    /// get pointer to receive buffer as null terminated character string
+    char * rcvbuf()
+    {
+        return (char*) myRecvbuf;
     }
 
 private:
@@ -133,7 +189,7 @@ private:
     SOCKET myClientSocket;
     std::future< void > myFuture;
     std::thread*        myThread;
-
+    unsigned char       myRecvbuf[1024];
 
 
     void accept()
@@ -156,6 +212,25 @@ private:
         PostMessageA(
             myParent->handle(),
             WM_APP+2,
+            myID,
+            0 );
+    }
+
+    void read_block( SOCKET& s )
+    {
+        ZeroMemory( myRecvbuf, 1024 );
+        ::recv( s, (char*)myRecvbuf, 1024, 0);
+    }
+    void read_wait()
+    {
+        const int check_interval_msecs = 50;
+        while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
+        {
+
+        }
+        PostMessageA(
+            myParent->handle(),
+            WM_APP+3,
             myID,
             0 );
     }

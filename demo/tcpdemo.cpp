@@ -11,10 +11,12 @@ private:
     wex::radiobutton& myClientrb;
     wex::radiobutton& myServerrb;
     wex::button& myConnectbn;
+    wex::button& mySendbn;
     wex::label& myStatus;
     wex::tcp& myTCP;
 
     void status(const std::string& msg );
+    void connect();
 };
 
 cGUI::cGUI()
@@ -22,6 +24,7 @@ cGUI::cGUI()
     , myClientrb( wex::maker::make<wex::radiobutton>( myForm ) )
     , myServerrb( wex::maker::make<wex::radiobutton>( myForm ) )
     , myConnectbn( wex::maker::make<wex::button>( myForm ) )
+    , mySendbn( wex::maker::make<wex::button>( myForm ) )
     , myStatus( wex::maker::make<wex::label>( myForm ) )
     , myTCP( wex::maker::make<wex::tcp>( myForm ) )
 {
@@ -41,53 +44,72 @@ cGUI::cGUI()
 
     myConnectbn.events().click([this]
     {
-        if( myServerrb.isChecked() )
+        connect();
+    });
+    myForm.events().tcpServerAccept([this]
+    {
+        status("Client connected");
+        myTCP.read( myTCP.clientSocket() );
+    });
+    myForm.events().tcpServerReadComplete([this]
+    {
+        status(std::string("client msg read: ") + myTCP.rcvbuf() );
+    });
+
+    mySendbn.move(50,150,100,30);
+    mySendbn.text("Send hello msg");
+    mySendbn.events().click([&]
+    {
+        myTCP.send("Hello");
+
+    });
+
+
+    myForm.show();
+
+}
+void cGUI::connect()
+{
+    if( myServerrb.isChecked() )
+    {
+        try
         {
-            try
-            {
-                myTCP.server();
-                status("Waiting for client to connedct");
-            }
-            catch( std::runtime_error& e )
-            {
-                status(std::string("Cannot start server ") + e.what() );
-            }
+            myTCP.server();
+            status("Waiting for client to connect");
+            mySendbn.enable( false );
         }
-        else {
-                try
-                {
-                    myTCP.client();
-                    status("Connected to server ");
-                }
-                catch( std::runtime_error& e )
-                {
-                    status(std::string("Cannot connect to server ") + e.what() );
-
-                }
-            }
-        });
-        myForm.events().tcpServerAccept([this]
+        catch( std::runtime_error& e )
         {
-            status("Client connected");
-        });
-
-
-        myForm.show();
-
+            status(std::string("Cannot start server ") + e.what() );
+        }
     }
-    void cGUI::status(const std::string& msg )
+    else
     {
-            myStatus.text(msg);
-            myStatus.update();
-    }
-    void cGUI::run()
-    {
-        myForm.run();
-    }
-    int main()
-    {
+        try
+        {
+            myTCP.client();
+            status("Connected to server ");
+        }
+        catch( std::runtime_error& e )
+        {
+            status(std::string("Cannot connect to server ") + e.what() );
 
-        cGUI gui;
-        gui.run();
-        return 0;
+        }
     }
+}
+void cGUI::status(const std::string& msg )
+{
+    myStatus.text(msg);
+    myStatus.update();
+}
+void cGUI::run()
+{
+    myForm.run();
+}
+int main()
+{
+
+    cGUI gui;
+    gui.run();
+    return 0;
+}
