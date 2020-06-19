@@ -6,7 +6,10 @@
 
 namespace wex
 {
-/** \brief Read/Write to TCP/IP socket, client or server */
+/** @brief Read/Write to TCP/IP socket, client or server
+
+For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcpdemo.cpp
+*/
 class tcp  : public gui
 {
 public:
