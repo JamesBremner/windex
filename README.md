@@ -41,11 +41,15 @@ propertyGrid|	A grid of properties
 plot		|Draw a 2D plot
 trace		|Single trace to be plotted
 
+|COMMUNICATIONS||
+|---|---|
+com		|Read / write to COM serial port
+tcp  |Read / write to TCP/IP socket, server or client
+
 |MISCELLANEOUS||
 |---|---|
 maker		|A class for making windex objects
 eventhandler	|A class where application code registers functions to be called when an event occurs
-com		|Read / write to COM serial port
 drop		|A widget where users can drop files dragged from windows explorer
 shapes		|A class that offers application code methods to draw on a window
 sMouse		|A structure containing the mouse status for event handlers
