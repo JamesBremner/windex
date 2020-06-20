@@ -133,16 +133,8 @@ public:
             mySocket = INVALID_SOCKET;
             throw std::runtime_error("listen failed" );
         }
-        std::cout << "=>accept\n";
 
-        // start blocking accept in own thread
-        myFuture = std::async(
-                       std::launch::async,              // insist on starting immediatly
-                       &tcp::accept,
-                       this );
-
-        // start waiting for accept completion in own thread
-        myThread = new std::thread(accept_wait, this);
+        accept_async();
     }
 
     /// true if valid connection
@@ -228,6 +220,17 @@ private:
     std::thread*        myThread;
     unsigned char       myRecvbuf[1024];
 
+    void accept_async()
+    {
+         // start blocking accept in own thread
+        myFuture = std::async(
+                       std::launch::async,              // insist on starting immediatly
+                       &tcp::accept,
+                       this );
+
+        // start waiting for accept completion in own thread
+        myThread = new std::thread(accept_wait, this);
+    }
 
     void accept()
     {
@@ -241,16 +244,22 @@ private:
     }
     void accept_wait()
     {
-        const int check_interval_msecs = 50;
+        // loop checking for client connection
+        const int check_interval_msecs = 500;
         while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
         {
 
         }
+        // post message to parent window
+        // handler will run in thrad that created the parent window
         PostMessageA(
             myParent->handle(),
             WM_APP+2,
             myID,
             0 );
+
+        // ready to accept next client
+        accept_async();
     }
 
     void read_block( SOCKET& s )
