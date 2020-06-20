@@ -157,8 +157,28 @@ public:
     void send(const std::string& msg )
     {
         if( mySocket == INVALID_SOCKET )
-            return;
-        ::send(mySocket, msg.c_str(), (int) msg.length(), 0);
+            throw std::runtime_error("send on invalid socket");
+        if( myType == eType::server )
+            throw std::runtime_error("server send on client");
+        ::send(
+            mySocket,
+            msg.c_str(),
+            (int) msg.length(), 0);
+    }
+    /** send message to client
+        @param[in] s scocket connected to client
+        @param[in] msg
+    */
+    void send( SOCKET& s,const std::string& msg )
+    {
+        if( mySocket == INVALID_SOCKET )
+             throw std::runtime_error("send on invalid socket");
+        if( myType == eType::client )
+             throw std::runtime_error("client send on server");
+        ::send(
+            s,
+            msg.c_str(),
+            (int) msg.length(), 0);
     }
     /// get socket connected to client
     SOCKET& clientSocket()
@@ -171,7 +191,7 @@ public:
     void read( SOCKET& s )
     {
         if( s == INVALID_SOCKET )
-            return;
+            throw std::runtime_error("read on invalid socket");
         myFuture = std::async(
                        std::launch::async,              // insist on starting immediatly
                        &tcp::read_block,
@@ -179,10 +199,24 @@ public:
                        std::ref( s ) );
         myThread = new std::thread(read_wait, this);
     }
+    void read()
+    {
+        if( mySocket == INVALID_SOCKET )
+            throw std::runtime_error("read on invalid socket");
+        if( myType == eType::server )
+            throw std::runtime_error("server read on client");
+        read( mySocket );
+    }
+
     /// get pointer to receive buffer as null terminated character string
     char * rcvbuf()
     {
         return (char*) myRecvbuf;
+    }
+
+    bool isServer()
+    {
+        return myType == eType::server;
     }
 
 private:

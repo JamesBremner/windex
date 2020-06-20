@@ -14,6 +14,7 @@ private:
     wex::button& mySendbn;
     wex::label& myStatus;
     wex::tcp& myTCP;
+    SOCKET * myClientSocket;
 
     void status(const std::string& msg );
     void connect();
@@ -49,19 +50,29 @@ cGUI::cGUI()
     myForm.events().tcpServerAccept([this]
     {
         status("Client connected");
-        myTCP.read( myTCP.clientSocket() );
+        myClientSocket = &myTCP.clientSocket();
+        myTCP.read( *myClientSocket );
     });
     myForm.events().tcpServerReadComplete([this]
     {
-        status(std::string("client msg read: ") + myTCP.rcvbuf() );
+        // display mesage
+        status(std::string("Msg read: ") + myTCP.rcvbuf() );
+
+        // setup for next message
+        if( myTCP.isServer() )
+            myTCP.read( *myClientSocket );
+        else
+            myTCP.read();
     });
 
     mySendbn.move(50,150,100,30);
     mySendbn.text("Send hello msg");
     mySendbn.events().click([&]
     {
-        myTCP.send("Hello");
-
+        if( myServerrb.isChecked() )
+            myTCP.send( myTCP.clientSocket(), "Hello" );
+        else
+            myTCP.send("Hello");
     });
 
 
@@ -76,7 +87,6 @@ void cGUI::connect()
         {
             myTCP.server();
             status("Waiting for client to connect");
-            mySendbn.enable( false );
         }
         catch( std::runtime_error& e )
         {
@@ -89,6 +99,7 @@ void cGUI::connect()
         {
             myTCP.client();
             status("Connected to server ");
+            myTCP.read();
         }
         catch( std::runtime_error& e )
         {
