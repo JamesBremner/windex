@@ -42,8 +42,8 @@
 			<Add library="comdlg32" />
 			<Add library="Ws2_32" />
 		</Linker>
+		<Unit filename="../../demo/tcpdemo.cpp" />
 		<Unit filename="../../include/tcp.h" />
-		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
