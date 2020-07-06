@@ -41,6 +41,72 @@ enum eventMsgID
 };
 
 
+class modalMgr
+{
+public:
+    /// get reference to singleton modal manager
+    static modalMgr& get()
+    {
+        static  modalMgr theModalMgr;
+        return theModalMgr;
+    }
+
+    /** Set modal running
+    @param[in] id of modal window starting to run
+    @return true if successful, false if other modal winow running
+
+    If other modal window running, it gets focus
+
+    */
+    bool set( int id, HWND h )
+    {
+        if( myModalID ) {
+            std::cout << "App tried to show two modal windows\n";
+            SetFocus( myModalHandle );
+            return false;
+        }
+
+        myModalID = id;
+        myModalHandle = h;
+        return true;
+    }
+
+    /** Can a window be closed
+        @param[in] is of window requesting to be closed
+        @return true if window can be closed
+
+        Window can be closed if no modal running
+        or if window to be closed is the the running modal
+    */
+    bool canClose( int id )
+    {
+        if( ! myModalID )
+            return true;        // no modal window is running
+
+        if ( myModalID == id )
+        {
+            // the modal window is being closed
+            myModalID = 0;
+            return true;
+        }
+
+        // attempt to close other window while modal window is running
+        // give the modal window focus
+        SetFocus( myModalHandle );
+        return false;
+    }
+
+private:
+    int myModalID;
+    HWND myModalHandle;
+
+    modalMgr()
+        : myModalID(0)
+    {
+
+    }
+};
+
 /// A class where application code can register functions to be called when an event occurs
 class eventhandler
 {
@@ -1009,20 +1075,12 @@ public:
 
                 // Premission to close window requested
 
-                if( modalRunning(-1) > 0 )
+                if( modalMgr::get().canClose( myID ) )
                 {
-                    // there is a modal window open
-                    if( modalRunning(-1) != myID )
-                    {
-                        // this is not the modal window, reject close request
-                        return true;
-                    }
-                    // stop modal running
-                    modalRunning( 0 );
+                    // close permission granted
+                    DestroyWindow( myHandle );
                 }
 
-                // close permission granted
-                DestroyWindow( myHandle );
                 return true;
 
             case WM_DESTROY:
@@ -1192,7 +1250,8 @@ public:
     void showModal()
     {
         myfModal = true;
-        modalRunning( myID );
+        if( ! modalMgr::get().set( myID, myHandle ) )
+            return;
         show();
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
@@ -1210,7 +1269,7 @@ public:
     void endModal()
     {
         myfModal = false;
-        modalRunning( 0 );
+        modalMgr::get().set(0,0);
         DestroyWindow(myHandle);
     }
 
@@ -1466,18 +1525,6 @@ private:
                         (WPARAM) 0, (LPARAM) 0 ));
             }
         }
-    }
-
-    /** Set/query modal running
-    @param[in] id of modal window starting to run, or -1 for query
-    @return id of modal window running, or 0 if no modal window
-    */
-    int modalRunning( int id )
-    {
-        static int modalid = 0;
-        if( id >= 0 )
-            modalid = id;
-        return modalid;
     }
 };
 
