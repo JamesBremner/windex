@@ -230,6 +230,7 @@ void InputboxDemo( gui& form )
     ib.add("A","72");
     ib.add("B","4600");
     ib.choice("Choose", { "X", "Y"} );
+    std::cout << "showing modal " << ib.id() << "\n";
     ib.showModal();
 
     std::string msg =

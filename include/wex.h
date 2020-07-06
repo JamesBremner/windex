@@ -65,8 +65,8 @@ public:
         dropStart([](HDROP hDrop) {});
         drop([](const std::vector< std::string >& files) {});
         asyncReadComplete([](int id) {});
-        tcpServerAccept([]{});
-        tcpServerReadComplete([]{});
+        tcpServerAccept([] {});
+        tcpServerReadComplete([] {});
     }
     bool onLeftdown()
     {
@@ -1005,15 +1005,36 @@ public:
         {
             switch (uMsg)
             {
+            case WM_CLOSE:
+
+                // Premission to close window requested
+
+                if( modalRunning(-1) > 0 )
+                {
+                    // there is a modal window open
+                    if( modalRunning(-1) != myID )
+                    {
+                        // this is not the modal window, reject close request
+                        return true;
+                    }
+                    // stop modal running
+                    modalRunning( 0 );
+                }
+
+                // close permission granted
+                DestroyWindow( myHandle );
+                return true;
+
             case WM_DESTROY:
+
                 // if this is the appliction window
                 // then quit application when destroyed
                 if( myID == 1 )
                     PostQuitMessage(0);
                 return true;
-                return true;
 
             case WM_NCDESTROY:
+
                 // all the children are gone
                 // so a modal display can close
                 myfModal = false;
@@ -1171,6 +1192,7 @@ public:
     void showModal()
     {
         myfModal = true;
+        modalRunning( myID );
         show();
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
@@ -1188,6 +1210,7 @@ public:
     void endModal()
     {
         myfModal = false;
+        modalRunning( 0 );
         DestroyWindow(myHandle);
     }
 
@@ -1288,8 +1311,9 @@ public:
         for( auto w : myChild )
             w->setfont( myLogFont, myFont );
     }
-    void setAsyncReadCompleteMsgID( int id ) {
-    myAsyncReadCompleteMsgID = id;
+    void setAsyncReadCompleteMsgID( int id )
+    {
+        myAsyncReadCompleteMsgID = id;
     }
 
 
@@ -1442,6 +1466,18 @@ private:
                         (WPARAM) 0, (LPARAM) 0 ));
             }
         }
+    }
+
+    /** Set/query modal running
+    @param[in] id of modal window starting to run, or -1 for query
+    @return id of modal window running, or 0 if no modal window
+    */
+    int modalRunning( int id )
+    {
+        static int modalid = 0;
+        if( id >= 0 )
+            modalid = id;
+        return modalid;
     }
 };
 

@@ -1,3 +1,4 @@
+#pragma once
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
@@ -164,9 +165,9 @@ public:
     void send( SOCKET& s,const std::string& msg )
     {
         if( mySocket == INVALID_SOCKET )
-             throw std::runtime_error("send on invalid socket");
+            throw std::runtime_error("send on invalid socket");
         if( myType == eType::client )
-             throw std::runtime_error("client send on server");
+            throw std::runtime_error("client send on server");
         ::send(
             s,
             msg.c_str(),
@@ -176,6 +177,10 @@ public:
     SOCKET& clientSocket()
     {
         return myClientSocket;
+    }
+    int port() const
+    {
+        return atoi( myPort.c_str() );
     }
     /** asynchronous read message from client
         @param[in] s socket connected to client
@@ -219,10 +224,11 @@ private:
     std::future< void > myFuture;
     std::thread*        myThread;
     unsigned char       myRecvbuf[1024];
+    std::string         myRemoteAddress;
 
     void accept_async()
     {
-         // start blocking accept in own thread
+        // start blocking accept in own thread
         myFuture = std::async(
                        std::launch::async,              // insist on starting immediatly
                        &tcp::accept,
@@ -236,11 +242,18 @@ private:
     {
         std::cout << "listening for client on port " << myPort << "\n";
 
-        myClientSocket = ::accept(mySocket, NULL, NULL);
-        if (myClientSocket != INVALID_SOCKET)
-        {
-            std::cout << "clent accepted\n";
-        }
+        struct sockaddr_in client_info;
+        int size = sizeof(client_info);
+        myClientSocket = ::accept(
+                             mySocket,
+                             (sockaddr*)&client_info,
+                             &size );
+        if (myClientSocket == INVALID_SOCKET)
+            return;
+
+        myRemoteAddress = inet_ntoa(client_info.sin_addr);;
+        std::cout << "clent " << myRemoteAddress << " accepted\n";
+
     }
     void accept_wait()
     {
