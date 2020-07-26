@@ -430,6 +430,9 @@ private:
 class shapes
 {
 public:
+    /** Constructor
+        @param[in] ps The PAINTSTRUCT passed as parameter into the draw event handler
+    */
     shapes( PAINTSTRUCT& ps )
         : myHDC( ps.hdc )
         , myPenThick( 1 )
@@ -1327,6 +1330,9 @@ public:
         MoveWindow( myHandle,
                     x, y, w, h, false);
     }
+    /** Size of window client area
+        @return vector [0] width of window in pixels [1] height of window in pixels
+    */
     std::vector<int> size()
     {
         RECT r;
