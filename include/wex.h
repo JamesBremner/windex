@@ -60,7 +60,13 @@ public:
     */
     bool set( int id, HWND h )
     {
-        if( myModalID ) {
+        if( ! id )
+        {
+            myModalID = 0;
+            return true;
+        }
+        if( myModalID )
+        {
             std::cout << "App tried to show two modal windows\n";
             SetFocus( myModalHandle );
             return false;
