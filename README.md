@@ -62,7 +62,7 @@ No separate build step is required. since this is a header only library.  This a
 
  - Add `"include "wex.h";` to application source files that use windex.
  - Add the `include` folder to the compiler search directories.
- - Add the windows library gdi32 to the linker command
+ - Add the windows libraries gdi32, comdlg32 to the linker command
 
 # Hello World
 
