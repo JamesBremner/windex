@@ -2658,6 +2658,13 @@ public:
     {
         return myfname;
     }
+    /// get filename entered by user as wide string
+    std::wstring wpath() const
+    {
+        std::wstring ws(myfname.size(), L' '); // Overestimate number of code points.
+        ws.resize(std::mbstowcs(&ws[0], myfname.c_str(), myfname.size())); // Shrink to fit.
+        return ws;
+    }
 private:
     OPENFILENAME ofn;       // common dialog box structure
     char szFile[260];       // buffer for file name
