@@ -640,6 +640,19 @@ public:
             t.c_str(),
             t.length() );
     }
+        void text(
+        const std::wstring& t,
+        const std::vector<int>& v )
+    {
+        if( (int)v.size() < 2 )
+            return;
+        TextOutW(
+            myHDC,
+            v[0],
+            v[1],
+            t.c_str(),
+            t.length() );
+    }
     void textCenterHz (
         const std::string& t,
         const std::vector<int>& v )
@@ -881,6 +894,11 @@ public:
     {
         myText = text;
         SetWindowText( myHandle, text.c_str() );
+    }
+        void text( const std::wstring& text )
+    {
+        myTextW = text;
+        SetWindowTextW( myHandle, text.c_str() );
     }
     std::string text() const
     {
@@ -1398,6 +1416,7 @@ protected:
     HFONT myFont;
     std::vector< HWND >* myDeleteList;
     std::string myText;
+    std::wstring myTextW;
     int myID;
     std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
     bool myfModal;                          ///< true if element is being shown as modal
@@ -2722,6 +2741,24 @@ public:
         // add item to menu
         auto mi = CommandHandlers().size();
         AppendMenu(
+            myM,
+            0,
+            mi,
+            title.c_str());
+
+        // store function to run when menu item clicked in popup
+        CommandHandlers().push_back( f );
+
+        // store function to run when menu item click in menubar
+        myParent.events().menuCommand( mi, f );
+    }
+    void append(
+        const std::wstring& title,
+        const std::function<void(void)>& f = [] {})
+    {
+        // add item to menu
+        auto mi = CommandHandlers().size();
+        AppendMenuW(
             myM,
             0,
             mi,
