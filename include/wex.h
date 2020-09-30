@@ -640,7 +640,7 @@ public:
             t.c_str(),
             t.length() );
     }
-        void text(
+    void text(
         const std::wstring& t,
         const std::vector<int>& v )
     {
@@ -895,7 +895,7 @@ public:
         myText = text;
         SetWindowText( myHandle, text.c_str() );
     }
-        void text( const std::wstring& text )
+    void text( const std::wstring& text )
     {
         myTextW = text;
         SetWindowTextW( myHandle, text.c_str() );
@@ -1486,12 +1486,20 @@ protected:
             RECT r( ps.rcPaint );
             r.left += 1;
             r.top  += 1;
-            DrawText(
-                ps.hdc,
-                myText.c_str(),
-                -1,
-                &r,
-                0);
+            if( ! myTextW.length() )
+                DrawText(
+                    ps.hdc,
+                    myText.c_str(),
+                    -1,
+                    &r,
+                    0);
+            else
+                DrawTextW(
+                    ps.hdc,
+                    myTextW.c_str(),
+                    -1,
+                    &r,
+                    0);
         }
         myEvents.onDraw( ps );
     }
