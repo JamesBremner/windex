@@ -640,19 +640,7 @@ public:
             t.c_str(),
             t.length() );
     }
-    void text(
-        const std::wstring& t,
-        const std::vector<int>& v )
-    {
-        if( (int)v.size() < 2 )
-            return;
-        TextOutW(
-            myHDC,
-            v[0],
-            v[1],
-            t.c_str(),
-            t.length() );
-    }
+
     void textCenterHz (
         const std::string& t,
         const std::vector<int>& v )
@@ -895,11 +883,7 @@ public:
         myText = text;
         SetWindowText( myHandle, text.c_str() );
     }
-    void text( const std::wstring& text )
-    {
-        myTextW = text;
-        SetWindowTextW( myHandle, text.c_str() );
-    }
+
     std::string text() const
     {
         return myText;
@@ -1416,7 +1400,6 @@ protected:
     HFONT myFont;
     std::vector< HWND >* myDeleteList;
     std::string myText;
-    std::wstring myTextW;
     int myID;
     std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
     bool myfModal;                          ///< true if element is being shown as modal
@@ -1486,20 +1469,12 @@ protected:
             RECT r( ps.rcPaint );
             r.left += 1;
             r.top  += 1;
-            if( ! myTextW.length() )
-                DrawText(
-                    ps.hdc,
-                    myText.c_str(),
-                    -1,
-                    &r,
-                    0);
-            else
-                DrawTextW(
-                    ps.hdc,
-                    myTextW.c_str(),
-                    -1,
-                    &r,
-                    0);
+            DrawText(
+                ps.hdc,
+                myText.c_str(),
+                -1,
+                &r,
+                0);
         }
         myEvents.onDraw( ps );
     }
@@ -2685,13 +2660,7 @@ public:
     {
         return myfname;
     }
-    /// get filename entered by user as wide string
-    std::wstring wpath() const
-    {
-        std::wstring ws(myfname.size(), L' '); // Overestimate number of code points.
-        ws.resize(std::mbstowcs(&ws[0], myfname.c_str(), myfname.size())); // Shrink to fit.
-        return ws;
-    }
+
 private:
     OPENFILENAME ofn;       // common dialog box structure
     char szFile[260];       // buffer for file name
@@ -2760,24 +2729,7 @@ public:
         // store function to run when menu item click in menubar
         myParent.events().menuCommand( mi, f );
     }
-    void append(
-        const std::wstring& title,
-        const std::function<void(void)>& f = [] {})
-    {
-        // add item to menu
-        auto mi = CommandHandlers().size();
-        AppendMenuW(
-            myM,
-            0,
-            mi,
-            title.c_str());
 
-        // store function to run when menu item clicked in popup
-        CommandHandlers().push_back( f );
-
-        // store function to run when menu item click in menubar
-        myParent.events().menuCommand( mi, f );
-    }
     /** Append submenu
         @param[in] title
         @param[in] submenu
