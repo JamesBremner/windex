@@ -2747,8 +2747,14 @@ public:
     /** Popup menu and run user selection.
         @param[in] x location
         @param[in] y location
+        @return command handler index
+
+    The command handler is global
+    so the index is for every menu so far constructed.
+    The index is zero-based but zero is also returned
+    if user clicks outside the menu.
     */
-    void popup(
+    int popup(
         int x, int y
     )
     {
@@ -2764,6 +2770,8 @@ public:
         // return of 0 indicates user clicked outside menu, rejecting all items
         if( 1 <= i && i < (int)CommandHandlers().size() )
             CommandHandlers()[i]();
+
+        return i;
     }
     HMENU handle()
     {
