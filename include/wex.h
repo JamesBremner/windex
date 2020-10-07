@@ -719,6 +719,7 @@ public:
         , myDeleteList( 0 )
         , myfModal( false )
         , myfEnabled( true )
+        , myfnobgerase( false )
         , myToolTip( NULL )
         , myAsyncReadCompleteMsgID( 0 )
     {
@@ -828,6 +829,11 @@ public:
         myBGColor = color;
         DeleteObject( myBGBrush);
         myBGBrush = CreateSolidBrush( color );
+    }
+
+    void nobgerase()
+    {
+        myfnobgerase = true;
     }
     /// Enable/Disable, default enable
     void enable( bool f = true )
@@ -1111,17 +1117,11 @@ public:
 
             case WM_ERASEBKGND:
             {
-//                if( ! myParent )
-//                {
+                if( myfnobgerase )
+                    return true;
                 RECT rc;
                 GetWindowRect(hwnd, &rc);
                 FillRect((HDC)wParam, &rc, myBGBrush );
-                return true;
-//               }
-//                RECT rc;
-//                GetWindowRect(hwnd, &rc);
-//                GetClientRect(hwnd,&rc );
-//                //FillRect((HDC)wParam, &rc, myBGBrush );
                 return true;
             }
 
@@ -1129,7 +1129,8 @@ public:
             {
                 PAINTSTRUCT ps;
                 BeginPaint(myHandle, &ps);
-                FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
+                if( ! myfnobgerase )
+                    FillRect(ps.hdc, &ps.rcPaint, myBGBrush );
                 draw(ps);
 
                 EndPaint(myHandle, &ps);
@@ -1404,6 +1405,7 @@ protected:
     std::vector< gui* > myChild;            ///< gui elements to be displayed in this window
     bool myfModal;                          ///< true if element is being shown as modal
     bool myfEnabled;                         ///< true if not disabled
+    bool myfnobgerase;
     HWND myToolTip;                         /// handle to tooltip control for this gui element
     unsigned int myAsyncReadCompleteMsgID;
 
