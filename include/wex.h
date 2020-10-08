@@ -172,7 +172,7 @@ public:
     }
     void onMenuCommand( int id )
     {
-        myVectorMenuFunction[id]( id );
+        myVectorMenuFunction[id]( myVectorMenuTitle[id] );
     }
     void onKeydown()
     {
@@ -295,15 +295,18 @@ public:
         myScrollVFunction = f;
     }
     /** Register function to run when menu item clicked
-        @param[in] id
         @param[in] f function to run when menu item with id is clicked
+        @param[in] title of menu item, passed as parameter to event handler
+        @return event handler index to be used as menu item index
     */
-    void menuCommand(
-        int& id,
-        std::function<void(int mi)> f )
+    int menuCommand(
+        std::function<void(const std::string& title )> f,
+        const std::string& title )
     {
-        id = (int)myVectorMenuFunction.size();
+        int id = (int)myVectorMenuFunction.size();
         myVectorMenuFunction.push_back( f );
+        myVectorMenuTitle.push_back( title );
+        return id;
     }
     void select(
         int id,
@@ -378,7 +381,8 @@ private:
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
     std::function<void(int code)> myScrollVFunction;
-    std::vector< std::function<void(int mi)> > myVectorMenuFunction;
+    std::vector< std::function<void(const std::string& title)> > myVectorMenuFunction;
+    std::vector< std::string > myVectorMenuTitle;
     std::function<void(void)> myKeydownFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
@@ -2710,22 +2714,17 @@ public:
         @param[in] title
         @param[in] f function to be run when menu item clicked
 
-        The function signature is void f( int mi ).
-
-        mi is the 1-based index of the popup menu item selected
+        The function signature is void f( const std::string& title ).
 
     */
     void append(
         const std::string& title,
-        const std::function<void(int mi)>& f = [] ( int mi ) {})
+        const std::function<void(const std::string&)>& f = [] ( const std::string& title ) {})
     {
-        // add item to menu
-        int mi;
-        myParent.events().menuCommand( mi, f );
         AppendMenu(
             myM,
             0,
-            mi,
+            myParent.events().menuCommand( f, title ),
             title.c_str());
     }
 
@@ -2752,12 +2751,12 @@ public:
     )
     {
         TrackPopupMenu(
-                    myM,
-                    0,
-                    x, y,
-                    0,
-                    myParent.handle(),
-                    NULL    );
+            myM,
+            0,
+            x, y,
+            0,
+            myParent.handle(),
+            NULL    );
     }
 
     HMENU handle()
