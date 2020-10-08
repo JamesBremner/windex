@@ -172,11 +172,7 @@ public:
     }
     void onMenuCommand( int id )
     {
-        auto fp = myMapMenuFunction.find( id );
-        if( fp != myMapMenuFunction.end() )
-        {
-            fp->second( id );
-        }
+        myVectorMenuFunction[id]( id );
     }
     void onKeydown()
     {
@@ -303,10 +299,11 @@ public:
         @param[in] f function to run when menu item with id is clicked
     */
     void menuCommand(
-        int id,
+        int& id,
         std::function<void(int mi)> f )
     {
-        myMapMenuFunction.insert( std::make_pair( id, f ));
+        id = (int)myVectorMenuFunction.size();
+        myVectorMenuFunction.push_back( f );
     }
     void select(
         int id,
@@ -381,7 +378,7 @@ private:
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
     std::function<void(int code)> myScrollVFunction;
-    std::map< int, std::function<void(int mi)> > myMapMenuFunction;
+    std::vector< std::function<void(int mi)> > myVectorMenuFunction;
     std::function<void(void)> myKeydownFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
@@ -2717,26 +2714,19 @@ public:
 
         mi is the 1-based index of the popup menu item selected
 
-        The index is global, that is it includes all menus so far constructed by the application
-
     */
     void append(
         const std::string& title,
         const std::function<void(int mi)>& f = [] ( int mi ) {})
     {
         // add item to menu
-        auto mi = CommandHandlers().size();
+        int mi;
+        myParent.events().menuCommand( mi, f );
         AppendMenu(
             myM,
             0,
             mi,
             title.c_str());
-
-        // store function to run when menu item clicked in popup
-        CommandHandlers().push_back( f );
-
-        // store function to run when menu item click in menubar
-        myParent.events().menuCommand( mi, f );
     }
 
     /** Append submenu
@@ -2756,33 +2746,20 @@ public:
     /** Popup menu and run user selection.
         @param[in] x location
         @param[in] y location
-        @return command handler index
-
-    The command handler is global
-    so the index is for every menu so far constructed.
-    The index is zero-based but zero is also returned
-    if user clicks outside the menu.
     */
-    int popup(
+    void popup(
         int x, int y
     )
     {
-        // display menu
-        int i = TrackPopupMenu(
+        TrackPopupMenu(
                     myM,
-                    TPM_RETURNCMD,
+                    0,
                     x, y,
                     0,
                     myParent.handle(),
                     NULL    );
-
-        // if user clicked item, execute associated function
-        // return of 0 indicates user clicked outside menu, rejecting all items
-        if( 1 <= i && i < (int)CommandHandlers().size() )
-            CommandHandlers()[i](i);
-
-        return i;
     }
+
     HMENU handle()
     {
         return myM;
@@ -2807,12 +2784,6 @@ public:
 private:
     HMENU myM;
     gui& myParent;
-
-    std::vector< std::function<void(int mi)> >& CommandHandlers()
-    {
-        static std::vector< std::function<void(int mi)> > myf;
-        return myf;
-    }
 };
 
 /// A widget that displays across top of a window and contains a number of dropdown menues.
