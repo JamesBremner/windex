@@ -175,7 +175,7 @@ public:
         auto fp = myMapMenuFunction.find( id );
         if( fp != myMapMenuFunction.end() )
         {
-            fp->second();
+            fp->second( id );
         }
     }
     void onKeydown()
@@ -304,7 +304,7 @@ public:
     */
     void menuCommand(
         int id,
-        std::function<void(void)> f )
+        std::function<void(int mi)> f )
     {
         myMapMenuFunction.insert( std::make_pair( id, f ));
     }
@@ -381,7 +381,7 @@ private:
     std::function<void(int w, int h)> myResizeFunction;
     std::function<void(int code)> myScrollHFunction;
     std::function<void(int code)> myScrollVFunction;
-    std::map< int, std::function<void(void)> > myMapMenuFunction;
+    std::map< int, std::function<void(int mi)> > myMapMenuFunction;
     std::function<void(void)> myKeydownFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
     std::function<void(int dist)> myMouseWheelFunction;
@@ -2712,10 +2712,17 @@ public:
     /** Append menu item.
         @param[in] title
         @param[in] f function to be run when menu item clicked
+
+        The function signature is void f( int mi ).
+
+        mi is the 1-based index of the popup menu item selected
+
+        The index is global, that is it includes all menus so far constructed by the application
+
     */
     void append(
         const std::string& title,
-        const std::function<void(void)>& f = [] {})
+        const std::function<void(int mi)>& f = [] ( int mi ) {})
     {
         // add item to menu
         auto mi = CommandHandlers().size();
@@ -2768,10 +2775,11 @@ public:
                     0,
                     myParent.handle(),
                     NULL    );
+
         // if user clicked item, execute associated function
         // return of 0 indicates user clicked outside menu, rejecting all items
         if( 1 <= i && i < (int)CommandHandlers().size() )
-            CommandHandlers()[i]();
+            CommandHandlers()[i](i);
 
         return i;
     }
@@ -2800,9 +2808,9 @@ private:
     HMENU myM;
     gui& myParent;
 
-    std::vector< std::function<void(void)> >& CommandHandlers()
+    std::vector< std::function<void(int mi)> >& CommandHandlers()
     {
-        static std::vector< std::function<void(void)> > myf;
+        static std::vector< std::function<void(int mi)> > myf;
         return myf;
     }
 };
