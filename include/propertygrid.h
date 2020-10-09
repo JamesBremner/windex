@@ -351,6 +351,7 @@ public:
     propertyGrid( gui* parent )
         : gui( parent,"windex",WS_CHILD,WS_EX_CONTROLPARENT )
         , myHeight( 25 )
+        , myHeightCategory( 2 )
         , myWidth( 300 )
         , myLabelWidth( 100 )
         , myBGColor( 0xc8c8c8)
@@ -439,6 +440,18 @@ public:
                 p.expand( fexpand );
                 visible();
                 return;
+            }
+        }
+    }
+    void expandAll(
+        bool fexpand = true )
+    {
+        for( auto& p : myProperty )
+        {
+            if( p.isCategory() )
+            {
+                p.expand( fexpand );
+                visible();
             }
         }
     }
@@ -535,6 +548,21 @@ public:
     {
         return myHeight;
     }
+
+    /// set property display height in pixels.  Default 25
+    void propHeight( int h )
+    {
+        myHeight = h;
+    }
+
+    /// set category height low i.e. just one property height, rather than 2x prop height
+    void categoryHeightLow( bool f = true )
+    {
+        if( f )
+            myHeightCategory = 1;
+        else
+            myHeightCategory = 2;
+    }
     int width() const
     {
         return myWidth;
@@ -566,6 +594,7 @@ public:
 private:
     std::vector< property > myProperty;     // the properties in the grid
     int myHeight;                           // height of a single property
+    int myHeightCategory;
     int myWidth;                            // width of grid
     int myLabelWidth;                       // width of property labels
     int myBGColor;                          // grid background color
@@ -610,9 +639,9 @@ private:
             if( P.isCategory() )
             {
                 //std::cout << "cat " << P.name()  << " at " << index << "\n";
-                P.move( { 0, index * myHeight, myWidth, 2 * myHeight } );     // category always visible
+                P.move( { 0, index * myHeight, myWidth, myHeightCategory * myHeight } );     // category always visible
                 P.show();
-                index += 2;             // display takes two rows
+                index += myHeightCategory;             // display takes two rows
                 expanded = P.isExpanded();       // control visibility of contained properties
             }
             else if( expanded )
