@@ -723,6 +723,7 @@ public:
         , myfnobgerase( false )
         , myToolTip( NULL )
         , myAsyncReadCompleteMsgID( 0 )
+        , myCursorID( 0 )
     {
         myID = NewID();
         Create(
@@ -768,6 +769,7 @@ public:
         , myDeleteList( 0 )
         , myfEnabled( true )
         , myToolTip( NULL )
+        , myCursorID( 0 )
     {
         // get a new unique ID
         myID = NewID();
@@ -876,6 +878,10 @@ public:
         SendMessage(myHandle, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
         SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
         SendMessage(GetWindow(myHandle, GW_OWNER), WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+    }
+    void cursor( char* cursorID )
+    {
+        myCursorID = cursorID;
     }
     int id()
     {
@@ -1221,6 +1227,14 @@ public:
                 events().onKeydown();
                 return true;
 
+            case WM_SETCURSOR:
+                if( myCursorID )
+                {
+                    SetCursor(LoadCursor(NULL,(LPCSTR)myCursorID));
+                    return true;
+                }
+                return false;
+
             case eventMsgID::asyncReadComplete:
                 events().onAsyncReadComplete( wParam );
                 return true;
@@ -1409,6 +1423,7 @@ protected:
     bool myfnobgerase;
     HWND myToolTip;                         /// handle to tooltip control for this gui element
     unsigned int myAsyncReadCompleteMsgID;
+    char* myCursorID;
 
 
     /** Create the managed window
@@ -2153,20 +2168,14 @@ public:
     }
     virtual void draw( PAINTSTRUCT& ps )
     {
-        //SelectObject (ps.hdc, myFont);
         SetBkColor(
             ps.hdc,
             myBGColor );
         RECT r( ps.rcPaint );
         int cbg = r.bottom-r.top-2;
         r.left += cbg+5;
-        r.top  += 1;
-//        DrawText(
-//            ps.hdc,
-//            myText.c_str(),
-//            -1,
-//            &r,
-//            0);
+        r.top  -= 2;
+
         shapes S( ps );
         S.textHeight( myLogFont.lfHeight);
         S.text( myText, { r.left, r.top, r.right, r.bottom } );
@@ -2719,7 +2728,7 @@ public:
     */
     void append(
         const std::string& title,
-        const std::function<void(const std::string&)>& f = [] ( const std::string& title ) {})
+    const std::function<void(const std::string&)>& f = [] ( const std::string& title ) {})
     {
         AppendMenu(
             myM,
