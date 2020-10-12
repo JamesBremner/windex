@@ -2719,6 +2719,10 @@ public:
     {
 
     }
+    ~menu()
+    {
+        DestroyMenu( myM );
+    }
     /** Append menu item.
         @param[in] title
         @param[in] f function to be run when menu item clicked
