@@ -451,9 +451,9 @@ public:
             if( p.isCategory() )
             {
                 p.expand( fexpand );
-                visible();
             }
         }
+        visible();
     }
     void move( const std::vector<int>& r )
     {
