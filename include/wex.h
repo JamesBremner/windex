@@ -2793,6 +2793,11 @@ public:
                    index,
                    uCheck );
     }
+    /// Number of items in menu
+    int size()
+    {
+        return GetMenuItemCount( myM );
+    }
 private:
     HMENU myM;
     gui& myParent;
