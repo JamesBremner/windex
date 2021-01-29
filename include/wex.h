@@ -240,6 +240,10 @@ public:
     {
         myTcpServerReadCompleteFunction();
     }
+    bool onQuitApp()
+    {
+        return myQuitAppFunction();
+    }
     /////////////////////////// register event handlers /////////////////////
 
     /** register click event handler
@@ -371,6 +375,13 @@ public:
     {
         myTcpServerReadCompleteFunction = f;
     }
+    /** register function to call when application is about to quit
+        The function should return true to allow the quit to proceed.
+    */
+    void quitApp( std::function<bool(void)> f )
+    {
+        myQuitAppFunction = f;
+    }
 private:
     bool myfClickPropogate;
 
@@ -394,6 +405,7 @@ private:
     std::function<void( int id )> myAsyncReadCompleteFunction;
     std::function<void(void)>myTcpServerAcceptFunction;
     std::function<void(void)>myTcpServerReadCompleteFunction;
+    std::function<bool(void)>myQuitAppFunction;
 
     // event handlers registered by windex class
     std::function<void(void)> myClickFunWex;
@@ -1099,11 +1111,21 @@ public:
 
                 // Premission to close window requested
 
-                if( modalMgr::get().canClose( myID ) )
+                if( ! modalMgr::get().canClose( myID ) )
                 {
-                    // close permission granted
-                    DestroyWindow( myHandle );
+                    // Cannot close when modal window running
+                    return true;
                 }
+                if( myID == 1 )
+                {
+                    // check with registered QuitApp function
+                    if( ! myEvents.onQuitApp() )
+                    {
+                        return true;
+                    }
+                }
+                // close permission granted
+                DestroyWindow( myHandle );
 
                 return true;
 
@@ -1112,7 +1134,9 @@ public:
                 // if this is the appliction window
                 // then quit application when destroyed
                 if( myID == 1 )
+                {
                     PostQuitMessage(0);
+                }
                 return true;
 
             case WM_NCDESTROY:
