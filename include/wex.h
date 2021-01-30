@@ -139,6 +139,7 @@ public:
         asyncReadComplete([](int id) {});
         tcpServerAccept([] {});
         tcpServerReadComplete([] {});
+        quitApp([]{return true;});
     }
     bool onLeftdown()
     {
