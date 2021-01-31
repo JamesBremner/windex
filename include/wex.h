@@ -139,7 +139,7 @@ public:
         asyncReadComplete([](int id) {});
         tcpServerAccept([] {});
         tcpServerReadComplete([] {});
-        quitApp([]{return true;});
+        quitApp([] {return true;});
     }
     bool onLeftdown()
     {
@@ -2319,7 +2319,8 @@ class editbox : public gui
 public:
     editbox( gui* parent )
         : gui( parent, "Edit",
-               WS_CHILD | ES_LEFT | WS_BORDER | WS_VISIBLE,
+               WS_CHILD | ES_LEFT | WS_BORDER | WS_VISIBLE
+               | ES_MULTILINE,
                WS_EX_CLIENTEDGE )
     {
 
@@ -2334,36 +2335,6 @@ public:
         }
     }
 
-    void multiline()
-    {
-        SetWindowLongPtr(
-            myHandle,
-            GWL_STYLE,
-            GetWindowLongPtr( myHandle, GWL_STYLE) |  ES_MULTILINE );
-    }
-
-    /// change text in textbox
-    void text( const std::string& t )
-    {
-        SetDlgItemText(
-            myParent->handle(),
-            myID,
-            t.c_str() );
-    }
-
-    /// get text in textbox
-    std::string text()
-    {
-        char buf[1000];
-        buf[0] = '\0';
-        GetDlgItemText(
-            myParent->handle(),
-            myID,
-            buf,
-            999
-        );
-        return std::string( buf );
-    }
     /// disable ( or enable ) user editing
     void readonly( bool f = true )
     {
@@ -2754,6 +2725,9 @@ public:
 
         The function signature is void f( const std::string& title ).
 
+        The title can be used by the function
+        if it needs to know the menue item title that caused execution
+        i.e when several items invoke the same function
     */
     void append(
         const std::string& title,

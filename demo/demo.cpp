@@ -28,14 +28,14 @@ void helloworld()
 
     // display textboxes
     editbox& edit1 = maker::make<editbox>( form );
-    edit1.move( {80, 20, 100, 30 } );
+    edit1.move( {80, 20, 100, 50 } );
     edit1.text( "type value");
     edit1.events().change( edit1.id(),[]
     {
         std::cout << "edit A changed\n" ;
     });
     editbox& edit2 = maker::make<editbox>( form );
-    edit2.move( {80, 60, 100, 30 } );
+    edit2.move( {80, 60, 100, 50 } );
     edit2.text( "type value");
 
     // display a button
@@ -495,7 +495,7 @@ void MenuDemo()
     menubar mb( form );
 
     menu f( form );
-    f.append("open",[&]
+    f.append("open",[&](const std::string& title)
     {
         msgbox mb("File open");
     });
