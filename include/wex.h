@@ -320,6 +320,9 @@ public:
         mapControlFunction().insert(
             std::make_pair( std::make_pair( id, CBN_SELCHANGE), f ));
     }
+    /** register function to call when control changes
+        @param[in] id of control
+    */
     void change(
         int id,
         std::function<void(void)> f )
@@ -2334,7 +2337,24 @@ public:
             std::cout << "done\n";
         }
     }
-
+    void text( const std::string& t )
+    {
+        SetDlgItemText(
+            myParent->handle(),
+            myID,
+            t.c_str() );
+    }
+    /// get text in textbox
+    std::string text()
+    {
+        char buf[1000];
+        buf[0] = '\0';
+        GetWindowText(
+            handle(),
+            buf,
+            999 );
+        return std::string( buf );
+    }
     /// disable ( or enable ) user editing
     void readonly( bool f = true )
     {
