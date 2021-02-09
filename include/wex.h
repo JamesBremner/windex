@@ -513,6 +513,10 @@ public:
             myHDC,
             c );
     }
+    void bgcolor( int r, int g, int b )
+    {
+        bgcolor( RGB(r,g,b) );
+    }
     /// enable/disable transparent background
     void transparent( bool f = true )
     {
@@ -2322,8 +2326,7 @@ class editbox : public gui
 public:
     editbox( gui* parent )
         : gui( parent, "Edit",
-               WS_CHILD | ES_LEFT | WS_BORDER | WS_VISIBLE
-               | ES_MULTILINE,
+               WS_CHILD | ES_LEFT | WS_BORDER | WS_VISIBLE,
                WS_EX_CLIENTEDGE )
     {
 
@@ -2365,6 +2368,37 @@ public:
     }
 };
 
+/// A mutiline editbox
+class multiline : public gui
+{
+public:
+    multiline( gui* parent )
+        : gui( parent, "Edit",
+               WS_CHILD | ES_LEFT | WS_BORDER | WS_VISIBLE
+               | ES_MULTILINE | ES_WANTRETURN,
+               WS_EX_CLIENTEDGE )
+    {
+
+    }
+    void text( const std::string& t )
+    {
+        SetDlgItemText(
+            myParent->handle(),
+            myID,
+            t.c_str() );
+    }
+    /// get text in textbox
+    std::string text()
+    {
+        char buf[1000];
+        buf[0] = '\0';
+        GetWindowText(
+            handle(),
+            buf,
+            999 );
+        return std::string( buf );
+    }
+};
 /// A widget where user can choose from a dropdown list of strings
 class choice : public gui
 {
