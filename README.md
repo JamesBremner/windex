@@ -13,7 +13,8 @@ menubar	|	A widget that displays across top of a window and contains a number of
 checkbox|	A widget that user can click to toggle a true/false value
 choice	|	A widget where user can choose from a dropdown list of strings
 list	|	A widget where user can choose from a displayed list of strings
-editbox	|	A widget where user can enter a string
+editbox	|	A widget where user can enter a string, single line
+multiline | A widget where user can enter a string, multiple lines
 gauge	|	A widget to display a value on a circular clock face
 radiobutton|	A widget that user can click to select one of an exclusive set of options
 slider	|	A widget which user can drag to change a value
