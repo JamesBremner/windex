@@ -914,7 +914,7 @@ public:
     void text( const std::string& text )
     {
         myText = text;
-        SetWindowText( myHandle, text.c_str() );
+        SetWindowText( myHandle, myText.c_str() );
     }
 
     std::string text() const
