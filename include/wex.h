@@ -529,7 +529,9 @@ public:
     void penThick( int t )
     {
         myPenThick = t;
+        color( myColor );
     }
+
     /// Set filling option
     void fill( bool f = true )
     {

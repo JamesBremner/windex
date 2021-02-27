@@ -168,7 +168,12 @@ public:
     {
         myColor = clr;
     }
-
+    /// set trace thickness in pixels
+    void thick( int t )
+    {
+        myThick = t;
+    }
+    /// get number of points
     int size()
     {
         return (int) myY.size();
@@ -193,6 +198,7 @@ private:
     std::vector< double > myX;
     std::vector< double > myY;
     int myColor;
+    int myThick;
     int myRealTimeNext;
     enum class eType
     {
@@ -207,7 +213,8 @@ private:
 
     */
     trace()
-        : myType( eType::plot )
+        : myThick( 1 )
+        , myType( eType::plot )
     {
 
     }
@@ -271,8 +278,8 @@ private:
     void update( PAINTSTRUCT& ps )
     {
         shapes S( ps );
+        S.penThick( myThick );
         S.color( myColor );
-        S.penThick( 20 );
 
         bool first = true;
         int xi    = 0;
