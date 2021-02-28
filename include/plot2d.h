@@ -430,6 +430,11 @@ public:
                         S.pixel( kp+1, yp );
                     }
             }
+            int yp =  scale::get().Y2Pixel( mx );
+            S.text( myMaxYLabel,
+            {
+                0, yp+10, 50, 15
+            });
         }
         else
         {
@@ -493,6 +498,13 @@ public:
         myMinXLabel = min;
         myMaxXLabel = max;
     }
+    void YLabels(
+        const std::string min,
+        const std::string max )
+    {
+        myMinYLabel = min;
+        myMaxYLabel = max;
+    }
 
     /** Set conversion from y value index to x user units
         @param[in] start x user value of first y-value
@@ -514,6 +526,8 @@ private:
     gui& myParent;
     std::string myMinXLabel;
     std::string myMaxXLabel;
+    std::string myMinYLabel;
+    std::string myMaxYLabel;
     int myMinXValue;
     int myMaxXValue;
     float myXStartValue;
@@ -876,6 +890,12 @@ public:
         const std::string max )
     {
         myAxisX->XLabels( min, max );
+    }
+    void YLabels(
+        const std::string min,
+        const std::string max )
+    {
+        myAxis->YLabels( min, max );
     }
     void dragExtend( sMouse& m )
     {
