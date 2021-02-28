@@ -2206,7 +2206,7 @@ public:
             ps.hdc,
             myBGColor );
         RECT r( ps.rcPaint );
-        int cbg = r.bottom-r.top-2;
+        int cbg = r.bottom-r.top-10;
         r.left += cbg+5;
         r.top  -= 2;
 
@@ -2214,7 +2214,7 @@ public:
         S.textHeight( myLogFont.lfHeight);
         S.text( myText, { r.left, r.top, r.right, r.bottom } );
         S.rectangle( { 0,0, cbg, cbg} );
-        S.penThick( 3 );
+        //S.penThick( 2 );
         S.color( 0 );
         switch( myType )
         {
@@ -2228,10 +2228,10 @@ public:
         case eType::plus:
             S.line( { 2,cbg/2, cbg-2,cbg/2} );
             if( myValue )
-                S.line( { cbg/2,2,cbg/2,cbg-2} );
+                S.line( { 1+cbg/2,2,1+cbg/2,cbg-2} );
             break;
         }
-        S.penThick( 1 );
+        //S.penThick( 1 );
     }
     void clickFunction( std::function<void(void)> f )
     {
