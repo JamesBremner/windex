@@ -456,6 +456,11 @@ public:
             S.line( { xmn_px, ypos,
                       xmx_px, ypos
                     });
+            S.text( myMaxXLabel,
+                   {
+                       xmx_px-50, ypos+3,
+                       50,15
+                   });
 
             if( myfGrid )
             {
