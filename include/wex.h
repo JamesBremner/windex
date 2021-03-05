@@ -558,6 +558,15 @@ public:
             v[2],
             v[3] );
     }
+
+    void polyLine( POINT* pp, int n )
+    {
+        Polyline(
+                 myHDC,
+                 pp,
+                 n );
+
+    }
     /** Draw rectangle
         @param[in] v vector with left, top, width height
     */

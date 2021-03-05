@@ -289,35 +289,23 @@ private:
         switch( myType )
         {
         case eType::plot:
-
-            // loop over data points
+        {
+            POINT p;
+            std::vector< POINT > vp;
             for( auto y : myY )
             {
                 // scale
-                double x  = scale::get().X2Pixel( xi );
-                double ys = scale::get().Y2Pixel( y );
+                p.x = scale::get().X2Pixel( xi );;
+                p.y = scale::get().Y2Pixel( y );
 
-                if( first )
-                {
-                    first = false;
-                    prevX = x;
-                    prev = ys;
-                    xi++;
-                    continue;
-                }
-
-                // draw line from previous to this data point
-                S.line(
-                {
-                    (int)prevX, (int)prev,
-                    (int)x, (int)ys
-                });
-
-                prevX = x;
-                prev = ys;
+                vp.push_back( p );
                 xi++;
             }
-            break;
+
+            S.polyLine( vp.data(), myY.size() );
+        }
+
+        break;
 
         case eType::scatter:
 
@@ -457,10 +445,10 @@ public:
                       xmx_px, ypos
                     });
             S.text( myMaxXLabel,
-                   {
-                       xmx_px-50, ypos+3,
-                       50,15
-                   });
+            {
+                xmx_px-50, ypos+3,
+                50,15
+            });
 
             if( myfGrid )
             {
