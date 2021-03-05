@@ -905,11 +905,17 @@ public:
         myStopDragY = m.y;
         update();
     }
+    /** Set conversion from y value index to x user units
+    @param[in] start x user value of first y-value
+    @param[in] scale to convert from index to user value
+
+    Used to label the x-axis
+    */
     void XValues(
-        int min,
-        int max )
+        float start,
+        float scale )
     {
-        myAxisX->XValues( min, max );
+        myAxisX->XValues( start, scale );
     }
 
     std::vector< trace* >& traces()
@@ -983,7 +989,7 @@ private:
         scale::get().bounds( myMinX, myMaxX, myMinY, myMaxY );
 
         std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
-        //std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
+        std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
     }
 
     void CalulateDataBounds()

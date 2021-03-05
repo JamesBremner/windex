@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/property_tree/ptree.hpp>
 #include "wex.h"
 namespace wex
 {
@@ -420,6 +421,25 @@ public:
     {
         property P( this, name );
         CommonConstruction( P );
+    }
+
+    void add( boost::property_tree::ptree& pt )
+    {
+        for(
+            boost::property_tree::ptree::iterator cat = pt.begin();
+             cat != pt.end();
+              cat++ )
+        {
+            std::cout << cat->first << "\n";
+            category( cat->first );
+            for(
+                boost::property_tree::ptree::iterator prop = cat->second.begin();
+                 prop != cat->second.end();
+                  prop++ )
+            {
+                std::cout << "\t" << prop->first << "\n";
+            }
+        }
     }
     /// Add scrollbars
     void scroll()
