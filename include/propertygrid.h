@@ -91,6 +91,13 @@ public:
         myCategoryExpanded.check();
         myCategoryExpanded.events().clickPropogate();
     }
+    ~property()
+    {
+        std::cout << myName << " delete\n";
+        myLabel.~gui();
+        myEditbox.~gui();
+        myCategoryExpanded.~gui();
+    }
     void move( const std::vector<int>& r )
     {
         std::vector<int> rl( r );
@@ -349,6 +356,9 @@ private:
 class propertyGrid : public gui
 {
 public:
+
+    typedef std::shared_ptr< property > prop_t;
+
     propertyGrid( gui* parent )
         : gui( parent,"windex",WS_CHILD,WS_EX_CONTROLPARENT )
         , myHeight( 25 )
@@ -384,10 +394,9 @@ public:
         const std::string& name,
         const std::string& value )
     {
-        property P( this, name, value );
-
-        CommonConstruction( P );
-        return myProperty.back();
+        myProperty.push_back( prop_t( new property(this, name, value) ) );
+        CommonConstruction();
+        return *myProperty.back().get();
     }
     /** Add choice property
         @param[in] name of property
@@ -398,9 +407,9 @@ public:
         const std::string& name,
         const std::vector< std::string >& choice )
     {
-        property P( this, name, choice );
-        CommonConstruction( P );
-        return myProperty.back();
+        myProperty.push_back( prop_t( new property( this, name, choice )) );
+        CommonConstruction();
+        return *myProperty.back().get();
     }
     /** Add boolean property
         @param[in] name of property
@@ -411,33 +420,44 @@ public:
         const std::string& name,
         bool f )
     {
-        property P( this, name, f );
-        CommonConstruction( P );
-        return myProperty.back();
+        myProperty.push_back( prop_t( new property( this, name, f )) );
+        CommonConstruction();
+        return *myProperty.back().get();
     }
     /// Add categoty
     void category(
         const std::string& name )
     {
-        property P( this, name );
-        CommonConstruction( P );
+        myProperty.push_back( prop_t( new property( this, name )) );
+        CommonConstruction();
     }
 
     void add( boost::property_tree::ptree& pt )
     {
-        for(
-            boost::property_tree::ptree::iterator cat = pt.begin();
-             cat != pt.end();
-              cat++ )
+//        for(
+//            boost::property_tree::ptree::iterator cat = pt.begin();
+//             cat != pt.end();
+//              cat++ )
+//        {
+//            std::cout << cat->first << "\n";
+//            category( cat->first );
+//            for(
+//                boost::property_tree::ptree::iterator prop = cat->second.begin();
+//                 prop != cat->second.end();
+//                  prop++ )
+//            {
+//                std::cout << "\t" << prop->first << "\n";
+//                string( prop->first, prop->second.data() );
+//            }
+
+        for( auto cat : pt )
         {
-            std::cout << cat->first << "\n";
-            category( cat->first );
-            for(
-                boost::property_tree::ptree::iterator prop = cat->second.begin();
-                 prop != cat->second.end();
-                  prop++ )
+            std::cout << cat.first << "\n";
+            category( cat.first );
+            for( auto prop : cat.second )
             {
-                std::cout << "\t" << prop->first << "\n";
+                std::cout << "\t" << prop.first << "\n";
+                string( prop.first, prop.second.data() );
             }
         }
     }
@@ -454,10 +474,10 @@ public:
     {
         for( auto& p : myProperty )
         {
-            if( p.name() == name &&
-                    p.isCategory() )
+            if( p->name() == name &&
+                    p->isCategory() )
             {
-                p.expand( fexpand );
+                p->expand( fexpand );
                 visible();
                 return;
             }
@@ -468,9 +488,9 @@ public:
     {
         for( auto& p : myProperty )
         {
-            if( p.isCategory() )
+            if( p->isCategory() )
             {
-                p.expand( fexpand );
+                p->expand( fexpand );
             }
         }
         visible();
@@ -489,7 +509,7 @@ public:
     void update()
     {
         for( auto& p : myProperty )
-            p.update();
+            p->update();
         gui::update();
     }
 
@@ -499,8 +519,8 @@ public:
         for( auto& p : myProperty )
         {
             //std::cout << "property::find " << name <<" "<< p.name() << "\n";
-            if( p.name() == name )
-                return &p;
+            if( p->name() == name )
+                return p.get();
         }
         return nullptr;
     }
@@ -514,18 +534,18 @@ public:
                 p != myProperty.end();
                 p++ )
         {
-            if( p->isCategory() )
+            if( (*p)->isCategory() )
             {
-                if( p->name() == category )
+                if( (*p)->name() == category )
                 {
                     for( p++;
                             p != myProperty.end();
                             p++ )
                     {
-                        if( p->isCategory() )
+                        if( (*p)->isCategory() )
                             return nullptr;
-                        if( p->name() == name)
-                            return &(*p);
+                        if( (*p)->name() == name)
+                            return p->get();
                     }
                 }
             }
@@ -560,7 +580,7 @@ public:
     {
         for( auto& p : myProperty )
         {
-            p.saveValue();
+            p->saveValue();
         }
     }
 
@@ -609,10 +629,10 @@ public:
 
         // add tabstop style to existing properties
         for( auto p : myProperty )
-            p.tabList( f );
+            p->tabList( f );
     }
 private:
-    std::vector< property > myProperty;     // the properties in the grid
+    std::vector< prop_t > myProperty;     // the properties in the grid
     int myHeight;                           // height of a single property
     int myHeightCategory;
     int myWidth;                            // width of grid
@@ -622,12 +642,11 @@ private:
     bool myftabstop;
     std::function<void()> onChange;         // funtion to call when property has changed
 
-    void CommonConstruction( property& P )
+    void CommonConstruction()
     {
-        P.labelWidth( myLabelWidth );
-        P.bgcolor( myBGColor );
-        myProperty.push_back( P );
-
+        prop_t P = myProperty.back();
+        P->labelWidth( myLabelWidth );
+        P->bgcolor( myBGColor );
         if( myfScroll )
             scrollRange(
                 myWidth,
@@ -635,47 +654,47 @@ private:
 
         visible();
 
-        P.change( [this]
+        P->change( [this]
         {
             onChange();
         });
 
         if( myftabstop )
-            P.tabList();
+            P->tabList();
     }
     /** Show properties when category is expanded or collapsed
     */
     void visible(  )
     {
         // hide all the properties
-        for( auto& P : myProperty)
-            P.show( false );
+        for( auto P : myProperty)
+            P->show( false );
 
         // show properties in expanded categories
         bool expanded = true;       /// true if current category is expanded
         int index = 0;              /// number of property heights displayed so far
-        for( auto& P : myProperty)
+        for( auto P : myProperty)
         {
-            if( P.isCategory() )
+            if( P->isCategory() )
             {
                 //std::cout << "cat " << P.name()  << " at " << index << "\n";
-                P.move( { 0, index * myHeight, myWidth, myHeightCategory * myHeight } );     // category always visible
-                P.show();
+                P->move( { 0, index * myHeight, myWidth, myHeightCategory * myHeight } );     // category always visible
+                P->show();
                 index += myHeightCategory;             // display takes two rows
-                expanded = P.isExpanded();       // control visibility of contained properties
+                expanded = P->isExpanded();       // control visibility of contained properties
             }
             else if( expanded )
             {
                 //std::cout << "show " << P.name() <<" at "<< index << "\n";
-                P.move( { 0, index * myHeight, myWidth, myHeight } );     // property is visible
-                P.show();
+                P->move( { 0, index * myHeight, myWidth, myHeight } );     // property is visible
+                P->show();
                 index++;                // displays in one row
             }
             else
             {
                 //std::cout << "hide " << P.name() << "\n";
-                P.move( { 0,0,0,0 });    // invisible property
-                P.show( false );
+                P->move( { 0,0,0,0 });    // invisible property
+                P->show( false );
             }
         }
         if( myfScroll )

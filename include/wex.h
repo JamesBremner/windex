@@ -828,6 +828,7 @@ public:
     virtual ~gui()
     {
         std::cout << "deleting " << myText << "\n";
+        DestroyWindow( myHandle );
         if( myDeleteList )
             myDeleteList->push_back( myHandle );
     }
