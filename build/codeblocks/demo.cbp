@@ -30,13 +30,14 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-fexceptions" />
 			<Add option="-std=c++17" />
+			<Add option="-fexceptions" />
 			<Add directory="../../include" />
+			<Add directory="$(#boost)" />
 		</Compiler>
 		<Linker>
-			<Add option="-static" />
 			<Add option="-static-libgcc" />
+			<Add option="-static" />
 			<Add library="gdi32" />
 			<Add library="comdlg32" />
 			<Add library="gdiplus" />
@@ -49,9 +50,6 @@
 		<Unit filename="../../include/wex.h" />
 		<Unit filename="../../include/window2file.h" />
 		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
 			<DoxyBlocks>
 				<comment_style block="0" line="0" />
 				<doxyfile_project />

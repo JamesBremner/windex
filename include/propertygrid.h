@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include "wex.h"
 namespace wex
 {
@@ -352,7 +353,10 @@ private:
     }
     myType;
 };
-/// A grid of properties
+/** A grid of properties.
+
+Add boost to the compiler include seath list
+*/
 class propertyGrid : public gui
 {
 public:
@@ -432,35 +436,70 @@ public:
         CommonConstruction();
     }
 
+    /** Add properties from boost property tree
+        @param[in] pt property tree
+
+        Top level becomes categories
+        Second level becomer properties
+        Deeper levels ignored
+
+        String properties only supported
+    */
     void add( boost::property_tree::ptree& pt )
     {
-//        for(
-//            boost::property_tree::ptree::iterator cat = pt.begin();
-//             cat != pt.end();
-//              cat++ )
-//        {
-//            std::cout << cat->first << "\n";
-//            category( cat->first );
-//            for(
-//                boost::property_tree::ptree::iterator prop = cat->second.begin();
-//                 prop != cat->second.end();
-//                  prop++ )
-//            {
-//                std::cout << "\t" << prop->first << "\n";
-//                string( prop->first, prop->second.data() );
-//            }
-
         for( auto cat : pt )
         {
-            std::cout << cat.first << "\n";
             category( cat.first );
+
             for( auto prop : cat.second )
             {
-                std::cout << "\t" << prop.first << "\n";
                 string( prop.first, prop.second.data() );
             }
         }
     }
+
+    /// Get properties as a boost property tre
+    boost::property_tree::ptree
+    BoostPropertyTree()
+    {
+        boost::property_tree::ptree tree;
+        std::string catname;
+        for( auto p : myProperty )
+        {
+            if( p->isCategory() )
+            {
+                catname = p->name() + ".";
+            }
+            else
+            {
+
+                tree.put(catname+p->name(), p->value() );
+            }
+        }
+        return tree;
+    }
+
+    /// Get properties as a JSON string
+    std::string json()
+    {
+        std::stringstream ss;
+        write_json(ss, BoostPropertyTree() );
+        return ss.str();
+    }
+
+    /** Add properties for a JSON string
+        @param[in] json string
+
+        Throws exception if format error in JSON
+    */
+    void addjson( const std::string& json )
+    {
+        std::stringstream ss( json );
+        boost::property_tree::ptree tree;
+        read_json( ss, tree );
+        add( tree );
+    }
+
     /// Add scrollbars
     void scroll()
     {

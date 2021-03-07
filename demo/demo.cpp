@@ -175,10 +175,13 @@ void PGDemo()
     pg2.labelWidth( 50 );
     pg2.bgcolor( 0xFFA0A0 );
 
-    // add properties
-    //pg.category("Strings");
-    pg2.string( "x", "72" );
-    pg2.string( "y", "4600" );
+//    // add properties
+//    //pg.category("Strings");
+//    pg2.string( "x", "72" );
+//    pg2.string( "y", "4600" );
+
+    std::string json = "{\"strings\": { \"x\": 72, \"y\": 4600 }}";
+    pg2.addjson( json );
 
     form.events().resize([&](int w, int h)
     {
