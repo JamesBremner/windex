@@ -380,7 +380,7 @@ private:
 };
 /** A grid of properties.
 
-Add boost to the compiler include seath list
+Add boost to the compiler include search list
 */
 class propertyGrid : public gui
 {
@@ -512,7 +512,7 @@ public:
         }
     }
 
-    /// Get properties as a boost property tre
+    /// Get properties as a boost property tree
     boost::property_tree::ptree
     BoostPropertyTree()
     {
