@@ -230,7 +230,7 @@ public:
             return myEditbox.text();
 
         case eType::choice:
-            return myCombobox.SelectedText();
+            return myCombobox.selectedText();
 
         case eType::check:
             return std::to_string( (int) myCheckbox.isChecked() );
@@ -289,7 +289,7 @@ public:
             myValue = myEditbox.text();
             break;
         case eType::choice:
-            myValue = myCombobox.SelectedText();
+            myValue = myCombobox.selectedText();
             break;
         case eType::check:
             myValue = std::to_string( (int) myCheckbox.isChecked() );
@@ -332,6 +332,31 @@ public:
             break;
         default:
             break;
+        }
+    }
+
+    void BoostPropertyTree(
+        boost::property_tree::ptree& tree,
+        const std::string& catname )
+    const
+    {
+        if( myType == eType::choice )
+            tree.put(
+                catname+myName+".value",
+                myCombobox.selectedText() );
+        else
+            tree.put(
+                catname+myName+".value",
+                myValue );
+        tree.put(
+            catname+myName+".type",
+            std::to_string((int)myType ));
+        if( myType == eType::choice )
+        {
+            for( int k = 0; k < myCombobox.count(); k++ )
+                tree.put(
+                    catname+myName+".choice"+std::to_string(k),
+                    myCombobox.text( k ) );
         }
     }
 private:
@@ -440,20 +465,49 @@ public:
         @param[in] pt property tree
 
         Top level becomes categories
-        Second level becomer properties
-        Deeper levels ignored
-
-        String properties only supported
+        Second level becomes properties
     */
     void add( boost::property_tree::ptree& pt )
     {
+        // loop over categories
         for( auto cat : pt )
         {
             category( cat.first );
 
+            // loop over properties in category
             for( auto prop : cat.second )
             {
-                string( prop.first, prop.second.data() );
+                int type = pt.get<int>(cat.first+"."+prop.first+"."+"type");
+
+                switch( type )
+                {
+                case 1:
+                {
+                    // choice property
+
+                    std::vector<std::string> vc;
+                    for( auto ch : prop.second )
+                    {
+                        if( ch.first.find("choice") == 0 )
+                        {
+                            vc.push_back( ch.second.data() );
+                        }
+                    }
+                    auto p = choice( prop.first, vc );
+                    p.value(pt.get<std::string>(cat.first+"."+prop.first+"."+"value"));
+                }
+                break;
+
+                default:
+
+                    // string property
+
+                    string(
+                        prop.first,
+                        pt.get<std::string>(cat.first+"."+prop.first+"."+"value"));
+                        break;
+                }
+
             }
         }
     }
@@ -472,8 +526,7 @@ public:
             }
             else
             {
-
-                tree.put(catname+p->name(), p->value() );
+                p->BoostPropertyTree( tree, catname);
             }
         }
         return tree;

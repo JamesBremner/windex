@@ -562,9 +562,9 @@ public:
     void polyLine( POINT* pp, int n )
     {
         Polyline(
-                 myHDC,
-                 pp,
-                 n );
+            myHDC,
+            pp,
+            n );
 
     }
     /** Draw rectangle
@@ -2465,7 +2465,7 @@ public:
             (WPARAM)-1, (LPARAM)s.c_str());
     }
     /// get index of selected item
-    int SelectedIndex()
+    int selectedIndex()
     {
         return SendMessage(
                    handle(),
@@ -2473,11 +2473,16 @@ public:
                    (WPARAM) 0, (LPARAM) 0);
     }
     /// get text of selected item
-    std::string SelectedText()
+    std::string selectedText()
     {
-        int i = SelectedIndex();
+        int i = selectedIndex();
         if( i < 0 )
             return std::string("");
+        return text( i );
+    }
+    /// get text by index
+    std::string text( int i )
+    {
         char buf[256];
         SendMessage(
             handle(),
