@@ -1,3 +1,4 @@
+namespace wex {
 /** \brief A widget which user can drag to change a value.
 
 <pre>
@@ -103,3 +104,4 @@ public:
     }
 };
 
+}
