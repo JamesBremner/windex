@@ -2289,7 +2289,7 @@ public:
     {
     }
 };
-/** \brief A widget where user can enter a string.
+/** \brief A widget where user can enter a single line string.
 <pre>
     // construct top level window
     gui& form = maker::make();
@@ -2392,6 +2392,10 @@ public:
     {
 
     }
+    /** Set text
+        @param[in] t the text
+        Line breaks must be specified by "\r\n"
+    */
     void text( const std::string& t )
     {
         SetDlgItemText(
@@ -2686,65 +2690,6 @@ private:
     }
 };
 
-/// A popup window where used can browse folders and select a file
-class filebox
-{
-public:
-    filebox( gui& parent )
-    {
-
-// Initialize OPENFILENAME
-        ZeroMemory(&ofn, sizeof(ofn));
-        ofn.lStructSize = sizeof(ofn);
-        ofn.hwndOwner = parent.handle();
-        ofn.lpstrFile = szFile;
-// Set lpstrFile[0] to '\0' so that GetOpenFileName does not
-// use the contents of szFile to initialize itself.
-        ofn.lpstrFile[0] = '\0';
-        ofn.nMaxFile = sizeof(szFile);
-        ofn.lpstrFilter = "All\0*.*\0Text\0*.TXT\0";
-        ofn.nFilterIndex = 1;
-        ofn.lpstrFileTitle = NULL;
-        ofn.nMaxFileTitle = 0;
-        ofn.lpstrInitialDir = NULL;
-        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-    }
-
-    /** \brief prompt user for file to open
-        @return path to file to be opened, "" if cancelled
-    */
-    std::string open()
-    {
-        if (GetOpenFileName(&ofn)==TRUE)
-        {
-            myfname = ofn.lpstrFile;
-        }
-        else
-            myfname = "";
-        return myfname;
-    }
-    /** \brief prompt user for folder and filename to save
-        @return path to file to be saved, "" if cancelled
-    */
-    std::string save()
-    {
-        if( GetSaveFileName(&ofn) == TRUE)
-            myfname = ofn.lpstrFile;
-        else
-            myfname = "";
-        return myfname;
-    }
-    /// get filename entered by user
-    std::string path() const
-    {
-        return myfname;
-    }
-
-private:
-    OPENFILENAME ofn;       // common dialog box structure
-    char szFile[260];       // buffer for file name
-    std::string myfname;
-};
 
 /** \brief A drop down list of options that user can click to start an action.
 
