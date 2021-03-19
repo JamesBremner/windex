@@ -2892,7 +2892,11 @@ private:
     int myID;
 };
 
+}
+
 #include "widgets.h"
+
+namespace wex {
 
 /** A class for making windex objects.
 

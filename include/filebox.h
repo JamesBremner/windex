@@ -1,6 +1,6 @@
+namespace wex {
+
 /// A popup window where used can browse folders and select a file
-
-
 
 class filebox
 {
@@ -89,4 +89,5 @@ private:
     char szFile[260];       // buffer for file name
     std::string myfname;
 };
+}
 

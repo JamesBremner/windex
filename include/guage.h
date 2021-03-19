@@ -1,3 +1,4 @@
+namespace wex {
 /** \brief Widget to display a value on a circular clock face
 */
 class gauge : public gui
@@ -60,4 +61,5 @@ private:
     int myMax;
     double myValue;
 };
+}
 
