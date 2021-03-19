@@ -48,6 +48,12 @@ public:
         ofn.lpstrFilter = fbuf;
     }
 
+    /// default extension for saved file, appended to whatever user enters
+    void defaultExtension( const std::string& ext )
+    {
+        ofn.lpstrDefExt = ext.c_str();
+    }
+
     /** \brief prompt user for file to open
         @return path to file to be opened, "" if cancelled
     */
