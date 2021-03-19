@@ -93,13 +93,26 @@ $(document).ready(function(){initNavTree('classwex_1_1filebox.html',''); initRes
 <p>A popup window where used can browse folders and select a file.  
  <a href="classwex_1_1filebox.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="wex_8h_source.html">wex.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="filebox_8h_source.html">filebox.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac31590568f29e2b087e026ed3e286e34"><td class="memItemLeft" align="right" valign="top"><a id="ac31590568f29e2b087e026ed3e286e34"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>filebox</b> (<a class="el" href="classwex_1_1gui.html">gui</a> &amp;parent)</td></tr>
 <tr class="separator:ac31590568f29e2b087e026ed3e286e34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09e3c553259344f20eafd0860c4cdc7a"><td class="memItemLeft" align="right" valign="top"><a id="a09e3c553259344f20eafd0860c4cdc7a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>initDir</b> (const std::string &amp;dir)</td></tr>
+<tr class="separator:a09e3c553259344f20eafd0860c4cdc7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95231cc3d5e607d4465ebcc4f2b4025d"><td class="memItemLeft" align="right" valign="top"><a id="a95231cc3d5e607d4465ebcc4f2b4025d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>initFile</b> (const std::string &amp;fname)</td></tr>
+<tr class="separator:a95231cc3d5e607d4465ebcc4f2b4025d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65d8c98096f88474e761621b313e04c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1filebox.html#a65d8c98096f88474e761621b313e04c0">filter</a> (const char *fbuf)</td></tr>
+<tr class="memdesc:a65d8c98096f88474e761621b313e04c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set file filters.  <a href="classwex_1_1filebox.html#a65d8c98096f88474e761621b313e04c0">More...</a><br /></td></tr>
+<tr class="separator:a65d8c98096f88474e761621b313e04c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad144dcdcfb6611c4ebe3d08e6a9f6702"><td class="memItemLeft" align="right" valign="top"><a id="ad144dcdcfb6611c4ebe3d08e6a9f6702"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1filebox.html#ad144dcdcfb6611c4ebe3d08e6a9f6702">defaultExtension</a> (const std::string &amp;ext)</td></tr>
+<tr class="memdesc:ad144dcdcfb6611c4ebe3d08e6a9f6702"><td class="mdescLeft">&#160;</td><td class="mdescRight">default extension for saved file, appended to whatever user enters <br /></td></tr>
+<tr class="separator:ad144dcdcfb6611c4ebe3d08e6a9f6702"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bc1502dfe09a8a19fd9dcfa8b6bd25a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">open</a> ()</td></tr>
 <tr class="memdesc:a7bc1502dfe09a8a19fd9dcfa8b6bd25a"><td class="mdescLeft">&#160;</td><td class="mdescRight">prompt user for file to open  <a href="classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">More...</a><br /></td></tr>
 <tr class="separator:a7bc1502dfe09a8a19fd9dcfa8b6bd25a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,6 +127,42 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A popup window where used can browse folders and select a file. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a65d8c98096f88474e761621b313e04c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65d8c98096f88474e761621b313e04c0">&#9670;&nbsp;</a></span>filter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wex::filebox::filter </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fbuf</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set file filters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">buf</td><td>containing filter specifications</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>example:</p>
+<p>"Log Files\0*.log\0All\0*.*\0" </p>
+
+</div>
+</div>
 <a id="a7bc1502dfe09a8a19fd9dcfa8b6bd25a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">&#9670;&nbsp;</a></span>open()</h2>
 
@@ -171,7 +220,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="wex_8h_source.html">wex.h</a></li>
+<li><a class="el" href="filebox_8h_source.html">filebox.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -179,7 +228,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1filebox.html">filebox</a></li>
-    <li class="footer">Generated on Tue Mar 9 2021 11:23:09 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Mar 19 2021 11:25:33 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

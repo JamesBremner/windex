@@ -9,6 +9,7 @@ var hierarchy =
       [ "wex::com", "classwex_1_1com.html", null ],
       [ "wex::drop", "classwex_1_1drop.html", null ],
       [ "wex::editbox", "classwex_1_1editbox.html", null ],
+      [ "wex::gauge", "classwex_1_1gauge.html", null ],
       [ "wex::inputbox", "classwex_1_1inputbox.html", null ],
       [ "wex::label", "classwex_1_1label.html", null ],
       [ "wex::list", "classwex_1_1list.html", null ],
@@ -21,6 +22,7 @@ var hierarchy =
       [ "wex::plot::plot", "classwex_1_1plot_1_1plot.html", null ],
       [ "wex::propertyGrid", "classwex_1_1property_grid.html", null ],
       [ "wex::radiobutton", "classwex_1_1radiobutton.html", null ],
+      [ "wex::slider", "classwex_1_1slider.html", null ],
       [ "wex::tcp", "classwex_1_1tcp.html", null ]
     ] ],
     [ "wex::maker", "classwex_1_1maker.html", null ],

@@ -14,5 +14,8 @@ C:/Users/James/code/windex/include/wex.h:613: warning: The following parameter o
 C:/Users/James/code/windex/include/com.h:200: warning: Unsupported xml/html tag <pr> found
 C:/Users/James/code/windex/include/com.h:200: warning: found </pre> tag without matching <pre>
 C:/Users/James/code/windex/include/tcp.h:81: warning: argument 'defaults' of command @param is not found in the argument list of wex::tcp::server(const std::string &port="27654")
+C:/Users/James/code/windex/include/filebox.h:39: warning: argument 'buf' of command @param is not found in the argument list of wex::filebox::filter(const char *fbuf)
+C:/Users/James/code/windex/include/filebox.h:45: warning: The following parameter of wex::filebox::filter(const char *fbuf) is not documented:
+  parameter 'fbuf'
 C:/Users/James/code/windex/include/plot2d.h:620: warning: explicit link request to 'include' could not be resolved
 C:/Users/James/code/windex/include/plot2d.h:621: warning: explicit link request to 'include' could not be resolved

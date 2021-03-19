@@ -103,7 +103,10 @@ INPUT                  = \
 	"..\..\..\include\propertygrid.h" \
 	"..\..\..\include\window2file.h" \
 	"..\..\..\include\com.h" \
-	"..\..\..\include\tcp.h"
+	"..\..\..\include\tcp.h" \
+	"..\..\..\include\filebox.h \
+	"..\..\..\include\guage.h \
+	"..\..\..\include\slider.h
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          =
 RECURSIVE              = NO

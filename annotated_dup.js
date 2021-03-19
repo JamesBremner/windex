@@ -25,7 +25,6 @@ var annotated_dup =
       [ "choice", "classwex_1_1choice.html", "classwex_1_1choice" ],
       [ "list", "classwex_1_1list.html", "classwex_1_1list" ],
       [ "windex", "classwex_1_1windex.html", "classwex_1_1windex" ],
-      [ "filebox", "classwex_1_1filebox.html", "classwex_1_1filebox" ],
       [ "menu", "classwex_1_1menu.html", "classwex_1_1menu" ],
       [ "menubar", "classwex_1_1menubar.html", "classwex_1_1menubar" ],
       [ "timer", "classwex_1_1timer.html", "classwex_1_1timer" ],
@@ -35,6 +34,9 @@ var annotated_dup =
       [ "propertyGrid", "classwex_1_1property_grid.html", "classwex_1_1property_grid" ],
       [ "window2file", "classwex_1_1window2file.html", "classwex_1_1window2file" ],
       [ "com", "classwex_1_1com.html", "classwex_1_1com" ],
-      [ "tcp", "classwex_1_1tcp.html", "classwex_1_1tcp" ]
+      [ "tcp", "classwex_1_1tcp.html", "classwex_1_1tcp" ],
+      [ "filebox", "classwex_1_1filebox.html", "classwex_1_1filebox" ],
+      [ "gauge", "classwex_1_1gauge.html", "classwex_1_1gauge" ],
+      [ "slider", "classwex_1_1slider.html", "classwex_1_1slider" ]
     ] ]
 ];
