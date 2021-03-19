@@ -75,7 +75,7 @@ void choiceDemo()
     cb.events().select( cb.id(), [&]
     {
         msgbox mb(
-            cb.SelectedText() );
+            cb.selectedText() );
     });
 
     // display a button
@@ -85,7 +85,7 @@ void choiceDemo()
     btn.events().click([&]
     {
         msgbox mb(
-            cb.SelectedText() );
+            cb.selectedText() );
     });
 
     list& listbox = wex::maker::make<list>( form );

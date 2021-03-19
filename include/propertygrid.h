@@ -516,6 +516,9 @@ public:
     boost::property_tree::ptree
     BoostPropertyTree()
     {
+        // ensure that values user sees are stored in value attributes
+        saveValues();
+
         boost::property_tree::ptree tree;
         std::string catname;
         for( auto p : myProperty )
