@@ -85,7 +85,7 @@ public:
     }
 
 private:
-    OPENFILENAMEA ofn;       // common dialog box structure
+    OPENFILENAME ofn;       // common dialog box structure
     char szFile[260];       // buffer for file name
     std::string myfname;
 };

@@ -195,6 +195,10 @@ public:
     {
         myMouseWheelFunction( dist );
     }
+    void onMouseLeave()
+    {
+        myMouseLeaveFunction();
+    }
     void onTimer( int id )
     {
         myTimerFunction( id );
@@ -346,6 +350,10 @@ public:
     {
         myMouseUpFunction = f;
     }
+    void mouseLeave( std::function<void(void)> f )
+    {
+        myMouseLeaveFunction = f;
+    }
     void timer( std::function<void(int id)> f )
     {
         myTimerFunction = f;
@@ -403,6 +411,7 @@ private:
     std::function<void(int dist)> myMouseWheelFunction;
     std::function<void(int id)> myTimerFunction;
     std::function<void(void)> myMouseUpFunction;
+    std::function<void(void)> myMouseLeaveFunction;
     std::function<void(int pos)> mySlidFunction;
     std::function<void(HDROP hDrop)> myDropStartFunction;
     std::function<void( const std::vector<std::string>& files)> myDropFunction;
@@ -1224,6 +1233,10 @@ public:
             }
             break;
 
+            case WM_MOUSELEAVE:
+                myEvents.onMouseLeave();
+                break;
+
             case WM_SIZE:
                 myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
                 return true;
@@ -1236,6 +1249,7 @@ public:
                 return true;
 
             case WM_VSCROLL:
+                std::cout << "VSCROLL\n";
                 if( lParam )
                     trackbarMessageHandler( (HWND) lParam );
                 else
@@ -1409,6 +1423,19 @@ public:
         {
             r.right - r.left, r.bottom - r.top
         };
+        return ret;
+    }
+    std::vector<int> lefttop()
+    {
+        RECT rp;
+        GetWindowRect(myParent->handle(),&rp );
+        RECT r;
+        GetWindowRect( myHandle, &r );
+        std::cout << "parent " << rp.left <<" "<< rp.top << "\n"
+                  << " child " << r.left <<" "<< r.top << "\n";
+        static std::vector<int> ret(2);
+        ret[0] = r.left - rp.left;
+        ret[1] = r.top - rp.top;
         return ret;
     }
 
@@ -1587,6 +1614,7 @@ protected:
 private:
     void trackbarMessageHandler( HWND hwnd )
     {
+        std::cout << "trackbarMessageHandler\n";
         // trackbar notifications are sent to trackbar's parent window
         // find the child that generated this notification
         // get the tackbar position and call the slid event handler
@@ -2431,6 +2459,22 @@ public:
             h = 100;
         gui::move( x, y, w, h );
     }
+    /// set item height in drop doown list
+    void itemHeight( int h )
+    {
+        SendMessage(
+            handle(),
+            CB_SETITEMHEIGHT,
+            (WPARAM)0, (LPARAM)20);
+
+        /* WPARAM = 1 is supposed to set the "selection box" height
+        but it appears to do nothing */
+//        SendMessage(
+//            handle(),
+//            CB_SETITEMHEIGHT,
+//            (WPARAM)1, (LPARAM)40);
+    }
+
     /// Add an option
     void add( const std::string& s )
     {
@@ -2896,7 +2940,8 @@ private:
 
 #include "widgets.h"
 
-namespace wex {
+namespace wex
+{
 
 /** A class for making windex objects.
 

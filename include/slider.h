@@ -1,4 +1,5 @@
-namespace wex {
+namespace wex
+{
 /** \brief A widget which user can drag to change a value.
 
 <pre>
@@ -60,13 +61,21 @@ public:
     void range( int min, int max )
     {
         if( min < 0 )
-            throw std::runtime_error("wex::slider positions must be positive");
+            throw std::runtime_error(
+                "wex::slider positions must be positive");
 
         SendMessage(
             myHandle,
             TBM_SETRANGE,
             (WPARAM) TRUE,                   // redraw flag
             (LPARAM) MAKELONG(min, max));  // min. & max. positions
+    }
+    void maximum( int max )
+    {
+        SendMessage(
+            myHandle,
+            TBM_SETRANGEMAX,
+            true, max );
     }
     /// Change the orientation to be vertical
     void vertical()
