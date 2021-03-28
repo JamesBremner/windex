@@ -95,12 +95,15 @@ public:
         myCategoryExpanded.check();
         myCategoryExpanded.events().clickPropogate();
     }
+
+    /// destructor
     ~property()
     {
         std::cout << myName << " delete\n";
         myLabel.~gui();
         myEditbox.~gui();
         myCategoryExpanded.~gui();
+        myCombobox.~gui();
     }
     void move( const std::vector<int>& r )
     {
