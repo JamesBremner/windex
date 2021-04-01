@@ -89,4 +89,4 @@ https://github.com/JamesBremner/DXF_Viewer
 
 ## Simulation Properties
 
-<img src="https://github.com/JamesBremner/windex/blob/master/doc/simparams.png" alt="props"></a>
+<img src="https://github.com/JamesBremner/windex/blob/master/doc/simparams.PNG" alt="props"></a>
