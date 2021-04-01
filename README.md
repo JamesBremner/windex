@@ -86,3 +86,7 @@ An application to demonstrate and test the windex features is [available](https:
 <img src="https://github.com/JamesBremner/windex/blob/master/doc/gears.PNG" alt="gears"></a>
 
 https://github.com/JamesBremner/DXF_Viewer
+
+## Simulation Properties
+
+<img src="https://github.com/JamesBremner/windex/blob/master/doc/simparams.png" alt="props"></a>
