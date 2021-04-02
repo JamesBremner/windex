@@ -1706,7 +1706,7 @@ public:
     }
 };
 
-/// A panel displaying a title and box around contents
+/// Displaying a title and a box
 class groupbox : public panel
 {
 public:
@@ -1715,16 +1715,37 @@ public:
     {
 
     }
+    /** Set size and location of group box
+        @param[in] r x, y, width, heeight of groupbox
+    */
+    void move( const std::vector<int>& r )
+    {
+        if( r.size() != 4 )
+            return;
+
+        // store location and size of groupbox
+        myRect.left = r[0];
+        myRect.top = r[1];
+        myRect.right = r[0]+r[2];
+        myRect.bottom = r[1] + r[3];
+
+        // set location and size of groupbox label
+        MoveWindow( myHandle,
+                    r[0],r[1],50,25,false);
+    }
     virtual void draw( PAINTSTRUCT& ps )
     {
-        SelectObject (ps.hdc, myFont);
-        gui::draw( ps );
+        //Draw group box on parent window
+        HDC hdc = GetDC( myParent->handle() );
         DrawEdge(
-            ps.hdc,
-            &ps.rcPaint,
+            hdc,
+            &myRect,
             EDGE_BUMP,
             BF_RECT
         );
+
+        // Draw label
+        SelectObject (ps.hdc, myFont);
         RECT r { 0, 0, 50, 25 };
         DrawText(
             ps.hdc,
@@ -1734,6 +1755,8 @@ public:
             0
         );
     }
+private:
+    RECT myRect;
 };
 
 /// \brief A panel which arranges the widgets it contains in a grid.
