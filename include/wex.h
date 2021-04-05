@@ -1745,6 +1745,9 @@ public:
         );
 
         // Draw label
+        SetBkColor(
+            ps.hdc,
+            myBGColor );
         SelectObject (ps.hdc, myFont);
         RECT r { 0, 0, 50, 25 };
         DrawText(
@@ -1819,6 +1822,8 @@ public:
     }
     void draw( PAINTSTRUCT& ps )
     {
+        if( ! myChild.size() )
+            return;
         RECT r;
         GetClientRect(myHandle, &r );
         if( ! myfWidthsSpecified )
@@ -1893,6 +1898,7 @@ public:
     {
 
     }
+
     /** Specify bitmap image to be used for button, read from file
         @param[in] name of file
     */
@@ -2217,6 +2223,8 @@ private:
         return theGroups;
     }
 };
+
+
 /** @brief A widget that user can click to toggle a true/false value
 
 This draws a custom checkbox that expands with the height of the widget ( set by move() )
@@ -3128,6 +3136,46 @@ private:
     int mySelect;
     std::function<void( int tabIndex )> myTabChangingFn;
     std::function<void( int tabIndex )> myTabChangeFn;
+};
+
+/// Widget to layout a group of radio buttons
+class radiobuttonLayout : public layout
+{
+public:
+    radiobuttonLayout( gui* parent )
+        : layout( parent )
+        , myFirst( true )
+    {
+    }
+    /// add a radio button
+    radiobutton& add()
+    {
+        wex::radiobutton& rb = wex::maker::make<wex::radiobutton>( *this );
+        if( myFirst ) {
+            myFirst = false;
+            rb.first();
+        }
+        return rb;
+    }
+    /// index of checked radio button
+    int checked()
+    {
+        if( myFirst )
+            return -1;
+        return ((radiobutton*)children()[0])->checkedOffset();
+    }
+    /** set status of radio button
+        @param[in] i zero-based index of radio button
+        @param[in] f true or false, default true
+    */
+    void check( int i, bool f = true )
+    {
+        if( 0 > i || i >= children().size() )
+            return;
+        ((radiobutton*)children()[i])->check();
+    }
+private:
+    bool myFirst;
 };
 
 }
