@@ -1,3 +1,5 @@
+#include <commdlg.h>`
+
 namespace wex {
 
 /// A popup window where used can browse folders and select a file

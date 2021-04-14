@@ -99,16 +99,20 @@ public:
 
             std::cout << "Cannot open COM at "
                       << myPortNumber << " error " << myPortNumber << "\n";
+            myError = myPortNumber;
             switch( dw )
             {
             case 2:
-                myError = myPortNumber + " There seems to be no device connected to this port";
+                myError += " There seems to be no device connected to this port";
                 break;
             case 5:
-                myError = myPortNumber + " This port seems to be in use by another application";
+                myError += " This port seems to be in use by another application";
+                break;
+            case 21:
+                myError += " Driver reports device is not ready";
                 break;
             default:
-                myError = myPortNumber + " This port will not open, error " + std::to_string( dw );
+                myError += " This port will not open, error " + std::to_string( dw );
             }
 
             LocalFree(lpMsgBuf);
