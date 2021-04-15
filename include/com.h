@@ -130,6 +130,13 @@ public:
 
         return true;
     }
+    void close()
+    {
+        if( myCOMHandle )
+        {
+            CloseHandle( myCOMHandle );
+        }
+    }
 
     std::string& errorMsg()
     {
@@ -299,6 +306,10 @@ public:
         std::vector<unsigned char> buffer( msg.size() );
         memcpy( buffer.data(), msg.data(), msg.size() );
         return write( buffer );
+    }
+    const std::string& portNumber() const
+    {
+        return myPortNumber;
     }
 private:
     std::string myPortNumber;
