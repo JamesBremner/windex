@@ -119,6 +119,7 @@ class eventhandler
 public:
     eventhandler()
         : myfClickPropogate( false )
+        , myfMouseTracking( false )
     {
         // initialize functions with no-ops
         click([] {});
@@ -128,7 +129,8 @@ public:
         resize([](int w, int h) {});
         scrollH([](int c) {});
         scrollV([](int c) {});
-        keydown([] {});
+        keydown([](int c) {});
+        mouseEnter([]{});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
         mouseUp([] {});
@@ -175,21 +177,22 @@ public:
     {
         myVectorMenuFunction[id]( myVectorMenuTitle[id] );
     }
-    void onKeydown()
+    void onKeydown( int keycode )
     {
-        myKeydownFunction();
+        myKeydownFunction( keycode );
     }
     void onMouseMove( WPARAM wParam, LPARAM lParam )
     {
         sMouse m;
-
-//        m.x = GET_X_LPARAM(lParam);
-//        m.y = GET_Y_LPARAM(lParam);
         m.x = LOWORD(lParam);
         m.y = HIWORD(lParam);
         m.left = ( wParam == MK_LBUTTON );
 
         myMouseMoveFunction( m );
+    }
+    void onMouseEnter()
+    {
+        myMouseEnterFunction();
     }
     void onMouseWheel( int dist )
     {
@@ -334,9 +337,14 @@ public:
         mapControlFunction().insert(
             std::make_pair( std::make_pair( id, EN_CHANGE), f ));
     }
-    void keydown( std::function<void(void)> f )
+    /// register function to call when key pressed. Function is passed key code.
+    void keydown( std::function<void(int keydown)> f )
     {
         myKeydownFunction = f;
+    }
+    void mouseEnter( std::function<void(void)> f )
+    {
+        myMouseEnterFunction = f;
     }
     void mouseMove( std::function<void(sMouse& m)> f )
     {
@@ -396,6 +404,7 @@ public:
     }
 private:
     bool myfClickPropogate;
+    bool myfMouseTracking;
 
     // event handlers registered by application code
     std::function<void(void)> myClickFunctionApp;
@@ -406,8 +415,9 @@ private:
     std::function<void(int code)> myScrollVFunction;
     std::vector< std::function<void(const std::string& title)> > myVectorMenuFunction;
     std::vector< std::string > myVectorMenuTitle;
-    std::function<void(void)> myKeydownFunction;
+    std::function<void(int keycode)> myKeydownFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
+    std::function<void(void)> myMouseEnterFunction;
     std::function<void(int dist)> myMouseWheelFunction;
     std::function<void(int id)> myTimerFunction;
     std::function<void(void)> myMouseUpFunction;
@@ -865,6 +875,10 @@ public:
         return nullptr;
     }
 
+    void focus()
+    {
+        SetFocus( myHandle );
+    }
     /** Change background color
     @param[in] color eg 0x0000FF
     */
@@ -883,6 +897,10 @@ public:
     void enable( bool f = true )
     {
         myfEnabled = f;
+    }
+    bool isEnabled() const
+    {
+        return myfEnabled;
     }
 
     /// Change font height for this and all child windows
@@ -1128,7 +1146,7 @@ public:
             SendMessage(myToolTip, TTM_SETMAXTIPWIDTH, 0, width );
     }
 
-    virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    virtual LRESULT WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
 //        if( uMsg != 132  && uMsg != 275 )
 //            std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
@@ -1175,6 +1193,10 @@ public:
                 myfModal = false;
                 return false;
 
+//            case WM_SETFOCUS:
+//                std::cout << myText << "  got focus\n";
+//                return true;
+
             case WM_ERASEBKGND:
             {
                 if( myfnobgerase )
@@ -1196,6 +1218,19 @@ public:
                 EndPaint(myHandle, &ps);
             }
             return true;
+
+            case WM_CTLCOLORSTATIC: {
+                std::cout << "WM_CTLCOLORSTATIC " << myText
+                    <<" " << myBGColor <<" "<<myBGBrush << "\n";
+//                SetBkColor((HDC)wParam, myBGColor);
+//                return (INT_PTR)myBGBrush;
+                RECT r;
+                GetBoundsRect( GetDC( myHandle ), &r, 0 );
+                FillRect( GetDC( myHandle ), &r, myBGBrush );
+                SetBkMode ((HDC)wParam, TRANSPARENT);
+
+                return (INT_PTR)GetStockObject(NULL_BRUSH);
+            }
 
             case WM_LBUTTONDOWN:
                 //std::cout << "click on " << myText << "\n";
@@ -1281,8 +1316,12 @@ public:
                 events().onDropStart( (HDROP) wParam );
                 return true;
 
+            case WM_GETDLGCODE:
+                events().onKeydown( (int) wParam );
+                return DLGC_WANTARROWS;
+
             case WM_KEYDOWN:
-                events().onKeydown();
+                events().onKeydown( (int) wParam );
                 return true;
 
             case WM_SETCURSOR:
@@ -2283,15 +2322,15 @@ public:
         S.textHeight( myLogFont.lfHeight);
         S.text( myText, { r.left, r.top, r.right, r.bottom } );
         S.rectangle( { 0,0, cbg, cbg} );
-        //S.penThick( 2 );
+        S.penThick( 2 );
         S.color( 0 );
         switch( myType )
         {
         case eType::check:
             if( myValue )
             {
-                S.line( {2,cbg/2,cbg/2-2,cbg-2} );
-                S.line( {cbg/2,cbg-4,cbg-4,4} );
+                S.line( {2,cbg/2,cbg/2-1,cbg-2} );
+                S.line( {cbg/2,cbg-3,cbg-4,3} );
             }
             break;
         case eType::plus:
@@ -2300,7 +2339,7 @@ public:
                 S.line( { 1+cbg/2,2,1+cbg/2,cbg-2} );
             break;
         }
-        //S.penThick( 1 );
+        S.penThick( 1 );
     }
     void clickFunction( std::function<void(void)> f )
     {
@@ -2708,6 +2747,9 @@ public:
         auto w =  get().myGui.find( hwnd );
         if( w !=  get().myGui.end() )
         {
+            if( uMsg == WM_GETDLGCODE )
+                return w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam );
+
             if( w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
                 return 0;
         }
@@ -3151,7 +3193,8 @@ public:
     radiobutton& add()
     {
         wex::radiobutton& rb = wex::maker::make<wex::radiobutton>( *this );
-        if( myFirst ) {
+        if( myFirst )
+        {
             myFirst = false;
             rb.first();
         }
@@ -3170,7 +3213,7 @@ public:
     */
     void check( int i, bool f = true )
     {
-        if( 0 > i || i >= children().size() )
+        if( 0 > i || i >= (int)children().size() )
             return;
         ((radiobutton*)children()[i])->check();
     }
