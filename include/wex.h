@@ -130,7 +130,7 @@ public:
         scrollH([](int c) {});
         scrollV([](int c) {});
         keydown([](int c) {});
-        mouseEnter([]{});
+        mouseEnter([] {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
         mouseUp([] {});
@@ -1221,9 +1221,10 @@ public:
             }
             return true;
 
-            case WM_CTLCOLORSTATIC: {
+            case WM_CTLCOLORSTATIC:
+            {
                 std::cout << "WM_CTLCOLORSTATIC " << myText
-                    <<" " << myBGColor <<" "<<myBGBrush << "\n";
+                          <<" " << myBGColor <<" "<<myBGBrush << "\n";
 //                SetBkColor((HDC)wParam, myBGColor);
 //                return (INT_PTR)myBGBrush;
                 RECT r;
@@ -1236,6 +1237,8 @@ public:
 
             case WM_LBUTTONDOWN:
                 //std::cout << "click on " << myText << "\n";
+                if( ! myfEnabled )
+                    return true;
                 if( myEvents.onLeftdown() )
                     return true;
                 // the event was not completely handled, maybe the parent can look after it
@@ -2113,6 +2116,8 @@ public:
         // set the boolean value when clicked
         events().clickWex([this]
         {
+            if( ! myfEnabled )
+                return;
             // set all buttons in group false
             for( auto b : group()[ myGroup ] )
             {
@@ -2222,6 +2227,12 @@ public:
     virtual void draw( PAINTSTRUCT& ps )
     {
         SelectObject (ps.hdc, myFont);
+        int color = 0x000000;
+        if( ! myfEnabled )
+            color = 0xAAAAAA;
+        SetTextColor(
+            ps.hdc,
+            color);
         SetBkColor(
             ps.hdc,
             myBGColor );
@@ -3218,6 +3229,11 @@ public:
         if( 0 > i || i >= (int)children().size() )
             return;
         ((radiobutton*)children()[i])->check();
+    }
+    void enable( bool f = true )
+    {
+        for( auto rb : children() )
+            ((radiobutton*)rb)->enable(f);
     }
 private:
     bool myFirst;
