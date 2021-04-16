@@ -887,6 +887,8 @@ public:
         myBGColor = color;
         DeleteObject( myBGBrush);
         myBGBrush = CreateSolidBrush( color );
+        for( auto w : myChild )
+            w->bgcolor( color );
     }
 
     void nobgerase()
