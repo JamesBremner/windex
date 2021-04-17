@@ -1475,8 +1475,8 @@ public:
         GetWindowRect(myParent->handle(),&rp );
         RECT r;
         GetWindowRect( myHandle, &r );
-        std::cout << "parent " << rp.left <<" "<< rp.top << "\n"
-                  << " child " << r.left <<" "<< r.top << "\n";
+//        std::cout << "parent " << rp.left <<" "<< rp.top
+//                  << " child " << r.left <<" "<< r.top << "\n";
         static std::vector<int> ret(2);
         ret[0] = r.left - rp.left;
         ret[1] = r.top - rp.top;
@@ -1775,7 +1775,7 @@ public:
 
         // set location and size of groupbox label
         MoveWindow( myHandle,
-                    r[0],r[1],50,25,false);
+                    r[0]+5,r[1]+2,60,25,false);
     }
     virtual void draw( PAINTSTRUCT& ps )
     {
@@ -1793,12 +1793,11 @@ public:
             ps.hdc,
             myBGColor );
         SelectObject (ps.hdc, myFont);
-        RECT r { 0, 0, 50, 25 };
         DrawText(
             ps.hdc,
             myText.c_str(),
             myText.length(),
-            &r,
+            &ps.rcPaint,
             0
         );
     }
