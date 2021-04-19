@@ -1434,7 +1434,7 @@ public:
     void size( int w, int h )
     {
         RECT rect;
-        GetClientRect( myHandle, &rect );
+        GetWindowRect( myHandle, &rect );
         MoveWindow( myHandle,
                     rect.left, rect.top, w, h,
                     false );
@@ -1785,8 +1785,8 @@ public:
             hdc,
             &myRect,
             EDGE_BUMP,
-            BF_RECT
-        );
+            BF_RECT );
+        ReleaseDC( myParent->handle(), hdc );
 
         // Draw label
         SetBkColor(
