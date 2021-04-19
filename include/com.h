@@ -63,6 +63,8 @@ public:
         Opens with default configuration "baud=9600 parity=N data=8 stop=1"
 
         Reconfigure with DeviceControlString()
+
+        On error, a mesage will be available by calling errorMsg();
     */
     bool open()
     {
@@ -81,10 +83,45 @@ public:
 
         if (myCOMHandle == INVALID_HANDLE_VALUE)
         {
-            std::cout << "Cannot open COM\n";
+            DWORD dw = GetLastError();
+
+            LPVOID lpMsgBuf;
+            FormatMessage(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                FORMAT_MESSAGE_FROM_SYSTEM |
+                FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL,
+                dw,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                (LPTSTR) &lpMsgBuf,
+                0, NULL );
+            std::cout << (char*)lpMsgBuf;
+
+            std::cout << "Cannot open COM at "
+                      << myPortNumber << " error " << myPortNumber << "\n";
+            myError = myPortNumber;
+            switch( dw )
+            {
+            case 2:
+                myError += " There seems to be no device connected to this port";
+                break;
+            case 5:
+                myError += " This port seems to be in use by another application";
+                break;
+            case 21:
+                myError += " Driver reports device is not ready";
+                break;
+            default:
+                myError += " This port will not open, error " + std::to_string( dw );
+            }
+
+            LocalFree(lpMsgBuf);
+
             myCOMHandle = 0;
             return false;
         }
+
+        myError = "";
 
         DeviceControlString("baud=9600 parity=N data=8 stop=1");
 
@@ -92,6 +129,18 @@ public:
         PurgeComm(myCOMHandle,PURGE_RXCLEAR);
 
         return true;
+    }
+    void close()
+    {
+        if( myCOMHandle )
+        {
+            CloseHandle( myCOMHandle );
+        }
+    }
+
+    std::string& errorMsg()
+    {
+        return myError;
     }
 
     /// true if connected
@@ -258,12 +307,17 @@ public:
         memcpy( buffer.data(), msg.data(), msg.size() );
         return write( buffer );
     }
+    const std::string& portNumber() const
+    {
+        return myPortNumber;
+    }
 private:
     std::string myPortNumber;
     HANDLE myCOMHandle;
     std::future< void > myFuture;
     std::thread*        myThread;
     std::vector<unsigned char> myRcvbuffer;
+    std::string myError;
 
     int waitForData()
     {

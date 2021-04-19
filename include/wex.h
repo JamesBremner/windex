@@ -119,6 +119,7 @@ class eventhandler
 public:
     eventhandler()
         : myfClickPropogate( false )
+        , myfMouseTracking( false )
     {
         // initialize functions with no-ops
         click([] {});
@@ -128,7 +129,8 @@ public:
         resize([](int w, int h) {});
         scrollH([](int c) {});
         scrollV([](int c) {});
-        keydown([] {});
+        keydown([](int c) {});
+        mouseEnter([] {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
         mouseUp([] {});
@@ -175,25 +177,30 @@ public:
     {
         myVectorMenuFunction[id]( myVectorMenuTitle[id] );
     }
-    void onKeydown()
+    void onKeydown( int keycode )
     {
-        myKeydownFunction();
+        myKeydownFunction( keycode );
     }
     void onMouseMove( WPARAM wParam, LPARAM lParam )
     {
         sMouse m;
-
-//        m.x = GET_X_LPARAM(lParam);
-//        m.y = GET_Y_LPARAM(lParam);
         m.x = LOWORD(lParam);
         m.y = HIWORD(lParam);
         m.left = ( wParam == MK_LBUTTON );
 
         myMouseMoveFunction( m );
     }
+    void onMouseEnter()
+    {
+        myMouseEnterFunction();
+    }
     void onMouseWheel( int dist )
     {
         myMouseWheelFunction( dist );
+    }
+    void onMouseLeave()
+    {
+        myMouseLeaveFunction();
     }
     void onTimer( int id )
     {
@@ -330,9 +337,14 @@ public:
         mapControlFunction().insert(
             std::make_pair( std::make_pair( id, EN_CHANGE), f ));
     }
-    void keydown( std::function<void(void)> f )
+    /// register function to call when key pressed. Function is passed key code.
+    void keydown( std::function<void(int keydown)> f )
     {
         myKeydownFunction = f;
+    }
+    void mouseEnter( std::function<void(void)> f )
+    {
+        myMouseEnterFunction = f;
     }
     void mouseMove( std::function<void(sMouse& m)> f )
     {
@@ -345,6 +357,10 @@ public:
     void mouseUp( std::function<void(void)> f )
     {
         myMouseUpFunction = f;
+    }
+    void mouseLeave( std::function<void(void)> f )
+    {
+        myMouseLeaveFunction = f;
     }
     void timer( std::function<void(int id)> f )
     {
@@ -388,6 +404,7 @@ public:
     }
 private:
     bool myfClickPropogate;
+    bool myfMouseTracking;
 
     // event handlers registered by application code
     std::function<void(void)> myClickFunctionApp;
@@ -398,11 +415,13 @@ private:
     std::function<void(int code)> myScrollVFunction;
     std::vector< std::function<void(const std::string& title)> > myVectorMenuFunction;
     std::vector< std::string > myVectorMenuTitle;
-    std::function<void(void)> myKeydownFunction;
+    std::function<void(int keycode)> myKeydownFunction;
     std::function<void(sMouse& m)> myMouseMoveFunction;
+    std::function<void(void)> myMouseEnterFunction;
     std::function<void(int dist)> myMouseWheelFunction;
     std::function<void(int id)> myTimerFunction;
     std::function<void(void)> myMouseUpFunction;
+    std::function<void(void)> myMouseLeaveFunction;
     std::function<void(int pos)> mySlidFunction;
     std::function<void(HDROP hDrop)> myDropStartFunction;
     std::function<void( const std::vector<std::string>& files)> myDropFunction;
@@ -856,6 +875,10 @@ public:
         return nullptr;
     }
 
+    void focus()
+    {
+        SetFocus( myHandle );
+    }
     /** Change background color
     @param[in] color eg 0x0000FF
     */
@@ -864,6 +887,8 @@ public:
         myBGColor = color;
         DeleteObject( myBGBrush);
         myBGBrush = CreateSolidBrush( color );
+        for( auto w : myChild )
+            w->bgcolor( color );
     }
 
     void nobgerase()
@@ -874,6 +899,10 @@ public:
     void enable( bool f = true )
     {
         myfEnabled = f;
+    }
+    bool isEnabled() const
+    {
+        return myfEnabled;
     }
 
     /// Change font height for this and all child windows
@@ -1119,7 +1148,7 @@ public:
             SendMessage(myToolTip, TTM_SETMAXTIPWIDTH, 0, width );
     }
 
-    virtual bool WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    virtual LRESULT WindowMessageHandler( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
 //        if( uMsg != 132  && uMsg != 275 )
 //            std::cout << " widget " << myText << " WindowMessageHandler " << uMsg << "\n";
@@ -1166,6 +1195,10 @@ public:
                 myfModal = false;
                 return false;
 
+//            case WM_SETFOCUS:
+//                std::cout << myText << "  got focus\n";
+//                return true;
+
             case WM_ERASEBKGND:
             {
                 if( myfnobgerase )
@@ -1188,8 +1221,24 @@ public:
             }
             return true;
 
+            case WM_CTLCOLORSTATIC:
+            {
+                std::cout << "WM_CTLCOLORSTATIC " << myText
+                          <<" " << myBGColor <<" "<<myBGBrush << "\n";
+//                SetBkColor((HDC)wParam, myBGColor);
+//                return (INT_PTR)myBGBrush;
+                RECT r;
+                GetBoundsRect( GetDC( myHandle ), &r, 0 );
+                FillRect( GetDC( myHandle ), &r, myBGBrush );
+                SetBkMode ((HDC)wParam, TRANSPARENT);
+
+                return (INT_PTR)GetStockObject(NULL_BRUSH);
+            }
+
             case WM_LBUTTONDOWN:
                 //std::cout << "click on " << myText << "\n";
+                if( ! myfEnabled )
+                    return true;
                 if( myEvents.onLeftdown() )
                     return true;
                 // the event was not completely handled, maybe the parent can look after it
@@ -1224,6 +1273,10 @@ public:
             }
             break;
 
+            case WM_MOUSELEAVE:
+                myEvents.onMouseLeave();
+                break;
+
             case WM_SIZE:
                 myEvents.onResize( LOWORD(lParam), HIWORD(lParam) );
                 return true;
@@ -1236,6 +1289,7 @@ public:
                 return true;
 
             case WM_VSCROLL:
+                std::cout << "VSCROLL\n";
                 if( lParam )
                     trackbarMessageHandler( (HWND) lParam );
                 else
@@ -1267,8 +1321,12 @@ public:
                 events().onDropStart( (HDROP) wParam );
                 return true;
 
+            case WM_GETDLGCODE:
+                events().onKeydown( (int) wParam );
+                return DLGC_WANTARROWS;
+
             case WM_KEYDOWN:
-                events().onKeydown();
+                events().onKeydown( (int) wParam );
                 return true;
 
             case WM_SETCURSOR:
@@ -1376,7 +1434,7 @@ public:
     void size( int w, int h )
     {
         RECT rect;
-        GetClientRect( myHandle, &rect );
+        GetWindowRect( myHandle, &rect );
         MoveWindow( myHandle,
                     rect.left, rect.top, w, h,
                     false );
@@ -1409,6 +1467,19 @@ public:
         {
             r.right - r.left, r.bottom - r.top
         };
+        return ret;
+    }
+    std::vector<int> lefttop()
+    {
+        RECT rp;
+        GetWindowRect(myParent->handle(),&rp );
+        RECT r;
+        GetWindowRect( myHandle, &r );
+//        std::cout << "parent " << rp.left <<" "<< rp.top
+//                  << " child " << r.left <<" "<< r.top << "\n";
+        static std::vector<int> ret(2);
+        ret[0] = r.left - rp.left;
+        ret[1] = r.top - rp.top;
         return ret;
     }
 
@@ -1587,6 +1658,7 @@ protected:
 private:
     void trackbarMessageHandler( HWND hwnd )
     {
+        std::cout << "trackbarMessageHandler\n";
         // trackbar notifications are sent to trackbar's parent window
         // find the child that generated this notification
         // get the tackbar position and call the slid event handler
@@ -1678,7 +1750,7 @@ public:
     }
 };
 
-/// A panel displaying a title and box around contents
+/// Displaying a title and a box
 class groupbox : public panel
 {
 public:
@@ -1687,25 +1759,50 @@ public:
     {
 
     }
+    /** Set size and location of group box
+        @param[in] r x, y, width, heeight of groupbox
+    */
+    void move( const std::vector<int>& r )
+    {
+        if( r.size() != 4 )
+            return;
+
+        // store location and size of groupbox
+        myRect.left = r[0];
+        myRect.top = r[1];
+        myRect.right = r[0]+r[2];
+        myRect.bottom = r[1] + r[3];
+
+        // set location and size of groupbox label
+        MoveWindow( myHandle,
+                    r[0]+5,r[1]+2,60,25,false);
+    }
     virtual void draw( PAINTSTRUCT& ps )
     {
-        SelectObject (ps.hdc, myFont);
-        gui::draw( ps );
+        //Draw group box on parent window
+        HDC hdc = GetDC( myParent->handle() );
         DrawEdge(
-            ps.hdc,
-            &ps.rcPaint,
+            hdc,
+            &myRect,
             EDGE_BUMP,
-            BF_RECT
-        );
-        RECT r { 0, 0, 50, 25 };
+            BF_RECT );
+        ReleaseDC( myParent->handle(), hdc );
+
+        // Draw label
+        SetBkColor(
+            ps.hdc,
+            myBGColor );
+        SelectObject (ps.hdc, myFont);
         DrawText(
             ps.hdc,
             myText.c_str(),
             myText.length(),
-            &r,
+            &ps.rcPaint,
             0
         );
     }
+private:
+    RECT myRect;
 };
 
 /// \brief A panel which arranges the widgets it contains in a grid.
@@ -1768,6 +1865,8 @@ public:
     }
     void draw( PAINTSTRUCT& ps )
     {
+        if( ! myChild.size() )
+            return;
         RECT r;
         GetClientRect(myHandle, &r );
         if( ! myfWidthsSpecified )
@@ -1842,6 +1941,7 @@ public:
     {
 
     }
+
     /** Specify bitmap image to be used for button, read from file
         @param[in] name of file
     */
@@ -2015,6 +2115,8 @@ public:
         // set the boolean value when clicked
         events().clickWex([this]
         {
+            if( ! myfEnabled )
+                return;
             // set all buttons in group false
             for( auto b : group()[ myGroup ] )
             {
@@ -2124,6 +2226,12 @@ public:
     virtual void draw( PAINTSTRUCT& ps )
     {
         SelectObject (ps.hdc, myFont);
+        int color = 0x000000;
+        if( ! myfEnabled )
+            color = 0xAAAAAA;
+        SetTextColor(
+            ps.hdc,
+            color);
         SetBkColor(
             ps.hdc,
             myBGColor );
@@ -2166,6 +2274,8 @@ private:
         return theGroups;
     }
 };
+
+
 /** @brief A widget that user can click to toggle a true/false value
 
 This draws a custom checkbox that expands with the height of the widget ( set by move() )
@@ -2224,15 +2334,15 @@ public:
         S.textHeight( myLogFont.lfHeight);
         S.text( myText, { r.left, r.top, r.right, r.bottom } );
         S.rectangle( { 0,0, cbg, cbg} );
-        //S.penThick( 2 );
+        S.penThick( 2 );
         S.color( 0 );
         switch( myType )
         {
         case eType::check:
             if( myValue )
             {
-                S.line( {2,cbg/2,cbg/2-2,cbg-2} );
-                S.line( {cbg/2,cbg-4,cbg-4,4} );
+                S.line( {2,cbg/2,cbg/2-1,cbg-2} );
+                S.line( {cbg/2,cbg-3,cbg-4,3} );
             }
             break;
         case eType::plus:
@@ -2241,7 +2351,7 @@ public:
                 S.line( { 1+cbg/2,2,1+cbg/2,cbg-2} );
             break;
         }
-        //S.penThick( 1 );
+        S.penThick( 1 );
     }
     void clickFunction( std::function<void(void)> f )
     {
@@ -2431,6 +2541,22 @@ public:
             h = 100;
         gui::move( x, y, w, h );
     }
+    /// set item height in drop doown list
+    void itemHeight( int h )
+    {
+        SendMessage(
+            handle(),
+            CB_SETITEMHEIGHT,
+            (WPARAM)0, (LPARAM)20);
+
+        /* WPARAM = 1 is supposed to set the "selection box" height
+        but it appears to do nothing */
+//        SendMessage(
+//            handle(),
+//            CB_SETITEMHEIGHT,
+//            (WPARAM)1, (LPARAM)40);
+    }
+
     /// Add an option
     void add( const std::string& s )
     {
@@ -2633,6 +2759,9 @@ public:
         auto w =  get().myGui.find( hwnd );
         if( w !=  get().myGui.end() )
         {
+            if( uMsg == WM_GETDLGCODE )
+                return w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam );
+
             if( w->second->WindowMessageHandler( hwnd, uMsg, wParam, lParam ) )
                 return 0;
         }
@@ -2896,7 +3025,8 @@ private:
 
 #include "widgets.h"
 
-namespace wex {
+namespace wex
+{
 
 /** A class for making windex objects.
 
@@ -3060,6 +3190,86 @@ private:
     int mySelect;
     std::function<void( int tabIndex )> myTabChangingFn;
     std::function<void( int tabIndex )> myTabChangeFn;
+};
+
+/** Widget to layout a group of radio buttons
+
+Usage:
+<pre>
+    wex::radiobuttonLayout & myGroup = wex::maker::make<wex::radiobuttonLayout>( form );
+    myGroup.move( {50,50,200,400} );
+    myGroup.grid(1);        // layout in one column
+    wex::radiobutton& rb = myGroup.add();
+    rb.text("Heart");
+    rb.size(60,20);
+    rb.events().click([this]
+    {
+        Change( 1 );
+    });
+    rb = myGroup.add();
+    rb.text("EMI 1");
+    rb.size(60,20);
+    rb.events().click([this]
+    {
+        Change(2 );
+    });
+    rb = myGroup.add();
+    rb.text("EMI 2");
+    rb.size(60,20);
+    rb.events().click([this]
+    {
+        Change( 3 );
+    });
+</pre>
+*/
+class radiobuttonLayout : public layout
+{
+public:
+    radiobuttonLayout( gui* parent )
+        : layout( parent )
+        , myFirst( true )
+    {
+    }
+    /** add a radio button
+        @return reference to radibutton
+    */
+    radiobutton& add()
+    {
+        wex::radiobutton& rb = wex::maker::make<wex::radiobutton>( *this );
+        if( myFirst )
+        {
+            myFirst = false;
+            rb.first();
+        }
+        return rb;
+    }
+    /// 0-based index of checked radio button
+    int checked()
+    {
+        if( myFirst )
+            return -1;
+        return ((radiobutton*)children()[0])->checkedOffset();
+    }
+    /** set status of radio button
+        @param[in] i zero-based index of radio button
+        @param[in] f true or false, default true
+    */
+    void check( int i, bool f = true )
+    {
+        if( 0 > i || i >= (int)children().size() )
+            return;
+        ((radiobutton*)children()[i])->check();
+    }
+    /** Enable/disable all radio buttons
+        @param[in] f status required, true for enabled, default enabled
+    */
+    void enable( bool f = true )
+    {
+        for( auto rb : children() )
+            ((radiobutton*)rb)->enable(f);
+    }
+private:
+    bool myFirst;
 };
 
 }

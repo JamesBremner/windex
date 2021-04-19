@@ -53,6 +53,8 @@ public:
         myCheckbox.text("");
         myCheckbox.events().clickPropogate();
     }
+
+    // construct a choice property
     property(
         gui* parent,
         const std::string& name,
@@ -69,6 +71,7 @@ public:
         , myType( eType::choice )
     {
         myLabel.text( myName );
+        myCombobox.itemHeight(30);
         for( auto& t : value )
         {
             myCombobox.add( t );
@@ -92,12 +95,15 @@ public:
         myCategoryExpanded.check();
         myCategoryExpanded.events().clickPropogate();
     }
+
+    /// destructor
     ~property()
     {
         std::cout << myName << " delete\n";
         myLabel.~gui();
         myEditbox.~gui();
         myCategoryExpanded.~gui();
+        myCombobox.~gui();
     }
     void move( const std::vector<int>& r )
     {
@@ -493,8 +499,8 @@ public:
                             vc.push_back( ch.second.data() );
                         }
                     }
-                    auto p = choice( prop.first, vc );
-                    p.value(pt.get<std::string>(cat.first+"."+prop.first+"."+"value"));
+                    choice( prop.first, vc ).
+                        value(pt.get<std::string>(cat.first+"."+prop.first+"."+"value"));
                 }
                 break;
 

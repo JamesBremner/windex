@@ -1,5 +1,6 @@
-namespace wex {
-/** \brief A widget which user can drag to change a value.
+namespace wex
+{
+/** \brief A widget which user can drag to change a value, using windows control
 
 <pre>
     // construct top level window
@@ -47,7 +48,7 @@ public:
     slider( gui* parent )
         : gui( parent, "msctls_trackbar32",
                WS_CHILD | WS_OVERLAPPED | WS_VISIBLE |
-               TBS_AUTOTICKS | TBS_TRANSPARENTBKGND | TBS_FIXEDLENGTH )
+               TBS_AUTOTICKS | TBS_TRANSPARENTBKGND  | TBS_FIXEDLENGTH )
     {
     }
     /** Specify the range values used
@@ -60,13 +61,21 @@ public:
     void range( int min, int max )
     {
         if( min < 0 )
-            throw std::runtime_error("wex::slider positions must be positive");
+            throw std::runtime_error(
+                "wex::slider positions must be positive");
 
         SendMessage(
             myHandle,
             TBM_SETRANGE,
             (WPARAM) TRUE,                   // redraw flag
             (LPARAM) MAKELONG(min, max));  // min. & max. positions
+    }
+    void maximum( int max )
+    {
+        SendMessage(
+            myHandle,
+            TBM_SETRANGEMAX,
+            true, max );
     }
     /// Change the orientation to be vertical
     void vertical()
@@ -102,6 +111,103 @@ public:
             (LPARAM) 0 );
 
     }
+};
+
+
+/// \brief A widget which user can drag to change a value, self drawn
+
+class slider2 : public gui
+{
+public:
+    slider2( gui* parent )
+        : gui( parent )
+        , myMax( 100 )
+        , myPosition( 50 )
+        , fsliding( false )
+        , ftracking( false )
+    {
+        events().click([this]
+        {
+            focus();
+            RECT r;
+            GetClientRect( myHandle, &r );
+            int height = r.bottom - (r.bottom - r.top ) * myPosition / myMax;
+            auto m = getMouseStatus();
+            if( abs(m.y - height) > 10  )
+                return;
+            //std::cout << "slider2 click\n";
+            fsliding = true;
+        });
+        events().mouseMove([this](sMouse& m )
+        {
+            if( ! ftracking )
+            {
+                ftracking = true;
+
+                TRACKMOUSEEVENT s;
+                s.cbSize = sizeof( s );
+                s.hwndTrack = myHandle;
+                s.dwFlags = TME_LEAVE;
+                TrackMouseEvent( & s );
+                events().onMouseEnter();
+            }
+            if( ! fsliding )
+            {
+                return;
+            }
+            RECT r;
+            GetClientRect( myHandle, &r );
+//                        std::cout << "m.y " << m.y
+//                <<"  "<< r.bottom <<" " << r.top <<" ";
+            if( m.y > r.bottom || m.y < r.top )
+                return;
+            myPosition =  myMax * ( r.bottom - m.y ) / ( r.bottom - r.top );
+            if( myPosition > myMax )
+                myPosition = myMax;
+//            std::cout << myPosition << " ";
+            update();
+            events().onSlid( myPosition );
+        });
+        events().mouseUp([this]
+        {
+            fsliding = false;
+
+        });
+    }
+    void stopTracking()
+    {
+        ftracking = false;
+    }
+    void draw( PAINTSTRUCT& ps )
+    {
+        RECT r;
+        GetClientRect( myHandle, &r );
+        int height = r.bottom - (r.bottom - r.top ) * myPosition / myMax;
+        SelectObject(ps.hdc, GetStockObject(BLACK_BRUSH));
+        RoundRect(ps.hdc,
+                  r.left, height -4,
+                  r.right, height + 4,
+                  5, 5);
+    }
+    void vertical() {}
+    double position() const
+    {
+        return myPosition;
+    }
+    void position( double v )
+    {
+        myPosition = v;
+    }
+    void maximum( double max )
+    {
+        myMax = max;
+    }
+private:
+    double myPosition;
+    double myMax;
+    bool fsliding;
+    bool ftracking;
+
 };
 
 }

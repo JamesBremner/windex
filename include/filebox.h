@@ -1,3 +1,5 @@
+#include <commdlg.h>
+
 namespace wex {
 
 /// A popup window where used can browse folders and select a file
@@ -85,7 +87,7 @@ public:
     }
 
 private:
-    OPENFILENAMEA ofn;       // common dialog box structure
+    OPENFILENAME ofn;       // common dialog box structure
     char szFile[260];       // buffer for file name
     std::string myfname;
 };
