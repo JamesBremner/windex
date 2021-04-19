@@ -4,6 +4,7 @@ var classwex_1_1choice =
     [ "add", "classwex_1_1choice.html#a8c4aa96441ec99f73c2a6069b0ee941e", null ],
     [ "clear", "classwex_1_1choice.html#a07a4b86ed1550beb8fb1f1847aef0a74", null ],
     [ "count", "classwex_1_1choice.html#abd9d0808ddb33bf2ff7ddefb63411765", null ],
+    [ "itemHeight", "classwex_1_1choice.html#a390c294db741d6359f8e149c6c109630", null ],
     [ "move", "classwex_1_1choice.html#aa147d8672dfaca27f6342fb211d24aa3", null ],
     [ "select", "classwex_1_1choice.html#a9378eba68d0113567a982d46b9d04faa", null ],
     [ "select", "classwex_1_1choice.html#a956bf898533d8a52a85c4ff7b54645e1", null ],

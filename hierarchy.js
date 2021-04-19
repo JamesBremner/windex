@@ -16,13 +16,16 @@ var hierarchy =
       [ "wex::multiline", "classwex_1_1multiline.html", null ],
       [ "wex::panel", "classwex_1_1panel.html", [
         [ "wex::groupbox", "classwex_1_1groupbox.html", null ],
-        [ "wex::layout", "classwex_1_1layout.html", null ],
+        [ "wex::layout", "classwex_1_1layout.html", [
+          [ "wex::radiobuttonLayout", "classwex_1_1radiobutton_layout.html", null ]
+        ] ],
         [ "wex::tabbed", "classwex_1_1tabbed.html", null ]
       ] ],
       [ "wex::plot::plot", "classwex_1_1plot_1_1plot.html", null ],
       [ "wex::propertyGrid", "classwex_1_1property_grid.html", null ],
       [ "wex::radiobutton", "classwex_1_1radiobutton.html", null ],
       [ "wex::slider", "classwex_1_1slider.html", null ],
+      [ "wex::slider2", "classwex_1_1slider2.html", null ],
       [ "wex::tcp", "classwex_1_1tcp.html", null ]
     ] ],
     [ "wex::maker", "classwex_1_1maker.html", null ],

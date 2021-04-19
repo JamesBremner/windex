@@ -121,15 +121,21 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>onScrollV</b> (int co
 <tr class="memitem:a150183fe54e6bd1284266eadb1907448"><td class="memItemLeft" align="right" valign="top"><a id="a150183fe54e6bd1284266eadb1907448"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>onMenuCommand</b> (int id)</td></tr>
 <tr class="separator:a150183fe54e6bd1284266eadb1907448"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a046b2ebdfcbc331d6271349bb9fd42"><td class="memItemLeft" align="right" valign="top"><a id="a8a046b2ebdfcbc331d6271349bb9fd42"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>onKeydown</b> ()</td></tr>
-<tr class="separator:a8a046b2ebdfcbc331d6271349bb9fd42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb20ba758c153cc5df968ecbe228c82e"><td class="memItemLeft" align="right" valign="top"><a id="acb20ba758c153cc5df968ecbe228c82e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>onKeydown</b> (int keycode)</td></tr>
+<tr class="separator:acb20ba758c153cc5df968ecbe228c82e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44e04cd59780158f29ee589f33ca50e4"><td class="memItemLeft" align="right" valign="top"><a id="a44e04cd59780158f29ee589f33ca50e4"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>onMouseMove</b> (WPARAM wParam, LPARAM lParam)</td></tr>
 <tr class="separator:a44e04cd59780158f29ee589f33ca50e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef7a4f1bb6f9bc643600d0d553b16208"><td class="memItemLeft" align="right" valign="top"><a id="aef7a4f1bb6f9bc643600d0d553b16208"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>onMouseEnter</b> ()</td></tr>
+<tr class="separator:aef7a4f1bb6f9bc643600d0d553b16208"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47d10737c96a12a10611d8be4a5e629a"><td class="memItemLeft" align="right" valign="top"><a id="a47d10737c96a12a10611d8be4a5e629a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>onMouseWheel</b> (int dist)</td></tr>
 <tr class="separator:a47d10737c96a12a10611d8be4a5e629a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e54e7e2b2c60b52a6061fefbf3f5b44"><td class="memItemLeft" align="right" valign="top"><a id="a1e54e7e2b2c60b52a6061fefbf3f5b44"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>onMouseLeave</b> ()</td></tr>
+<tr class="separator:a1e54e7e2b2c60b52a6061fefbf3f5b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab43755f8ffe1bae73e6ef1bd246e6f55"><td class="memItemLeft" align="right" valign="top"><a id="ab43755f8ffe1bae73e6ef1bd246e6f55"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>onTimer</b> (int id)</td></tr>
 <tr class="separator:ab43755f8ffe1bae73e6ef1bd246e6f55"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -194,9 +200,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>select</b> (int id, s
 <tr class="memitem:ae871179ebe54e07b6c79cdd601a65700"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1eventhandler.html#ae871179ebe54e07b6c79cdd601a65700">change</a> (int id, std::function&lt; void(void)&gt; f)</td></tr>
 <tr class="memdesc:ae871179ebe54e07b6c79cdd601a65700"><td class="mdescLeft">&#160;</td><td class="mdescRight">register function to call when control changes  <a href="classwex_1_1eventhandler.html#ae871179ebe54e07b6c79cdd601a65700">More...</a><br /></td></tr>
 <tr class="separator:ae871179ebe54e07b6c79cdd601a65700"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1acf5a68a8d192a4187f6611f73a6315"><td class="memItemLeft" align="right" valign="top"><a id="a1acf5a68a8d192a4187f6611f73a6315"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>keydown</b> (std::function&lt; void(void)&gt; f)</td></tr>
-<tr class="separator:a1acf5a68a8d192a4187f6611f73a6315"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a832955ebc025acb102cea8151d00ad6b"><td class="memItemLeft" align="right" valign="top"><a id="a832955ebc025acb102cea8151d00ad6b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1eventhandler.html#a832955ebc025acb102cea8151d00ad6b">keydown</a> (std::function&lt; void(int keydown)&gt; f)</td></tr>
+<tr class="memdesc:a832955ebc025acb102cea8151d00ad6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">register function to call when key pressed. Function is passed key code. <br /></td></tr>
+<tr class="separator:a832955ebc025acb102cea8151d00ad6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a873ef7c12b1c2f32ade412010cdb6d1f"><td class="memItemLeft" align="right" valign="top"><a id="a873ef7c12b1c2f32ade412010cdb6d1f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>mouseEnter</b> (std::function&lt; void(void)&gt; f)</td></tr>
+<tr class="separator:a873ef7c12b1c2f32ade412010cdb6d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8a2248f7f7a191e9cbc8b8935ef4186"><td class="memItemLeft" align="right" valign="top"><a id="ad8a2248f7f7a191e9cbc8b8935ef4186"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>mouseMove</b> (std::function&lt; void(<a class="el" href="structwex_1_1s_mouse.html">sMouse</a> &amp;m)&gt; f)</td></tr>
 <tr class="separator:ad8a2248f7f7a191e9cbc8b8935ef4186"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,6 +216,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mouseWheel</b> (std::
 <tr class="memitem:a1a56b96e2786639006618fdbe8cff79f"><td class="memItemLeft" align="right" valign="top"><a id="a1a56b96e2786639006618fdbe8cff79f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>mouseUp</b> (std::function&lt; void(void)&gt; f)</td></tr>
 <tr class="separator:a1a56b96e2786639006618fdbe8cff79f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1358a288197661c68c1eac6623f7c02d"><td class="memItemLeft" align="right" valign="top"><a id="a1358a288197661c68c1eac6623f7c02d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>mouseLeave</b> (std::function&lt; void(void)&gt; f)</td></tr>
+<tr class="separator:a1358a288197661c68c1eac6623f7c02d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf4cd182ea44e50164b384de41678601"><td class="memItemLeft" align="right" valign="top"><a id="abf4cd182ea44e50164b384de41678601"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>timer</b> (std::function&lt; void(int id)&gt; f)</td></tr>
 <tr class="separator:abf4cd182ea44e50164b384de41678601"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -447,7 +460,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1eventhandler.html">eventhandler</a></li>
-    <li class="footer">Generated on Fri Mar 19 2021 11:25:33 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Mon Apr 19 2021 09:58:20 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

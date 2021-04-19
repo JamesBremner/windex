@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['value_319',['value',['../classwex_1_1inputbox.html#a201a609f944da62b0f26c5b40037ecbf',1,'wex::inputbox::value()'],['../classwex_1_1plot_1_1trace.html#a204fdfcd6814dfbc71b8a745a5447e72',1,'wex::plot::trace::value()'],['../classwex_1_1property.html#a5dc5c39ed60aa8eacf0695c8e473e184',1,'wex::property::value()'],['../classwex_1_1property_grid.html#aa9d7db95673d02289822c873be55c460',1,'wex::propertyGrid::value()']]],
-  ['vertical_320',['vertical',['../classwex_1_1slider.html#af5a9f2d37aca7dde33896e49c037519a',1,'wex::slider']]]
+  ['update_329',['update',['../classwex_1_1gui.html#a12afe321b01f6fabf33a06920a033dbc',1,'wex::gui::update()'],['../classwex_1_1property.html#a49fb480857d47dc7e474f533fded9a51',1,'wex::property::update()'],['../classwex_1_1property_grid.html#a7982de0d0ce0a9480c603872e11e93f2',1,'wex::propertyGrid::update()']]]
 ];

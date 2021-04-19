@@ -30,6 +30,7 @@ var annotated_dup =
       [ "timer", "classwex_1_1timer.html", "classwex_1_1timer" ],
       [ "maker", "classwex_1_1maker.html", null ],
       [ "tabbed", "classwex_1_1tabbed.html", "classwex_1_1tabbed" ],
+      [ "radiobuttonLayout", "classwex_1_1radiobutton_layout.html", "classwex_1_1radiobutton_layout" ],
       [ "property", "classwex_1_1property.html", "classwex_1_1property" ],
       [ "propertyGrid", "classwex_1_1property_grid.html", "classwex_1_1property_grid" ],
       [ "window2file", "classwex_1_1window2file.html", "classwex_1_1window2file" ],
@@ -37,6 +38,7 @@ var annotated_dup =
       [ "tcp", "classwex_1_1tcp.html", "classwex_1_1tcp" ],
       [ "filebox", "classwex_1_1filebox.html", "classwex_1_1filebox" ],
       [ "gauge", "classwex_1_1gauge.html", "classwex_1_1gauge" ],
-      [ "slider", "classwex_1_1slider.html", "classwex_1_1slider" ]
+      [ "slider", "classwex_1_1slider.html", "classwex_1_1slider" ],
+      [ "slider2", "classwex_1_1slider2.html", "classwex_1_1slider2" ]
     ] ]
 ];

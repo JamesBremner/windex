@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['open_266',['open',['../classwex_1_1com.html#a91bba49affba4cebbd3097667934878c',1,'wex::com::open()'],['../classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a',1,'wex::filebox::open()']]]
+  ['newid_275',['NewID',['../classwex_1_1gui.html#ae5b60fcc333c7902e4ffe4e30630c731',1,'wex::gui']]],
+  ['notification_276',['notification',['../classwex_1_1editbox.html#a91b72f2cb84528ace73f556be7d61ebd',1,'wex::editbox']]]
 ];
