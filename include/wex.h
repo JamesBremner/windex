@@ -3192,7 +3192,36 @@ private:
     std::function<void( int tabIndex )> myTabChangeFn;
 };
 
-/// Widget to layout a group of radio buttons
+/** Widget to layout a group of radio buttons
+
+Usage:
+<pre>
+    wex::radiobuttonLayout & myGroup = wex::maker::make<wex::radiobuttonLayout>( form );
+    myGroup.move( {50,50,200,400} );
+    myGroup.grid(1);        // layout in one column
+    wex::radiobutton& rb = myGroup.add();
+    rb.text("Heart");
+    rb.size(60,20);
+    rb.events().click([this]
+    {
+        Change( 1 );
+    });
+    rb = myGroup.add();
+    rb.text("EMI 1");
+    rb.size(60,20);
+    rb.events().click([this]
+    {
+        Change(2 );
+    });
+    rb = myGroup.add();
+    rb.text("EMI 2");
+    rb.size(60,20);
+    rb.events().click([this]
+    {
+        Change( 3 );
+    });
+</pre>
+*/
 class radiobuttonLayout : public layout
 {
 public:
@@ -3201,7 +3230,9 @@ public:
         , myFirst( true )
     {
     }
-    /// add a radio button
+    /** add a radio button
+        @return reference to radibutton
+    */
     radiobutton& add()
     {
         wex::radiobutton& rb = wex::maker::make<wex::radiobutton>( *this );
@@ -3212,7 +3243,7 @@ public:
         }
         return rb;
     }
-    /// index of checked radio button
+    /// 0-based index of checked radio button
     int checked()
     {
         if( myFirst )
@@ -3229,6 +3260,9 @@ public:
             return;
         ((radiobutton*)children()[i])->check();
     }
+    /** Enable/disable all radio buttons
+        @param[in] f status required, true for enabled, default enabled
+    */
     void enable( bool f = true )
     {
         for( auto rb : children() )
