@@ -131,6 +131,7 @@ public:
         scrollV([](int c) {});
         keydown([](int c) {});
         mouseEnter([] {});
+        mouseLeave([]{});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
         mouseUp([] {});

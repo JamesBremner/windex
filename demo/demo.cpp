@@ -251,7 +251,7 @@ void RBDemo()
     form.text("A windex radiobutton");
 
     wex::groupbox& P = wex::maker::make<wex::groupbox>( form );
-    P.move( 5, 5, 350,200 );
+    P.move( {5, 5, 350,200} );
 
     // use laypout to atomatically arrange buttons in columns
     wex::layout& L = wex::maker::make<wex::layout>(P  );
@@ -430,7 +430,7 @@ void SliderDemo()
     hv.move(200,350, 200,200 );
 
     // construct horizontal slider
-    wex::slider& S = wex::maker::make<wex::slider>( form );
+    wex::slider2& S = wex::maker::make<wex::slider2>( form );
     S.move({ 50,50,400,50});
     S.range( 0, 100 );
     S.text("horiz slider");
@@ -443,7 +443,7 @@ void SliderDemo()
     });
 
     // construct vertical slider
-    wex::slider& V = wex::maker::make<wex::slider>( form );
+    wex::slider2& V = wex::maker::make<wex::slider2>( form );
     V.move({ 50,100,50,400});
     V.range( 0, 10 );
     V.vertical();

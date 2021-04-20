@@ -51,7 +51,7 @@ public:
                TBS_AUTOTICKS | TBS_TRANSPARENTBKGND  | TBS_FIXEDLENGTH )
     {
     }
-    /** Specify the range values used
+    /** Specify the range of values used
         @param[in] min
         @param[in] max
 
@@ -121,10 +121,12 @@ class slider2 : public gui
 public:
     slider2( gui* parent )
         : gui( parent )
-        , myMax( 100 )
         , myPosition( 50 )
+        , myMin( 0 )
+        , myMax( 100 )
         , fsliding( false )
         , ftracking( false )
+        , fvertical( false )
     {
         events().click([this]
         {
@@ -142,13 +144,18 @@ public:
         {
             if( ! ftracking )
             {
+                // first mouse movement in slider
+                // start tracking mouse movement
                 ftracking = true;
 
+                // generate event when mose leaves
                 TRACKMOUSEEVENT s;
                 s.cbSize = sizeof( s );
                 s.hwndTrack = myHandle;
                 s.dwFlags = TME_LEAVE;
                 TrackMouseEvent( & s );
+
+                // run mouse enter event handler
                 events().onMouseEnter();
             }
             if( ! fsliding )
@@ -159,9 +166,18 @@ public:
             GetClientRect( myHandle, &r );
 //                        std::cout << "m.y " << m.y
 //                <<"  "<< r.bottom <<" " << r.top <<" ";
-            if( m.y > r.bottom || m.y < r.top )
-                return;
-            myPosition =  myMax * ( r.bottom - m.y ) / ( r.bottom - r.top );
+            if( fvertical )
+            {
+                if( m.y > r.bottom || m.y < r.top )
+                    return;
+                myPosition =  myMax * ( r.bottom - m.y ) / ( r.bottom - r.top );
+            }
+            else
+            {
+                if( m.x < r.left || m.x > r.right )
+                    return;
+                myPosition = myMax * ( m.x - r.left ) / ( r.right - r.left );
+            }
             if( myPosition > myMax )
                 myPosition = myMax;
 //            std::cout << myPosition << " ";
@@ -174,6 +190,26 @@ public:
 
         });
     }
+    /** Specify the range of values used
+    @param[in] min
+    @param[in] max
+
+    The values must all be positive,
+    otherwise a runtime_error exception is thrown
+    */
+    void range( int min, int max )
+    {
+        if( min < 0 )
+            throw std::runtime_error(
+                "wex::slider positions must be positive");
+        if( max < min )
+            throw std::runtime_error(
+                "wex::slider bad range parameters");
+
+        myMin = min;
+        myMax = max;
+        myPosition = ( myMax + myMin ) / 2;
+    }
     void stopTracking()
     {
         ftracking = false;
@@ -182,14 +218,46 @@ public:
     {
         RECT r;
         GetClientRect( myHandle, &r );
-        int height = r.bottom - (r.bottom - r.top ) * myPosition / myMax;
+
+        // track
+        wex::shapes s( ps );
+        if( fvertical )
+        {
+            int center = r.left+(r.right-r.left)/2;
+            s.line( {center-1,r.top+5,center-1,r.bottom-5});
+            s.line( {center+1,r.top+5,center+1,r.bottom-5});
+        }
+        else
+        {
+            int center = r.top+(r.bottom-r.top)/2;
+            s.line({r.left+5,center-1,r.right-5,center-1});
+            s.line({r.left+5,center+1,r.right-5,center+1});
+        }
+
+        // thumbnail
         SelectObject(ps.hdc, GetStockObject(BLACK_BRUSH));
-        RoundRect(ps.hdc,
-                  r.left, height -4,
-                  r.right, height + 4,
-                  5, 5);
+        if( fvertical )
+        {
+            int height = r.bottom - (r.bottom - r.top ) * myPosition / myMax;
+            RoundRect(ps.hdc,
+                      r.left, height -4,
+                      r.right, height + 4,
+                      5, 5);
+        }
+        else
+        {
+            int height = r.left + (r.right - r.left ) * myPosition / myMax;
+            RoundRect(ps.hdc,
+                      height - 4, r.top,
+                      height + 4, r.bottom,
+                      5, 5);
+        }
     }
-    void vertical() {}
+    void vertical(bool f = true)
+    {
+        fvertical = f;
+    }
+
     double position() const
     {
         return myPosition;
@@ -204,10 +272,11 @@ public:
     }
 private:
     double myPosition;
+    double myMin;
     double myMax;
     bool fsliding;
     bool ftracking;
-
+    bool fvertical;
 };
 
 }
