@@ -131,7 +131,7 @@ public:
         scrollV([](int c) {});
         keydown([](int c) {});
         mouseEnter([] {});
-        mouseLeave([]{});
+        mouseLeave([] {});
         mouseMove([](sMouse& m) {});
         mouseWheel([](int dist) {});
         mouseUp([] {});
@@ -1376,31 +1376,55 @@ public:
             w->show( f );
     }
 
-/// Show this window and suspend all other windows inteactions until this is closed
+/// Show this window and suspend all other windows interactions until this is closed
     void showModal()
     {
         myfModal = true;
         if( ! modalMgr::get().set( myID, myHandle ) )
             return;
         show();
+
+        // prevent other windows from interaction
+        // by running our own message loop
+        //std::cout << "-> modal msg loop\n";
         MSG msg = { };
         while (GetMessage(&msg, NULL, 0, 0))
         {
             if ( ! IsDialogMessage(myHandle, &msg))
             {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-                if( ! myfModal )
-                    break;
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
             }
+            else
+            {
+                switch (msg.message)
+                {
+                case WM_CLOSE:
+                    std::cout << myText << " WM_CLOSE";
+                    break;
+
+                case WM_DESTROY:
+                    std::cout << myText << " WM_DESTROY";
+                    myfModal = false;
+                    break;
+                }
+            }
+            // window no longer modal
+            // so break out of our own message loop
+            if( ! myfModal )
+                break;
         }
+        //std::cout << "<- modal msg loop\n";
     }
     /// Stop modal interaction and close window
     void endModal()
     {
+        std::cout << myText << " endModal\n";
         myfModal = false;
         modalMgr::get().set(0,0);
         DestroyWindow(myHandle);
+        if( myDeleteList )
+            myDeleteList->push_back( myHandle );
     }
 
     /** force widget to redraw completely
@@ -2810,6 +2834,7 @@ private:
     /// remove destroyed gui elements
     void Delete()
     {
+        //std::cout << "windex::Delete " << myDeleteList.size() << "\n";
         for( auto h : myDeleteList )
         {
             auto i = myGui.find( h );

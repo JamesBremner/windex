@@ -100,10 +100,10 @@ public:
     ~property()
     {
         std::cout << myName << " delete\n";
-        myLabel.~gui();
-        myEditbox.~gui();
-        myCategoryExpanded.~gui();
-        myCombobox.~gui();
+        myLabel.~label();
+        myEditbox.~editbox();
+        myCategoryExpanded.~checkbox();
+        myCombobox.~choice();
     }
     void move( const std::vector<int>& r )
     {
