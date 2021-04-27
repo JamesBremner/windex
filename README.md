@@ -90,3 +90,8 @@ https://github.com/JamesBremner/DXF_Viewer
 ## Simulation Properties
 
 <img src="https://github.com/JamesBremner/windex/blob/master/doc/simparams.PNG" alt="props"></a>
+
+## Control Panel
+
+<img src="https://github.com/JamesBremner/windex/blob/master/doc/controlpanel.png" alt="panel"></a>
+
