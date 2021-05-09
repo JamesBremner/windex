@@ -221,6 +221,8 @@ public:
 
         // track
         wex::shapes s( ps );
+        if( ! myfEnabled )
+            s.color( 0xAAAAAA );
         if( fvertical )
         {
             int center = r.left+(r.right-r.left)/2;
@@ -235,7 +237,10 @@ public:
         }
 
         // thumbnail
-        SelectObject(ps.hdc, GetStockObject(BLACK_BRUSH));
+        if( myfEnabled )
+            SelectObject(ps.hdc, GetStockObject(BLACK_BRUSH));
+        else
+            SelectObject(ps.hdc, GetStockObject(GRAY_BRUSH));
         if( fvertical )
         {
             int height = r.bottom - (r.bottom - r.top ) * myPosition / myMax;

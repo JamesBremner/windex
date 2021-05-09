@@ -8,7 +8,7 @@
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "enter program name, for example ${workspaceFolder}/a.exe",
+            "program": "../bin/demo.cpp",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

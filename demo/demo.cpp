@@ -40,9 +40,20 @@ void helloworld()
 
     // display a button
     button& btn = wex::maker::make<button>( form );
-    btn.move( {20, 100, 200, 30 } );
+    btn.move( {20, 120, 200, 30 } );
     btn.text( "Show values entered" );
     btn.tooltip("tooltip explaining button function");
+
+    button& disablebtn =  wex::maker::make<button>( form );
+    disablebtn.move( {20, 180, 200, 30 } );
+    disablebtn.text("Disable");
+    disablebtn.events().click([&]
+    {
+        lbA.enable( false );
+        lbB.enable( false );
+        btn.enable( false );
+        form.update();
+    });
 
 
     // popup a message box when button is clicked
@@ -454,6 +465,16 @@ void SliderDemo()
         vlabel.update();
         hv.value( pos );
         hv.update();
+    });
+
+    button& disablebtn =  wex::maker::make<button>( form );
+    disablebtn.move( {100, 600, 200, 30 } );
+    disablebtn.text("Disable");
+    disablebtn.events().click([&]
+    {
+        S.enable( false );
+        V.enable( false );
+        form.update();
     });
 
     form.show();
