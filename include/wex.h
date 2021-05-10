@@ -939,14 +939,25 @@ namespace wex
         {
             return myText;
         }
-        /// Add scrollbars
-        void scroll()
+        /** Add scrollbars
+         * 
+         * @param[in] fHoriz true if horizontal scroll reuired, default true
+         * 
+         */
+        void scroll(bool fHoriz = true)
         {
+            myfScrollHoriz = fHoriz;
+
             // Add scrollbars to window style
+            LONG_PTR extra;
+            if (fHoriz)
+                extra = WS_HSCROLL | WS_VSCROLL;
+            else
+                extra = WS_VSCROLL;
             SetWindowLongPtr(
                 myHandle,
                 GWL_STYLE,
-                GetWindowLongPtr(myHandle, GWL_STYLE) | WS_HSCROLL | WS_VSCROLL);
+                GetWindowLongPtr(myHandle, GWL_STYLE) | extra);
 
             // Set the scrolling range and page size to defaaults
             scrollRange(100, 100);
@@ -1016,12 +1027,20 @@ namespace wex
     */
         void scrollRange(int width, int height)
         {
+
+            /* maximum scroll position
+
+            We want the max scroll position 
+            which is the top of the visible portion
+            to be placed where the bottom if the underlying window is just visible
+            */
+
             RECT r;
             GetClientRect(myHandle, &r);
             int xmax = width - r.right;
             if (xmax < 0)
                 xmax = 0;
-            int ymax = height - r.bottom;
+            int ymax = height - ( r.bottom - r.top ) + 50;
             if (ymax < 0)
                 ymax = 0;
             SCROLLINFO si;
@@ -1031,9 +1050,12 @@ namespace wex
             si.nMax = ymax;
             si.nPage = ymax / 10;
             SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
-            si.nMax = xmax;
-            si.nPage = xmax / 10;
-            SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
+            if (myfScrollHoriz)
+            {
+                si.nMax = xmax;
+                si.nPage = xmax / 10;
+                SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
+            }
         }
 
         /** Get mouse status
@@ -1532,6 +1554,7 @@ namespace wex
         HWND myToolTip; /// handle to tooltip control for this gui element
         unsigned int myAsyncReadCompleteMsgID;
         char *myCursorID;
+        bool myfScrollHoriz;
 
         /** Create the managed window
         @param[in] parent handle of parent window

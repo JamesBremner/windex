@@ -111,9 +111,13 @@ public:
         rl[2] = myLabelWidth;
         myLabel.move( rl );
 
+        // size of edit box
         std::vector<int> re( r );
+        // right side of label
         re[0] += myLabelWidth;
-        re[2] -= myLabelWidth;
+         // window width minus label with minus scroll control
+        re[2] -= myLabelWidth + 25;
+
         switch( myType )
         {
         case eType::string:
@@ -562,11 +566,11 @@ public:
         add( tree );
     }
 
-    /// Add scrollbars
+    /// Add vertical scrollbar
     void scroll()
     {
         myfScroll = true;
-        gui::scroll();
+        gui::scroll( false );
     }
     /// Expand, or contract, category of properties
     void expand(
@@ -748,10 +752,12 @@ private:
         prop_t P = myProperty.back();
         P->labelWidth( myLabelWidth );
         P->bgcolor( myBGColor );
-        if( myfScroll )
+        if( myfScroll ) {
+            //std::cout << "pg scroll range " << ((int)myProperty.size()+1) * myHeight << "\n";
             scrollRange(
                 myWidth,
-                ((int)myProperty.size()+1) * myHeight);
+                ((int)myProperty.size()+1) * myHeight );
+        }
 
         visible();
 
