@@ -1040,7 +1040,7 @@ namespace wex
             int xmax = width - r.right;
             if (xmax < 0)
                 xmax = 0;
-            int ymax = height - ( r.bottom - r.top ) + 50;
+            int ymax = height - ( r.bottom - r.top ) + 60;
             if (ymax < 0)
                 ymax = 0;
             SCROLLINFO si;

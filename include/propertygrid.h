@@ -487,7 +487,7 @@ public:
             // loop over properties in category
             for( auto prop : cat.second )
             {
-                int type = pt.get<int>(cat.first+"."+prop.first+"."+"type");
+                int type = pt.get<int>(cat.first+"."+prop.first+"."+"type",0);
 
                 switch( type )
                 {
@@ -514,7 +514,7 @@ public:
 
                     string(
                         prop.first,
-                        pt.get<std::string>(cat.first+"."+prop.first+"."+"value"));
+                        pt.get<std::string>(cat.first+"."+prop.first+"."+"value","missing"));
                         break;
                 }
 
@@ -560,10 +560,13 @@ public:
     */
     void addjson( const std::string& json )
     {
+        std::cout << "->addjson\n";
         std::stringstream ss( json );
         boost::property_tree::ptree tree;
         read_json( ss, tree );
+        std::cout << "<-read\n";
         add( tree );
+        std::cout << "<-addjson\n";
     }
 
     /// Add vertical scrollbar

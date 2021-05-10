@@ -153,45 +153,45 @@ void PGDemo()
 
     // construct propertygrid
     propertyGrid& pg = wex::maker::make<propertyGrid>( form );
+    pg.scroll();
     pg.move( { 10,10, 200, 200});
     pg.labelWidth( 50 );
     pg.bgcolor( 0xFFA0A0 );
 
     // add properties
-    //pg.category("Strings");
+    pg.category("Strings");
     pg.string( "A", "72" );
     pg.string( "B", "4600" );
     pg.string( "C", "72" );
-//    pg.string( "D", "4600" );
-//    pg.string( "E", "4600" );
-//    pg.string( "F", "4600" );
-//    pg.string( "G", "4600" );
-//    pg.string( "H", "4600" );
-//    pg.string( "I", "4600" );
-//    pg.string( "J", "4600" );
-//    pg.string( "K", "4600" );
-//    pg.string( "L", "4600" );
-//    pg.string( "M", "4600" );
-//    pg.string( "N", "4600" );
-//    pg.string( "O", "4600" );
-    pg.expand("Strings",false);
+   pg.string( "D", "4600" );
+   pg.string( "E", "4600" );
+   pg.string( "F", "4600" );
+   pg.string( "G", "4600" );
+   pg.string( "H", "4600" );
+   pg.string( "I", "4600" );
+   pg.string( "J", "4600" );
+   pg.string( "K", "4600" );
+   pg.string( "L", "4600" );
+   pg.string( "M", "4600" );
+   pg.string( "N", "4600" );
+   pg.string( "O", "4600" );
+//    pg.expand("Strings",false);
     pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
     pg.tabList();
 
-
+    std::cout << "->pg2 construct\n";
     propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
+    pg2.text("two");
     pg2.move( { 10,300, 200, 200});
     pg2.labelWidth( 50 );
     pg2.bgcolor( 0xFFA0A0 );
 
-//    // add properties
-//    //pg.category("Strings");
-//    pg2.string( "x", "72" );
-//    pg2.string( "y", "4600" );
-
-    std::string json = "{\"strings\": { \"x\": 72, \"y\": 4600 }}";
+    // add properties from json stringh
+    std::string json = "{\"Strings\": {"
+        " \"x\": { \"type\":0, \"value\":72 },"
+        " \"y\": { \"type\":0, \"value\":4600 }}}";
     pg2.addjson( json );
 
     form.events().resize([&](int w, int h)
@@ -413,9 +413,8 @@ void ScrollDemo()
     lbA.move( {20, 20, 500, 30 } );
     lbA.text("AXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     label& lbB = wex::maker::make<label>( form );
-    lbB.move( {20, 460, 500, 30 } );
-    lbB.text("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");;
-
+    lbB.move( {20, 580, 550, 30 } );
+    lbB.text("580 580 580");
     form.show();
 }
 

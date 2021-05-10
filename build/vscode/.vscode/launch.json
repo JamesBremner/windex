@@ -8,12 +8,13 @@
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "../bin/demo.cpp",
+            "program": "${workspaceFolder}/../../bin/demo.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "console": "externalTerminal"
-        }
+        },
+
     ]
 }
