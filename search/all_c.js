@@ -10,7 +10,7 @@ var searchData=
   ['msgbox_86',['msgbox',['../classwex_1_1msgbox.html#a65f3ce3c41064b50ffae9b2b279cfcd0',1,'wex::msgbox::msgbox(const std::string &amp;msg)'],['../classwex_1_1msgbox.html#ac9266f7afe0a3b158e1abe3b63e1b1b3',1,'wex::msgbox::msgbox(gui &amp;parent, const std::string &amp;msg, const std::string &amp;title, unsigned int type)'],['../classwex_1_1msgbox.html',1,'wex::msgbox']]],
   ['multiline_87',['multiline',['../classwex_1_1multiline.html',1,'wex']]],
   ['myasyncreadcompletemsgid_88',['myAsyncReadCompleteMsgID',['../classwex_1_1gui.html#a2013c49c970bb19ea2ee67fcea042568',1,'wex::gui']]],
-  ['mychild_89',['myChild',['../classwex_1_1gui.html#a8a1b9613898a33cfd5d599a1ada2d26d',1,'wex::gui']]],
+  ['mychild_89',['myChild',['../classwex_1_1gui.html#a8915727d454f9b0580a2a12480fe1964',1,'wex::gui']]],
   ['myfenabled_90',['myfEnabled',['../classwex_1_1gui.html#a6e18823009185f386d8351c1de8735f6',1,'wex::gui']]],
   ['myfmodal_91',['myfModal',['../classwex_1_1gui.html#ac4eb62c95293f3346ba8629594c94eaf',1,'wex::gui']]],
   ['mygui_92',['myGui',['../classwex_1_1windex.html#aaa52aaf197294cb340a5349fb3a83389',1,'wex::windex']]],

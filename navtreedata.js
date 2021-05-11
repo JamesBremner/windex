@@ -44,7 +44,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"classwex_1_1plot_1_1plot.html#a70b248f875aaff62944052109e8d09f4"
+"classwex_1_1plot_1_1plot.html#a6beaad70af8a71ff608de66fda5c8340"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
