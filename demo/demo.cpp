@@ -40,9 +40,20 @@ void helloworld()
 
     // display a button
     button& btn = wex::maker::make<button>( form );
-    btn.move( {20, 100, 200, 30 } );
+    btn.move( {20, 120, 200, 30 } );
     btn.text( "Show values entered" );
     btn.tooltip("tooltip explaining button function");
+
+    button& disablebtn =  wex::maker::make<button>( form );
+    disablebtn.move( {20, 180, 200, 30 } );
+    disablebtn.text("Disable");
+    disablebtn.events().click([&]
+    {
+        lbA.enable( false );
+        lbB.enable( false );
+        btn.enable( false );
+        form.update();
+    });
 
 
     // popup a message box when button is clicked
@@ -142,45 +153,45 @@ void PGDemo()
 
     // construct propertygrid
     propertyGrid& pg = wex::maker::make<propertyGrid>( form );
+    pg.scroll();
     pg.move( { 10,10, 200, 200});
     pg.labelWidth( 50 );
     pg.bgcolor( 0xFFA0A0 );
 
     // add properties
-    //pg.category("Strings");
+    pg.category("Strings");
     pg.string( "A", "72" );
     pg.string( "B", "4600" );
     pg.string( "C", "72" );
-//    pg.string( "D", "4600" );
-//    pg.string( "E", "4600" );
-//    pg.string( "F", "4600" );
-//    pg.string( "G", "4600" );
-//    pg.string( "H", "4600" );
-//    pg.string( "I", "4600" );
-//    pg.string( "J", "4600" );
-//    pg.string( "K", "4600" );
-//    pg.string( "L", "4600" );
-//    pg.string( "M", "4600" );
-//    pg.string( "N", "4600" );
-//    pg.string( "O", "4600" );
-    pg.expand("Strings",false);
+   pg.string( "D", "4600" );
+   pg.string( "E", "4600" );
+   pg.string( "F", "4600" );
+   pg.string( "G", "4600" );
+   pg.string( "H", "4600" );
+   pg.string( "I", "4600" );
+   pg.string( "J", "4600" );
+   pg.string( "K", "4600" );
+   pg.string( "L", "4600" );
+   pg.string( "M", "4600" );
+   pg.string( "N", "4600" );
+   pg.string( "O", "4600" );
+//    pg.expand("Strings",false);
     pg.category("Others");
     pg.choice( "Choose", { "X", "Y", "Z"} );
     pg.check( "Enable", false );
     pg.tabList();
 
-
+    std::cout << "->pg2 construct\n";
     propertyGrid& pg2 = wex::maker::make<propertyGrid>( form );
+    pg2.text("two");
     pg2.move( { 10,300, 200, 200});
     pg2.labelWidth( 50 );
     pg2.bgcolor( 0xFFA0A0 );
 
-//    // add properties
-//    //pg.category("Strings");
-//    pg2.string( "x", "72" );
-//    pg2.string( "y", "4600" );
-
-    std::string json = "{\"strings\": { \"x\": 72, \"y\": 4600 }}";
+    // add properties from json stringh
+    std::string json = "{\"Strings\": {"
+        " \"x\": { \"type\":0, \"value\":72 },"
+        " \"y\": { \"type\":0, \"value\":4600 }}}";
     pg2.addjson( json );
 
     form.events().resize([&](int w, int h)
@@ -251,7 +262,7 @@ void RBDemo()
     form.text("A windex radiobutton");
 
     wex::groupbox& P = wex::maker::make<wex::groupbox>( form );
-    P.move( 5, 5, 350,200 );
+    P.move( {5, 5, 350,200} );
 
     // use laypout to atomatically arrange buttons in columns
     wex::layout& L = wex::maker::make<wex::layout>(P  );
@@ -402,9 +413,8 @@ void ScrollDemo()
     lbA.move( {20, 20, 500, 30 } );
     lbA.text("AXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     label& lbB = wex::maker::make<label>( form );
-    lbB.move( {20, 460, 500, 30 } );
-    lbB.text("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");;
-
+    lbB.move( {20, 580, 550, 30 } );
+    lbB.text("580 580 580");
     form.show();
 }
 
@@ -430,7 +440,7 @@ void SliderDemo()
     hv.move(200,350, 200,200 );
 
     // construct horizontal slider
-    wex::slider& S = wex::maker::make<wex::slider>( form );
+    wex::slider2& S = wex::maker::make<wex::slider2>( form );
     S.move({ 50,50,400,50});
     S.range( 0, 100 );
     S.text("horiz slider");
@@ -443,7 +453,7 @@ void SliderDemo()
     });
 
     // construct vertical slider
-    wex::slider& V = wex::maker::make<wex::slider>( form );
+    wex::slider2& V = wex::maker::make<wex::slider2>( form );
     V.move({ 50,100,50,400});
     V.range( 0, 10 );
     V.vertical();
@@ -454,6 +464,16 @@ void SliderDemo()
         vlabel.update();
         hv.value( pos );
         hv.update();
+    });
+
+    button& disablebtn =  wex::maker::make<button>( form );
+    disablebtn.move( {100, 600, 200, 30 } );
+    disablebtn.text("Disable");
+    disablebtn.events().click([&]
+    {
+        S.enable( false );
+        V.enable( false );
+        form.update();
     });
 
     form.show();

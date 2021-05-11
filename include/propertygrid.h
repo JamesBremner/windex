@@ -100,10 +100,10 @@ public:
     ~property()
     {
         std::cout << myName << " delete\n";
-        myLabel.~gui();
-        myEditbox.~gui();
-        myCategoryExpanded.~gui();
-        myCombobox.~gui();
+        myLabel.~label();
+        myEditbox.~editbox();
+        myCategoryExpanded.~checkbox();
+        myCombobox.~choice();
     }
     void move( const std::vector<int>& r )
     {
@@ -111,9 +111,13 @@ public:
         rl[2] = myLabelWidth;
         myLabel.move( rl );
 
+        // size of edit box
         std::vector<int> re( r );
+        // right side of label
         re[0] += myLabelWidth;
-        re[2] -= myLabelWidth;
+         // window width minus label with minus scroll control
+        re[2] -= myLabelWidth + 25;
+
         switch( myType )
         {
         case eType::string:
@@ -483,7 +487,7 @@ public:
             // loop over properties in category
             for( auto prop : cat.second )
             {
-                int type = pt.get<int>(cat.first+"."+prop.first+"."+"type");
+                int type = pt.get<int>(cat.first+"."+prop.first+"."+"type",0);
 
                 switch( type )
                 {
@@ -510,7 +514,7 @@ public:
 
                     string(
                         prop.first,
-                        pt.get<std::string>(cat.first+"."+prop.first+"."+"value"));
+                        pt.get<std::string>(cat.first+"."+prop.first+"."+"value","missing"));
                         break;
                 }
 
@@ -556,17 +560,20 @@ public:
     */
     void addjson( const std::string& json )
     {
+        std::cout << "->addjson\n";
         std::stringstream ss( json );
         boost::property_tree::ptree tree;
         read_json( ss, tree );
+        std::cout << "<-read\n";
         add( tree );
+        std::cout << "<-addjson\n";
     }
 
-    /// Add scrollbars
+    /// Add vertical scrollbar
     void scroll()
     {
         myfScroll = true;
-        gui::scroll();
+        gui::scroll( false );
     }
     /// Expand, or contract, category of properties
     void expand(
@@ -748,10 +755,12 @@ private:
         prop_t P = myProperty.back();
         P->labelWidth( myLabelWidth );
         P->bgcolor( myBGColor );
-        if( myfScroll )
+        if( myfScroll ) {
+            //std::cout << "pg scroll range " << ((int)myProperty.size()+1) * myHeight << "\n";
             scrollRange(
                 myWidth,
-                ((int)myProperty.size()+1) * myHeight);
+                ((int)myProperty.size()+1) * myHeight );
+        }
 
         visible();
 
