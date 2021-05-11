@@ -857,8 +857,8 @@ namespace wex
             SetFocus(myHandle);
         }
         /** Change background color
-    @param[in] color eg 0x0000FF
-    */
+        * @param[in] color in BGR format eg 0x0000FF for red
+        */
         void bgcolor(int color)
         {
             myBGColor = color;
@@ -1005,12 +1005,21 @@ namespace wex
                 RECT rect;
                 GetClientRect(myHandle, &rect);
                 int ys = oldPos - si.nPos;
-                //std::cout << "scroll " << ys <<" "<< oldPos <<" "<< si.nPos << "\n";
                 ScrollWindow(
                     myHandle,
                     0,
-                    ys, NULL, NULL);
+                    ys, // amount to scroll
+                    NULL, NULL);
 
+                // update entire window and all children
+                // this prevents visual artefacts on fast scrolling
+                // but creates an unpleasant flicker
+                // so it is commented out
+                //update();
+
+                // update any child windows
+                // this has a fast and smooth appearance
+                // but sometimes leaves fragments littering the window
                 for (auto &w : myChild)
                     w->update();
             });
@@ -1040,7 +1049,7 @@ namespace wex
             int xmax = width - r.right;
             if (xmax < 0)
                 xmax = 0;
-            int ymax = height - ( r.bottom - r.top ) + 60;
+            int ymax = height - (r.bottom - r.top) + 60;
             if (ymax < 0)
                 ymax = 0;
             SCROLLINFO si;
