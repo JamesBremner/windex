@@ -2847,16 +2847,16 @@ It should NOT be used by application code.
 
      int clicked = -1;
 
-    menu m;
-    m.append("test",[&]
+    menu m( form );
+    m.append("test",[&](const std::string &title)
     {
         clicked = 1;
     });
-    m.append("second",[&]
+    m.append("second",[&](const std::string &title)
     {
         clicked = 2;
     });
-    m.append("third",[&]
+    m.append("third",[&](const std::string &title)
     {
         clicked = 3;
     });

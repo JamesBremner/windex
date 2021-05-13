@@ -5,84 +5,126 @@
 #include "wex.h"
 namespace wex
 {
-/** \brief save window contents to an image file in PNG format.
+    /** \brief save window contents to an image file in PNG format.
 
 Add library gdiplus to linker library list
 */
-class window2file
-{
-public:
-    window2file()
+    class window2file
     {
-        using namespace Gdiplus;
-
-        GdiplusStartupInput gdiplusStartupInput;
-        GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-
-        UINT  num = 0;
-        UINT  size = 0;
-
-        ImageCodecInfo* pImageCodecInfo = NULL;
-
-        GetImageEncodersSize(&num, &size);
-        if(size == 0)
-            throw std::runtime_error("window2file");
-
-        pImageCodecInfo = (ImageCodecInfo*)(malloc(size));
-        if(pImageCodecInfo == NULL)
-            throw std::runtime_error("window2file");
-
-        GetImageEncoders(num, size, pImageCodecInfo);
-        for(UINT j = 0; j < num; ++j)
+    public:
+        window2file()
         {
-            if( wcscmp(pImageCodecInfo[j].MimeType, L"image/png" ) == 0 )
-            {
-                myPngclsid = pImageCodecInfo[j].Clsid;
-                free(pImageCodecInfo);
-                return;
-            }
-        }
-        free(pImageCodecInfo);
-        throw std::runtime_error("window2file cannot find encoder");
-    }
-    ~window2file()
-    {
-        Gdiplus::GdiplusShutdown(gdiplusToken);
-    }
+            using namespace Gdiplus;
 
-    /** Save window contents to image file
+            GdiplusStartupInput gdiplusStartupInput;
+            GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+            UINT num = 0;
+            UINT size = 0;
+
+            ImageCodecInfo *pImageCodecInfo = NULL;
+
+            GetImageEncodersSize(&num, &size);
+            if (size == 0)
+                throw std::runtime_error("window2file");
+
+            pImageCodecInfo = (ImageCodecInfo *)(malloc(size));
+            if (pImageCodecInfo == NULL)
+                throw std::runtime_error("window2file");
+
+            GetImageEncoders(num, size, pImageCodecInfo);
+            for (UINT j = 0; j < num; ++j)
+            {
+                if (wcscmp(pImageCodecInfo[j].MimeType, L"image/png") == 0)
+                {
+                    myPngclsid = pImageCodecInfo[j].Clsid;
+                    free(pImageCodecInfo);
+                    return;
+                }
+            }
+            free(pImageCodecInfo);
+            throw std::runtime_error("window2file cannot find encoder");
+        }
+        ~window2file()
+        {
+            Gdiplus::GdiplusShutdown(gdiplusToken);
+        }
+
+        /** Save window contents to image file
         @param[in] w the window to save
         @param[in] filename to save to
     */
-    void save( gui& w, const std::string& filename )
-    {
-        HDC  memdc;
-        HBITMAP membit;
-        HDC scrdc = ::GetDC( w.handle() );
-        RECT rcClient;
-        GetClientRect( w.handle(), &rcClient);
-        int Height = rcClient.bottom-rcClient.top;
-        int Width = rcClient.right-rcClient.left;
-        memdc = CreateCompatibleDC(scrdc);
-        membit = CreateCompatibleBitmap(scrdc, Width, Height);
-        SelectObject(memdc, membit);
-        BitBlt(memdc, 0, 0, Width, Height, scrdc, 0, 0, SRCCOPY);
+        void save(gui &w, const std::string &filename)
+        {
+            HDC memdc;
+            HBITMAP membit;
+            HDC scrdc = ::GetDC(w.handle());
+            RECT rcClient;
+            GetClientRect(w.handle(), &rcClient);
+            int Height = rcClient.bottom - rcClient.top;
+            int Width = rcClient.right - rcClient.left;
+            memdc = CreateCompatibleDC(scrdc);
+            membit = CreateCompatibleBitmap(scrdc, Width, Height);
+            SelectObject(memdc, membit);
+            BitBlt(memdc, 0, 0, Width, Height, scrdc, 0, 0, SRCCOPY);
 
-        Gdiplus::Bitmap bitmap(membit, NULL);
-        std::wstringstream wss;
-        wss << filename.c_str();
+            Gdiplus::Bitmap bitmap(membit, NULL);
+            std::wstringstream wss;
+            wss << filename.c_str();
 
-        bitmap.Save(
-            wss.str().c_str(),
-            &myPngclsid,
-            NULL);
+            bitmap.Save(
+                wss.str().c_str(),
+                &myPngclsid,
+                NULL);
 
-        DeleteObject(memdc);
-        DeleteObject(membit);
-        ReleaseDC(0,scrdc);
-    }
-private:
-    CLSID myPngclsid;
-    ULONG_PTR gdiplusToken;
-};
+            DeleteObject(memdc);
+            DeleteObject(membit);
+            ReleaseDC(0, scrdc);
+        }
+        /** Draw png file in window
+        @param[in] w the window to draw into
+        @param[in] filename to be drawn
+        */
+        void draw(gui &w, const std::string &filename)
+        {
+            std::wstringstream wss;
+            wss << filename.c_str();
+            auto bitmap = new Gdiplus::Bitmap(wss.str().c_str());
+            Gdiplus::Graphics graphics(GetDC(w.handle()));
+            graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
+            // window dimansions
+            RECT r;
+            GetClientRect(w.handle(), &r);
+            int rw = r.right - r.left;
+            int rh = r.bottom - r.top;
+            // image dimensions
+            float xh = bitmap->GetHeight();
+            float xw = bitmap->GetWidth();
+            // check if shrinking needed
+            if (xh > rh || xw > rw)
+            {
+                // preserve aspect ratio by scaling both dimensions by the largest required by either
+                float sh = xh / rh;
+                float sw = xw / rw;
+                float s = sh;
+                if (sw > sh)
+                    s = sw;
+                xh /= s;
+                xw /= s;
+            }
+            Gdiplus::PointF dst[] =
+                {
+                    Gdiplus::PointF(0.0f, 0.0f),
+                    Gdiplus::PointF(xw, 0.0f),
+                    Gdiplus::PointF(0.0f, xh),
+                };
+            graphics.DrawImage(bitmap, dst, 3);
+
+            delete bitmap;
+        }
+
+    private:
+        CLSID myPngclsid;
+        ULONG_PTR gdiplusToken;
+    };
 }
