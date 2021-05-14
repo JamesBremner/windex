@@ -5,7 +5,7 @@
 #include "wex.h"
 namespace wex
 {
-    /** \brief save window contents to an image file in PNG format.
+    /** \brief transfer image between window contents and image file in PNG format.
 
 Add library gdiplus to linker library list
 */
@@ -84,22 +84,29 @@ Add library gdiplus to linker library list
         /** Draw png file in window
         @param[in] w the window to draw into
         @param[in] filename to be drawn
+        @return true if success
         */
-        void draw(gui &w, const std::string &filename)
+        bool draw(gui &w, const std::string &filename)
         {
+            // read image from file
             std::wstringstream wss;
             wss << filename.c_str();
             auto bitmap = new Gdiplus::Bitmap(wss.str().c_str());
-            Gdiplus::Graphics graphics(GetDC(w.handle()));
-            graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
-            // window dimansions
+            if( ! bitmap )
+                return false;
+            if( bitmap->GetLastStatus() != S_OK)
+                return false;
+            // image dimensions
+            float xh = bitmap->GetHeight();
+            float xw = bitmap->GetWidth();
+
+
+            // window dimensions
             RECT r;
             GetClientRect(w.handle(), &r);
             int rw = r.right - r.left;
             int rh = r.bottom - r.top;
-            // image dimensions
-            float xh = bitmap->GetHeight();
-            float xw = bitmap->GetWidth();
+
             // check if shrinking needed
             if (xh > rh || xw > rw)
             {
@@ -114,13 +121,19 @@ Add library gdiplus to linker library list
             }
             Gdiplus::PointF dst[] =
                 {
-                    Gdiplus::PointF(0.0f, 0.0f),
-                    Gdiplus::PointF(xw, 0.0f),
-                    Gdiplus::PointF(0.0f, xh),
+                    Gdiplus::PointF(0.0f, 0.0f),    // top left
+                    Gdiplus::PointF(xw, 0.0f),      // top right
+                    Gdiplus::PointF(0.0f, xh),      // bottom left
                 };
+
+            // draw
+            Gdiplus::Graphics graphics(GetDC(w.handle()));
+            graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
             graphics.DrawImage(bitmap, dst, 3);
 
             delete bitmap;
+
+            return true;
         }
 
     private:
