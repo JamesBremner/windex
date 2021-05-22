@@ -130,16 +130,16 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
      int clicked = -1;
 
-    menu m;
-    m.append("test",[&amp;]
+    menu m( form );
+    m.append("test",[&amp;](const std::string &amp;title)
     {
         clicked = 1;
     });
-    m.append("second",[&amp;]
+    m.append("second",[&amp;](const std::string &amp;title)
     {
         clicked = 2;
     });
-    m.append("third",[&amp;]
+    m.append("third",[&amp;](const std::string &amp;title)
     {
         clicked = 3;
     });
@@ -341,7 +341,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1menu.html">menu</a></li>
-    <li class="footer">Generated on Tue May 11 2021 16:58:26 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat May 22 2021 07:54:46 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

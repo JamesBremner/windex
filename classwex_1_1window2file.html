@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('classwex_1_1window2file.html',''); ini
 </div><!--header-->
 <div class="contents">
 
-<p>save window contents to an image file in PNG format.  
+<p>transfer image between window contents and image file in PNG format.  
  <a href="classwex_1_1window2file.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="window2file_8h_source.html">window2file.h</a>&gt;</code></p>
@@ -100,11 +100,60 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab68e140c442bf1249b5e4bc9b586fade"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1window2file.html#ab68e140c442bf1249b5e4bc9b586fade">save</a> (<a class="el" href="classwex_1_1gui.html">gui</a> &amp;w, const std::string &amp;filename)</td></tr>
 <tr class="memdesc:ab68e140c442bf1249b5e4bc9b586fade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save window contents to image file.  <a href="classwex_1_1window2file.html#ab68e140c442bf1249b5e4bc9b586fade">More...</a><br /></td></tr>
 <tr class="separator:ab68e140c442bf1249b5e4bc9b586fade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87135781a1541fc8512dd8a90d9c1321"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1window2file.html#a87135781a1541fc8512dd8a90d9c1321">draw</a> (<a class="el" href="classwex_1_1gui.html">gui</a> &amp;w, const std::string &amp;filename)</td></tr>
+<tr class="memdesc:a87135781a1541fc8512dd8a90d9c1321"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw png file in window.  <a href="classwex_1_1window2file.html#a87135781a1541fc8512dd8a90d9c1321">More...</a><br /></td></tr>
+<tr class="separator:a87135781a1541fc8512dd8a90d9c1321"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>save window contents to an image file in PNG format. </p>
+<div class="textblock"><p>transfer image between window contents and image file in PNG format. </p>
 <p>Add library gdiplus to linker library list </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a87135781a1541fc8512dd8a90d9c1321"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87135781a1541fc8512dd8a90d9c1321">&#9670;&nbsp;</a></span>draw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wex::window2file::draw </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwex_1_1gui.html">gui</a> &amp;&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>filename</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Draw png file in window. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">w</td><td>the window to draw into </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>to be drawn </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if success </dd></dl>
+
+</div>
+</div>
 <a id="ab68e140c442bf1249b5e4bc9b586fade"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab68e140c442bf1249b5e4bc9b586fade">&#9670;&nbsp;</a></span>save()</h2>
 
@@ -159,7 +208,7 @@ Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1window2file.html">window2file</a></li>
-    <li class="footer">Generated on Tue May 11 2021 16:58:26 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat May 22 2021 07:54:46 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
