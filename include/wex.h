@@ -139,7 +139,8 @@ namespace wex
             asyncReadComplete([](int id) {});
             tcpServerAccept([] {});
             tcpServerReadComplete([] {});
-            quitApp([] { return true; });
+            quitApp([]
+                    { return true; });
         }
         bool onLeftdown()
         {
@@ -173,6 +174,8 @@ namespace wex
         }
         void onMenuCommand(int id)
         {
+            if (0 > id || id >= myVectorMenuFunction.size())
+                return;
             myVectorMenuFunction[id](myVectorMenuTitle[id]);
         }
         void onKeydown(int keycode)
@@ -770,9 +773,8 @@ namespace wex
             Application code, if it needs to move child windows around,
             should overwrite this event handler.  Remember to call update() at end of event handler.
         */
-            events().resize([this](int w, int h) {
-                update();
-            });
+            events().resize([this](int w, int h)
+                            { update(); });
 
             /*  Construct font, initialized with default GUI font
 
@@ -963,66 +965,68 @@ namespace wex
             scrollRange(100, 100);
 
             // horizontal scroll handler
-            events().scrollH([this](int code) {
-                SCROLLINFO si;
-                si.cbSize = sizeof(si);
-                si.fMask = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
-                if (!GetScrollInfo(myHandle, SB_HORZ, &si))
-                    return;
+            events().scrollH([this](int code)
+                             {
+                                 SCROLLINFO si;
+                                 si.cbSize = sizeof(si);
+                                 si.fMask = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+                                 if (!GetScrollInfo(myHandle, SB_HORZ, &si))
+                                     return;
 
-                int oldPos = scrollMove(si, code);
+                                 int oldPos = scrollMove(si, code);
 
-                si.fMask = SIF_POS;
-                SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
-                GetScrollInfo(myHandle, SB_CTL, &si);
+                                 si.fMask = SIF_POS;
+                                 SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
+                                 GetScrollInfo(myHandle, SB_CTL, &si);
 
-                RECT rect;
-                GetClientRect(myHandle, &rect);
-                int xs = oldPos - si.nPos;
-                //std::cout << "scrollH " << xs <<" "<< oldPos <<" "<< si.nPos << "\n";
-                ScrollWindow(
-                    myHandle,
-                    xs,
-                    0, NULL, NULL);
+                                 RECT rect;
+                                 GetClientRect(myHandle, &rect);
+                                 int xs = oldPos - si.nPos;
+                                 //std::cout << "scrollH " << xs <<" "<< oldPos <<" "<< si.nPos << "\n";
+                                 ScrollWindow(
+                                     myHandle,
+                                     xs,
+                                     0, NULL, NULL);
 
-                for (auto &w : myChild)
-                    w->update();
-            });
+                                 for (auto &w : myChild)
+                                     w->update();
+                             });
 
             // vertical scroll handler
-            events().scrollV([this](int code) {
-                SCROLLINFO si;
-                si.cbSize = sizeof(si);
-                si.fMask = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
-                if (!GetScrollInfo(myHandle, SB_VERT, &si))
-                    return;
+            events().scrollV([this](int code)
+                             {
+                                 SCROLLINFO si;
+                                 si.cbSize = sizeof(si);
+                                 si.fMask = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+                                 if (!GetScrollInfo(myHandle, SB_VERT, &si))
+                                     return;
 
-                int oldPos = scrollMove(si, code);
+                                 int oldPos = scrollMove(si, code);
 
-                si.fMask = SIF_POS;
-                SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
-                GetScrollInfo(myHandle, SB_VERT, &si);
-                RECT rect;
-                GetClientRect(myHandle, &rect);
-                int ys = oldPos - si.nPos;
-                ScrollWindow(
-                    myHandle,
-                    0,
-                    ys, // amount to scroll
-                    NULL, NULL);
+                                 si.fMask = SIF_POS;
+                                 SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
+                                 GetScrollInfo(myHandle, SB_VERT, &si);
+                                 RECT rect;
+                                 GetClientRect(myHandle, &rect);
+                                 int ys = oldPos - si.nPos;
+                                 ScrollWindow(
+                                     myHandle,
+                                     0,
+                                     ys, // amount to scroll
+                                     NULL, NULL);
 
-                // update entire window and all children
-                // this prevents visual artefacts on fast scrolling
-                // but creates an unpleasant flicker
-                // so it is commented out
-                //update();
+                                 // update entire window and all children
+                                 // this prevents visual artefacts on fast scrolling
+                                 // but creates an unpleasant flicker
+                                 // so it is commented out
+                                 //update();
 
-                // update any child windows
-                // this has a fast and smooth appearance
-                // but sometimes leaves fragments littering the window
-                for (auto &w : myChild)
-                    w->update();
-            });
+                                 // update any child windows
+                                 // this has a fast and smooth appearance
+                                 // but sometimes leaves fragments littering the window
+                                 for (auto &w : myChild)
+                                     w->update();
+                             });
         }
         /** Set the scrolling range
         @param[in] width of the underlying window to be scrolled over
@@ -1302,20 +1306,27 @@ namespace wex
                     return true;
 
                 case WM_COMMAND:
-                    if (lParam)
+                {
+                   // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
+
+                    auto wp_hi = HIWORD(wParam);
+                    if (!wp_hi)
                     {
-                        if (HIWORD(wParam) == CBN_SELCHANGE || HIWORD(wParam) == LBN_SELCHANGE)
-                        {
-                            return events().onSelect(LOWORD(wParam));
-                        }
-                        else if (HIWORD(wParam) == EN_CHANGE)
-                        {
-                            return events().onChange(LOWORD(wParam));
-                        }
+                        events().onMenuCommand(wParam);
                         return true;
                     }
-                    events().onMenuCommand(wParam);
+
+                    if (wp_hi == CBN_SELCHANGE || wp_hi == LBN_SELCHANGE)
+                    {
+                        return events().onSelect(LOWORD(wParam));
+                    }
+
+                    if (wp_hi == EN_CHANGE)
+                    {
+                        return events().onChange(LOWORD(wParam));
+                    }
                     return true;
+                }
 
                 case WM_TIMER:
                     events().onTimer((int)wParam);
@@ -1759,23 +1770,24 @@ namespace wex
             DragAcceptFiles(myHandle, true);
 
             // handle drop event
-            myEvents.dropStart([this](HDROP hDrop) {
-                int count = DragQueryFileA(hDrop, 0xFFFFFFFF, NULL, 0);
-                if (count)
-                {
-                    // extract files from drop structure
-                    std::vector<std::string> files;
-                    char fname[MAX_PATH];
-                    for (int k = 0; k < count; k++)
-                    {
-                        DragQueryFileA(hDrop, k, fname, MAX_PATH);
-                        files.push_back(fname);
-                    }
-                    // call app code's event handler
-                    myEvents.onDrop(files);
-                }
-                DragFinish(hDrop);
-            });
+            myEvents.dropStart([this](HDROP hDrop)
+                               {
+                                   int count = DragQueryFileA(hDrop, 0xFFFFFFFF, NULL, 0);
+                                   if (count)
+                                   {
+                                       // extract files from drop structure
+                                       std::vector<std::string> files;
+                                       char fname[MAX_PATH];
+                                       for (int k = 0; k < count; k++)
+                                       {
+                                           DragQueryFileA(hDrop, k, fname, MAX_PATH);
+                                           files.push_back(fname);
+                                       }
+                                       // call app code's event handler
+                                       myEvents.onDrop(files);
+                                   }
+                                   DragFinish(hDrop);
+                               });
         }
     };
 
@@ -2140,19 +2152,20 @@ namespace wex
             myGroup = group().size() - 1;
 
             // set the boolean value when clicked
-            events().clickWex([this] {
-                if (!myfEnabled)
-                    return;
-                // set all buttons in group false
-                for (auto b : group()[myGroup])
-                {
-                    b->myValue = false;
-                    b->update();
-                }
-                // set this button true
-                myValue = true;
-                update();
-            });
+            events().clickWex([this]
+                              {
+                                  if (!myfEnabled)
+                                      return;
+                                  // set all buttons in group false
+                                  for (auto b : group()[myGroup])
+                                  {
+                                      b->myValue = false;
+                                      b->update();
+                                  }
+                                  // set this button true
+                                  myValue = true;
+                                  update();
+                              });
         }
         /** Make this button first of a new group
 
@@ -2321,12 +2334,13 @@ This draws a custom checkbox that expands with the height of the widget ( set by
             : gui(parent), myType(eType::check), myValue(false)
         {
             // toggle the boolean value when clicked
-            events().clickWex([this] {
-                if (!myfEnabled)
-                    return;
-                myValue = !myValue;
-                update();
-            });
+            events().clickWex([this]
+                              {
+                                  if (!myfEnabled)
+                                      return;
+                                  myValue = !myValue;
+                                  update();
+                              });
         }
         /// set type to plus, useful to indicate expanded or collapsed property categories
         void plus(bool f = true)
@@ -3142,11 +3156,12 @@ Usage:
             myPanel.push_back(&panel);
             int tabIndex = myButton.size() - 1;
 
-            btn.events().click([this, tabIndex]() {
-                myTabChangingFn(tabIndex);
-                select(tabIndex);
-                myTabChangeFn(tabIndex);
-            });
+            btn.events().click([this, tabIndex]()
+                               {
+                                   myTabChangingFn(tabIndex);
+                                   select(tabIndex);
+                                   myTabChangeFn(tabIndex);
+                               });
         }
         /// select panel to displayed
         void select(int i)

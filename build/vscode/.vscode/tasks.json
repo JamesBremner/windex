@@ -2,18 +2,198 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "maker",
+			"label": "make PPE",
 			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"../../PeakParams2/makefile",
+				"ppe"
+			],
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "make PDG",
+			"options": {
+				"cwd": "${workspaceFolder}/../../PelexDataGraph"
+			},
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile",
+				"pdg"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "make mixer",
+			"options": {
+				"cwd": "${workspaceFolder}/../../pelexmixer"
+			},
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile.txt",
+				"mixer"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "make GUI",
+			"options": {
+				"cwd": "${workspaceFolder}/../../PelexMixerGUI"
+			},
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile.txt",
+				"gui"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "make MixerLogParser",
+			"options": {
+				"cwd": "${workspaceFolder}/../../MixerLogParser"
+			},
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile",
+				"parser"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "make licenser",
+			"options": {
+				"cwd": "${workspaceFolder}/../../licenser"
+			},
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile.txt",
+				"licenser"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "make pulser",
+			"options": {
+				"cwd": "${workspaceFolder}/../../PelexPulser2"
+			},
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile.txt",
+				"pulser"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "make pelex2Analog",
+			"options": {
+				"cwd": "${workspaceFolder}/../../Pelex2Analog"
+			},
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile.txt",
+				"pelex2Analog"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "make MPF2Snip",
+			"options": {
+				"cwd": "${workspaceFolder}/../../MPF2Snip"
+			},
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile.txt",
+				"MPF2Snip"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "make unit_test",
+			"options": {
+				"cwd": "${workspaceFolder}/../../unit_test"
+			},
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile.txt",
+				"unit_test"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "clean",
+			"command": "mingw32-make.exe",
+			"args": [
+				"clean"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "Build All",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"make PDG",
+				"make PPE",
+				"make mixer",
+				"make GUI",
+				"make MixerLogParser",
+				"make licenser",
+				"make pulser",
+				"make pelex2Analog",
+				"make MPF2Snip",
+			],
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
-			"problemMatcher": [
-				"$gcc"
-			],
+			"problemMatcher": []
 		}
 	]
 }
