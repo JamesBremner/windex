@@ -95,20 +95,19 @@ https://github.com/JamesBremner/DXF_Viewer
 
 <img src="https://github.com/JamesBremner/windex/blob/master/doc/controlpanel.png" alt="panel"></a>
 
+# Repo Info
 <p>
   <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/jamesbremner/windex">
   <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/jamesbremner/windex">
   <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/jamesbremner/windex">
 </p>
 
-#### Release Info
 <p>
   <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/jamesbremner/windex">
   <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/jamesbremner/windex">
   <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/jamesbremner/windex/total">
 </p>
 
-#### Commit Info
 <p>
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/jamesbremner/windex">
   <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/jamesbremner/windex">
