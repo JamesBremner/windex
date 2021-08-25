@@ -56,6 +56,12 @@ public:
         ofn.lpstrDefExt = ext.c_str();
     }
 
+    // title for dialog window
+    void title( const std::string& fname )
+    {
+        ofn.lpstrTitle = fname.c_str();
+    }
+
     /** \brief prompt user for file to open
         @return path to file to be opened, "" if cancelled
     */
