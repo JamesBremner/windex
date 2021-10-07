@@ -189,7 +189,7 @@ public:
     {
         if( s == INVALID_SOCKET )
             throw std::runtime_error("read on invalid socket");
-        myFuture = std::async(
+        myFutureRead = std::async(
                        std::launch::async,              // insist on starting immediatly
                        &tcp::read_block,
                        this,
@@ -221,7 +221,8 @@ private:
     std::string myPort;
     SOCKET mySocket;
     SOCKET myClientSocket;
-    std::future< void > myFuture;
+    std::future< void > myFutureRead;
+    std::future< void > myFutureAccept;
     std::thread*        myThread;
     unsigned char       myRecvbuf[1024];
     std::string         myRemoteAddress;
@@ -229,7 +230,7 @@ private:
     void accept_async()
     {
         // start blocking accept in own thread
-        myFuture = std::async(
+        myFutureAccept = std::async(
                        std::launch::async,              // insist on starting immediatly
                        &tcp::accept,
                        this );
@@ -248,8 +249,10 @@ private:
                              mySocket,
                              (sockaddr*)&client_info,
                              &size );
-        if (myClientSocket == INVALID_SOCKET)
+        if (myClientSocket == INVALID_SOCKET) {
+            std::cout << "invalid socket\n";
             return;
+        }
 
         myRemoteAddress = inet_ntoa(client_info.sin_addr);;
         std::cout << "clent " << myRemoteAddress << " accepted\n";
@@ -259,7 +262,8 @@ private:
     {
         // loop checking for client connection
         const int check_interval_msecs = 500;
-        while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
+        while (myFutureAccept.wait_for(
+            std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
         {
 
         }
@@ -277,13 +281,15 @@ private:
 
     void read_block( SOCKET& s )
     {
+        std::cout << "server read block\n";
         ZeroMemory( myRecvbuf, 1024 );
         ::recv( s, (char*)myRecvbuf, 1024, 0);
     }
     void read_wait()
     {
+        std::cout << "read wait ...\n";
         const int check_interval_msecs = 50;
-        while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
+        while (myFutureRead.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
         {
 
         }
