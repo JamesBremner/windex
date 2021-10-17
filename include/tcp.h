@@ -22,8 +22,9 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
         /** CTOR
         @param[in] parent windows that will receive event messages
     */
-        tcp(gui *parent)
-            : gui(parent), mySocket(INVALID_SOCKET)
+        tcp(gui *parent) : gui(parent),
+                           myAcceptSocket(INVALID_SOCKET),
+                           myConnectSocket(INVALID_SOCKET)
         {
             // Initialize Winsock
             WSADATA wsaData;
@@ -32,7 +33,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
                 throw std::runtime_error("Winsock init failed");
             }
         }
-        /** Create client socket
+        /** Create client socket connected to server
         @param[in] ipaddr IP address of server, defaults to same computer
         @param[in] port defaults to 27654
     */
@@ -56,27 +57,28 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
                 throw std::runtime_error("getaddrinfo failed");
             }
 
-            mySocket = ::socket(
+            myConnectSocket = ::socket(
                 result->ai_family,
                 result->ai_socktype,
                 result->ai_protocol);
-            if (mySocket == INVALID_SOCKET)
+            if (myConnectSocket == INVALID_SOCKET)
             {
                 throw std::runtime_error("socket failed");
             }
 
             std::cout << "try connect to " << ipaddr << ":" << port << "\n";
             if (::connect(
-                    mySocket,
+                    myConnectSocket,
                     result->ai_addr,
                     (int)result->ai_addrlen) == SOCKET_ERROR)
             {
-                closesocket(mySocket);
-                mySocket = INVALID_SOCKET;
+                closesocket(myConnectSocket);
+                myConnectSocket = INVALID_SOCKET;
                 throw std::runtime_error("connect failed " + std::to_string(WSAGetLastError()));
             }
         }
-        /** Create server socket
+
+        /** Create server socket waiting for connection requests
         @param[in] port, defaults to 27654
 
         Starts listening for client connection.
@@ -104,30 +106,30 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
                 throw std::runtime_error("getaddrinfo failed");
             }
 
-            mySocket = ::socket(
+            myAcceptSocket = ::socket(
                 result->ai_family,
                 result->ai_socktype,
                 result->ai_protocol);
-            if (mySocket == INVALID_SOCKET)
+            if (myAcceptSocket == INVALID_SOCKET)
             {
                 throw std::runtime_error("socket failed");
             }
 
-            if (::bind(mySocket,
+            if (::bind(myAcceptSocket,
                        result->ai_addr,
                        (int)result->ai_addrlen) == SOCKET_ERROR)
             {
-                closesocket(mySocket);
-                mySocket = INVALID_SOCKET;
+                closesocket(myAcceptSocket);
+                myAcceptSocket = INVALID_SOCKET;
                 throw std::runtime_error("bind failed");
             }
 
             if (::listen(
-                    mySocket,
+                    myAcceptSocket,
                     SOMAXCONN) == SOCKET_ERROR)
             {
-                closesocket(mySocket);
-                mySocket = INVALID_SOCKET;
+                closesocket(myAcceptSocket);
+                myAcceptSocket = INVALID_SOCKET;
                 throw std::runtime_error("listen failed");
             }
 
@@ -137,7 +139,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
         /// true if valid connection
         bool isConnected()
         {
-            return mySocket != INVALID_SOCKET;
+            return myConnectSocket != INVALID_SOCKET;
         }
 
         /** send message to server
@@ -145,60 +147,64 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
     */
         void send(const std::string &msg)
         {
-            if (mySocket == INVALID_SOCKET)
+            if (myConnectSocket == INVALID_SOCKET)
                 throw std::runtime_error("send on invalid socket");
             if (myType == eType::server)
                 throw std::runtime_error("server send on client");
             ::send(
-                mySocket,
+                myConnectSocket,
                 msg.c_str(),
                 (int)msg.length(), 0);
         }
+
         /** send message to client
         @param[in] s scocket connected to client
         @param[in] msg
     */
         void send(SOCKET &s, const std::string &msg)
         {
-            if (mySocket == INVALID_SOCKET)
+            if (myConnectSocket == INVALID_SOCKET)
                 throw std::runtime_error("send on invalid socket");
             if (myType == eType::client)
                 throw std::runtime_error("client send on server");
             ::send(
-                s,
+                myConnectSocket,
                 msg.c_str(),
                 (int)msg.length(), 0);
         }
         /// get socket connected to client
         SOCKET &clientSocket()
         {
-            return myClientSocket;
+            return myConnectSocket;
         }
+
         int port() const
         {
             return atoi(myPort.c_str());
         }
-        /** asynchronous read message from client
-        @param[in] s socket connected to client
+
+        /** asynchronous read message on tcp connection
+         * 
+         * Throws exception if no tcp connection
+         * 
+         * Returns immediatly.
+         * 
+         * When message is received, the handler registered will be invoked.
+         * 
+         * If the connection is closed, or suffers any error
+         * the same handler will be invoked, so the isConnected()
+         * method should be checked.
     */
-        void read(SOCKET &s)
+        void read()
         {
-            if (s == INVALID_SOCKET)
+            if (myConnectSocket == INVALID_SOCKET)
                 throw std::runtime_error("read on invalid socket");
             myFutureRead = std::async(
                 std::launch::async, // insist on starting immediatly
                 &tcp::read_block,
                 this,
-                std::ref(s));
+                std::ref(myConnectSocket));
             myThread = new std::thread(read_wait, this);
-        }
-        void read()
-        {
-            if (mySocket == INVALID_SOCKET)
-                throw std::runtime_error("read on invalid socket");
-            if (myType == eType::server)
-                throw std::runtime_error("server read on client");
-            read(mySocket);
         }
 
         /// get pointer to receive buffer as null terminated character string
@@ -215,8 +221,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
     private:
         eType myType;
         std::string myPort;
-        SOCKET mySocket;
-        SOCKET myClientSocket;
+        SOCKET myAcceptSocket;  // soceket listening for clients
+        SOCKET myConnectSocket; // socket connected to another tcp
         std::future<void> myFutureRead;
         std::future<void> myFutureAccept;
         std::thread *myThread;
@@ -225,6 +231,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
 
         void accept_async()
         {
+
             // start blocking accept in own thread
             myFutureAccept = std::async(
                 std::launch::async, // insist on starting immediatly
@@ -241,19 +248,27 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
 
             struct sockaddr_in client_info;
             int size = sizeof(client_info);
-            myClientSocket = ::accept(
-                mySocket,
+            SOCKET s = ::accept(
+                myAcceptSocket,
                 (sockaddr *)&client_info,
                 &size);
-            if (myClientSocket == INVALID_SOCKET)
+            if (s == INVALID_SOCKET)
             {
                 std::cout << "invalid socket\n";
                 return;
             }
+            if (isConnected())
+            {
+                std::cout << "second connection rejected";
+                return;
+            }
 
+            myConnectSocket = s;
             myRemoteAddress = inet_ntoa(client_info.sin_addr);
-            ;
-            std::cout << "clent " << myRemoteAddress << " accepted\n";
+
+            closesocket(myAcceptSocket);
+
+            std::cout << "client " << myRemoteAddress << " accepted\n";
         }
         void accept_wait()
         {
@@ -270,9 +285,6 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
                 WM_APP + 2,
                 myID,
                 0);
-
-            // ready to accept next client
-            accept_async();
         }
 
         void read_block(SOCKET &s)
@@ -282,8 +294,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
             if (r <= 0)
             {
                 std::cout << "connection closed\n";
-                closesocket(mySocket);
-                mySocket = INVALID_SOCKET;
+                closesocket(myConnectSocket);
+                myConnectSocket = INVALID_SOCKET;
             }
         }
         void read_wait()

@@ -138,7 +138,7 @@ namespace wex
             drop([](const std::vector<std::string> &files) {});
             asyncReadComplete([](int id) {});
             tcpServerAccept([] {});
-            tcpServerReadComplete([] {});
+            tcpRead([] {});
             quitApp([]
                     { return true; });
         }
@@ -382,7 +382,7 @@ namespace wex
             myDropFunction = f;
         }
         /** register function to call when an asynchronous read completes.
-        The function parameter identifies the com glass that completed the read
+        The function parameter identifies the com class that completed the read
     */
         void asyncReadComplete(std::function<void(int id)> f)
         {
@@ -392,7 +392,8 @@ namespace wex
         {
             myTcpServerAcceptFunction = f;
         }
-        void tcpServerReadComplete(std::function<void(void)> f)
+        /// register function to call when tcp read accurs
+        void tcpRead(std::function<void(void)> f)
         {
             myTcpServerReadCompleteFunction = f;
         }
