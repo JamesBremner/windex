@@ -199,12 +199,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
         {
             if (myConnectSocket == INVALID_SOCKET)
                 throw std::runtime_error("read on invalid socket");
-            myFutureRead = std::async(
-                std::launch::async, // insist on starting immediatly
-                &tcp::read_block,
-                this,
-                std::ref(myConnectSocket));
-            myThread = new std::thread(read_wait, this);
+            new std::thread(read_block, this);
         }
 
         /// get pointer to receive buffer as null terminated character string
@@ -223,7 +218,6 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
         std::string myPort;
         SOCKET myAcceptSocket;  // soceket listening for clients
         SOCKET myConnectSocket; // socket connected to another tcp
-        std::future<void> myFutureRead;
         std::future<void> myFutureAccept;
         std::thread *myThread;
         unsigned char myRecvbuf[1024];
@@ -287,23 +281,27 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
                 0);
         }
 
-        void read_block(SOCKET &s)
+        // blocking read
+        void read_block()
         {
+            // clear old message
             ZeroMemory(myRecvbuf, 1024);
-            int r = ::recv(s, (char *)myRecvbuf, 1024, 0);
+
+            // wait to receive message
+            int r = ::recv(
+                myConnectSocket,
+                (char *)myRecvbuf, 1024, 0);
+
+            // check for message received
+            // if no message or error, assume connection closed
             if (r <= 0)
             {
                 std::cout << "connection closed\n";
                 closesocket(myConnectSocket);
                 myConnectSocket = INVALID_SOCKET;
             }
-        }
-        void read_wait()
-        {
-            const int check_interval_msecs = 100;
-            while (myFutureRead.wait_for(std::chrono::milliseconds(check_interval_msecs)) == std::future_status::timeout)
-            {
-            }
+
+            // post read complete message
             PostMessageA(
                 myParent->handle(),
                 WM_APP + 3,
