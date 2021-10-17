@@ -74,10 +74,7 @@ cGUI::cGUI()
     mySendbn.text("Send hello msg");
     mySendbn.events().click([&]
     {
-        if( myServerrb.isChecked() )
-            myTCP.send( myTCP.clientSocket(), "Hello" );
-        else
-            myTCP.send("Hello");
+        myTCP.send("Hello");
     });
 
 
