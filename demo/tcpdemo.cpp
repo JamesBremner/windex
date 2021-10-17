@@ -14,7 +14,6 @@ private:
     wex::button& mySendbn;
     wex::label& myStatus;
     wex::tcp& myTCP;
-    SOCKET * myClientSocket;
 
     void status(const std::string& msg );
     void connect();
@@ -50,17 +49,16 @@ cGUI::cGUI()
     myForm.events().tcpServerAccept([this]
     {
         status("Client connected");
-        myClientSocket = &myTCP.clientSocket();
-        myTCP.read( *myClientSocket );
+        myTCP.read();
     });
-    myForm.events().tcpServerReadComplete([this]
+    myForm.events().tcpRead([this]
     {
         // display mesage
         status(std::string("Msg read: ") + myTCP.rcvbuf() );
 
         // setup for next message
         if( myTCP.isServer() )
-            myTCP.read( *myClientSocket );
+            myTCP.read();
         else
             myTCP.read();
     });
