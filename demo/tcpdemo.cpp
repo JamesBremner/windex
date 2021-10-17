@@ -53,14 +53,21 @@ cGUI::cGUI()
     });
     myForm.events().tcpRead([this]
     {
+        if( ! myTCP.isConnected())
+        {
+            status("Connection closed, waiting for new client");
+
+            if( myServerrb.isChecked() )
+                 myTCP.server();
+
+            return;
+        }
+
         // display mesage
         status(std::string("Msg read: ") + myTCP.rcvbuf() );
 
         // setup for next message
-        if( myTCP.isServer() )
-            myTCP.read();
-        else
-            myTCP.read();
+        myTCP.read();
     });
 
     mySendbn.move(50,150,100,30);

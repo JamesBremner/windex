@@ -20,7 +20,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
             server,
         };
         /** CTOR
-        @param[in] parent windows that will receive event messages
+        @param[in] parent window that will receive event messages
     */
         tcp(gui *parent) : gui(parent),
                            myAcceptSocket(INVALID_SOCKET),
@@ -85,6 +85,9 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
         Returns immediatly
         throws runtime_error exception on error
         sends eventMsgID::tcpServerAccept message to parent window when new client accepted
+
+        One connection will be accepted.  This can be called again if the connection is closed
+        to wait for another client.
     */
         void server(const std::string &port = "27654")
         {
