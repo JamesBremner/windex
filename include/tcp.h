@@ -141,7 +141,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
 
         std::string myRemoteAddress;
 
-        cTCP myTCP;
+        raven::set::cTCP myTCP;
         raven::await::cAwait myWaiter;
 
  
