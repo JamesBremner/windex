@@ -129,9 +129,12 @@ Add library gdiplus to linker library list
             // draw
             Gdiplus::Graphics graphics(GetDC(w.handle()));
             graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
-            graphics.DrawImage(bitmap, dst, 3);
+            auto ret = graphics.DrawImage(bitmap, dst, 3);
 
             delete bitmap;
+
+            if( ret !=  Gdiplus::Status::Ok )
+                return false;
 
             return true;
         }

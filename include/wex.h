@@ -2574,8 +2574,8 @@ This draws a custom checkbox that expands with the height of the widget ( set by
         /// Override move to ensure height is sufficient to allow dropdown to apprear
         void move(int x, int y, int w, int h)
         {
-            if (h < 100)
-                h = 100;
+            if (h < 200)
+                h = 200;
             gui::move(x, y, w, h);
         }
         /// set item height in drop doown list
