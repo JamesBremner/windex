@@ -798,8 +798,11 @@ namespace wex
             gui *parent,
             const char *window_class = "windex",
             unsigned long style = WS_CHILD,
-            unsigned long exstyle = WS_EX_CONTROLPARENT)
-            : myParent(parent), myDeleteList(0), myfEnabled(true), myToolTip(NULL), myCursorID(0)
+            unsigned long exstyle = WS_EX_CONTROLPARENT) : myParent(parent),
+                                                           myDeleteList(0),
+                                                           myfEnabled(true),
+                                                           myToolTip(NULL),
+                                                           myCursorID(IDC_ARROW)
         {
             // get a new unique ID
             myID = NewID();
@@ -1308,7 +1311,7 @@ namespace wex
 
                 case WM_COMMAND:
                 {
-                   // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
+                    // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
 
                     auto wp_hi = HIWORD(wParam);
                     if (!wp_hi)
