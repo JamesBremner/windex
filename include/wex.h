@@ -3303,5 +3303,77 @@ Usage:
     private:
         bool myFirst;
     };
+    /// Print a text document
+    class printDoc
+    {
+    public:
+        /** CTOR
+         * @param[in] title that asppears in print spooler
+         */
+        printDoc(const std::string &title = "printDoc")
+        {
+            // https://www.equestionanswers.com/vcpp/screen-dc-printer-dc.php
+            PRINTDLG pdlg;
+
+            /* Initialize the PRINTDLG structure. */
+            memset(&pdlg, 0, sizeof(PRINTDLG));
+            pdlg.lStructSize = sizeof(PRINTDLG);
+            /* Set the flag to return printer DC. */
+            pdlg.Flags = PD_RETURNDC;
+
+            /* Invoke the printer dialog box. */
+            PrintDlg(&pdlg);
+
+            /* hDC member of the PRINTDLG structure contains the printer DC. */
+            dc = pdlg.hDC;
+            if (!dc)
+                return;
+
+            DOCINFO di;
+            memset(&di, 0, sizeof(DOCINFO));
+            /* Fill in the required members. */
+            di.cbSize = sizeof(DOCINFO);
+            di.lpszDocName = title.c_str();
+
+            StartDoc(dc, &di);
+        }
+        /// Finalize and send to printer
+        ~printDoc()
+        {
+            EndDoc(dc);
+            DeleteDC(dc);
+        }
+        /// True if CTOR was successful
+        bool isOpen()
+        {
+            return (bool)dc;
+        }
+        void pageStart()
+        {
+            StartPage(dc);
+        }
+        void pageEnd()
+        {
+            EndPage(dc);
+        }
+        /** Add some text
+         * @param[in]  x, y locatioon
+         * @param[in] s the text
+         * 
+         * Each character needs about 100 by 100 location units
+         */
+        void text(
+            int x, int y,
+            const std::string &s)
+        {
+            TextOut(
+                dc,
+                x, y,
+                s.c_str(), s.length());
+        }
+
+    private:
+        HDC dc;
+    };
 
 }
