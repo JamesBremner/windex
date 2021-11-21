@@ -56,6 +56,8 @@ shapes		|A class that offers application code methods to draw on a window
 sMouse		|A structure containing the mouse status for event handlers
 timer		|Generate events at regularly timed intervals
 window2file	|Save window contents to an image file in PNG format
+printDoc | Create and print a document
+startProcess | Run command in own process
 
 # Build
 
