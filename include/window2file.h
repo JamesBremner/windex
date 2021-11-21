@@ -42,7 +42,7 @@ Add library gdiplus to linker library list
                     return;
                 }
             }
-            free(pImageCodecInfo);
+            ::free(pImageCodecInfo);
             throw std::runtime_error("window2file cannot find encoder");
         }
         ~window2file()

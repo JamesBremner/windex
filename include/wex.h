@@ -1978,6 +1978,7 @@ namespace wex
         button(gui *parent)
             : gui(parent), myBitmap(NULL)
         {
+            myBGColor = 0xC8C8C8;
         }
 
         /** Specify bitmap image to be used for button, read from file
@@ -3376,4 +3377,70 @@ Usage:
         HDC dc;
     };
 
+    struct free
+    {
+        /** Start a command in its own process
+     * @param[in] command line, same as would be used from a command window running in working directory
+     * @param[out] error details, if any
+     * @return 0 if no errors
+     */
+        static int startProcess(
+            const std::string &command,
+            std::string &error)
+        {
+            STARTUPINFO si;
+            PROCESS_INFORMATION pi;
+
+            ZeroMemory(&si, sizeof(si));
+            si.cb = sizeof(si);
+            ZeroMemory(&pi, sizeof(pi));
+
+            // Retain keyboard focus, minimize module2 window
+            si.wShowWindow = SW_SHOWNOACTIVATE | SW_MINIMIZE;
+            si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USEPOSITION;
+            si.dwX = 600;
+            si.dwY = 200;
+
+            if (!CreateProcessA(
+                    NULL,                   // No module name (use command line)
+                    (LPSTR)command.c_str(), // Command line
+                    NULL,                   // Process handle not inheritable
+                    NULL,                   // Thread handle not inheritable
+                    FALSE,                  // Set handle inheritance to FALSE
+                    CREATE_NEW_CONSOLE,     //  creation flags
+                    NULL,                   // Use parent's environment block
+                    NULL,                   // Use parent's starting directory
+                    &si,                    // Pointer to STARTUPINFO structure
+                    &pi)                    // Pointer to PROCESS_INFORMATION structure
+            )
+            {
+                int syserrno = GetLastError();
+                if (syserrno == 2)
+                {
+                    error = "Cannot find executable file";
+                    return 2;
+                }
+                char *lpMsgBuf;
+                FormatMessageA(
+                    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                        FORMAT_MESSAGE_FROM_SYSTEM |
+                        FORMAT_MESSAGE_IGNORE_INSERTS,
+                    NULL,
+                    (DWORD)syserrno,
+                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                    (LPSTR)&lpMsgBuf,
+                    0, NULL);
+                error = lpMsgBuf;
+                LocalFree(lpMsgBuf);
+                return 1;
+            }
+
+            // Close process and thread handles.
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+
+            error = "";
+            return true;
+        }
+    };
 }
