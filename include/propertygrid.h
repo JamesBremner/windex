@@ -14,20 +14,32 @@ namespace wex
             gui *parent,
             const std::string &name,
             const std::string &value)
-            : myName(name), myValue(value), W(windex::get()), myLabel(wex::maker::make<label>(*parent)), myEditbox(wex::maker::make<editbox>(*parent)), myCombobox(wex::maker::make<choice>(*parent)), myCheckbox(wex::maker::make<checkbox>(*parent)), myCategoryExpanded(wex::maker::make<checkbox>(*parent)), myLabelWidth(100), myType(eType::string)
+            : myName(name), myValue(value), W(windex::get()),
+              myLabel(wex::maker::make<wex::label>(*parent)),
+              myEditbox(wex::maker::make<editbox>(*parent)),
+              myCombobox(wex::maker::make<choice>(*parent)),
+              myCheckbox(wex::maker::make<checkbox>(*parent)),
+              myCategoryExpanded(wex::maker::make<checkbox>(*parent)),
+              myLabelWidth(100),
+              myType(eType::string),
+              myLabelClicked(false)
         {
             myLabel.text(myName);
-            //        SetWindowLongPtr(
-            //            myEditbox.handle(),
-            //            GWL_STYLE,
-            //            GetWindowLongPtr( myEditbox.handle(), GWL_STYLE) | WS_TABSTOP  );
+            myLabel.events().click(
+                [this]
+                {
+                    myLabelClicked = true;
+                });
+            myLabel.events().clickPropogate();
+
             myEditbox.text(myValue);
         }
         property(
             gui *parent,
             const std::string &name,
             bool value)
-            : myName(name), myValue(std::to_string((int)value)), W(windex::get()), myLabel(wex::maker::make<label>(*parent)), myEditbox(wex::maker::make<editbox>(*parent)), myCombobox(wex::maker::make<choice>(*parent)), myCheckbox(wex::maker::make<checkbox>(*parent)), myCategoryExpanded(wex::maker::make<checkbox>(*parent)), myLabelWidth(100), myType(eType::check)
+            : myName(name), myValue(std::to_string((int)value)), W(windex::get()),
+              myLabel(wex::maker::make<label>(*parent)), myEditbox(wex::maker::make<editbox>(*parent)), myCombobox(wex::maker::make<choice>(*parent)), myCheckbox(wex::maker::make<checkbox>(*parent)), myCategoryExpanded(wex::maker::make<checkbox>(*parent)), myLabelWidth(100), myType(eType::check)
         {
             myLabel.text(myName);
             myCheckbox.check(value);
@@ -112,6 +124,19 @@ namespace wex
         void bgcolor(int color)
         {
             myLabel.bgcolor(color);
+        }
+
+        bool labelClicked() const
+        {
+            return myLabelClicked;
+        }
+        void labelClicked(bool f)
+        {
+            myLabelClicked = f;
+        }
+        std::string labeltext() const
+        {
+            return myLabel.text();
         }
 
         void tabList(bool f = true)
@@ -357,6 +382,7 @@ namespace wex
             check,
             category
         } myType;
+        bool myLabelClicked;
     };
     /** A grid of properties.
 
@@ -372,12 +398,17 @@ Add boost to the compiler include search list
         {
             text("PG");
 
-            // default event handlers
-            events().click([this]
-                           { visible(); });
-            change([] {
+            // handle click event
+            events().click(
+                [this]
+                {
+                    labelClick();
+                    visible();
+                });
 
-            });
+            // regsiter NOP event handlers
+            change([] {});
+            nameClick([](const std::string &) {});
         }
         void clear()
         {
@@ -681,6 +712,11 @@ Add boost to the compiler include search list
         {
             onChange = f;
         }
+        /// Register function to call when property name is clicked
+        void nameClick(std::function<void(const std::string &)> f)
+        {
+            onName = f;
+        }
 
         /** Enable tab stepping through the properties
 
@@ -706,7 +742,8 @@ Add boost to the compiler include search list
         int myBGColor;    // grid background color
         bool myfScroll;   // true if scrollbars used
         bool myftabstop;
-        std::function<void()> onChange; // funtion to call when property has changed
+        std::function<void()> onChange;                  // funtion to call when property has changed
+        std::function<void(const std::string &)> onName; // functio to call when property name is clicked
 
         void CommonConstruction()
         {
@@ -728,6 +765,22 @@ Add boost to the compiler include search list
 
             if (myftabstop)
                 P->tabList();
+        }
+        void labelClick()
+        {
+            // search properties for the one whose label was clicked
+            for (auto P : myProperty)
+            {
+                if (P->labelClicked())
+                {
+
+                    // run regsitered event handler
+                    onName(P->labeltext());
+
+                    // clear the clicked flag
+                    P->labelClicked(false);
+                }
+            }
         }
         /** Show properties when category is expanded or collapsed
     */

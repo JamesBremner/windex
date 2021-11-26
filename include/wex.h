@@ -847,6 +847,11 @@ namespace wex
             return myChild;
         }
 
+        gui * parent()
+        {
+            return myParent;
+        }
+
         /// find child window with specified id
         gui *find(int id)
         {

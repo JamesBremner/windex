@@ -17,30 +17,27 @@
 				"$gcc"
 			]
 		},
+		{
+			"label": "demo",
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile",
+				"demo"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		}
 		// {
 		// 	"label": "echo",
 		// 	"type": "shell",
 		// 	"command": "echo ${workspaceFolder}"
 		// 	},
-		// {
-		// 	"label": "Build All",
-		// 	"dependsOrder": "sequence",
-		// 	"dependsOn": [
-		// 		"make PDG",
-		// 		"make PPE",
-		// 		"make mixer",
-		// 		"make GUI",
-		// 		"make MixerLogParser",
-		// 		"make licenser",
-		// 		"make pulser",
-		// 		"make pelex2Analog",
-		// 		"make MPF2Snip",
-		// 	],
-		// 	"group": {
-		// 		"kind": "build",
-		// 		"isDefault": true
-		// 	},
-		// 	"problemMatcher": []
-		// }
+
 	]
 }

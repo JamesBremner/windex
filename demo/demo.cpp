@@ -188,7 +188,7 @@ void PGDemo()
     pg2.labelWidth( 50 );
     pg2.bgcolor( 0xFFA0A0 );
 
-    // add properties from json stringh
+    // add properties from json string
     std::string json = "{\"Strings\": {"
         " \"x\": { \"type\":0, \"value\":72 },"
         " \"y\": { \"type\":0, \"value\":4600 }}}";
@@ -206,6 +206,11 @@ void PGDemo()
     {
         std::cout << "property value changed\n";
     });
+    pg.nameClick(
+        [](const std::string& label )
+        {
+            msgbox( label+ " clicked");
+        });
 
     // display a button
     button& btn = wex::maker::make<button>( form );
