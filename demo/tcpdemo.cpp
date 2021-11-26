@@ -115,7 +115,6 @@ void cGUI::status(const std::string &msg)
 }
 void cGUI::run()
 {
-    myTCP.run();
     myForm.run();
 }
 int main()

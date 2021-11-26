@@ -3440,7 +3440,7 @@ Usage:
             CloseHandle(pi.hThread);
 
             error = "";
-            return true;
+            return 0;
         }
     };
 }

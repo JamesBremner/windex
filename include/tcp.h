@@ -14,16 +14,17 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
     class tcp : public gui
     {
     public:
-
         /** CTOR
         @param[in] parent window that will receive event messages
     */
         tcp(gui *parent) : gui(parent)
         {
+            //Run asynchronous wait handler in its own thread
+            run();
         }
 
         /** Create client socket connected to server
-        @param[in] ipaddr IP address of server, defaults to same computer
+        @param[in] ipaddr IP address or name of server, defaults to same computer
         @param[in] port defaults to 27654
     */
         void client(
@@ -38,7 +39,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
                 { myTCP.serverWait(); },
                 [this]
                 {
-                    std::cout << "wex::tcp connected" << std::endl;
+                    std::cout << "wex::tcp connected to server" << std::endl;
                     if (!PostMessageA(
                             myParent->handle(),
                             WM_APP + 2,
@@ -48,15 +49,6 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
                         std::cout << "Post Message Error\n";
                     }
                 });
-        }
-
-        /// Run asynchronous wait handler in its own thread
-        void run()
-        {
-            std::thread t(
-                raven::await::cAwait::run,
-                &myWaiter);
-            t.detach();
         }
 
         /** Create server socket waiting for connection requests
@@ -99,7 +91,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
         */
         void send(const std::string &msg)
         {
-            std::cout << "wex::tcp::send\n";
+            std::cout << "wex::tcp::send " << msg << "\n";
             myTCP.send(msg);
         }
 
@@ -138,12 +130,18 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
         }
 
     private:
-
         std::string myRemoteAddress;
 
         raven::set::cTCP myTCP;
         raven::await::cAwait myWaiter;
 
- 
+        /// Run asynchronous wait handler in its own thread
+        void run()
+        {
+            std::thread t(
+                raven::await::cAwait::run,
+                &myWaiter);
+            t.detach();
+        }
     };
 }
