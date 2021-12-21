@@ -18,6 +18,22 @@
 			]
 		},
 		{
+			"label": "comdemo",
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile",
+				"comdemo"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
 			"label": "demo",
 			"command": "mingw32-make.exe",
 			"args": [

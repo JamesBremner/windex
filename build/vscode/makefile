@@ -11,3 +11,6 @@ tcp: ../../demo/tcpdemo.cpp ../../../raven-set/ctcp.cpp
 	$(INCS) \
 	$(LIBS)
 
+comdemo: ../../demo/com.cpp 
+	g++ -g ../../demo/com.cpp -o../../bin/comdemo.exe  $(INCS) $(LIBS)
+
