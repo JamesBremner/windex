@@ -1241,8 +1241,8 @@ namespace wex
 
                 case WM_CTLCOLORSTATIC:
                 {
-                    std::cout << "WM_CTLCOLORSTATIC " << myText
-                              << " " << myBGColor << " " << myBGBrush << "\n";
+                    // std::cout << "WM_CTLCOLORSTATIC " << myText
+                    //           << " " << myBGColor << " " << myBGBrush << "\n";
                     //                SetBkColor((HDC)wParam, myBGColor);
                     //                return (INT_PTR)myBGBrush;
                     RECT r;
