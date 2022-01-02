@@ -786,6 +786,7 @@ namespace wex
             GetObject(
                 GetStockObject(DEFAULT_GUI_FONT),
                 sizeof(myLogFont), &myLogFont);
+            myLogFont.lfHeight = 14;
             myFont = CreateFontIndirectA(&myLogFont);
         }
         /** Construct child of a parent
@@ -1023,18 +1024,27 @@ namespace wex
                                      0,
                                      ys, // amount to scroll
                                      NULL, NULL);
+                                // unsigned int flag = SW_SMOOTHSCROLL | (400 << 16 );
+                                // std::cout << "flag "<< std::hex << flag << "\n";
+                                // InvalidateRect(myHandle, NULL, FALSE);
+                                //  ScrollWindowEx(
+                                //      myHandle,
+                                //      0,
+                                //      ys, // amount to scroll
+                                //      NULL, NULL, NULL, NULL,
+                                //      SW_SMOOTHSCROLL | (2000 << 16 ));
 
                                  // update entire window and all children
                                  // this prevents visual artefacts on fast scrolling
                                  // but creates an unpleasant flicker
                                  // so it is commented out
-                                 //update();
+                                 update();
 
                                  // update any child windows
                                  // this has a fast and smooth appearance
                                  // but sometimes leaves fragments littering the window
-                                 for (auto &w : myChild)
-                                     w->update();
+                                //  for (auto &w : myChild)
+                                //      w->update();
                              });
         }
         /** Set the scrolling range
