@@ -94,6 +94,10 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
             std::cout << "wex::tcp::send " << msg << "\n";
             myTCP.send(msg);
         }
+        void send(const std::vector< unsigned char >& msg)
+        {
+            myTCP.send(msg);
+        }
 
         /** asynchronous read message on tcp connection
          * 
