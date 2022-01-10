@@ -724,7 +724,7 @@ namespace wex
         /// set text font name
         void textFontName(const std::string &fn)
         {
-            strcpy(myLogfont.lfFaceName, "Courier");
+            strcpy(myLogfont.lfFaceName, fn.c_str());
             HANDLE hFont = CreateFontIndirect(&myLogfont);
             hFont = (HFONT)SelectObject(myHDC, hFont);
             DeleteObject(hFont);
