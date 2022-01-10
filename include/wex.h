@@ -1241,8 +1241,6 @@ namespace wex
 
                 case WM_CTLCOLORSTATIC:
                 {
-                    // std::cout << "WM_CTLCOLORSTATIC " << myText
-                    //           << " " << myBGColor << " " << myBGBrush << "\n";
                     //                SetBkColor((HDC)wParam, myBGColor);
                     //                return (INT_PTR)myBGBrush;
                     RECT r;
@@ -2395,6 +2393,7 @@ This draws a custom checkbox that expands with the height of the widget ( set by
             S.textHeight(myLogFont.lfHeight);
             S.text(myText, {r.left, r.top, r.right, r.bottom});
             S.rectangle({0, 0, cbg, cbg});
+            S.fill();
             S.penThick(2);
             S.color(0);
             switch (myType)
