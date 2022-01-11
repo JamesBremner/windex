@@ -2391,6 +2391,7 @@ This draws a custom checkbox that expands with the height of the widget ( set by
 
             shapes S(ps);
             S.textHeight(myLogFont.lfHeight);
+            S.textFontName( myLogFont.lfFaceName );
             S.text(myText, {r.left, r.top, r.right, r.bottom});
             S.rectangle({0, 0, cbg, cbg});
             S.fill();

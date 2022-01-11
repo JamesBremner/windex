@@ -351,9 +351,11 @@ void CBDemo()
     rb2.plus();
     rb2.move( {20,60,100,30} );
     rb2.text("Beta");
-    checkbox& rb3 = wex::maker::make<checkbox>(form);
-    rb3.move( {20,100,100,30} );
-    rb3.text("Gamma");
+    checkbox& cb3 = wex::maker::make<checkbox>(form);
+    cb3.move( {20,100,100,30} );
+    cb3.fontName("Courier");
+    cb3.fontHeight(22);
+    cb3.text("Gamma");
 
     // display a button
     button& btn = wex::maker::make<button>( form );
@@ -369,7 +371,7 @@ void CBDemo()
             msg += "Alpha ";
         if( rb2.isChecked() )
             msg += " Beta ";
-        if( rb3.isChecked() )
+        if( cb3.isChecked() )
             msg += " Gamma ";
         msg += " are checked";
         msgbox mb(
