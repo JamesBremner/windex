@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "tcp.h"
 
 class cGUI
@@ -24,7 +25,7 @@ cGUI::cGUI()
     : myForm(wex::maker::make()), myClientrb(wex::maker::make<wex::radiobutton>(myForm)), myServerrb(wex::maker::make<wex::radiobutton>(myForm)), myConnectbn(wex::maker::make<wex::button>(myForm)), mySendbn(wex::maker::make<wex::button>(myForm)), myStatus(wex::maker::make<wex::label>(myForm)), myTCP(wex::maker::make<wex::tcp>(myForm))
 {
     myForm.move(50, 50, 300, 400);
-    myForm.text("tcpDemo test");
+    myForm.text("TCP Tester");
 
     myClientrb.move(30, 20, 100, 30);
     myClientrb.text("Client");
@@ -34,7 +35,7 @@ cGUI::cGUI()
     myConnectbn.move({50, 50, 100, 30});
     myConnectbn.text("Connect");
 
-    myStatus.move(50, 100, 300, 30);
+    myStatus.move(50, 100, 300, 60);
     myStatus.text("Not connected");
 
     myConnectbn.events().click([this]
@@ -68,14 +69,24 @@ cGUI::cGUI()
                      else
                      {
                          // display mesage
-                         status(std::string("Msg read: ") + myTCP.readMsg());
+                         std::stringstream ss;
+                         auto msg = myTCP.readMsg();
+
+                         // ascii
+                         ss << "Msg read: " + myTCP.readMsg() << "\n\n";
+
+                         ss << "bytes " << msg.length() << ": ";
+                         for (int k = 0; k < msg.length(); k++)
+                             ss << std::hex << (int)((unsigned char)msg[k]) << " ";
+
+                         status(ss.str());
 
                          // setup for next message
                          myTCP.read();
                      }
                  });
 
-    mySendbn.move(50, 150, 100, 30);
+    mySendbn.move(50, 180, 130, 30);
     mySendbn.text("Send hello msg");
     mySendbn.events().click([&]
                             { myTCP.send("Hello"); });

@@ -780,12 +780,16 @@ namespace wex
             /*  Construct font, initialized with default GUI font
 
             Each top level window keeps a font and associated logfont
-            so that the font can be changed and inhetited by all child windows
-        */
+            so that the font can be changed and inherited by all child windows
+            */
             myLogFont = {0};
             GetObject(
                 GetStockObject(DEFAULT_GUI_FONT),
                 sizeof(myLogFont), &myLogFont);
+            
+            // default font clips descenders ( p, q, y) so increase height
+            myLogFont.lfHeight = 18;
+
             myFont = CreateFontIndirectA(&myLogFont);
         }
         /** Construct child of a parent
