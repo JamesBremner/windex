@@ -174,7 +174,7 @@ namespace wex
         }
         void onMenuCommand(int id)
         {
-            if (0 > id || id >= myVectorMenuFunction.size())
+            if (0 > id || id >= (int)myVectorMenuFunction.size())
                 return;
             myVectorMenuFunction[id](myVectorMenuTitle[id]);
         }
