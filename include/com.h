@@ -21,7 +21,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
         com(gui *parent)
             : gui(parent),
               myCOMHandle(0),
-              myfOverlapped(true)
+              myfOverlapped(true),
+              myfCTSFlowControl( true )
         {
         }
         /// Set port number to which connection will be made
@@ -39,10 +40,24 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
          * If the COM port is opened overlapped
          *   - read/writes are asynvhronous
          *   - port csn be used for both reading and writing
+         * 
+         * This must be called before the port is opened.
          */
         void overlapped(bool f = true)
         {
             myfOverlapped = f;
+        }
+
+        /** Enable/Disable CTS flow control
+         * @param[in] f true to enable, default true
+         * 
+         * If this is TRUE, the CTS (clear-to-send) signal is monitored for output flow control.
+         * If this is TRUE and CTS is turned off, output is suspended until CTS is sent again.
+         * 
+         * This must be called before the port is opened.
+         */
+        void CTSFlowControl(bool f = true){
+            myfCTSFlowControl = f;
         }
 
         /** Configure device
@@ -59,14 +74,21 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
     */
         void DeviceControlString(const std::string &controlString)
         {
+            // Initalize all the configuration parameters to zero
+            // BuildCommDCBA is supposed to do this,
+            // but does not seem to do so - in particular the CTS flow is not diabled
             DCB dcbSerialParams = {0};
+
             if (!myCOMHandle)
                 return;
             if (!BuildCommDCBA(
                     controlString.c_str(),
                     &dcbSerialParams))
                 return;
-            dcbSerialParams.fOutxCtsFlow = 0;
+
+            // Force the CTS control to state requested
+            dcbSerialParams.fOutxCtsFlow = myfCTSFlowControl;
+            
             SetCommState(myCOMHandle, &dcbSerialParams);
         }
 
@@ -298,7 +320,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
         /// Write buffer of data to the COM port
         int write(const std::vector<unsigned char> &buffer)
         {
-            std::cout << "Write buffersize " <<  buffer.size() << "\n";
+            std::cout << "Write buffersize " << buffer.size() << "\n";
 
             _COMMCONFIG cfg;
             cfg.dcb = {0};
@@ -387,8 +409,10 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
         std::vector<unsigned char> myRcvbuffer;
         std::string myError;
         bool myfOverlapped;
+        bool myfCTSFlowControl;
 
-        int waitForData()
+            int
+            waitForData()
         {
             DWORD dwEventMask;
             _COMSTAT comstat;
