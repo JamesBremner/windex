@@ -386,18 +386,31 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                 &over);
             if (!ret)
             {
-                std::cout << "write failed " << GetLastError() << "\n";
+                int syserrno = GetLastError();
+                std::cout << "write failed " << syserrno << "\n";
                 int count = 0;
-                if (ret == 997)
+                if (syserrno == 997)
                 {
-                    while (HasOverlappedIoCompleted(&over))
+                    std::cout << "polling ..." << std::endl;
+                    while ( 1 )
                     {
+                        HasOverlappedIoCompleted(&over);
+                        if( over.Internal != STATUS_PENDING )
+                        {
+                            //for better or worse the write has completed
+                            break;
+                        }
+
                         count++;
                         if (count > 10000)
                         {
                             std::cout << "async write timed out\n";
                             return 0;
                         }
+                        if( ! (count % 1000)  )
+                            std::cout << " ." << std:: endl;
+
+                        // Yield
                         Sleep(0);
                     }
                     std::cout << "async write completed\n";
