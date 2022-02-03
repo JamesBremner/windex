@@ -22,7 +22,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             : gui(parent),
               myCOMHandle(0),
               myfOverlapped(true),
-              myfCTSFlowControl( true )
+              myfCTSFlowControl(true)
         {
         }
         /// Set port number to which connection will be made
@@ -56,7 +56,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
          * 
          * This must be called before the port is opened.
          */
-        void CTSFlowControl(bool f = true){
+        void CTSFlowControl(bool f = true)
+        {
             myfCTSFlowControl = f;
         }
 
@@ -88,7 +89,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
 
             // Force the CTS control to state requested
             dcbSerialParams.fOutxCtsFlow = myfCTSFlowControl;
-            
+
             SetCommState(myCOMHandle, &dcbSerialParams);
         }
 
@@ -317,11 +318,18 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
         */
         }
 
-        /// Write buffer of data to the COM port
-        int write(const std::vector<unsigned char> &buffer)
+        std::string COMConfigText()
         {
-            std::cout << "Write buffersize " << buffer.size() << "\n";
-
+            std::stringstream ss;
+            if (!isOpen())
+            {
+                ss << "COM not connected\n";
+                return ss.str();
+            }
+            if( myfOverlapped )
+                ss << "overlapped\n";
+            else
+                ss << "not overlapped\n";
             _COMMCONFIG cfg;
             cfg.dcb = {0};
             DWORD sz = sizeof(cfg);
@@ -329,32 +337,43 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                     myCOMHandle, // Handle to the Serial port
                     &cfg,
                     &sz))
-                std::cout << "GetCommConfig FAILED\n";
+            {
+                ss << "GetCommConfig FAILED\n";
+                return ss.str();
+            }
             DCB dcb = cfg.dcb;
-            std::cout << "\nBaudRate " << dcb.BaudRate
-                      << "\nfBinary " << dcb.fBinary
-                      << "\nfParity " << dcb.fParity
-                      << "\nfOutxCtsFlow " << dcb.fOutxCtsFlow
-                      << "\nfOutxDsrFlow " << dcb.fOutxDsrFlow
-                      << "\nfDtrControl " << dcb.fDtrControl
-                      << "\nfDsrSensitivity " << dcb.fDsrSensitivity
-                      << "\nfTXContinueOnXoff " << dcb.fTXContinueOnXoff
-                      << "\nfOutX " << dcb.fOutX
-                      << "\nfInX " << dcb.fInX
-                      << "\nfErrorChar " << dcb.fErrorChar
-                      << "\nfBinary " << dcb.fNull
-                      << "\nfNull " << dcb.fRtsControl
-                      << "\nfAbortOnError " << dcb.fAbortOnError
-                      << "\nXonLim " << dcb.XonLim
-                      << "\nXoffLim " << dcb.XoffLim
-                      << "\nByteSize " << dcb.ByteSize
-                      << "\nParity " << dcb.Parity
-                      << "\nStopBits " << dcb.StopBits
-                      << "\nXonChar " << dcb.XonChar
-                      << "\nXoffChar " << dcb.XoffChar
-                      << "\nErrorChar " << dcb.ErrorChar
-                      << "\nEofChar " << dcb.EofChar
-                      << "\nEvtChar " << dcb.EvtChar << "\n";
+            ss << "\nBaudRate " << dcb.BaudRate
+               << "\nfBinary " << dcb.fBinary
+               << "\nfParity " << dcb.fParity
+               << "\nfOutxCtsFlow " << dcb.fOutxCtsFlow
+               << "\nfOutxDsrFlow " << dcb.fOutxDsrFlow
+               << "\nfDtrControl " << dcb.fDtrControl
+               << "\nfDsrSensitivity " << dcb.fDsrSensitivity
+               << "\nfTXContinueOnXoff " << dcb.fTXContinueOnXoff
+               << "\nfOutX " << dcb.fOutX
+               << "\nfInX " << dcb.fInX
+               << "\nfErrorChar " << dcb.fErrorChar
+               << "\nfBinary " << dcb.fNull
+               << "\nfNull " << dcb.fRtsControl
+               << "\nfAbortOnError " << dcb.fAbortOnError
+               << "\nXonLim " << dcb.XonLim
+               << "\nXoffLim " << dcb.XoffLim
+               << "\nByteSize " << dcb.ByteSize
+               << "\nParity " << dcb.Parity
+               << "\nStopBits " << dcb.StopBits
+               << "\nXonChar " << dcb.XonChar
+               << "\nXoffChar " << dcb.XoffChar
+               << "\nErrorChar " << dcb.ErrorChar
+               << "\nEofChar " << dcb.EofChar
+               << "\nEvtChar " << dcb.EvtChar << "\n";
+            return ss.str();
+        }
+
+        /// Write buffer of data to the COM port
+        int write(const std::vector<unsigned char> &buffer)
+        {
+            std::cout << "Write buffersize " << buffer.size() << "\n";
+            std::cout << COMConfigText();
 
             _OVERLAPPED over;
             memset(&over, 0, sizeof(over));
@@ -411,8 +430,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
         bool myfOverlapped;
         bool myfCTSFlowControl;
 
-            int
-            waitForData()
+        int
+        waitForData()
         {
             DWORD dwEventMask;
             _COMSTAT comstat;
