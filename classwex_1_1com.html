@@ -106,6 +106,12 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a5b2a2c185ee1b1aca9cc7db05db44bf1">port</a> (const std::string &amp;port)</td></tr>
 <tr class="memdesc:a5b2a2c185ee1b1aca9cc7db05db44bf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set port number to which connection will be made. <br /></td></tr>
 <tr class="separator:a5b2a2c185ee1b1aca9cc7db05db44bf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70c092a1c86de123ce2b0fd5fd05b619"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a70c092a1c86de123ce2b0fd5fd05b619">overlapped</a> (bool f=true)</td></tr>
+<tr class="memdesc:a70c092a1c86de123ce2b0fd5fd05b619"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable/Disable open connection overlapped.  <a href="classwex_1_1com.html#a70c092a1c86de123ce2b0fd5fd05b619">More...</a><br /></td></tr>
+<tr class="separator:a70c092a1c86de123ce2b0fd5fd05b619"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab79065091600474a4e3199177a230e76"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#ab79065091600474a4e3199177a230e76">CTSFlowControl</a> (bool f=true)</td></tr>
+<tr class="memdesc:ab79065091600474a4e3199177a230e76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable/Disable CTS flow control.  <a href="classwex_1_1com.html#ab79065091600474a4e3199177a230e76">More...</a><br /></td></tr>
+<tr class="separator:ab79065091600474a4e3199177a230e76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2f77e8a2a54e45c037eb34a69f61dae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#ad2f77e8a2a54e45c037eb34a69f61dae">DeviceControlString</a> (const std::string &amp;controlString)</td></tr>
 <tr class="memdesc:ad2f77e8a2a54e45c037eb34a69f61dae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure device.  <a href="classwex_1_1com.html#ad2f77e8a2a54e45c037eb34a69f61dae">More...</a><br /></td></tr>
 <tr class="separator:ad2f77e8a2a54e45c037eb34a69f61dae"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -138,6 +144,9 @@ std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bo
 <tr class="memitem:a3a72bd1b037bd2a2162edcbb8abace0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a3a72bd1b037bd2a2162edcbb8abace0a">read_async</a> (int bytes)</td></tr>
 <tr class="memdesc:a3a72bd1b037bd2a2162edcbb8abace0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">non-blocking read from COM port  <a href="classwex_1_1com.html#a3a72bd1b037bd2a2162edcbb8abace0a">More...</a><br /></td></tr>
 <tr class="separator:a3a72bd1b037bd2a2162edcbb8abace0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e28b863c8b6faf5dc37efdea9697746"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a6e28b863c8b6faf5dc37efdea9697746">configText</a> ()</td></tr>
+<tr class="memdesc:a6e28b863c8b6faf5dc37efdea9697746"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get human readable port configuration.  <a href="classwex_1_1com.html#a6e28b863c8b6faf5dc37efdea9697746">More...</a><br /></td></tr>
+<tr class="separator:a6e28b863c8b6faf5dc37efdea9697746"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af36bc9dfe03f13b2d0b2975b88c4bb87"><td class="memItemLeft" align="right" valign="top"><a id="af36bc9dfe03f13b2d0b2975b88c4bb87"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#af36bc9dfe03f13b2d0b2975b88c4bb87">write</a> (const std::vector&lt; unsigned char &gt; &amp;buffer)</td></tr>
 <tr class="memdesc:af36bc9dfe03f13b2d0b2975b88c4bb87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write buffer of data to the COM port. <br /></td></tr>
@@ -164,6 +173,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 children_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#aa1a0301b5f6edf96a98140909865385f">children</a> ()</td></tr>
 <tr class="memdesc:aa1a0301b5f6edf96a98140909865385f inherit pub_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">get vector of children <br /></td></tr>
 <tr class="separator:aa1a0301b5f6edf96a98140909865385f inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab069b01f31657558faa2778fd837be57 inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="ab069b01f31657558faa2778fd837be57"></a>
+<a class="el" href="classwex_1_1gui.html">gui</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>parent</b> ()</td></tr>
+<tr class="separator:ab069b01f31657558faa2778fd837be57 inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61a57c4c9da7d8ae46383fe5507b08db inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="a61a57c4c9da7d8ae46383fe5507b08db"></a>
 <a class="el" href="classwex_1_1gui.html">gui</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a61a57c4c9da7d8ae46383fe5507b08db">find</a> (int id)</td></tr>
 <tr class="memdesc:a61a57c4c9da7d8ae46383fe5507b08db inherit pub_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">find child window with specified id <br /></td></tr>
@@ -401,6 +413,70 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6e28b863c8b6faf5dc37efdea9697746"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e28b863c8b6faf5dc37efdea9697746">&#9670;&nbsp;</a></span>configText()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string wex::com::configText </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get human readable port configuration. </p>
+<dl class="section return"><dt>Returns</dt><dd>string </dd></dl>
+
+</div>
+</div>
+<a id="ab79065091600474a4e3199177a230e76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab79065091600474a4e3199177a230e76">&#9670;&nbsp;</a></span>CTSFlowControl()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wex::com::CTSFlowControl </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>f</em> = <code>true</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enable/Disable CTS flow control. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">f</td><td>true to enable, default true</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>If this is TRUE, the CTS (clear-to-send) signal is monitored for output flow control. If this is TRUE and CTS is turned off, output is suspended until CTS is sent again.</p>
+<p>This must be called before the port is opened. </p>
+
+</div>
+</div>
 <a id="ad2f77e8a2a54e45c037eb34a69f61dae"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad2f77e8a2a54e45c037eb34a69f61dae">&#9670;&nbsp;</a></span>DeviceControlString()</h2>
 
@@ -467,6 +543,45 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 <p>Opens with default configuration "baud=9600 parity=N data=8 stop=1"</p>
 <p>Reconfigure with <a class="el" href="classwex_1_1com.html#ad2f77e8a2a54e45c037eb34a69f61dae" title="Configure device.">DeviceControlString()</a></p>
 <p>On error, a mesage will be available by calling errorMsg(); </p>
+
+</div>
+</div>
+<a id="a70c092a1c86de123ce2b0fd5fd05b619"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70c092a1c86de123ce2b0fd5fd05b619">&#9670;&nbsp;</a></span>overlapped()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wex::com::overlapped </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>f</em> = <code>true</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enable/Disable open connection overlapped. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">f</td><td>true to enable overlapped, default true</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>If the COM port is opened overlapped</p><ul>
+<li>read/writes are asynvhronous</li>
+<li>port csn be used for both reading and writing</li>
+</ul>
+<p>This must be called before the port is opened. </p>
 
 </div>
 </div>
@@ -551,7 +666,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1com.html">com</a></li>
-    <li class="footer">Generated on Sat May 22 2021 07:54:46 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Feb 4 2022 10:10:01 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

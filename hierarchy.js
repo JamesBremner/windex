@@ -2,6 +2,7 @@ var hierarchy =
 [
     [ "wex::eventhandler", "classwex_1_1eventhandler.html", null ],
     [ "wex::filebox", "classwex_1_1filebox.html", null ],
+    [ "wex::free", "structwex_1_1free.html", null ],
     [ "wex::gui", "classwex_1_1gui.html", [
       [ "wex::button", "classwex_1_1button.html", null ],
       [ "wex::checkbox", "classwex_1_1checkbox.html", null ],
@@ -33,6 +34,7 @@ var hierarchy =
     [ "wex::menubar", "classwex_1_1menubar.html", null ],
     [ "wex::modalMgr", "classwex_1_1modal_mgr.html", null ],
     [ "wex::msgbox", "classwex_1_1msgbox.html", null ],
+    [ "wex::printDoc", "classwex_1_1print_doc.html", null ],
     [ "wex::property", "classwex_1_1property.html", null ],
     [ "wex::shapes", "classwex_1_1shapes.html", null ],
     [ "wex::sMouse", "structwex_1_1s_mouse.html", null ],

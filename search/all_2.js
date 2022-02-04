@@ -17,12 +17,13 @@ var searchData=
   ['clickpropogate_28',['clickPropogate',['../classwex_1_1eventhandler.html#a9867fc21bd6a8d24e070a6eb0260556e',1,'wex::eventhandler']]],
   ['clickwex_29',['clickWex',['../classwex_1_1eventhandler.html#a503d277efec7680118bf991850ff9ac6',1,'wex::eventhandler']]],
   ['client_30',['client',['../classwex_1_1tcp.html#ac9b0d20d49309206b4dd8c5595d7a555',1,'wex::tcp']]],
-  ['clientsocket_31',['clientSocket',['../classwex_1_1tcp.html#a1dfed6d6f74c1cede1e7d7320d563e5b',1,'wex::tcp']]],
-  ['colfirst_32',['colfirst',['../classwex_1_1layout.html#aa3139deccc9c1c8defb44d2ee7ade18e',1,'wex::layout']]],
-  ['color_33',['color',['../classwex_1_1shapes.html#ae6e8f2852f83cc801b63c5a1b16c1d9c',1,'wex::shapes::color()'],['../classwex_1_1plot_1_1trace.html#a06b45af76cde6bc1ab02c153a4061d41',1,'wex::plot::trace::color()']]],
-  ['colwidths_34',['colWidths',['../classwex_1_1layout.html#a8072675d7f3d4d78ee460f4e01d1f679',1,'wex::layout']]],
-  ['com_35',['com',['../classwex_1_1com.html#a1c7760e830f62a867bb21f36b0f55725',1,'wex::com::com()'],['../classwex_1_1com.html',1,'wex::com']]],
+  ['colfirst_31',['colfirst',['../classwex_1_1layout.html#aa3139deccc9c1c8defb44d2ee7ade18e',1,'wex::layout']]],
+  ['color_32',['color',['../classwex_1_1shapes.html#ae6e8f2852f83cc801b63c5a1b16c1d9c',1,'wex::shapes::color()'],['../classwex_1_1plot_1_1trace.html#a06b45af76cde6bc1ab02c153a4061d41',1,'wex::plot::trace::color()']]],
+  ['colwidths_33',['colWidths',['../classwex_1_1layout.html#a8072675d7f3d4d78ee460f4e01d1f679',1,'wex::layout']]],
+  ['com_34',['com',['../classwex_1_1com.html#a1c7760e830f62a867bb21f36b0f55725',1,'wex::com::com()'],['../classwex_1_1com.html',1,'wex::com']]],
+  ['configtext_35',['configText',['../classwex_1_1com.html#a6e28b863c8b6faf5dc37efdea9697746',1,'wex::com']]],
   ['count_36',['count',['../classwex_1_1choice.html#abd9d0808ddb33bf2ff7ddefb63411765',1,'wex::choice::count()'],['../classwex_1_1list.html#af7850feda583bb52fe8b6d4e919a4fb7',1,'wex::list::count()']]],
   ['create_37',['Create',['../classwex_1_1gui.html#a35ecd0dadb78b8590a56814370ed65a3',1,'wex::gui']]],
-  ['createnewfont_38',['createNewFont',['../classwex_1_1gui.html#a7573277e0a75a61236b2ffd83306cf58',1,'wex::gui']]]
+  ['createnewfont_38',['createNewFont',['../classwex_1_1gui.html#a7573277e0a75a61236b2ffd83306cf58',1,'wex::gui']]],
+  ['ctsflowcontrol_39',['CTSFlowControl',['../classwex_1_1com.html#ab79065091600474a4e3199177a230e76',1,'wex::com']]]
 ];

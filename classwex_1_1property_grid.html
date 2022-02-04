@@ -100,9 +100,9 @@ $(document).ready(function(){initNavTree('classwex_1_1property_grid.html',''); i
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ae4a8dd2de9da76ff4e3cad0e21165785"><td class="memItemLeft" align="right" valign="top"><a id="ae4a8dd2de9da76ff4e3cad0e21165785"></a>
+<tr class="memitem:a9dc0f4304f2f5036dd3af6aaf4428b27"><td class="memItemLeft" align="right" valign="top"><a id="a9dc0f4304f2f5036dd3af6aaf4428b27"></a>
 typedef std::shared_ptr&lt; <a class="el" href="classwex_1_1property.html">property</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>prop_t</b></td></tr>
-<tr class="separator:ae4a8dd2de9da76ff4e3cad0e21165785"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a9dc0f4304f2f5036dd3af6aaf4428b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -200,6 +200,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>propCount</b> () const
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1property_grid.html#a083a60d7aa9c4423ff48bed0c1c936a6">change</a> (std::function&lt; void()&gt; f)</td></tr>
 <tr class="memdesc:a083a60d7aa9c4423ff48bed0c1c936a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register function to call when property value has changed. <br /></td></tr>
 <tr class="separator:a083a60d7aa9c4423ff48bed0c1c936a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af54da40e291231115cb42afc719d84e6"><td class="memItemLeft" align="right" valign="top"><a id="af54da40e291231115cb42afc719d84e6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1property_grid.html#af54da40e291231115cb42afc719d84e6">nameClick</a> (std::function&lt; void(const std::string &amp;)&gt; f)</td></tr>
+<tr class="memdesc:af54da40e291231115cb42afc719d84e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register function to call when property name is clicked. <br /></td></tr>
+<tr class="separator:af54da40e291231115cb42afc719d84e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b6fe6e2dc4d51df59cfe3bef10c9266"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1property_grid.html#a9b6fe6e2dc4d51df59cfe3bef10c9266">tabList</a> (bool f=true)</td></tr>
 <tr class="memdesc:a9b6fe6e2dc4d51df59cfe3bef10c9266"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable tab stepping through the properties.  <a href="classwex_1_1property_grid.html#a9b6fe6e2dc4d51df59cfe3bef10c9266">More...</a><br /></td></tr>
 <tr class="separator:a9b6fe6e2dc4d51df59cfe3bef10c9266"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -218,6 +222,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 children_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#aa1a0301b5f6edf96a98140909865385f">children</a> ()</td></tr>
 <tr class="memdesc:aa1a0301b5f6edf96a98140909865385f inherit pub_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">get vector of children <br /></td></tr>
 <tr class="separator:aa1a0301b5f6edf96a98140909865385f inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab069b01f31657558faa2778fd837be57 inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="ab069b01f31657558faa2778fd837be57"></a>
+<a class="el" href="classwex_1_1gui.html">gui</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>parent</b> ()</td></tr>
+<tr class="separator:ab069b01f31657558faa2778fd837be57 inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61a57c4c9da7d8ae46383fe5507b08db inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="a61a57c4c9da7d8ae46383fe5507b08db"></a>
 <a class="el" href="classwex_1_1gui.html">gui</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a61a57c4c9da7d8ae46383fe5507b08db">find</a> (int id)</td></tr>
 <tr class="memdesc:a61a57c4c9da7d8ae46383fe5507b08db inherit pub_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">find child window with specified id <br /></td></tr>
@@ -666,7 +673,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1property_grid.html">propertyGrid</a></li>
-    <li class="footer">Generated on Sat May 22 2021 07:54:46 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Feb 4 2022 10:10:00 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -46,7 +46,7 @@ var classwex_1_1eventhandler =
     [ "scrollV", "classwex_1_1eventhandler.html#a468d9a350d9693ba4d2b31bb9aca83f4", null ],
     [ "select", "classwex_1_1eventhandler.html#ab8554229bade31390ec7efa810da5b91", null ],
     [ "slid", "classwex_1_1eventhandler.html#aa2a247d34e03f769d2db1c06f7d7dbc9", null ],
+    [ "tcpRead", "classwex_1_1eventhandler.html#adedad940446507ade68a5126cf1138f6", null ],
     [ "tcpServerAccept", "classwex_1_1eventhandler.html#affb4f510313547e4520336e46ce567a1", null ],
-    [ "tcpServerReadComplete", "classwex_1_1eventhandler.html#a9620ca2f6525af8ae5ea268aec4efc11", null ],
     [ "timer", "classwex_1_1eventhandler.html#abf4cd182ea44e50164b384de41678601", null ]
 ];

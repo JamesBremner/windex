@@ -134,51 +134,57 @@ $(document).ready(function(){initNavTree('filebox_8h_source.html',''); initResiz
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        ofn.lpstrDefExt = ext.c_str();</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">   62</a></span>&#160;    std::string <a class="code" href="classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">open</a>()</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordflow">if</span> (GetOpenFileNameA(&amp;ofn)==TRUE)</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            myfname = ofn.lpstrFile;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        }</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            myfname = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">return</span> myfname;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
-<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classwex_1_1filebox.html#aeaaa7a6e971840cd8e23cd8c93846929">   75</a></span>&#160;    std::string <a class="code" href="classwex_1_1filebox.html#aeaaa7a6e971840cd8e23cd8c93846929">save</a>()</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">if</span>( GetSaveFileNameA(&amp;ofn) == TRUE)</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            myfname = ofn.lpstrFile;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            myfname = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordflow">return</span> myfname;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    }</div>
-<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classwex_1_1filebox.html#a3ddf3950a7af50786fb7bc4d84472d09">   84</a></span>&#160;    std::string <a class="code" href="classwex_1_1filebox.html#a3ddf3950a7af50786fb7bc4d84472d09">path</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> myfname;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    OPENFILENAME ofn;       <span class="comment">// common dialog box structure</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">char</span> szFile[260];       <span class="comment">// buffer for file name</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    std::string myfname;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;};</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="comment">// title for dialog window</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> title( <span class="keyword">const</span> std::string&amp; fname )</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        ofn.lpstrTitle = fname.c_str();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    }</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">   68</a></span>&#160;    std::string <a class="code" href="classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">open</a>()</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">if</span> (GetOpenFileNameA(&amp;ofn)==TRUE)</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            myfname = ofn.lpstrFile;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            myfname = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">return</span> myfname;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="classwex_1_1filebox.html#aeaaa7a6e971840cd8e23cd8c93846929">   81</a></span>&#160;    std::string <a class="code" href="classwex_1_1filebox.html#aeaaa7a6e971840cd8e23cd8c93846929">save</a>()</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    {</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordflow">if</span>( GetSaveFileNameA(&amp;ofn) == TRUE)</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            myfname = ofn.lpstrFile;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            myfname = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">return</span> myfname;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }</div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="classwex_1_1filebox.html#a3ddf3950a7af50786fb7bc4d84472d09">   90</a></span>&#160;    std::string <a class="code" href="classwex_1_1filebox.html#a3ddf3950a7af50786fb7bc4d84472d09">path</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordflow">return</span> myfname;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    OPENFILENAME ofn;       <span class="comment">// common dialog box structure</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">char</span> szFile[260];       <span class="comment">// buffer for file name</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    std::string myfname;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;};</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
 <div class="ttc" id="aclasswex_1_1filebox_html"><div class="ttname"><a href="classwex_1_1filebox.html">wex::filebox</a></div><div class="ttdoc">A popup window where used can browse folders and select a file.</div><div class="ttdef"><b>Definition:</b> filebox.h:8</div></div>
-<div class="ttc" id="aclasswex_1_1filebox_html_a3ddf3950a7af50786fb7bc4d84472d09"><div class="ttname"><a href="classwex_1_1filebox.html#a3ddf3950a7af50786fb7bc4d84472d09">wex::filebox::path</a></div><div class="ttdeci">std::string path() const</div><div class="ttdoc">get filename entered by user</div><div class="ttdef"><b>Definition:</b> filebox.h:84</div></div>
+<div class="ttc" id="aclasswex_1_1filebox_html_a3ddf3950a7af50786fb7bc4d84472d09"><div class="ttname"><a href="classwex_1_1filebox.html#a3ddf3950a7af50786fb7bc4d84472d09">wex::filebox::path</a></div><div class="ttdeci">std::string path() const</div><div class="ttdoc">get filename entered by user</div><div class="ttdef"><b>Definition:</b> filebox.h:90</div></div>
 <div class="ttc" id="aclasswex_1_1filebox_html_a65d8c98096f88474e761621b313e04c0"><div class="ttname"><a href="classwex_1_1filebox.html#a65d8c98096f88474e761621b313e04c0">wex::filebox::filter</a></div><div class="ttdeci">void filter(const char *fbuf)</div><div class="ttdoc">Set file filters.</div><div class="ttdef"><b>Definition:</b> filebox.h:47</div></div>
-<div class="ttc" id="aclasswex_1_1filebox_html_a7bc1502dfe09a8a19fd9dcfa8b6bd25a"><div class="ttname"><a href="classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">wex::filebox::open</a></div><div class="ttdeci">std::string open()</div><div class="ttdoc">prompt user for file to open</div><div class="ttdef"><b>Definition:</b> filebox.h:62</div></div>
+<div class="ttc" id="aclasswex_1_1filebox_html_a7bc1502dfe09a8a19fd9dcfa8b6bd25a"><div class="ttname"><a href="classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a">wex::filebox::open</a></div><div class="ttdeci">std::string open()</div><div class="ttdoc">prompt user for file to open</div><div class="ttdef"><b>Definition:</b> filebox.h:68</div></div>
 <div class="ttc" id="aclasswex_1_1filebox_html_ad144dcdcfb6611c4ebe3d08e6a9f6702"><div class="ttname"><a href="classwex_1_1filebox.html#ad144dcdcfb6611c4ebe3d08e6a9f6702">wex::filebox::defaultExtension</a></div><div class="ttdeci">void defaultExtension(const std::string &amp;ext)</div><div class="ttdoc">default extension for saved file, appended to whatever user enters</div><div class="ttdef"><b>Definition:</b> filebox.h:54</div></div>
-<div class="ttc" id="aclasswex_1_1filebox_html_aeaaa7a6e971840cd8e23cd8c93846929"><div class="ttname"><a href="classwex_1_1filebox.html#aeaaa7a6e971840cd8e23cd8c93846929">wex::filebox::save</a></div><div class="ttdeci">std::string save()</div><div class="ttdoc">prompt user for folder and filename to save</div><div class="ttdef"><b>Definition:</b> filebox.h:75</div></div>
-<div class="ttc" id="aclasswex_1_1gui_html"><div class="ttname"><a href="classwex_1_1gui.html">wex::gui</a></div><div class="ttdoc">The base class for all windex gui elements.</div><div class="ttdef"><b>Definition:</b> wex.h:751</div></div>
-<div class="ttc" id="aclasswex_1_1gui_html_a93349cbd28fb50067b965d54f7c3fa34"><div class="ttname"><a href="classwex_1_1gui.html#a93349cbd28fb50067b965d54f7c3fa34">wex::gui::handle</a></div><div class="ttdeci">HWND handle()</div><div class="ttdoc">get window handle</div><div class="ttdef"><b>Definition:</b> wex.h:1519</div></div>
+<div class="ttc" id="aclasswex_1_1filebox_html_aeaaa7a6e971840cd8e23cd8c93846929"><div class="ttname"><a href="classwex_1_1filebox.html#aeaaa7a6e971840cd8e23cd8c93846929">wex::filebox::save</a></div><div class="ttdeci">std::string save()</div><div class="ttdoc">prompt user for folder and filename to save</div><div class="ttdef"><b>Definition:</b> filebox.h:81</div></div>
+<div class="ttc" id="aclasswex_1_1gui_html"><div class="ttname"><a href="classwex_1_1gui.html">wex::gui</a></div><div class="ttdoc">The base class for all windex gui elements.</div><div class="ttdef"><b>Definition:</b> wex.h:755</div></div>
+<div class="ttc" id="aclasswex_1_1gui_html_a93349cbd28fb50067b965d54f7c3fa34"><div class="ttname"><a href="classwex_1_1gui.html#a93349cbd28fb50067b965d54f7c3fa34">wex::gui::handle</a></div><div class="ttdeci">HWND handle()</div><div class="ttdoc">get window handle</div><div class="ttdef"><b>Definition:</b> wex.h:1541</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><b>filebox.h</b></li>
-    <li class="footer">Generated on Sat May 22 2021 07:54:45 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Feb 4 2022 10:10:00 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

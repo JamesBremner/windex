@@ -1,6 +1,6 @@
 var classwex_1_1property_grid =
 [
-    [ "prop_t", "classwex_1_1property_grid.html#ae4a8dd2de9da76ff4e3cad0e21165785", null ],
+    [ "prop_t", "classwex_1_1property_grid.html#a9dc0f4304f2f5036dd3af6aaf4428b27", null ],
     [ "propertyGrid", "classwex_1_1property_grid.html#a6b9b1279708f059a1958fa535c5a26d7", null ],
     [ "add", "classwex_1_1property_grid.html#a6412bb2a7b4eea40d514ff5f416d0626", null ],
     [ "addjson", "classwex_1_1property_grid.html#ae3f20fa2d5c3d2100c6e567711f4dd2d", null ],
@@ -19,6 +19,7 @@ var classwex_1_1property_grid =
     [ "json", "classwex_1_1property_grid.html#aec1047b59388838f9192b917d2868112", null ],
     [ "labelWidth", "classwex_1_1property_grid.html#a8da95e3bfc995031d546e2336da850e9", null ],
     [ "move", "classwex_1_1property_grid.html#a937c83efe710bf9a93c2fb8196b41c53", null ],
+    [ "nameClick", "classwex_1_1property_grid.html#af54da40e291231115cb42afc719d84e6", null ],
     [ "propCount", "classwex_1_1property_grid.html#af28872bd19028bdd089a18c0f2f996e6", null ],
     [ "propHeight", "classwex_1_1property_grid.html#a284c7f08c76aaed20e586f65bf698bdc", null ],
     [ "propHeight", "classwex_1_1property_grid.html#ad1083aa8b795ab6f0d0821f5de7e28a4", null ],

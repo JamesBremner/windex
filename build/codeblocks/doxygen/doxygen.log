@@ -3,17 +3,17 @@ C:/Users/James/code/windex/include/wex.h:86: warning: The following parameter of
   parameter 'id'
 C:/Users/James/code/windex/include/wex.h:60: warning: The following parameter of wex::modalMgr::set(int id, HWND h) is not documented:
   parameter 'h'
-C:/Users/James/code/windex/include/wex.h:331: warning: The following parameter of wex::eventhandler::change(int id, std::function< void(void)> f) is not documented:
+C:/Users/James/code/windex/include/wex.h:334: warning: The following parameter of wex::eventhandler::change(int id, std::function< void(void)> f) is not documented:
   parameter 'f'
-C:/Users/James/code/windex/include/wex.h:632: warning: argument 'se' of command @param is not found in the argument list of wex::shapes::arc(int x, int y, double r, double sa, double ea)
-C:/Users/James/code/windex/include/wex.h:640: warning: The following parameter of wex::shapes::arc(int x, int y, double r, double sa, double ea) is not documented:
+C:/Users/James/code/windex/include/wex.h:636: warning: argument 'se' of command @param is not found in the argument list of wex::shapes::arc(int x, int y, double r, double sa, double ea)
+C:/Users/James/code/windex/include/wex.h:644: warning: The following parameter of wex::shapes::arc(int x, int y, double r, double sa, double ea) is not documented:
   parameter 'ea'
-C:/Users/James/code/windex/include/wex.h:623: warning: argument 'point' of command @param is not found in the argument list of wex::shapes::polygon(const std::vector< int > &v)
-C:/Users/James/code/windex/include/wex.h:625: warning: The following parameter of wex::shapes::polygon(const std::vector< int > &v) is not documented:
+C:/Users/James/code/windex/include/wex.h:627: warning: argument 'point' of command @param is not found in the argument list of wex::shapes::polygon(const std::vector< int > &v)
+C:/Users/James/code/windex/include/wex.h:629: warning: The following parameter of wex::shapes::polygon(const std::vector< int > &v) is not documented:
   parameter 'v'
-C:/Users/James/code/windex/include/com.h:249: warning: Unsupported xml/html tag <pr> found
-C:/Users/James/code/windex/include/com.h:249: warning: found </pre> tag without matching <pre>
-C:/Users/James/code/windex/include/tcp.h:81: warning: argument 'defaults' of command @param is not found in the argument list of wex::tcp::server(const std::string &port="27654")
+C:/Users/James/code/windex/include/com.h:289: warning: Unsupported xml/html tag <pr> found
+C:/Users/James/code/windex/include/com.h:289: warning: found </pre> tag without matching <pre>
+C:/Users/James/code/windex/include/tcp.h:54: warning: argument 'defaults' of command @param is not found in the argument list of wex::tcp::server(const std::string &port="27654")
 C:/Users/James/code/windex/include/filebox.h:41: warning: argument 'buf' of command @param is not found in the argument list of wex::filebox::filter(const char *fbuf)
 C:/Users/James/code/windex/include/filebox.h:47: warning: The following parameter of wex::filebox::filter(const char *fbuf) is not documented:
   parameter 'fbuf'

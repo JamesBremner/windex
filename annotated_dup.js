@@ -31,6 +31,8 @@ var annotated_dup =
       [ "maker", "classwex_1_1maker.html", null ],
       [ "tabbed", "classwex_1_1tabbed.html", "classwex_1_1tabbed" ],
       [ "radiobuttonLayout", "classwex_1_1radiobutton_layout.html", "classwex_1_1radiobutton_layout" ],
+      [ "printDoc", "classwex_1_1print_doc.html", "classwex_1_1print_doc" ],
+      [ "free", "structwex_1_1free.html", null ],
       [ "property", "classwex_1_1property.html", "classwex_1_1property" ],
       [ "propertyGrid", "classwex_1_1property_grid.html", "classwex_1_1property_grid" ],
       [ "window2file", "classwex_1_1window2file.html", "classwex_1_1window2file" ],

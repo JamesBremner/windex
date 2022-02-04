@@ -31,6 +31,7 @@ var classwex_1_1gui =
     [ "move", "classwex_1_1gui.html#a81de2a316bda2230c698fbf97268b212", null ],
     [ "NewID", "classwex_1_1gui.html#ae5b60fcc333c7902e4ffe4e30630c731", null ],
     [ "nobgerase", "classwex_1_1gui.html#abd1b690203015f54831684fb629b9bc8", null ],
+    [ "parent", "classwex_1_1gui.html#ab069b01f31657558faa2778fd837be57", null ],
     [ "run", "classwex_1_1gui.html#ae8a67ea974c35eb77635fe4802dea2d9", null ],
     [ "scroll", "classwex_1_1gui.html#af20931bb772360d0c558696bdc5a7f27", null ],
     [ "scrollMove", "classwex_1_1gui.html#a806001980af480dfe597e4a84107ff07", null ],
