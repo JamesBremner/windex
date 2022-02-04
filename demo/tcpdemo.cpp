@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "tcp.h"
 
 class cGUI
@@ -6,91 +7,104 @@ class cGUI
 public:
     cGUI();
     void run();
-private:
-    wex::gui& myForm;
-    wex::radiobutton& myClientrb;
-    wex::radiobutton& myServerrb;
-    wex::button& myConnectbn;
-    wex::button& mySendbn;
-    wex::label& myStatus;
-    wex::tcp& myTCP;
-    SOCKET * myClientSocket;
 
-    void status(const std::string& msg );
+private:
+    wex::gui &myForm;
+    wex::radiobutton &myClientrb;
+    wex::radiobutton &myServerrb;
+    wex::button &myConnectbn;
+    wex::button &mySendbn;
+    wex::label &myStatus;
+    wex::tcp &myTCP;
+
+    void status(const std::string &msg);
     void connect();
 };
 
 cGUI::cGUI()
-    : myForm(wex::maker::make())
-    , myClientrb( wex::maker::make<wex::radiobutton>( myForm ) )
-    , myServerrb( wex::maker::make<wex::radiobutton>( myForm ) )
-    , myConnectbn( wex::maker::make<wex::button>( myForm ) )
-    , mySendbn( wex::maker::make<wex::button>( myForm ) )
-    , myStatus( wex::maker::make<wex::label>( myForm ) )
-    , myTCP( wex::maker::make<wex::tcp>( myForm ) )
+    : myForm(wex::maker::make()), myClientrb(wex::maker::make<wex::radiobutton>(myForm)), myServerrb(wex::maker::make<wex::radiobutton>(myForm)), myConnectbn(wex::maker::make<wex::button>(myForm)), mySendbn(wex::maker::make<wex::button>(myForm)), myStatus(wex::maker::make<wex::label>(myForm)), myTCP(wex::maker::make<wex::tcp>(myForm))
 {
-    myForm.move(50,50,300,400);
-    myForm.text("tcpDemo");
+    myForm.move(50, 50, 300, 400);
+    myForm.text("TCP Tester");
 
-    myClientrb.move( 30, 20, 100,30 );
-    myClientrb.text( "Client" );
-    myServerrb.move( 200,20, 100,30 );
+    myClientrb.move(30, 20, 100, 30);
+    myClientrb.text("Client");
+    myServerrb.move(200, 20, 100, 30);
     myServerrb.text("Server");
 
-    myConnectbn.move({50,50,100,30});
+    myConnectbn.move({50, 50, 100, 30});
     myConnectbn.text("Connect");
 
-    myStatus.move(50,100,300,30);
+    myStatus.move(50, 100, 300, 60);
     myStatus.text("Not connected");
 
     myConnectbn.events().click([this]
-    {
-        connect();
-    });
-    myForm.events().tcpServerAccept([this]
-    {
-        status("Client connected");
-        myClientSocket = &myTCP.clientSocket();
-        myTCP.read( *myClientSocket );
-    });
-    myForm.events().tcpServerReadComplete([this]
-    {
-        // display mesage
-        status(std::string("Msg read: ") + myTCP.rcvbuf() );
+                               { connect(); });
+    myForm.events()
+        .tcpServerAccept([this]
+                         {
+                             if (myServerrb.isChecked())
+                                 status("Client connected");
+                             else
+                                 status("Connected to server");
+                             myTCP.read();
+                         });
 
-        // setup for next message
-        if( myTCP.isServer() )
-            myTCP.read( *myClientSocket );
-        else
-            myTCP.read();
-    });
+    myForm.events()
+        .tcpRead([this]
+                 {
+                     if (!myTCP.isConnected())
+                     {
+                         if (myServerrb.isChecked())
+                         {
+                             status("Connection closed, waiting for new client");
 
-    mySendbn.move(50,150,100,30);
+                             myTCP.server();
+                         }
+                         else
+                         {
+                             status("Disconnected from server");
+                         }
+                     }
+                     else
+                     {
+                         // display mesage
+                         std::stringstream ss;
+                         auto msg = myTCP.readMsg();
+
+                         // ascii
+                         ss << "Msg read: " + myTCP.readMsg() << "\n\n";
+
+                         ss << "bytes " << msg.length() << ": ";
+                         for (int k = 0; k < msg.length(); k++)
+                             ss << std::hex << (int)((unsigned char)msg[k]) << " ";
+
+                         status(ss.str());
+
+                         // setup for next message
+                         myTCP.read();
+                     }
+                 });
+
+    mySendbn.move(50, 180, 130, 30);
     mySendbn.text("Send hello msg");
     mySendbn.events().click([&]
-    {
-        if( myServerrb.isChecked() )
-            myTCP.send( myTCP.clientSocket(), "Hello" );
-        else
-            myTCP.send("Hello");
-    });
-
+                            { myTCP.send("Hello"); });
 
     myForm.show();
-
 }
 void cGUI::connect()
 {
-    if( myServerrb.isChecked() )
+    if (myServerrb.isChecked())
     {
         try
         {
             myTCP.server();
             status("Waiting for client to connect");
         }
-        catch( std::runtime_error& e )
+        catch (std::runtime_error &e)
         {
-            status(std::string("Cannot start server ") + e.what() );
+            status(std::string("Cannot start server ") + e.what());
         }
     }
     else
@@ -98,17 +112,14 @@ void cGUI::connect()
         try
         {
             myTCP.client();
-            status("Connected to server ");
-            myTCP.read();
         }
-        catch( std::runtime_error& e )
+        catch (std::runtime_error &e)
         {
-            status(std::string("Cannot connect to server ") + e.what() );
-
+            status(std::string("Cannot connect to server ") + e.what());
         }
     }
 }
-void cGUI::status(const std::string& msg )
+void cGUI::status(const std::string &msg)
 {
     myStatus.text(msg);
     myStatus.update();

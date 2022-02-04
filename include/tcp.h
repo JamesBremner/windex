@@ -1,297 +1,151 @@
 #pragma once
 #include <winsock2.h>
-#include <ws2tcpip.h>
 #include <windows.h>
-#include <future>
 #include "wex.h"
+#include "ctcp.h"
+#include "await.h"
 
 namespace wex
 {
-/** @brief Read/Write to TCP/IP socket, client or server
+    /** @brief Read/Write to TCP/IP socket, client or server
 
 For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcpdemo.cpp
 */
-class tcp  : public gui
-{
-public:
-    enum class eType
+    class tcp : public gui
     {
-        client,
-        server,
-    };
-    /** CTOR
-        @param[in] parent windows that will receive event messages
+    public:
+        /** CTOR
+        @param[in] parent window that will receive event messages
     */
-    tcp( gui* parent )
-        : gui( parent )
-        ,mySocket( INVALID_SOCKET )
-    {
-        // Initialize Winsock
-        WSADATA wsaData;
-        if( WSAStartup(MAKEWORD(2,2), &wsaData) )
+        tcp(gui *parent) : gui(parent)
         {
-            throw std::runtime_error("Winsock init failed");
+            //Run asynchronous wait handler in its own thread
+            run();
         }
-    }
-    /** Create client socket
-        @param[in] ipaddr IP address of server, defaults to same computer
+
+        /** Create client socket connected to server
+        @param[in] ipaddr IP address or name of server, defaults to same computer
         @param[in] port defaults to 27654
     */
-    void client(
-        const std::string& ipaddr = "127.0.0.1",
-        const std::string& port = "27654" )
-    {
-        myType = eType::client;
-        struct addrinfo *result = NULL,
-                             hints;
-
-        ZeroMemory( &hints, sizeof(hints) );
-        hints.ai_family = AF_UNSPEC;
-        hints.ai_socktype = SOCK_STREAM;
-        hints.ai_protocol = IPPROTO_TCP;
-
-        if ( getaddrinfo(
-                    ipaddr.c_str(), port.c_str(),
-                    &hints, &result) )
+        void client(
+            const std::string &ipaddr = "127.0.0.1",
+            const std::string &port = "27654")
         {
-            throw std::runtime_error("getaddrinfo failed" );
+            myTCP.server(ipaddr, port);
+
+            // wait for connection to server
+            myWaiter(
+                [&]
+                { myTCP.serverWait(); },
+                [this]
+                {
+                    std::cout << "wex::tcp connected to server" << std::endl;
+                    if (!PostMessageA(
+                            myParent->handle(),
+                            WM_APP + 2,
+                            myID,
+                            0))
+                    {
+                        std::cout << "Post Message Error\n";
+                    }
+                });
         }
 
-        mySocket = ::socket(
-                       result->ai_family,
-                       result->ai_socktype,
-                       result->ai_protocol);
-        if( mySocket == INVALID_SOCKET )
-        {
-            throw std::runtime_error("socket failed" );
-        }
-
-        std::cout <<"try connect to " << ipaddr <<":"<< port << "\n";
-        if( ::connect(
-                    mySocket,
-                    result->ai_addr,
-                    (int)result->ai_addrlen)
-                == SOCKET_ERROR )
-        {
-            closesocket(mySocket);
-            mySocket = INVALID_SOCKET;
-            throw std::runtime_error("connect failed "+std::to_string(WSAGetLastError()) );
-        }
-    }
-    /** Create server socket
+        /** Create server socket waiting for connection requests
         @param[in] port, defaults to 27654
 
         Starts listening for client connection.
         Returns immediatly
         throws runtime_error exception on error
         sends eventMsgID::tcpServerAccept message to parent window when new client accepted
+
+        One connection will be accepted.  This can be called again if the connection is closed
+        to wait for another client.
     */
-    void server( const std::string& port = "27654" )
-    {
-        myType = eType::server;
-        myPort = port;
-        struct addrinfo *result = NULL,
-                             hints;
-
-        ZeroMemory( &hints, sizeof(hints) );
-        hints.ai_family = AF_INET;
-        hints.ai_socktype = SOCK_STREAM;
-        hints.ai_protocol = IPPROTO_TCP;
-        hints.ai_flags = AI_PASSIVE;
-
-        if ( getaddrinfo(
-                    NULL, port.c_str(),
-                    &hints, &result) )
+        void server(const std::string &port = "27654")
         {
-            throw std::runtime_error("getaddrinfo failed" );
+            myTCP.server("", port);
+
+            myWaiter(
+                [&]
+                { myTCP.acceptClient(); },
+                [this]
+                {
+                    std::cout << "connected" << std::endl;
+                    PostMessageA(
+                        myParent->handle(),
+                        WM_APP + 2,
+                        myID,
+                        0);
+                });
         }
 
-        mySocket = ::socket(
-                       result->ai_family,
-                       result->ai_socktype,
-                       result->ai_protocol);
-        if( mySocket == INVALID_SOCKET )
+        /// true if valid connection
+        bool isConnected()
         {
-            throw std::runtime_error("socket failed" );
+            return myTCP.isConnected();
         }
 
-        if( ::bind( mySocket,
-                    result->ai_addr,
-                    (int)result->ai_addrlen)
-                == SOCKET_ERROR )
+        /** send message to peer
+        * @param[in] msg
+        */
+        void send(const std::string &msg)
         {
-            closesocket(mySocket);
-            mySocket = INVALID_SOCKET;
-            throw std::runtime_error("bind failed" );
+            std::cout << "wex::tcp::send " << msg << "\n";
+            myTCP.send(msg);
+        }
+        void send(const std::vector< unsigned char >& msg)
+        {
+            myTCP.send(msg);
         }
 
-        if ( ::listen(
-                    mySocket,
-                    SOMAXCONN )
-                == SOCKET_ERROR )
-        {
-            closesocket(mySocket);
-            mySocket = INVALID_SOCKET;
-            throw std::runtime_error("listen failed" );
-        }
-
-        accept_async();
-    }
-
-    /// true if valid connection
-    bool isConnected()
-    {
-        return mySocket != INVALID_SOCKET;
-    }
-
-    /** send message to server
-        @param[in] msg
+        /** asynchronous read message on tcp connection
+         * 
+         * Throws exception if no tcp connection
+         * 
+         * Returns immediatly.
+         * 
+         * When message is received, the parent window will receive tcpRead event
+         * 
+         * If the connection is closed, or suffers any error
+         * the same event will be invoked, so the isConnected()
+         * method should be checked.
     */
-    void send(const std::string& msg )
-    {
-        if( mySocket == INVALID_SOCKET )
-            throw std::runtime_error("send on invalid socket");
-        if( myType == eType::server )
-            throw std::runtime_error("server send on client");
-        ::send(
-            mySocket,
-            msg.c_str(),
-            (int) msg.length(), 0);
-    }
-    /** send message to client
-        @param[in] s scocket connected to client
-        @param[in] msg
-    */
-    void send( SOCKET& s,const std::string& msg )
-    {
-        if( mySocket == INVALID_SOCKET )
-            throw std::runtime_error("send on invalid socket");
-        if( myType == eType::client )
-            throw std::runtime_error("client send on server");
-        ::send(
-            s,
-            msg.c_str(),
-            (int) msg.length(), 0);
-    }
-    /// get socket connected to client
-    SOCKET& clientSocket()
-    {
-        return myClientSocket;
-    }
-    int port() const
-    {
-        return atoi( myPort.c_str() );
-    }
-    /** asynchronous read message from client
-        @param[in] s socket connected to client
-    */
-    void read( SOCKET& s )
-    {
-        if( s == INVALID_SOCKET )
-            throw std::runtime_error("read on invalid socket");
-        myFuture = std::async(
-                       std::launch::async,              // insist on starting immediatly
-                       &tcp::read_block,
-                       this,
-                       std::ref( s ) );
-        myThread = new std::thread(read_wait, this);
-    }
-    void read()
-    {
-        if( mySocket == INVALID_SOCKET )
-            throw std::runtime_error("read on invalid socket");
-        if( myType == eType::server )
-            throw std::runtime_error("server read on client");
-        read( mySocket );
-    }
-
-    /// get pointer to receive buffer as null terminated character string
-    char * rcvbuf()
-    {
-        return (char*) myRecvbuf;
-    }
-
-    bool isServer()
-    {
-        return myType == eType::server;
-    }
-
-private:
-    eType myType;
-    std::string myPort;
-    SOCKET mySocket;
-    SOCKET myClientSocket;
-    std::future< void > myFuture;
-    std::thread*        myThread;
-    unsigned char       myRecvbuf[1024];
-    std::string         myRemoteAddress;
-
-    void accept_async()
-    {
-        // start blocking accept in own thread
-        myFuture = std::async(
-                       std::launch::async,              // insist on starting immediatly
-                       &tcp::accept,
-                       this );
-
-        // start waiting for accept completion in own thread
-        myThread = new std::thread(accept_wait, this);
-    }
-
-    void accept()
-    {
-        std::cout << "listening for client on port " << myPort << "\n";
-
-        struct sockaddr_in client_info;
-        int size = sizeof(client_info);
-        myClientSocket = ::accept(
-                             mySocket,
-                             (sockaddr*)&client_info,
-                             &size );
-        if (myClientSocket == INVALID_SOCKET)
-            return;
-
-        myRemoteAddress = inet_ntoa(client_info.sin_addr);;
-        std::cout << "clent " << myRemoteAddress << " accepted\n";
-
-    }
-    void accept_wait()
-    {
-        // loop checking for client connection
-        const int check_interval_msecs = 500;
-        while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
+        void read()
         {
-
+            myWaiter(
+                [this]
+                { myTCP.read(); },
+                [this]
+                {
+                    // post read complete message
+                    PostMessageA(
+                        myParent->handle(),
+                        WM_APP + 3,
+                        myID,
+                        0);
+                });
         }
-        // post message to parent window
-        // handler will run in thrad that created the parent window
-        PostMessageA(
-            myParent->handle(),
-            WM_APP+2,
-            myID,
-            0 );
 
-        // ready to accept next client
-        accept_async();
-    }
-
-    void read_block( SOCKET& s )
-    {
-        ZeroMemory( myRecvbuf, 1024 );
-        ::recv( s, (char*)myRecvbuf, 1024, 0);
-    }
-    void read_wait()
-    {
-        const int check_interval_msecs = 50;
-        while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs))==std::future_status::timeout)
+        /// Get last message from peer
+        std::string readMsg() const
         {
-
+            return myTCP.readMsg();
         }
-        PostMessageA(
-            myParent->handle(),
-            WM_APP+3,
-            myID,
-            0 );
-    }
-};
+
+    private:
+        std::string myRemoteAddress;
+
+        raven::set::cTCP myTCP;
+        raven::await::cAwait myWaiter;
+
+        /// Run asynchronous wait handler in its own thread
+        void run()
+        {
+            std::thread t(
+                raven::await::cAwait::run,
+                &myWaiter);
+            t.detach();
+        }
+    };
 }

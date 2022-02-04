@@ -78,6 +78,7 @@ cGUI::cGUI()
                 k = 0;
             }
         }
+        myRcvList.add( ss.str() );
         myRcvList.update();
 
         // wait for next

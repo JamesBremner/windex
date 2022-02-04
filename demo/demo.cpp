@@ -188,7 +188,7 @@ void PGDemo()
     pg2.labelWidth( 50 );
     pg2.bgcolor( 0xFFA0A0 );
 
-    // add properties from json stringh
+    // add properties from json string
     std::string json = "{\"Strings\": {"
         " \"x\": { \"type\":0, \"value\":72 },"
         " \"y\": { \"type\":0, \"value\":4600 }}}";
@@ -206,6 +206,11 @@ void PGDemo()
     {
         std::cout << "property value changed\n";
     });
+    pg.nameClick(
+        [](const std::string& label )
+        {
+            msgbox( label+ " clicked");
+        });
 
     // display a button
     button& btn = wex::maker::make<button>( form );
@@ -346,9 +351,11 @@ void CBDemo()
     rb2.plus();
     rb2.move( {20,60,100,30} );
     rb2.text("Beta");
-    checkbox& rb3 = wex::maker::make<checkbox>(form);
-    rb3.move( {20,100,100,30} );
-    rb3.text("Gamma");
+    checkbox& cb3 = wex::maker::make<checkbox>(form);
+    cb3.move( {20,100,100,30} );
+    cb3.fontName("Courier");
+    cb3.fontHeight(22);
+    cb3.text("Gamma");
 
     // display a button
     button& btn = wex::maker::make<button>( form );
@@ -364,7 +371,7 @@ void CBDemo()
             msg += "Alpha ";
         if( rb2.isChecked() )
             msg += " Beta ";
-        if( rb3.isChecked() )
+        if( cb3.isChecked() )
             msg += " Gamma ";
         msg += " are checked";
         msgbox mb(

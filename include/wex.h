@@ -138,8 +138,9 @@ namespace wex
             drop([](const std::vector<std::string> &files) {});
             asyncReadComplete([](int id) {});
             tcpServerAccept([] {});
-            tcpServerReadComplete([] {});
-            quitApp([] { return true; });
+            tcpRead([] {});
+            quitApp([]
+                    { return true; });
         }
         bool onLeftdown()
         {
@@ -173,6 +174,8 @@ namespace wex
         }
         void onMenuCommand(int id)
         {
+            if (0 > id || id >= (int)myVectorMenuFunction.size())
+                return;
             myVectorMenuFunction[id](myVectorMenuTitle[id]);
         }
         void onKeydown(int keycode)
@@ -379,7 +382,7 @@ namespace wex
             myDropFunction = f;
         }
         /** register function to call when an asynchronous read completes.
-        The function parameter identifies the com glass that completed the read
+        The function parameter identifies the com class that completed the read
     */
         void asyncReadComplete(std::function<void(int id)> f)
         {
@@ -389,7 +392,8 @@ namespace wex
         {
             myTcpServerAcceptFunction = f;
         }
-        void tcpServerReadComplete(std::function<void(void)> f)
+        /// register function to call when tcp read accurs
+        void tcpRead(std::function<void(void)> f)
         {
             myTcpServerReadCompleteFunction = f;
         }
@@ -720,7 +724,7 @@ namespace wex
         /// set text font name
         void textFontName(const std::string &fn)
         {
-            strcpy(myLogfont.lfFaceName, "Courier");
+            strcpy(myLogfont.lfFaceName, fn.c_str());
             HANDLE hFont = CreateFontIndirect(&myLogfont);
             hFont = (HFONT)SelectObject(myHDC, hFont);
             DeleteObject(hFont);
@@ -770,19 +774,22 @@ namespace wex
             Application code, if it needs to move child windows around,
             should overwrite this event handler.  Remember to call update() at end of event handler.
         */
-            events().resize([this](int w, int h) {
-                update();
-            });
+            events().resize([this](int w, int h)
+                            { update(); });
 
             /*  Construct font, initialized with default GUI font
 
             Each top level window keeps a font and associated logfont
-            so that the font can be changed and inhetited by all child windows
-        */
+            so that the font can be changed and inherited by all child windows
+            */
             myLogFont = {0};
             GetObject(
                 GetStockObject(DEFAULT_GUI_FONT),
                 sizeof(myLogFont), &myLogFont);
+            
+            // default font clips descenders ( p, q, y) so increase height
+            myLogFont.lfHeight = 18;
+
             myFont = CreateFontIndirectA(&myLogFont);
         }
         /** Construct child of a parent
@@ -795,8 +802,11 @@ namespace wex
             gui *parent,
             const char *window_class = "windex",
             unsigned long style = WS_CHILD,
-            unsigned long exstyle = WS_EX_CONTROLPARENT)
-            : myParent(parent), myDeleteList(0), myfEnabled(true), myToolTip(NULL), myCursorID(0)
+            unsigned long exstyle = WS_EX_CONTROLPARENT) : myParent(parent),
+                                                           myDeleteList(0),
+                                                           myfEnabled(true),
+                                                           myToolTip(NULL),
+                                                           myCursorID(IDC_ARROW)
         {
             // get a new unique ID
             myID = NewID();
@@ -823,7 +833,7 @@ namespace wex
         }
         virtual ~gui()
         {
-            std::cout << "deleting " << myText << "\n";
+            //std::cout << "deleting " << myText << "\n";
             DestroyWindow(myHandle);
             if (myDeleteList)
                 myDeleteList->push_back(myHandle);
@@ -839,6 +849,11 @@ namespace wex
         children_t &children()
         {
             return myChild;
+        }
+
+        gui * parent()
+        {
+            return myParent;
         }
 
         /// find child window with specified id
@@ -963,66 +978,68 @@ namespace wex
             scrollRange(100, 100);
 
             // horizontal scroll handler
-            events().scrollH([this](int code) {
-                SCROLLINFO si;
-                si.cbSize = sizeof(si);
-                si.fMask = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
-                if (!GetScrollInfo(myHandle, SB_HORZ, &si))
-                    return;
+            events().scrollH([this](int code)
+                             {
+                                 SCROLLINFO si;
+                                 si.cbSize = sizeof(si);
+                                 si.fMask = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+                                 if (!GetScrollInfo(myHandle, SB_HORZ, &si))
+                                     return;
 
-                int oldPos = scrollMove(si, code);
+                                 int oldPos = scrollMove(si, code);
 
-                si.fMask = SIF_POS;
-                SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
-                GetScrollInfo(myHandle, SB_CTL, &si);
+                                 si.fMask = SIF_POS;
+                                 SetScrollInfo(myHandle, SB_HORZ, &si, TRUE);
+                                 GetScrollInfo(myHandle, SB_CTL, &si);
 
-                RECT rect;
-                GetClientRect(myHandle, &rect);
-                int xs = oldPos - si.nPos;
-                //std::cout << "scrollH " << xs <<" "<< oldPos <<" "<< si.nPos << "\n";
-                ScrollWindow(
-                    myHandle,
-                    xs,
-                    0, NULL, NULL);
+                                 RECT rect;
+                                 GetClientRect(myHandle, &rect);
+                                 int xs = oldPos - si.nPos;
+                                 //std::cout << "scrollH " << xs <<" "<< oldPos <<" "<< si.nPos << "\n";
+                                 ScrollWindow(
+                                     myHandle,
+                                     xs,
+                                     0, NULL, NULL);
 
-                for (auto &w : myChild)
-                    w->update();
-            });
+                                 for (auto &w : myChild)
+                                     w->update();
+                             });
 
             // vertical scroll handler
-            events().scrollV([this](int code) {
-                SCROLLINFO si;
-                si.cbSize = sizeof(si);
-                si.fMask = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
-                if (!GetScrollInfo(myHandle, SB_VERT, &si))
-                    return;
+            events().scrollV([this](int code)
+                             {
+                                 SCROLLINFO si;
+                                 si.cbSize = sizeof(si);
+                                 si.fMask = SIF_POS | SIF_TRACKPOS | SIF_PAGE;
+                                 if (!GetScrollInfo(myHandle, SB_VERT, &si))
+                                     return;
 
-                int oldPos = scrollMove(si, code);
+                                 int oldPos = scrollMove(si, code);
 
-                si.fMask = SIF_POS;
-                SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
-                GetScrollInfo(myHandle, SB_VERT, &si);
-                RECT rect;
-                GetClientRect(myHandle, &rect);
-                int ys = oldPos - si.nPos;
-                ScrollWindow(
-                    myHandle,
-                    0,
-                    ys, // amount to scroll
-                    NULL, NULL);
+                                 si.fMask = SIF_POS;
+                                 SetScrollInfo(myHandle, SB_VERT, &si, TRUE);
+                                 GetScrollInfo(myHandle, SB_VERT, &si);
+                                 RECT rect;
+                                 GetClientRect(myHandle, &rect);
+                                 int ys = oldPos - si.nPos;
+                                 ScrollWindow(
+                                     myHandle,
+                                     0,
+                                     ys, // amount to scroll
+                                     NULL, NULL);
 
-                // update entire window and all children
-                // this prevents visual artefacts on fast scrolling
-                // but creates an unpleasant flicker
-                // so it is commented out
-                //update();
+                                 // update entire window and all children
+                                 // this prevents visual artefacts on fast scrolling
+                                 // but creates an unpleasant flicker
+                                 // so it is commented out
+                                 //update();
 
-                // update any child windows
-                // this has a fast and smooth appearance
-                // but sometimes leaves fragments littering the window
-                for (auto &w : myChild)
-                    w->update();
-            });
+                                 // update any child windows
+                                 // this has a fast and smooth appearance
+                                 // but sometimes leaves fragments littering the window
+                                 for (auto &w : myChild)
+                                     w->update();
+                             });
         }
         /** Set the scrolling range
         @param[in] width of the underlying window to be scrolled over
@@ -1228,8 +1245,6 @@ namespace wex
 
                 case WM_CTLCOLORSTATIC:
                 {
-                    std::cout << "WM_CTLCOLORSTATIC " << myText
-                              << " " << myBGColor << " " << myBGBrush << "\n";
                     //                SetBkColor((HDC)wParam, myBGColor);
                     //                return (INT_PTR)myBGBrush;
                     RECT r;
@@ -1302,20 +1317,27 @@ namespace wex
                     return true;
 
                 case WM_COMMAND:
-                    if (lParam)
+                {
+                    // https://docs.microsoft.com/en-us/windows/win32/menurc/wm-command
+
+                    auto wp_hi = HIWORD(wParam);
+                    if (!wp_hi)
                     {
-                        if (HIWORD(wParam) == CBN_SELCHANGE || HIWORD(wParam) == LBN_SELCHANGE)
-                        {
-                            return events().onSelect(LOWORD(wParam));
-                        }
-                        else if (HIWORD(wParam) == EN_CHANGE)
-                        {
-                            return events().onChange(LOWORD(wParam));
-                        }
+                        events().onMenuCommand(wParam);
                         return true;
                     }
-                    events().onMenuCommand(wParam);
+
+                    if (wp_hi == CBN_SELCHANGE || wp_hi == LBN_SELCHANGE)
+                    {
+                        return events().onSelect(LOWORD(wParam));
+                    }
+
+                    if (wp_hi == EN_CHANGE)
+                    {
+                        return events().onChange(LOWORD(wParam));
+                    }
                     return true;
+                }
 
                 case WM_TIMER:
                     events().onTimer((int)wParam);
@@ -1630,6 +1652,12 @@ namespace wex
                 SelectObject(ps.hdc, myFont);
 
                 RECT r(ps.rcPaint);
+                auto hbrBkgnd =CreateSolidBrush(myBGColor); 
+                FillRect(
+                    ps.hdc,
+                    &r,
+                    hbrBkgnd );
+                DeleteObject(hbrBkgnd); 
                 r.left += 1;
                 r.top += 1;
                 DrawText(
@@ -1759,23 +1787,24 @@ namespace wex
             DragAcceptFiles(myHandle, true);
 
             // handle drop event
-            myEvents.dropStart([this](HDROP hDrop) {
-                int count = DragQueryFileA(hDrop, 0xFFFFFFFF, NULL, 0);
-                if (count)
-                {
-                    // extract files from drop structure
-                    std::vector<std::string> files;
-                    char fname[MAX_PATH];
-                    for (int k = 0; k < count; k++)
-                    {
-                        DragQueryFileA(hDrop, k, fname, MAX_PATH);
-                        files.push_back(fname);
-                    }
-                    // call app code's event handler
-                    myEvents.onDrop(files);
-                }
-                DragFinish(hDrop);
-            });
+            myEvents.dropStart([this](HDROP hDrop)
+                               {
+                                   int count = DragQueryFileA(hDrop, 0xFFFFFFFF, NULL, 0);
+                                   if (count)
+                                   {
+                                       // extract files from drop structure
+                                       std::vector<std::string> files;
+                                       char fname[MAX_PATH];
+                                       for (int k = 0; k < count; k++)
+                                       {
+                                           DragQueryFileA(hDrop, k, fname, MAX_PATH);
+                                           files.push_back(fname);
+                                       }
+                                       // call app code's event handler
+                                       myEvents.onDrop(files);
+                                   }
+                                   DragFinish(hDrop);
+                               });
         }
     };
 
@@ -1962,6 +1991,7 @@ namespace wex
         button(gui *parent)
             : gui(parent), myBitmap(NULL)
         {
+            myBGColor = 0xC8C8C8;
         }
 
         /** Specify bitmap image to be used for button, read from file
@@ -2028,6 +2058,13 @@ namespace wex
                 SelectObject(ps.hdc, myFont);
 
                 RECT r(ps.rcPaint);
+                auto hbrBkgnd =CreateSolidBrush(myBGColor); 
+                FillRect(
+                    ps.hdc,
+                    &r,
+                    hbrBkgnd );
+                DeleteObject(hbrBkgnd); 
+
                 r.left += 1;
                 r.top += 1;
                 DrawText(
@@ -2140,19 +2177,20 @@ namespace wex
             myGroup = group().size() - 1;
 
             // set the boolean value when clicked
-            events().clickWex([this] {
-                if (!myfEnabled)
-                    return;
-                // set all buttons in group false
-                for (auto b : group()[myGroup])
-                {
-                    b->myValue = false;
-                    b->update();
-                }
-                // set this button true
-                myValue = true;
-                update();
-            });
+            events().clickWex([this]
+                              {
+                                  if (!myfEnabled)
+                                      return;
+                                  // set all buttons in group false
+                                  for (auto b : group()[myGroup])
+                                  {
+                                      b->myValue = false;
+                                      b->update();
+                                  }
+                                  // set this button true
+                                  myValue = true;
+                                  update();
+                              });
         }
         /** Make this button first of a new group
 
@@ -2321,12 +2359,13 @@ This draws a custom checkbox that expands with the height of the widget ( set by
             : gui(parent), myType(eType::check), myValue(false)
         {
             // toggle the boolean value when clicked
-            events().clickWex([this] {
-                if (!myfEnabled)
-                    return;
-                myValue = !myValue;
-                update();
-            });
+            events().clickWex([this]
+                              {
+                                  if (!myfEnabled)
+                                      return;
+                                  myValue = !myValue;
+                                  update();
+                              });
         }
         /// set type to plus, useful to indicate expanded or collapsed property categories
         void plus(bool f = true)
@@ -2356,8 +2395,10 @@ This draws a custom checkbox that expands with the height of the widget ( set by
 
             shapes S(ps);
             S.textHeight(myLogFont.lfHeight);
+            S.textFontName( myLogFont.lfFaceName );
             S.text(myText, {r.left, r.top, r.right, r.bottom});
             S.rectangle({0, 0, cbg, cbg});
+            S.fill();
             S.penThick(2);
             S.color(0);
             switch (myType)
@@ -2559,8 +2600,8 @@ This draws a custom checkbox that expands with the height of the widget ( set by
         /// Override move to ensure height is sufficient to allow dropdown to apprear
         void move(int x, int y, int w, int h)
         {
-            if (h < 100)
-                h = 100;
+            if (h < 200)
+                h = 200;
             gui::move(x, y, w, h);
         }
         /// set item height in drop doown list
@@ -3142,11 +3183,12 @@ Usage:
             myPanel.push_back(&panel);
             int tabIndex = myButton.size() - 1;
 
-            btn.events().click([this, tabIndex]() {
-                myTabChangingFn(tabIndex);
-                select(tabIndex);
-                myTabChangeFn(tabIndex);
-            });
+            btn.events().click([this, tabIndex]()
+                               {
+                                   myTabChangingFn(tabIndex);
+                                   select(tabIndex);
+                                   myTabChangeFn(tabIndex);
+                               });
         }
         /// select panel to displayed
         void select(int i)
@@ -3284,5 +3326,143 @@ Usage:
     private:
         bool myFirst;
     };
+    /// Print a text document
+    class printDoc
+    {
+    public:
+        /** CTOR
+         * @param[in] title that asppears in print spooler
+         */
+        printDoc(const std::string &title = "printDoc")
+        {
+            // https://www.equestionanswers.com/vcpp/screen-dc-printer-dc.php
+            PRINTDLG pdlg;
 
+            /* Initialize the PRINTDLG structure. */
+            memset(&pdlg, 0, sizeof(PRINTDLG));
+            pdlg.lStructSize = sizeof(PRINTDLG);
+            /* Set the flag to return printer DC. */
+            pdlg.Flags = PD_RETURNDC;
+
+            /* Invoke the printer dialog box. */
+            PrintDlg(&pdlg);
+
+            /* hDC member of the PRINTDLG structure contains the printer DC. */
+            dc = pdlg.hDC;
+            if (!dc)
+                return;
+
+            DOCINFO di;
+            memset(&di, 0, sizeof(DOCINFO));
+            /* Fill in the required members. */
+            di.cbSize = sizeof(DOCINFO);
+            di.lpszDocName = title.c_str();
+
+            StartDoc(dc, &di);
+        }
+        /// Finalize and send to printer
+        ~printDoc()
+        {
+            EndDoc(dc);
+            DeleteDC(dc);
+        }
+        /// True if CTOR was successful
+        bool isOpen()
+        {
+            return (bool)dc;
+        }
+        void pageStart()
+        {
+            StartPage(dc);
+        }
+        void pageEnd()
+        {
+            EndPage(dc);
+        }
+        /** Add some text
+         * @param[in]  x, y locatioon
+         * @param[in] s the text
+         * 
+         * Each character needs about 100 by 100 location units
+         */
+        void text(
+            int x, int y,
+            const std::string &s)
+        {
+            TextOut(
+                dc,
+                x, y,
+                s.c_str(), s.length());
+        }
+
+    private:
+        HDC dc;
+    };
+
+    struct free
+    {
+        /** Start a command in its own process
+     * @param[in] command line, same as would be used from a command window running in working directory
+     * @param[out] error details, if any
+     * @return 0 if no errors
+     */
+        static int startProcess(
+            const std::string &command,
+            std::string &error)
+        {
+            STARTUPINFO si;
+            PROCESS_INFORMATION pi;
+
+            ZeroMemory(&si, sizeof(si));
+            si.cb = sizeof(si);
+            ZeroMemory(&pi, sizeof(pi));
+
+            // Retain keyboard focus, minimize module2 window
+            si.wShowWindow = SW_SHOWNOACTIVATE | SW_MINIMIZE;
+            si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USEPOSITION;
+            si.dwX = 600;
+            si.dwY = 200;
+
+            if (!CreateProcessA(
+                    NULL,                   // No module name (use command line)
+                    (LPSTR)command.c_str(), // Command line
+                    NULL,                   // Process handle not inheritable
+                    NULL,                   // Thread handle not inheritable
+                    FALSE,                  // Set handle inheritance to FALSE
+                    CREATE_NEW_CONSOLE,     //  creation flags
+                    NULL,                   // Use parent's environment block
+                    NULL,                   // Use parent's starting directory
+                    &si,                    // Pointer to STARTUPINFO structure
+                    &pi)                    // Pointer to PROCESS_INFORMATION structure
+            )
+            {
+                int syserrno = GetLastError();
+                if (syserrno == 2)
+                {
+                    error = "Cannot find executable file";
+                    return 2;
+                }
+                char *lpMsgBuf;
+                FormatMessageA(
+                    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                        FORMAT_MESSAGE_FROM_SYSTEM |
+                        FORMAT_MESSAGE_IGNORE_INSERTS,
+                    NULL,
+                    (DWORD)syserrno,
+                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                    (LPSTR)&lpMsgBuf,
+                    0, NULL);
+                error = lpMsgBuf;
+                LocalFree(lpMsgBuf);
+                return 1;
+            }
+
+            // Close process and thread handles.
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+
+            error = "";
+            return 0;
+        }
+    };
 }

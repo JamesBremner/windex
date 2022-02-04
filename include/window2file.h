@@ -42,7 +42,7 @@ Add library gdiplus to linker library list
                     return;
                 }
             }
-            free(pImageCodecInfo);
+            ::free(pImageCodecInfo);
             throw std::runtime_error("window2file cannot find encoder");
         }
         ~window2file()
@@ -56,11 +56,15 @@ Add library gdiplus to linker library list
     */
         void save(gui &w, const std::string &filename)
         {
+            save( w.handle(), filename );
+        }
+        void save(HWND hw, const std::string &filename)
+        {
             HDC memdc;
             HBITMAP membit;
-            HDC scrdc = ::GetDC(w.handle());
+            HDC scrdc = ::GetDC(hw);
             RECT rcClient;
-            GetClientRect(w.handle(), &rcClient);
+            GetClientRect(hw, &rcClient);
             int Height = rcClient.bottom - rcClient.top;
             int Width = rcClient.right - rcClient.left;
             memdc = CreateCompatibleDC(scrdc);
@@ -129,9 +133,12 @@ Add library gdiplus to linker library list
             // draw
             Gdiplus::Graphics graphics(GetDC(w.handle()));
             graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
-            graphics.DrawImage(bitmap, dst, 3);
+            auto ret = graphics.DrawImage(bitmap, dst, 3);
 
             delete bitmap;
+
+            if( ret !=  Gdiplus::Status::Ok )
+                return false;
 
             return true;
         }

@@ -56,6 +56,8 @@ shapes		|A class that offers application code methods to draw on a window
 sMouse		|A structure containing the mouse status for event handlers
 timer		|Generate events at regularly timed intervals
 window2file	|Save window contents to an image file in PNG format
+printDoc | Create and print a document
+startProcess | Run command in own process
 
 # Build
 
@@ -94,4 +96,26 @@ https://github.com/JamesBremner/DXF_Viewer
 ## Control Panel
 
 <img src="https://github.com/JamesBremner/windex/blob/master/doc/controlpanel.png" alt="panel"></a>
+
+## Conway's Game of Life
+
+![image](https://user-images.githubusercontent.com/2046227/131689933-40a79a0c-7e33-4e1c-8eba-9e49025e0ad7.png)
+
+# Repo Info
+<p>
+  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/jamesbremner/windex">
+  <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/jamesbremner/windex">
+  <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/jamesbremner/windex">
+</p>
+
+<p>
+  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/jamesbremner/windex">
+  <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/jamesbremner/windex">
+  <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/jamesbremner/windex/total">
+</p>
+
+<p>
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/jamesbremner/windex">
+  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/jamesbremner/windex">
+</p>
 
