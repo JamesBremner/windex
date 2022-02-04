@@ -317,8 +317,10 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             We can return now and get on with something else
         */
         }
-
-        std::string COMConfigText()
+        /** Get human readable port configuration
+         * @return string
+         */
+        std::string configText()
         {
             std::stringstream ss;
             if (!isOpen())
