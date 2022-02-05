@@ -25,6 +25,9 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
               myfCTSFlowControl(true)
         {
         }
+        /// @name Setters
+        ///@{
+
         /// Set port number to which connection will be made
         void port(const std::string &port)
         {
@@ -92,6 +95,97 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
 
             SetCommState(myCOMHandle, &dcbSerialParams);
         }
+        void baud(int rate)
+        {
+            if (!isOpen())
+                return;
+            DCB dcbSerialParams = {0}; // Initializing DCB structure
+            dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
+            GetCommState(myCOMHandle, &dcbSerialParams);
+            dcbSerialParams.BaudRate = rate;
+            dcbSerialParams.fOutxCtsFlow = 0;
+            SetCommState(myCOMHandle, &dcbSerialParams);
+        }
+
+        /// @name Getters
+        ///@{
+        const std::string &portNumber() const
+        {
+            return myPortNumber;
+        }
+        int baud()
+        {
+            if (!isOpen())
+                return 0;
+            DCB dcbSerialParams = {0}; // Initializing DCB structure
+            dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
+            GetCommState(myCOMHandle, &dcbSerialParams);
+            return dcbSerialParams.BaudRate;
+        }
+                /// true if connected
+        bool isOpen()
+        {
+            return myCOMHandle != 0;
+        }
+               /** Get human readable port configuration
+         * @return string
+         */
+        std::string configText()
+        {
+            std::stringstream ss;
+            if (!isOpen())
+            {
+                ss << "COM not connected\n";
+                return ss.str();
+            }
+            if (myfOverlapped)
+                ss << "overlapped\n";
+            else
+                ss << "not overlapped\n";
+            _COMMCONFIG cfg;
+            cfg.dcb = {0};
+            DWORD sz = sizeof(cfg);
+            if (!GetCommConfig(
+                    myCOMHandle, // Handle to the Serial port
+                    &cfg,
+                    &sz))
+            {
+                ss << "GetCommConfig FAILED\n";
+                return ss.str();
+            }
+            DCB dcb = cfg.dcb;
+            ss << "\nBaudRate " << dcb.BaudRate
+               << "\nfBinary " << dcb.fBinary
+               << "\nfParity " << dcb.fParity
+               << "\nfOutxCtsFlow " << dcb.fOutxCtsFlow
+               << "\nfOutxDsrFlow " << dcb.fOutxDsrFlow
+               << "\nfDtrControl " << dcb.fDtrControl
+               << "\nfDsrSensitivity " << dcb.fDsrSensitivity
+               << "\nfTXContinueOnXoff " << dcb.fTXContinueOnXoff
+               << "\nfOutX " << dcb.fOutX
+               << "\nfInX " << dcb.fInX
+               << "\nfErrorChar " << dcb.fErrorChar
+               << "\nfBinary " << dcb.fNull
+               << "\nfNull " << dcb.fRtsControl
+               << "\nfAbortOnError " << dcb.fAbortOnError
+               << "\nXonLim " << dcb.XonLim
+               << "\nXoffLim " << dcb.XoffLim
+               << "\nByteSize " << dcb.ByteSize
+               << "\nParity " << dcb.Parity
+               << "\nStopBits " << dcb.StopBits
+               << "\nXonChar " << dcb.XonChar
+               << "\nXoffChar " << dcb.XoffChar
+               << "\nErrorChar " << dcb.ErrorChar
+               << "\nEofChar " << dcb.EofChar
+               << "\nEvtChar " << dcb.EvtChar << "\n";
+            return ss.str();
+        }
+                std::string &errorMsg()
+        {
+            return myError;
+        }
+
+        ///@}
 
         /** Open connection to port
         @return true if succesful
@@ -177,38 +271,6 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             {
                 CloseHandle(myCOMHandle);
             }
-        }
-
-        std::string &errorMsg()
-        {
-            return myError;
-        }
-
-        /// true if connected
-        bool isOpen()
-        {
-            return myCOMHandle != 0;
-        }
-
-        int baud()
-        {
-            if (!isOpen())
-                return 0;
-            DCB dcbSerialParams = {0}; // Initializing DCB structure
-            dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
-            GetCommState(myCOMHandle, &dcbSerialParams);
-            return dcbSerialParams.BaudRate;
-        }
-        void baud(int rate)
-        {
-            if (!isOpen())
-                return;
-            DCB dcbSerialParams = {0}; // Initializing DCB structure
-            dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
-            GetCommState(myCOMHandle, &dcbSerialParams);
-            dcbSerialParams.BaudRate = rate;
-            dcbSerialParams.fOutxCtsFlow = 0;
-            SetCommState(myCOMHandle, &dcbSerialParams);
         }
 
         /** blocking read from COM port
@@ -317,60 +379,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             We can return now and get on with something else
         */
         }
-        /** Get human readable port configuration
-         * @return string
-         */
-        std::string configText()
-        {
-            std::stringstream ss;
-            if (!isOpen())
-            {
-                ss << "COM not connected\n";
-                return ss.str();
-            }
-            if( myfOverlapped )
-                ss << "overlapped\n";
-            else
-                ss << "not overlapped\n";
-            _COMMCONFIG cfg;
-            cfg.dcb = {0};
-            DWORD sz = sizeof(cfg);
-            if (!GetCommConfig(
-                    myCOMHandle, // Handle to the Serial port
-                    &cfg,
-                    &sz))
-            {
-                ss << "GetCommConfig FAILED\n";
-                return ss.str();
-            }
-            DCB dcb = cfg.dcb;
-            ss << "\nBaudRate " << dcb.BaudRate
-               << "\nfBinary " << dcb.fBinary
-               << "\nfParity " << dcb.fParity
-               << "\nfOutxCtsFlow " << dcb.fOutxCtsFlow
-               << "\nfOutxDsrFlow " << dcb.fOutxDsrFlow
-               << "\nfDtrControl " << dcb.fDtrControl
-               << "\nfDsrSensitivity " << dcb.fDsrSensitivity
-               << "\nfTXContinueOnXoff " << dcb.fTXContinueOnXoff
-               << "\nfOutX " << dcb.fOutX
-               << "\nfInX " << dcb.fInX
-               << "\nfErrorChar " << dcb.fErrorChar
-               << "\nfBinary " << dcb.fNull
-               << "\nfNull " << dcb.fRtsControl
-               << "\nfAbortOnError " << dcb.fAbortOnError
-               << "\nXonLim " << dcb.XonLim
-               << "\nXoffLim " << dcb.XoffLim
-               << "\nByteSize " << dcb.ByteSize
-               << "\nParity " << dcb.Parity
-               << "\nStopBits " << dcb.StopBits
-               << "\nXonChar " << dcb.XonChar
-               << "\nXoffChar " << dcb.XoffChar
-               << "\nErrorChar " << dcb.ErrorChar
-               << "\nEofChar " << dcb.EofChar
-               << "\nEvtChar " << dcb.EvtChar << "\n";
-            return ss.str();
-        }
-
+ 
         /// Write buffer of data to the COM port
         int write(const std::vector<unsigned char> &buffer)
         {
@@ -394,10 +403,10 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                 if (syserrno == 997)
                 {
                     std::cout << "polling ..." << std::endl;
-                    while ( 1 )
+                    while (1)
                     {
                         HasOverlappedIoCompleted(&over);
-                        if( over.Internal != STATUS_PENDING )
+                        if (over.Internal != STATUS_PENDING)
                         {
                             //for better or worse the write has completed
                             break;
@@ -409,8 +418,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                             std::cout << "async write timed out\n";
                             return 0;
                         }
-                        if( ! (count % 1000)  )
-                            std::cout << " ." << std:: endl;
+                        if (!(count % 1000))
+                            std::cout << " ." << std::endl;
 
                         // Yield
                         Sleep(0);
@@ -429,10 +438,6 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             std::vector<unsigned char> buffer(msg.size());
             memcpy(buffer.data(), msg.data(), msg.size());
             return write(buffer);
-        }
-        const std::string &portNumber() const
-        {
-            return myPortNumber;
         }
 
     private:
