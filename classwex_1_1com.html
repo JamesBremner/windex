@@ -102,6 +102,31 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1c7760e830f62a867bb21f36b0f55725"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a1c7760e830f62a867bb21f36b0f55725">com</a> (<a class="el" href="classwex_1_1gui.html">gui</a> *parent)</td></tr>
 <tr class="memdesc:a1c7760e830f62a867bb21f36b0f55725"><td class="mdescLeft">&#160;</td><td class="mdescRight">CTOR.  <a href="classwex_1_1com.html#a1c7760e830f62a867bb21f36b0f55725">More...</a><br /></td></tr>
 <tr class="separator:a1c7760e830f62a867bb21f36b0f55725"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91bba49affba4cebbd3097667934878c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a91bba49affba4cebbd3097667934878c">open</a> ()</td></tr>
+<tr class="memdesc:a91bba49affba4cebbd3097667934878c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open connection to port.  <a href="classwex_1_1com.html#a91bba49affba4cebbd3097667934878c">More...</a><br /></td></tr>
+<tr class="separator:a91bba49affba4cebbd3097667934878c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f9797e0c4157f60dddf064f9f347336"><td class="memItemLeft" align="right" valign="top"><a id="a5f9797e0c4157f60dddf064f9f347336"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
+<tr class="separator:a5f9797e0c4157f60dddf064f9f347336"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2dc722e240d2cbac8906ad07a239b002"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a2dc722e240d2cbac8906ad07a239b002">read</a> (int needed)</td></tr>
+<tr class="memdesc:a2dc722e240d2cbac8906ad07a239b002"><td class="mdescLeft">&#160;</td><td class="mdescRight">blocking read from COM port  <a href="classwex_1_1com.html#a2dc722e240d2cbac8906ad07a239b002">More...</a><br /></td></tr>
+<tr class="separator:a2dc722e240d2cbac8906ad07a239b002"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d51bd0ef267f1baabad6f1b5223bc62"><td class="memItemLeft" align="right" valign="top"><a id="a0d51bd0ef267f1baabad6f1b5223bc62"></a>
+std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a0d51bd0ef267f1baabad6f1b5223bc62">readData</a> ()</td></tr>
+<tr class="memdesc:a0d51bd0ef267f1baabad6f1b5223bc62"><td class="mdescLeft">&#160;</td><td class="mdescRight">get reference to buffer containg data that was read <br /></td></tr>
+<tr class="separator:a0d51bd0ef267f1baabad6f1b5223bc62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a72bd1b037bd2a2162edcbb8abace0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a3a72bd1b037bd2a2162edcbb8abace0a">read_async</a> (int bytes)</td></tr>
+<tr class="memdesc:a3a72bd1b037bd2a2162edcbb8abace0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">non-blocking read from COM port  <a href="classwex_1_1com.html#a3a72bd1b037bd2a2162edcbb8abace0a">More...</a><br /></td></tr>
+<tr class="separator:a3a72bd1b037bd2a2162edcbb8abace0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af36bc9dfe03f13b2d0b2975b88c4bb87"><td class="memItemLeft" align="right" valign="top"><a id="af36bc9dfe03f13b2d0b2975b88c4bb87"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#af36bc9dfe03f13b2d0b2975b88c4bb87">write</a> (const std::vector&lt; unsigned char &gt; &amp;buffer)</td></tr>
+<tr class="memdesc:af36bc9dfe03f13b2d0b2975b88c4bb87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write buffer of data to the COM port. <br /></td></tr>
+<tr class="separator:af36bc9dfe03f13b2d0b2975b88c4bb87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b42fe196345bb490a6d1cda939b9c03"><td class="memItemLeft" align="right" valign="top"><a id="a7b42fe196345bb490a6d1cda939b9c03"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a7b42fe196345bb490a6d1cda939b9c03">write</a> (const std::string &amp;msg)</td></tr>
+<tr class="memdesc:a7b42fe196345bb490a6d1cda939b9c03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write string of data to the COM port. <br /></td></tr>
+<tr class="separator:a7b42fe196345bb490a6d1cda939b9c03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Setters</div></td></tr>
 <tr class="memitem:a5b2a2c185ee1b1aca9cc7db05db44bf1"><td class="memItemLeft" align="right" valign="top"><a id="a5b2a2c185ee1b1aca9cc7db05db44bf1"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a5b2a2c185ee1b1aca9cc7db05db44bf1">port</a> (const std::string &amp;port)</td></tr>
 <tr class="memdesc:a5b2a2c185ee1b1aca9cc7db05db44bf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set port number to which connection will be made. <br /></td></tr>
@@ -115,49 +140,26 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ad2f77e8a2a54e45c037eb34a69f61dae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#ad2f77e8a2a54e45c037eb34a69f61dae">DeviceControlString</a> (const std::string &amp;controlString)</td></tr>
 <tr class="memdesc:ad2f77e8a2a54e45c037eb34a69f61dae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure device.  <a href="classwex_1_1com.html#ad2f77e8a2a54e45c037eb34a69f61dae">More...</a><br /></td></tr>
 <tr class="separator:ad2f77e8a2a54e45c037eb34a69f61dae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91bba49affba4cebbd3097667934878c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a91bba49affba4cebbd3097667934878c">open</a> ()</td></tr>
-<tr class="memdesc:a91bba49affba4cebbd3097667934878c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open connection to port.  <a href="classwex_1_1com.html#a91bba49affba4cebbd3097667934878c">More...</a><br /></td></tr>
-<tr class="separator:a91bba49affba4cebbd3097667934878c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f9797e0c4157f60dddf064f9f347336"><td class="memItemLeft" align="right" valign="top"><a id="a5f9797e0c4157f60dddf064f9f347336"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
-<tr class="separator:a5f9797e0c4157f60dddf064f9f347336"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c30489b0c68b3fda4820acd12523c0e"><td class="memItemLeft" align="right" valign="top"><a id="a4c30489b0c68b3fda4820acd12523c0e"></a>
-std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>errorMsg</b> ()</td></tr>
-<tr class="separator:a4c30489b0c68b3fda4820acd12523c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a041da4574288872449e048eef5958abd"><td class="memItemLeft" align="right" valign="top"><a id="a041da4574288872449e048eef5958abd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>baud</b> (int rate)</td></tr>
+<tr class="separator:a041da4574288872449e048eef5958abd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Getters</div></td></tr>
+<tr class="memitem:ae4296d3fa6169c1e4c9b94c3105ad011"><td class="memItemLeft" align="right" valign="top"><a id="ae4296d3fa6169c1e4c9b94c3105ad011"></a>
+const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>portNumber</b> () const</td></tr>
+<tr class="separator:ae4296d3fa6169c1e4c9b94c3105ad011"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18053ff63728ceccbf7dce0cc3d2ee53"><td class="memItemLeft" align="right" valign="top"><a id="a18053ff63728ceccbf7dce0cc3d2ee53"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>baud</b> ()</td></tr>
+<tr class="separator:a18053ff63728ceccbf7dce0cc3d2ee53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee892641a5b7813ad9e419594ecb00fa"><td class="memItemLeft" align="right" valign="top"><a id="aee892641a5b7813ad9e419594ecb00fa"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#aee892641a5b7813ad9e419594ecb00fa">isOpen</a> ()</td></tr>
 <tr class="memdesc:aee892641a5b7813ad9e419594ecb00fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if connected <br /></td></tr>
 <tr class="separator:aee892641a5b7813ad9e419594ecb00fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18053ff63728ceccbf7dce0cc3d2ee53"><td class="memItemLeft" align="right" valign="top"><a id="a18053ff63728ceccbf7dce0cc3d2ee53"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>baud</b> ()</td></tr>
-<tr class="separator:a18053ff63728ceccbf7dce0cc3d2ee53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a041da4574288872449e048eef5958abd"><td class="memItemLeft" align="right" valign="top"><a id="a041da4574288872449e048eef5958abd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>baud</b> (int rate)</td></tr>
-<tr class="separator:a041da4574288872449e048eef5958abd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2dc722e240d2cbac8906ad07a239b002"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a2dc722e240d2cbac8906ad07a239b002">read</a> (int needed)</td></tr>
-<tr class="memdesc:a2dc722e240d2cbac8906ad07a239b002"><td class="mdescLeft">&#160;</td><td class="mdescRight">blocking read from COM port  <a href="classwex_1_1com.html#a2dc722e240d2cbac8906ad07a239b002">More...</a><br /></td></tr>
-<tr class="separator:a2dc722e240d2cbac8906ad07a239b002"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d51bd0ef267f1baabad6f1b5223bc62"><td class="memItemLeft" align="right" valign="top"><a id="a0d51bd0ef267f1baabad6f1b5223bc62"></a>
-std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a0d51bd0ef267f1baabad6f1b5223bc62">readData</a> ()</td></tr>
-<tr class="memdesc:a0d51bd0ef267f1baabad6f1b5223bc62"><td class="mdescLeft">&#160;</td><td class="mdescRight">get reference to buffer containg data that was read <br /></td></tr>
-<tr class="separator:a0d51bd0ef267f1baabad6f1b5223bc62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a72bd1b037bd2a2162edcbb8abace0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a3a72bd1b037bd2a2162edcbb8abace0a">read_async</a> (int bytes)</td></tr>
-<tr class="memdesc:a3a72bd1b037bd2a2162edcbb8abace0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">non-blocking read from COM port  <a href="classwex_1_1com.html#a3a72bd1b037bd2a2162edcbb8abace0a">More...</a><br /></td></tr>
-<tr class="separator:a3a72bd1b037bd2a2162edcbb8abace0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e28b863c8b6faf5dc37efdea9697746"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a6e28b863c8b6faf5dc37efdea9697746">configText</a> ()</td></tr>
 <tr class="memdesc:a6e28b863c8b6faf5dc37efdea9697746"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get human readable port configuration.  <a href="classwex_1_1com.html#a6e28b863c8b6faf5dc37efdea9697746">More...</a><br /></td></tr>
 <tr class="separator:a6e28b863c8b6faf5dc37efdea9697746"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af36bc9dfe03f13b2d0b2975b88c4bb87"><td class="memItemLeft" align="right" valign="top"><a id="af36bc9dfe03f13b2d0b2975b88c4bb87"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#af36bc9dfe03f13b2d0b2975b88c4bb87">write</a> (const std::vector&lt; unsigned char &gt; &amp;buffer)</td></tr>
-<tr class="memdesc:af36bc9dfe03f13b2d0b2975b88c4bb87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write buffer of data to the COM port. <br /></td></tr>
-<tr class="separator:af36bc9dfe03f13b2d0b2975b88c4bb87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b42fe196345bb490a6d1cda939b9c03"><td class="memItemLeft" align="right" valign="top"><a id="a7b42fe196345bb490a6d1cda939b9c03"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#a7b42fe196345bb490a6d1cda939b9c03">write</a> (const std::string &amp;msg)</td></tr>
-<tr class="memdesc:a7b42fe196345bb490a6d1cda939b9c03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write string of data to the COM port. <br /></td></tr>
-<tr class="separator:a7b42fe196345bb490a6d1cda939b9c03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4296d3fa6169c1e4c9b94c3105ad011"><td class="memItemLeft" align="right" valign="top"><a id="ae4296d3fa6169c1e4c9b94c3105ad011"></a>
-const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>portNumber</b> () const</td></tr>
-<tr class="separator:ae4296d3fa6169c1e4c9b94c3105ad011"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c30489b0c68b3fda4820acd12523c0e"><td class="memItemLeft" align="right" valign="top"><a id="a4c30489b0c68b3fda4820acd12523c0e"></a>
+std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>errorMsg</b> ()</td></tr>
+<tr class="separator:a4c30489b0c68b3fda4820acd12523c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classwex_1_1gui"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classwex_1_1gui')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classwex_1_1gui.html">wex::gui</a></td></tr>
 <tr class="memitem:ae8ced09227dcf59687bad25b5ac407e7 inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#ae8ced09227dcf59687bad25b5ac407e7">gui</a> ()</td></tr>
 <tr class="memdesc:ae8ced09227dcf59687bad25b5ac407e7 inherit pub_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct top level window with no parent.  <a href="classwex_1_1gui.html#ae8ced09227dcf59687bad25b5ac407e7">More...</a><br /></td></tr>
@@ -666,7 +668,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1com.html">com</a></li>
-    <li class="footer">Generated on Fri Feb 4 2022 10:10:01 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Feb 5 2022 08:50:33 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
