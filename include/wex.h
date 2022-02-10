@@ -2694,7 +2694,18 @@ This draws a custom checkbox that expands with the height of the widget ( set by
         }
     };
 
-    /// A widget where user can choose from a list of strings
+    /** A widget where user can choose from a list of strings
+     * 
+     * Event: select handler
+     * 
+   <pre>
+        list.events().select(
+        list.id(), [this,&list]
+        { 
+            auto s = list.selectedText();
+        });
+    </pre>
+    */
     class list : public gui
     {
     public:
