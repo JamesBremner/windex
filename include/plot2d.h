@@ -622,11 +622,11 @@ Sample plot application:
 
 int main()
 {
-        wex::gui& fm = wex::windex::topWindow();
+        wex::gui& fm = wex::maker::make();
         fm.move( {50,50,1200,600} );
 
         // construct plot to be drawn on form
-        wex::plot::plot& thePlot = wex::make<wex::plot::plot>( fm );
+        wex::plot::plot& thePlot = wex::maker::make<wex::plot::plot>(fm);
         thePlot.move( {30,30,1200,600});
         //thePlot.Grid( true );
 
