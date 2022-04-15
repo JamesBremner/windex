@@ -42,10 +42,10 @@ namespace wex
 </pre>
 */
 
-class slider2 : public gui
+class slider : public gui
 {
 public:
-    slider2( gui* parent )
+    slider( gui* parent )
         : gui( parent )
         , myPosition( 50 )
         , myMin( 0 )

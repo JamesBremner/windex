@@ -447,7 +447,7 @@ void SliderDemo()
     hv.move(200,350, 200,200 );
 
     // construct horizontal slider
-    wex::slider2& S = wex::maker::make<wex::slider2>( form );
+    wex::slider& S = wex::maker::make<wex::slider>( form );
     S.move({ 50,50,400,50});
     S.range( 0, 100 );
     S.text("horiz slider");
@@ -460,7 +460,7 @@ void SliderDemo()
     });
 
     // construct vertical slider
-    wex::slider2& V = wex::maker::make<wex::slider2>( form );
+    wex::slider& V = wex::maker::make<wex::slider>( form );
     V.move({ 50,100,50,400});
     V.range( 0, 10 );
     V.vertical();
