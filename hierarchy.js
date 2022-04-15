@@ -26,7 +26,6 @@ var hierarchy =
       [ "wex::propertyGrid", "classwex_1_1property_grid.html", null ],
       [ "wex::radiobutton", "classwex_1_1radiobutton.html", null ],
       [ "wex::slider", "classwex_1_1slider.html", null ],
-      [ "wex::slider2", "classwex_1_1slider2.html", null ],
       [ "wex::tcp", "classwex_1_1tcp.html", null ]
     ] ],
     [ "wex::maker", "classwex_1_1maker.html", null ],

@@ -349,7 +349,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A widget where user can choose from a list of strings. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+<p>Event: select handler</p>
+<pre>
+     <a class="el" href="classwex_1_1gui.html#a3bd5adef2577ee8c8a437da6fe90606d" title="Get event handler.">list.events()</a>.select(
+     list.id(), [this,&amp;list]
+     { 
+         auto s = <a class="el" href="classwex_1_1list.html#a0cd4c909e7da85fca60fc8a446d265d3" title="get text of selected item">list.selectedText()</a>;
+     });
+ </pre> </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ad4e6fb52257611fe5b1d3cf49ca32336"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad4e6fb52257611fe5b1d3cf49ca32336">&#9670;&nbsp;</a></span>select() <span class="overload">[1/2]</span></h2>
 
@@ -455,7 +462,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><a class="el" href="classwex_1_1list.html">list</a></li>
-    <li class="footer">Generated on Sat Feb 5 2022 08:50:33 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Apr 15 2022 09:20:56 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

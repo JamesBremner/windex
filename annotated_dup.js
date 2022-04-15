@@ -40,7 +40,6 @@ var annotated_dup =
       [ "tcp", "classwex_1_1tcp.html", "classwex_1_1tcp" ],
       [ "filebox", "classwex_1_1filebox.html", "classwex_1_1filebox" ],
       [ "gauge", "classwex_1_1gauge.html", "classwex_1_1gauge" ],
-      [ "slider", "classwex_1_1slider.html", "classwex_1_1slider" ],
-      [ "slider2", "classwex_1_1slider2.html", "classwex_1_1slider2" ]
+      [ "slider", "classwex_1_1slider.html", "classwex_1_1slider" ]
     ] ]
 ];

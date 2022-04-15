@@ -398,11 +398,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 
 int main()
 {
-        <a class="el" href="classwex_1_1gui.html" title="The base class for all windex gui elements.">wex::gui</a>&amp; fm = wex::windex::topWindow();
+        <a class="el" href="classwex_1_1gui.html" title="The base class for all windex gui elements.">wex::gui</a>&amp; fm = <a class="el" href="classwex_1_1maker.html#aee4687ec851077556856d959d74c40d4" title="Construct a top level window ( first call constructs application window )">wex::maker::make()</a>;
         fm.move( {50,50,1200,600} );
 
         // construct plot to be drawn on form
-        <a class="el" href="classwex_1_1plot_1_1plot.html" title="Draw a 2D plot.">wex::plot::plot</a>&amp; thePlot = wex::make&lt;wex::plot::plot&gt;( fm );
+        <a class="el" href="classwex_1_1plot_1_1plot.html" title="Draw a 2D plot.">wex::plot::plot</a>&amp; thePlot = wex::maker::make&lt;wex::plot::plot&gt;(fm);
         thePlot.move( {30,30,1200,600});
         //thePlot.Grid( true );
 
@@ -665,7 +665,7 @@ int main()
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>wex</b></li><li class="navelem"><b>plot</b></li><li class="navelem"><a class="el" href="classwex_1_1plot_1_1plot.html">plot</a></li>
-    <li class="footer">Generated on Sat Feb 5 2022 08:50:33 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Apr 15 2022 09:20:56 for windex by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
