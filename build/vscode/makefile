@@ -1,5 +1,5 @@
 INCS=-I../../include -I../../../raven-set -I../../../await/include \
-	-I../../../boost/boost1_72 
+	-I../../../boost/boost1_78 
 LIBS=-lgdiplus -lgdi32 -lcomdlg32 -lws2_32 -lwsock32
 
 demo: ../../demo/demo.cpp 
