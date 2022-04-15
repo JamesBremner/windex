@@ -585,7 +585,7 @@ namespace wex
                 n);
         }
         /** Draw rectangle
-        @param[in] v vector with left, top, width height
+        @param[in] v vector with left, top, width, height
     */
         void rectangle(const std::vector<int> &v)
         {
