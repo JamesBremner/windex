@@ -1,6 +1,6 @@
 namespace wex
 {
-/** \brief A widget which user can drag to change a value, using windows control
+/** \brief A widget which user can drag to change a value
 
 <pre>
     // construct top level window
