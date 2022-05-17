@@ -42,6 +42,8 @@ namespace wex
 </pre>
 */
 
+//deliberate error
+
 class slider : public gui
 {
 public:
@@ -53,6 +55,7 @@ public:
         , fsliding( false )
         , ftracking( false )
         , fvertical( false )
+        , fsteps( false )
     {
         events().click([this]
         {
@@ -74,7 +77,7 @@ public:
                 // start tracking mouse movement
                 ftracking = true;
 
-                // generate event when mose leaves
+                // generate event when mouse leaves
                 TRACKMOUSEEVENT s;
                 s.cbSize = sizeof( s );
                 s.hwndTrack = myHandle;
@@ -106,6 +109,9 @@ public:
             }
             if( myPosition > myMax )
                 myPosition = myMax;
+            if( fsteps )
+                myPosition = std::round( myPosition);
+
 //            std::cout << myPosition << " ";
             update();
             events().onSlid( myPosition );
@@ -167,6 +173,7 @@ public:
             SelectObject(ps.hdc, GetStockObject(BLACK_BRUSH));
         else
             SelectObject(ps.hdc, GetStockObject(GRAY_BRUSH));
+        //std::cout << "position " << myPosition << "\n";
         if( fvertical )
         {
             int height = r.bottom - (r.bottom - r.top ) * myPosition / myMax;
@@ -201,6 +208,12 @@ public:
     {
         myMax = max;
     }
+    /** Specify slider moves in steps to integer positions.
+     */
+    void steps( bool f = true )
+    {
+        fsteps = f;
+    }
 private:
     double myPosition;
     double myMin;
@@ -208,6 +221,7 @@ private:
     bool fsliding;
     bool ftracking;
     bool fvertical;
+    bool fsteps;
 };
 
 }
