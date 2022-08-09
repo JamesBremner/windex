@@ -25,6 +25,9 @@ void helloworld()
     label& lbB = maker::make<label>( form );
     lbB.move( {20, 60, 100, 30 } );
     lbB.text("B:");
+    label& lbC = maker::make<label>( form );
+    lbC.move( {20, 100, 100, 30 } );
+    lbC.text("C:");
 
     // display textboxes
     editbox& edit1 = maker::make<editbox>( form );
@@ -38,14 +41,18 @@ void helloworld()
     edit2.move( {80, 60, 100, 50 } );
     edit2.text( "type value");
 
+    multiline& edit3 = maker::make<multiline>( form );
+    edit3.move( {80, 100, 200, 100 } );
+    edit3.text( "type value");
+
     // display a button
     button& btn = wex::maker::make<button>( form );
-    btn.move( {20, 120, 200, 30 } );
+    btn.move( {20, 220, 200, 30 } );
     btn.text( "Show values entered" );
     btn.tooltip("tooltip explaining button function");
 
     button& disablebtn =  wex::maker::make<button>( form );
-    disablebtn.move( {20, 180, 200, 30 } );
+    disablebtn.move( {20, 280, 200, 30 } );
     disablebtn.text("Disable");
     disablebtn.events().click([&]
     {
@@ -62,7 +69,8 @@ void helloworld()
     {
         std::string m =
         "A is " + edit1.text() +
-        ", B is " + edit2.text();
+        ", B is " + edit2.text() +
+        ", C is " + edit3.text();
         msgbox mb(
             m );
     });

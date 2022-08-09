@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/../../bin/demo.exe",
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "console": "externalTerminal"
