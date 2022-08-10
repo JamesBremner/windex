@@ -29,7 +29,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
     */
         void client(
             const std::string &ipaddr = "127.0.0.1",
-            const std::string &port = "27654")
+            const std::string &port = "27678")
         {
             myTCP.server(ipaddr, port);
 

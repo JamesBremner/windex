@@ -43,7 +43,7 @@ void helloworld()
 
     multiline& edit3 = maker::make<multiline>( form );
     edit3.move( {80, 100, 200, 100 } );
-    edit3.text( "type value");
+    edit3.text( "type value\r\nsecond line here\n");
 
     // display a button
     button& btn = wex::maker::make<button>( form );
