@@ -19,8 +19,18 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
     */
         tcp(gui *parent) : gui(parent)
         {
-            //Run asynchronous wait handler in its own thread
+            // Run asynchronous wait handler in its own thread
             run();
+        }
+        
+        /** Configure client() blocking
+         *
+         * true: keep trying until connection made ( default on construction )
+         * false: if connection refused return after one attempt
+         */
+        void RetryConnectServer(bool f)
+        {
+            myTCP.RetryConnectServer(f);
         }
 
         /** Create client socket connected to server
@@ -29,17 +39,30 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
     */
         void client(
             const std::string &ipaddr = "127.0.0.1",
-            const std::string &port = "27678")
+            const std::string &port = "27654")
         {
             myTCP.server(ipaddr, port);
 
             // wait for connection to server
             myWaiter(
                 [&]
-                { myTCP.serverWait(); },
+                {
+                    myTCP.serverWait();
+                },
                 [this]
                 {
-                    std::cout << "wex::tcp connected to server" << std::endl;
+                    // check that server succesfully was connected to
+                    if (!myTCP.isConnected())
+                    {
+                        std::cout << "wex::tcp failed connection to server" << std::endl;
+                        return;
+                    }
+                    else
+                    {
+                        std::cout << "wex::tcp connected to server" << std::endl;
+                    }
+
+                    // send message to parent window announcing success
                     if (!PostMessageA(
                             myParent->handle(),
                             WM_APP + 2,
@@ -87,30 +110,30 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
         }
 
         /** send message to peer
-        * @param[in] msg
-        */
+         * @param[in] msg
+         */
         void send(const std::string &msg)
         {
             std::cout << "wex::tcp::send " << msg << "\n";
             myTCP.send(msg);
         }
-        void send(const std::vector< unsigned char >& msg)
+        void send(const std::vector<unsigned char> &msg)
         {
             myTCP.send(msg);
         }
 
         /** asynchronous read message on tcp connection
-         * 
+         *
          * Throws exception if no tcp connection
-         * 
+         *
          * Returns immediatly.
-         * 
+         *
          * When message is received, the parent window will receive tcpRead event
-         * 
+         *
          * If the connection is closed, or suffers any error
          * the same event will be invoked, so the isConnected()
          * method should be checked.
-    */
+         */
         void read()
         {
             myWaiter(
