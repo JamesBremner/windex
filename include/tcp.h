@@ -35,11 +35,11 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcp
 
         /** Create client socket connected to server
         @param[in] ipaddr IP address or name of server, defaults to same computer
-        @param[in] port defaults to 27654
+        @param[in] port defaults to 27678
     */
         void client(
             const std::string &ipaddr = "127.0.0.1",
-            const std::string &port = "27654")
+            const std::string &port = "27678")
         {
             myTCP.server(ipaddr, port);
 

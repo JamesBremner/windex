@@ -47,8 +47,7 @@ cGUI::cGUI()
                                  status("Client connected");
                              else
                                  status("Connected to server");
-                             myTCP.read();
-                         });
+                             myTCP.read(); });
 
     myForm.events()
         .tcpRead([this]
@@ -83,13 +82,13 @@ cGUI::cGUI()
 
                          // setup for next message
                          myTCP.read();
-                     }
-                 });
+                     } });
 
     mySendbn.move(50, 180, 130, 30);
     mySendbn.text("Send hello msg");
-    mySendbn.events().click([&]
-                            { myTCP.send("Hello"); });
+    mySendbn.events().click(
+        [&]
+        { myTCP.send("Hello\n"); });
 
     myForm.show();
 }
