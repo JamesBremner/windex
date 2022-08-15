@@ -88,7 +88,7 @@ cGUI::cGUI()
     mySendbn.text("Send hello msg");
     mySendbn.events().click(
         [&]
-        { myTCP.send("Hello\n"); });
+        { myTCP.send("Hello1\nHello2\nHello3\n"); });
 
     myForm.show();
 }
