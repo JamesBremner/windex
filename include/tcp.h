@@ -181,6 +181,7 @@ namespace wex
      * This does not require a parent window
      * and so is suitable for console applications
      */
+    class cSocket
     {
     public:
         cSocket() : myWindow(maker::make()),
