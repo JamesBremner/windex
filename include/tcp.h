@@ -8,10 +8,10 @@
 namespace wex
 {
     /** @brief Read/Write to TCP/IP socket, client or server
-     * 
+     *
      * Events ( peer connection, read completion ) generate
      * messages to the parent window specified in the constructor.
-     * 
+     *
      * For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/tcpdemo.cpp
      */
     class tcp : public gui
@@ -25,7 +25,7 @@ namespace wex
             // Run asynchronous wait handler in its own thread
             run();
         }
-        
+
         /** Configure client() blocking
          *
          * true: keep trying until connection made ( default on construction )
@@ -175,9 +175,9 @@ namespace wex
         }
     };
     /** @brief Read/Write to TCP/IP socket, client or server
-     * 
+     *
      * Events ( peer connection, read completion ) are handled by callbacks
-     * 
+     *
      * This does not require a parent window
      * and so is suitable for console applications
      */
@@ -233,12 +233,12 @@ namespace wex
         /** Start server
          * @param[in] port to listen for clients
          * @param[in] connectHandler event handler to call when client connects
-         * @param[in] readHandler event handler to call when client sands a message
+         * @param[in] readHandler event handler to call when client sends a message
          */
         void server(
             const std::string &port,
-            std::function<void(std::string &port)> connectHandler,
-            std::function<void(std::string &port, const std::string &msg)> readHandler)
+            std::function<void(std::string & port)> connectHandler,
+            std::function<void(std::string & port, const std::string &msg)> readHandler)
         {
             myPort = port;
             myIpaddr = "";
@@ -256,12 +256,23 @@ namespace wex
         {
             myTCP.RetryConnectServer(f);
         }
-        /// Connect to server
-        void client(const std::string &ipaddr, const std::string &port)
+        
+        /** Connect to server
+         * @param[in] ipaddr
+         * @param[in] port
+         * @param[in] readhandler event handler to call when server sends a message
+         */
+        void client(
+            const std::string &ipaddr,
+            const std::string &port,
+            std::function<void(std::string & port, const std::string &msg)> readHandler)
         {
             myIpaddr = ipaddr;
             myPort = port;
+            myReadHandler = readHandler;
+
             myTCP.client(ipaddr, port);
+
         }
 
         bool isConnected()
@@ -293,8 +304,8 @@ namespace wex
     private:
         gui &myWindow;
         tcp myTCP;
-        std::function<void(std::string &port)> myConnectHandler;
-        std::function<void(std::string &port, const std::string &msg)> myReadHandler;
+        std::function<void(std::string & port)> myConnectHandler;
+        std::function<void(std::string & port, const std::string &msg)> myReadHandler;
         std::string myPort;
         std::string myIpaddr;
     };
