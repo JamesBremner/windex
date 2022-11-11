@@ -120,6 +120,7 @@ namespace wex
         {
             // initialize functions with no-ops
             click([] {});
+            clickDouble([]{});
             clickWex([] {});
             clickRight([] {});
             draw([](PAINTSTRUCT &ps) {});
@@ -155,6 +156,10 @@ namespace wex
         void onMouseUp()
         {
             myMouseUpFunction();
+        }
+        void onDoubleClick()
+        {
+            myClickDoubleFunction();
         }
         void onDraw(PAINTSTRUCT &ps)
         {
@@ -291,6 +296,11 @@ namespace wex
             myClickRightFunction = f;
         }
 
+        void clickDouble(std::function<void(void)> f)
+        {
+            myClickDoubleFunction = f;
+        }
+
         void draw(std::function<void(PAINTSTRUCT &ps)> f)
         {
             myDrawFunction = f;
@@ -412,6 +422,7 @@ namespace wex
         // event handlers registered by application code
         std::function<void(void)> myClickFunctionApp;
         std::function<void(void)> myClickRightFunction;
+        std::function<void(void)> myClickDoubleFunction;
         std::function<void(PAINTSTRUCT &ps)> myDrawFunction;
         std::function<void(int w, int h)> myResizeFunction;
         std::function<void(int code)> myScrollHFunction;
@@ -1278,6 +1289,11 @@ namespace wex
                 case WM_LBUTTONUP:
                 case WM_RBUTTONUP:
                     myEvents.onMouseUp();
+                    return true;
+
+                case WM_LBUTTONDBLCLK:
+                    std::cout << "WM_LBUTTONDBLCLK\n";
+                    myEvents.onDoubleClick();
                     return true;
 
                 case WM_MOUSEMOVE:
@@ -2872,6 +2888,7 @@ It should NOT be used by application code.
             wc.hInstance = NULL;
             wc.lpszClassName = "windex";
             wc.hbrBackground = CreateSolidBrush(0xc8c8c8);
+            wc.style = CS_DBLCLKS;
             RegisterClass(&wc);
         }
 

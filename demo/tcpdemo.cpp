@@ -88,7 +88,10 @@ cGUI::cGUI()
     mySendbn.text("Send hello msg");
     mySendbn.events().click(
         [&]
-        { myTCP.send("Hello1\nHello2\nHello3\n"); });
+        {
+            myTCP.send("07/04/2016 Data1\n07/04/2016 Data2\n07/04/2016 Data3\n");
+            myTCP.send("Header\nmm/dd/yyy\nblah blah blah\n07/04/2016 Data2-1\n07/04/2016 Data2-2");
+        });
 
     myForm.show();
 }

@@ -158,6 +158,10 @@ namespace wex
         {
             return myTCP.readMsg();
         }
+        std::string serverPort() const
+        {
+            return myTCP.serverPort();
+        }
 
     private:
         std::string myRemoteAddress;
