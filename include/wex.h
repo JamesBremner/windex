@@ -120,6 +120,7 @@ namespace wex
         {
             // initialize functions with no-ops
             click([] {});
+            clickDouble([] {});
             clickWex([] {});
             clickRight([] {});
             draw([](PAINTSTRUCT &ps) {});
@@ -155,6 +156,10 @@ namespace wex
         void onMouseUp()
         {
             myMouseUpFunction();
+        }
+        void onDoubleClick()
+        {
+            myClickDoubleFunction();
         }
         void onDraw(PAINTSTRUCT &ps)
         {
@@ -291,6 +296,11 @@ namespace wex
             myClickRightFunction = f;
         }
 
+        void clickDouble(std::function<void(void)> f)
+        {
+            myClickDoubleFunction = f;
+        }
+
         void draw(std::function<void(PAINTSTRUCT &ps)> f)
         {
             myDrawFunction = f;
@@ -412,6 +422,7 @@ namespace wex
         // event handlers registered by application code
         std::function<void(void)> myClickFunctionApp;
         std::function<void(void)> myClickRightFunction;
+        std::function<void(void)> myClickDoubleFunction;
         std::function<void(PAINTSTRUCT &ps)> myDrawFunction;
         std::function<void(int w, int h)> myResizeFunction;
         std::function<void(int code)> myScrollHFunction;
@@ -672,20 +683,38 @@ namespace wex
         }
         /** Draw text.
     @param[in] t the text
-    @param[in] v vector of left, top
+    @param[in] v vector of left, top ( unclipped )
+    @param[in] v vector of left, top, width, height ( clipping )
     */
         void text(
             const std::string &t,
             const std::vector<int> &v)
         {
-            if ((int)v.size() < 2)
-                return;
-            TextOut(
-                myHDC,
-                v[0],
-                v[1],
-                t.c_str(),
-                t.length());
+            RECT rect;
+            switch ((int)v.size())
+            {
+            case 2:
+                TextOut(
+                    myHDC,
+                    v[0],
+                    v[1],
+                    t.c_str(),
+                    t.length());
+                break;
+            case 4:
+                rect.left = v[0];
+                rect.top = v[1];
+                rect.right = v[0]+v[2];
+                rect.bottom = v[1]+v[3];
+                DrawText(
+                    myHDC,
+                    t.c_str(),
+                    -1,
+                    &rect,
+                    0);
+                break;
+            }
+            return;
         }
 
         void textCenterHz(
@@ -786,7 +815,7 @@ namespace wex
             GetObject(
                 GetStockObject(DEFAULT_GUI_FONT),
                 sizeof(myLogFont), &myLogFont);
-            
+
             // default font clips descenders ( p, q, y) so increase height
             myLogFont.lfHeight = 18;
 
@@ -833,7 +862,7 @@ namespace wex
         }
         virtual ~gui()
         {
-            //std::cout << "deleting " << myText << "\n";
+            // std::cout << "deleting " << myText << "\n";
             DestroyWindow(myHandle);
             if (myDeleteList)
                 myDeleteList->push_back(myHandle);
@@ -851,7 +880,7 @@ namespace wex
             return myChild;
         }
 
-        gui * parent()
+        gui *parent()
         {
             return myParent;
         }
@@ -872,8 +901,8 @@ namespace wex
             SetFocus(myHandle);
         }
         /** Change background color
-        * @param[in] color in BGR format eg 0x0000FF for red
-        */
+         * @param[in] color in BGR format eg 0x0000FF for red
+         */
         void bgcolor(int color)
         {
             myBGColor = color;
@@ -955,9 +984,9 @@ namespace wex
             return myText;
         }
         /** Add scrollbars
-         * 
+         *
          * @param[in] fHoriz true if horizontal scroll reuired, default true
-         * 
+         *
          */
         void scroll(bool fHoriz = true)
         {
@@ -1000,10 +1029,10 @@ namespace wex
                                      myHandle,
                                      xs,
                                      0, NULL, NULL);
+                                UpdateWindow( myHandle );
 
                                  for (auto &w : myChild)
-                                     w->update();
-                             });
+                                     w->update(); });
 
             // vertical scroll handler
             events().scrollV([this](int code)
@@ -1038,8 +1067,7 @@ namespace wex
                                  // this has a fast and smooth appearance
                                  // but sometimes leaves fragments littering the window
                                  for (auto &w : myChild)
-                                     w->update();
-                             });
+                                     w->update(); });
         }
         /** Set the scrolling range
         @param[in] width of the underlying window to be scrolled over
@@ -1056,7 +1084,7 @@ namespace wex
 
             /* maximum scroll position
 
-            We want the max scroll position 
+            We want the max scroll position
             which is the top of the visible portion
             to be placed where the bottom if the underlying window is just visible
             */
@@ -1164,7 +1192,7 @@ namespace wex
                 // change tooltip
                 SendMessage(myToolTip, TTM_UPDATETIPTEXT, 0, (LPARAM)&toolInfo);
 
-            //std::cout << "tooltip: " << width << "\n" << text << "\n";
+            // std::cout << "tooltip: " << width << "\n" << text << "\n";
 
             if (width > 0)
                 SendMessage(myToolTip, TTM_SETMAXTIPWIDTH, 0, width);
@@ -1256,7 +1284,7 @@ namespace wex
                 }
 
                 case WM_LBUTTONDOWN:
-                    //std::cout << "click on " << myText << "\n";
+                    // std::cout << "click on " << myText << "\n";
                     if (!myfEnabled)
                         return true;
                     if (myEvents.onLeftdown())
@@ -1278,6 +1306,11 @@ namespace wex
                 case WM_LBUTTONUP:
                 case WM_RBUTTONUP:
                     myEvents.onMouseUp();
+                    return true;
+
+                case WM_LBUTTONDBLCLK:
+                    std::cout << "WM_LBUTTONDBLCLK\n";
+                    myEvents.onDoubleClick();
                     return true;
 
                 case WM_MOUSEMOVE:
@@ -1394,7 +1427,7 @@ namespace wex
             int cmd = SW_SHOWDEFAULT;
             if (!f)
                 cmd = SW_HIDE;
-            //std::cout << "show " << myText <<" "<< myHandle <<" "<< myChild.size() << "\n"; ;
+            // std::cout << "show " << myText <<" "<< myHandle <<" "<< myChild.size() << "\n"; ;
             ShowWindow(myHandle, cmd);
             // display any children
             for (auto w : myChild)
@@ -1411,7 +1444,7 @@ namespace wex
 
             // prevent other windows from interaction
             // by running our own message loop
-            //std::cout << "-> modal msg loop\n";
+            // std::cout << "-> modal msg loop\n";
             MSG msg = {};
             while (GetMessage(&msg, NULL, 0, 0))
             {
@@ -1439,7 +1472,7 @@ namespace wex
                 if (!myfModal)
                     break;
             }
-            //std::cout << "<- modal msg loop\n";
+            // std::cout << "<- modal msg loop\n";
         }
         /// Stop modal interaction and close window
         void endModal()
@@ -1652,12 +1685,12 @@ namespace wex
                 SelectObject(ps.hdc, myFont);
 
                 RECT r(ps.rcPaint);
-                auto hbrBkgnd =CreateSolidBrush(myBGColor); 
+                auto hbrBkgnd = CreateSolidBrush(myBGColor);
                 FillRect(
                     ps.hdc,
                     &r,
-                    hbrBkgnd );
-                DeleteObject(hbrBkgnd); 
+                    hbrBkgnd);
+                DeleteObject(hbrBkgnd);
                 r.left += 1;
                 r.top += 1;
                 DrawText(
@@ -1803,8 +1836,7 @@ namespace wex
                                        // call app code's event handler
                                        myEvents.onDrop(files);
                                    }
-                                   DragFinish(hDrop);
-                               });
+                                   DragFinish(hDrop); });
         }
     };
 
@@ -1836,7 +1868,7 @@ namespace wex
         }
         virtual void draw(PAINTSTRUCT &ps)
         {
-            //Draw group box on parent window
+            // Draw group box on parent window
             HDC hdc = GetDC(myParent->handle());
             DrawEdge(
                 hdc,
@@ -2058,12 +2090,12 @@ namespace wex
                 SelectObject(ps.hdc, myFont);
 
                 RECT r(ps.rcPaint);
-                auto hbrBkgnd =CreateSolidBrush(myBGColor); 
+                auto hbrBkgnd = CreateSolidBrush(myBGColor);
                 FillRect(
                     ps.hdc,
                     &r,
-                    hbrBkgnd );
-                DeleteObject(hbrBkgnd); 
+                    hbrBkgnd);
+                DeleteObject(hbrBkgnd);
 
                 r.left += 1;
                 r.top += 1;
@@ -2189,8 +2221,7 @@ namespace wex
                                   }
                                   // set this button true
                                   myValue = true;
-                                  update();
-                              });
+                                  update(); });
         }
         /** Make this button first of a new group
 
@@ -2364,8 +2395,7 @@ This draws a custom checkbox that expands with the height of the widget ( set by
                                   if (!myfEnabled)
                                       return;
                                   myValue = !myValue;
-                                  update();
-                              });
+                                  update(); });
         }
         /// set type to plus, useful to indicate expanded or collapsed property categories
         void plus(bool f = true)
@@ -2395,7 +2425,7 @@ This draws a custom checkbox that expands with the height of the widget ( set by
 
             shapes S(ps);
             S.textHeight(myLogFont.lfHeight);
-            S.textFontName( myLogFont.lfFaceName );
+            S.textFontName(myLogFont.lfFaceName);
             S.text(myText, {r.left, r.top, r.right, r.bottom});
             S.rectangle({0, 0, cbg, cbg});
             S.fill();
@@ -2695,13 +2725,13 @@ This draws a custom checkbox that expands with the height of the widget ( set by
     };
 
     /** A widget where user can choose from a list of strings
-     * 
+     *
      * Event: select handler
-     * 
+     *
    <pre>
         list.events().select(
         list.id(), [this,&list]
-        { 
+        {
             auto s = list.selectedText();
         });
     </pre>
@@ -2854,7 +2884,7 @@ It should NOT be used by application code.
             // add to existing gui elements
             myGui.insert(std::make_pair(g->handle(), g));
 
-            //std::cout << "windexAdd " << myGui.size() <<" in "<< this << "\n";
+            // std::cout << "windexAdd " << myGui.size() <<" in "<< this << "\n";
 
             return g;
         }
@@ -2872,13 +2902,14 @@ It should NOT be used by application code.
             wc.hInstance = NULL;
             wc.lpszClassName = "windex";
             wc.hbrBackground = CreateSolidBrush(0xc8c8c8);
+            wc.style = CS_DBLCLKS;
             RegisterClass(&wc);
         }
 
         /// remove destroyed gui elements
         void Delete()
         {
-            //std::cout << "windex::Delete " << myDeleteList.size() << "\n";
+            // std::cout << "windex::Delete " << myDeleteList.size() << "\n";
             for (auto h : myDeleteList)
             {
                 auto i = myGui.find(h);
@@ -3181,7 +3212,7 @@ Usage:
             const std::string &tabname,
             gui &panel)
         {
-            //resize the child panel so it fits neatly under the tab buttons
+            // resize the child panel so it fits neatly under the tab buttons
             RECT rect;
             GetClientRect(myHandle, &rect);
             panel.move(0, 31, rect.right - rect.left, rect.bottom - rect.top - 30);
@@ -3198,8 +3229,7 @@ Usage:
                                {
                                    myTabChangingFn(tabIndex);
                                    select(tabIndex);
-                                   myTabChangeFn(tabIndex);
-                               });
+                                   myTabChangeFn(tabIndex); });
         }
         /// select panel to displayed
         void select(int i)
@@ -3393,7 +3423,7 @@ Usage:
         /** Add some text
          * @param[in]  x, y locatioon
          * @param[in] s the text
-         * 
+         *
          * Each character needs about 100 by 100 location units
          */
         void text(
@@ -3413,10 +3443,10 @@ Usage:
     struct free
     {
         /** Start a command in its own process
-     * @param[in] command line, same as would be used from a command window running in working directory
-     * @param[out] error details, if any
-     * @return 0 if no errors
-     */
+         * @param[in] command line, same as would be used from a command window running in working directory
+         * @param[out] error details, if any
+         * @return 0 if no errors
+         */
         static int startProcess(
             const std::string &command,
             std::string &error)

@@ -47,8 +47,7 @@ cGUI::cGUI()
                                  status("Client connected");
                              else
                                  status("Connected to server");
-                             myTCP.read();
-                         });
+                             myTCP.read(); });
 
     myForm.events()
         .tcpRead([this]
@@ -83,13 +82,16 @@ cGUI::cGUI()
 
                          // setup for next message
                          myTCP.read();
-                     }
-                 });
+                     } });
 
     mySendbn.move(50, 180, 130, 30);
     mySendbn.text("Send hello msg");
-    mySendbn.events().click([&]
-                            { myTCP.send("Hello"); });
+    mySendbn.events().click(
+        [&]
+        {
+            myTCP.send("07/04/2016 Data1\n07/04/2016 Data2\n07/04/2016 Data3\n");
+            myTCP.send("Header\nmm/dd/yyy\nblah blah blah\n07/04/2016 Data2-1\n07/04/2016 Data2-2");
+        });
 
     myForm.show();
 }
