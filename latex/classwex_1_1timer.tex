@@ -1,0 +1,58 @@
+\hypertarget{classwex_1_1timer}{}\doxysection{wex\+::timer Class Reference}
+\label{classwex_1_1timer}\index{wex::timer@{wex::timer}}
+
+
+Generate events at regularly timed intervals.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classwex_1_1timer_aa464ae257c3ae820cc58316d857f00dc}{timer}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} \&g, int intervalmsecs, int id=1)
+\begin{DoxyCompactList}\small\item\em CTOR. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Generate events at regularly timed intervals. 
+
+
+\begin{DoxyPre}
+    myDriveTimer = new \mbox{\hyperlink{classwex_1_1timer}{wex::timer( fm, 50 )}};
+    fm.events().timer([this](int id)
+    \{
+        ... code to run when timer event occurs ...
+    \});
+\end{DoxyPre}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classwex_1_1timer_aa464ae257c3ae820cc58316d857f00dc}\label{classwex_1_1timer_aa464ae257c3ae820cc58316d857f00dc}} 
+\index{wex::timer@{wex::timer}!timer@{timer}}
+\index{timer@{timer}!wex::timer@{wex::timer}}
+\doxysubsubsection{\texorpdfstring{timer()}{timer()}}
+{\footnotesize\ttfamily wex\+::timer\+::timer (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classwex_1_1gui}{gui}} \&}]{g,  }\item[{int}]{intervalmsecs,  }\item[{int}]{id = {\ttfamily 1} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+CTOR. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em g} & gui element that will receive the events \\
+\hline
+\mbox{\texttt{ in}}  & {\em intervalmsecs} & time between events \\
+\hline
+\mbox{\texttt{ in}}  & {\em id} & number\\
+\hline
+\end{DoxyParams}
+The events will begin immediatly on construction and stop on destruction -\/ don\textquotesingle{}t let the timer go out of scope!
+
+The id number will be passed as a parameter to the event handler 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

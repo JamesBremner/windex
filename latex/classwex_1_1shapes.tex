@@ -1,0 +1,248 @@
+\hypertarget{classwex_1_1shapes}{}\doxysection{wex\+::shapes Class Reference}
+\label{classwex_1_1shapes}\index{wex::shapes@{wex::shapes}}
+
+
+A class that offers application code methods to draw on a window.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classwex_1_1shapes_ab1ef2fea2b32971b131aaac0de3c0f1e}{shapes}} (PAINTSTRUCT \&ps)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1shapes_ae6e8f2852f83cc801b63c5a1b16c1d9c}{color}} (int r, int g, int b)
+\begin{DoxyCompactList}\small\item\em Set color for drawings. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a024e0528a840c0c4effbf4552a1a9ff9}\label{classwex_1_1shapes_a024e0528a840c0c4effbf4552a1a9ff9}} 
+void {\bfseries color} (int c)
+\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a63b27a466b603685900e90fc97a8a90e}\label{classwex_1_1shapes_a63b27a466b603685900e90fc97a8a90e}} 
+void \mbox{\hyperlink{classwex_1_1shapes_a63b27a466b603685900e90fc97a8a90e}{bgcolor}} (int c)
+\begin{DoxyCompactList}\small\item\em set background color \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a637af41577599a45165a051f8a8c0ed7}\label{classwex_1_1shapes_a637af41577599a45165a051f8a8c0ed7}} 
+void {\bfseries bgcolor} (int r, int g, int b)
+\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a665cd16dbcc39330be5d26619a106746}\label{classwex_1_1shapes_a665cd16dbcc39330be5d26619a106746}} 
+void \mbox{\hyperlink{classwex_1_1shapes_a665cd16dbcc39330be5d26619a106746}{transparent}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em enable/disable transparent background \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a08b1a2691cf2269729914de1bea0b30b}\label{classwex_1_1shapes_a08b1a2691cf2269729914de1bea0b30b}} 
+void \mbox{\hyperlink{classwex_1_1shapes_a08b1a2691cf2269729914de1bea0b30b}{pen\+Thick}} (int t)
+\begin{DoxyCompactList}\small\item\em Set pen thickness in pixels. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a9e44cf7df1ccaafd93ffa1f0b268152d}\label{classwex_1_1shapes_a9e44cf7df1ccaafd93ffa1f0b268152d}} 
+void \mbox{\hyperlink{classwex_1_1shapes_a9e44cf7df1ccaafd93ffa1f0b268152d}{fill}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em Set filling option. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_acbea31a4f58f95722b4f26323b05e9c4}\label{classwex_1_1shapes_acbea31a4f58f95722b4f26323b05e9c4}} 
+void \mbox{\hyperlink{classwex_1_1shapes_acbea31a4f58f95722b4f26323b05e9c4}{pixel}} (int x, int y)
+\begin{DoxyCompactList}\small\item\em Color a pixel. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1shapes_a82c461628854775ba28d7946ad1300bf}{line}} (const std\+::vector$<$ int $>$ \&v)
+\begin{DoxyCompactList}\small\item\em Draw line between two points. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_af00204f32f209fcada3564084b3c71c0}\label{classwex_1_1shapes_af00204f32f209fcada3564084b3c71c0}} 
+void {\bfseries poly\+Line} (POINT $\ast$pp, int n)
+\item 
+void \mbox{\hyperlink{classwex_1_1shapes_ab8370b07ca362fda56623a3997c5a075}{rectangle}} (const std\+::vector$<$ int $>$ \&v)
+\begin{DoxyCompactList}\small\item\em Draw rectangle. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1shapes_a94b01f4eafd5d8881d99d48252f81e61}{polygon}} (const std\+::vector$<$ int $>$ \&v)
+\begin{DoxyCompactList}\small\item\em Draw Polygon. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1shapes_a44b342785038b0b7d5cb9b03d0f5cdb7}{arc}} (int x, int y, double r, double sa, double ea)
+\begin{DoxyCompactList}\small\item\em Draw Arc of circle. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1shapes_a9769669dd94acb5b6f5b12670987f4b8}{circle}} (int x0, int y0, double r)
+\begin{DoxyCompactList}\small\item\em Draw circle. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1shapes_a4c1085ffbeb0578b85b264a302f61ec9}{text}} (const std\+::string \&t, const std\+::vector$<$ int $>$ \&v)
+\begin{DoxyCompactList}\small\item\em Draw text. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a9316a5bc219459563e96c11cc149d4eb}\label{classwex_1_1shapes_a9316a5bc219459563e96c11cc149d4eb}} 
+void {\bfseries text\+Center\+Hz} (const std\+::string \&t, const std\+::vector$<$ int $>$ \&v)
+\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a56de559f7b367afaaf846c8c5298b3d4}\label{classwex_1_1shapes_a56de559f7b367afaaf846c8c5298b3d4}} 
+void \mbox{\hyperlink{classwex_1_1shapes_a56de559f7b367afaaf846c8c5298b3d4}{text\+Vertical}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em Enable / disable drawing text in vertical orientation. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a48ae9c484082d78fca2b5284f1f4cc82}\label{classwex_1_1shapes_a48ae9c484082d78fca2b5284f1f4cc82}} 
+void \mbox{\hyperlink{classwex_1_1shapes_a48ae9c484082d78fca2b5284f1f4cc82}{text\+Height}} (int h)
+\begin{DoxyCompactList}\small\item\em Set text height. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a15fe0b95cdf3734e80396063522276cf}\label{classwex_1_1shapes_a15fe0b95cdf3734e80396063522276cf}} 
+void \mbox{\hyperlink{classwex_1_1shapes_a15fe0b95cdf3734e80396063522276cf}{text\+Font\+Name}} (const std\+::string \&fn)
+\begin{DoxyCompactList}\small\item\em set text font name \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1shapes_a720c7747059eda186360c943660b7b11}\label{classwex_1_1shapes_a720c7747059eda186360c943660b7b11}} 
+int {\bfseries text\+Width\+Pixels} (const std\+::string \&t)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A class that offers application code methods to draw on a window. 
+
+
+\begin{DoxyPre}
+    // construct top level  window
+    gui\& form = wex::windex::topWindow();
+    form.move(\{ 50,50,400,400\});
+    form.text("{}A windex draw demo"{});
+
+    form.events().draw([]( PAINTSTRUCT\& ps )
+    \{
+        shapes S( ps );
+        S.color( 255, 0, 0 );
+        S.line( \{ 10,10, 50,50 \} );
+        S.color( 255,255,255 );
+        S.rectangle( \{ 20,20,20,20\});
+        S.color( 255,255,0 );
+        S.text( "{}test"{}, \{50,50,50,25\} );
+        S.color(0,0,255);
+        S.circle( 100,100,40);
+        S.arc( 100,100,30, 0, 90 );
+    \});
+
+    form.show();
+\end{DoxyPre}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classwex_1_1shapes_ab1ef2fea2b32971b131aaac0de3c0f1e}\label{classwex_1_1shapes_ab1ef2fea2b32971b131aaac0de3c0f1e}} 
+\index{wex::shapes@{wex::shapes}!shapes@{shapes}}
+\index{shapes@{shapes}!wex::shapes@{wex::shapes}}
+\doxysubsubsection{\texorpdfstring{shapes()}{shapes()}}
+{\footnotesize\ttfamily wex\+::shapes\+::shapes (\begin{DoxyParamCaption}\item[{PAINTSTRUCT \&}]{ps }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructor. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em ps} & The PAINTSTRUCT passed as parameter into the draw event handler \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1shapes_a44b342785038b0b7d5cb9b03d0f5cdb7}\label{classwex_1_1shapes_a44b342785038b0b7d5cb9b03d0f5cdb7}} 
+\index{wex::shapes@{wex::shapes}!arc@{arc}}
+\index{arc@{arc}!wex::shapes@{wex::shapes}}
+\doxysubsubsection{\texorpdfstring{arc()}{arc()}}
+{\footnotesize\ttfamily void wex\+::shapes\+::arc (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y,  }\item[{double}]{r,  }\item[{double}]{sa,  }\item[{double}]{ea }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Draw Arc of circle. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em x} & for center, pixels 0 at left of window \\
+\hline
+\mbox{\texttt{ in}}  & {\em y} & for center, pixels 0 at top of window \\
+\hline
+\mbox{\texttt{ in}}  & {\em r} & radius, pixels \\
+\hline
+\mbox{\texttt{ in}}  & {\em sa} & start angle degrees anti-\/clockwise from 3 o\textquotesingle{}clock \\
+\hline
+\mbox{\texttt{ in}}  & {\em se} & end angle degrees anti-\/clockwise from 3 o\textquotesingle{}clock\\
+\hline
+\end{DoxyParams}
+The arc is drawn from sa to se in the anti-\/clockwise direction. \mbox{\Hypertarget{classwex_1_1shapes_a9769669dd94acb5b6f5b12670987f4b8}\label{classwex_1_1shapes_a9769669dd94acb5b6f5b12670987f4b8}} 
+\index{wex::shapes@{wex::shapes}!circle@{circle}}
+\index{circle@{circle}!wex::shapes@{wex::shapes}}
+\doxysubsubsection{\texorpdfstring{circle()}{circle()}}
+{\footnotesize\ttfamily void wex\+::shapes\+::circle (\begin{DoxyParamCaption}\item[{int}]{x0,  }\item[{int}]{y0,  }\item[{double}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Draw circle. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em x0} & x for center, pixels 0 at left of window \\
+\hline
+\mbox{\texttt{ in}}  & {\em y0} & y for center, pixels 0 at left of window \\
+\hline
+\mbox{\texttt{ in}}  & {\em r} & radius, pixels \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1shapes_ae6e8f2852f83cc801b63c5a1b16c1d9c}\label{classwex_1_1shapes_ae6e8f2852f83cc801b63c5a1b16c1d9c}} 
+\index{wex::shapes@{wex::shapes}!color@{color}}
+\index{color@{color}!wex::shapes@{wex::shapes}}
+\doxysubsubsection{\texorpdfstring{color()}{color()}}
+{\footnotesize\ttfamily void wex\+::shapes\+::color (\begin{DoxyParamCaption}\item[{int}]{r,  }\item[{int}]{g,  }\item[{int}]{b }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set color for drawings. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em r} & red 0-\/255 \\
+\hline
+\mbox{\texttt{ in}}  & {\em g} & green 0-\/255 \\
+\hline
+\mbox{\texttt{ in}}  & {\em b} & blue 0-\/255 \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1shapes_a82c461628854775ba28d7946ad1300bf}\label{classwex_1_1shapes_a82c461628854775ba28d7946ad1300bf}} 
+\index{wex::shapes@{wex::shapes}!line@{line}}
+\index{line@{line}!wex::shapes@{wex::shapes}}
+\doxysubsubsection{\texorpdfstring{line()}{line()}}
+{\footnotesize\ttfamily void wex\+::shapes\+::line (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ int $>$ \&}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Draw line between two points. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em v} & vector with x1, y1, x2, y2 \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1shapes_a94b01f4eafd5d8881d99d48252f81e61}\label{classwex_1_1shapes_a94b01f4eafd5d8881d99d48252f81e61}} 
+\index{wex::shapes@{wex::shapes}!polygon@{polygon}}
+\index{polygon@{polygon}!wex::shapes@{wex::shapes}}
+\doxysubsubsection{\texorpdfstring{polygon()}{polygon()}}
+{\footnotesize\ttfamily void wex\+::shapes\+::polygon (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ int $>$ \&}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Draw Polygon. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em point} & array of points, such as x0,y0,x1,y1,x2,y2,x3,y3... \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1shapes_ab8370b07ca362fda56623a3997c5a075}\label{classwex_1_1shapes_ab8370b07ca362fda56623a3997c5a075}} 
+\index{wex::shapes@{wex::shapes}!rectangle@{rectangle}}
+\index{rectangle@{rectangle}!wex::shapes@{wex::shapes}}
+\doxysubsubsection{\texorpdfstring{rectangle()}{rectangle()}}
+{\footnotesize\ttfamily void wex\+::shapes\+::rectangle (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ int $>$ \&}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Draw rectangle. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em v} & vector with left, top, width, height \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1shapes_a4c1085ffbeb0578b85b264a302f61ec9}\label{classwex_1_1shapes_a4c1085ffbeb0578b85b264a302f61ec9}} 
+\index{wex::shapes@{wex::shapes}!text@{text}}
+\index{text@{text}!wex::shapes@{wex::shapes}}
+\doxysubsubsection{\texorpdfstring{text()}{text()}}
+{\footnotesize\ttfamily void wex\+::shapes\+::text (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{t,  }\item[{const std\+::vector$<$ int $>$ \&}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Draw text. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em t} & the text \\
+\hline
+\mbox{\texttt{ in}}  & {\em v} & vector of left, top ( unclipped ) \\
+\hline
+\mbox{\texttt{ in}}  & {\em v} & vector of left, top, width, height ( clipping ) \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

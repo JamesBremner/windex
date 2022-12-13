@@ -1,0 +1,63 @@
+\hypertarget{classwex_1_1maker}{}\doxysection{wex\+::maker Class Reference}
+\label{classwex_1_1maker}\index{wex::maker@{wex::maker}}
+
+
+A class for making windex objects.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class W , class P $>$ }\\static W \& \mbox{\hyperlink{classwex_1_1maker_ac640445d9071a5430e70932059e2811f}{make}} (P \&parent)
+\begin{DoxyCompactList}\small\item\em Construct widget. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{classwex_1_1gui}{gui}} \& \mbox{\hyperlink{classwex_1_1maker_aee4687ec851077556856d959d74c40d4}{make}} ()
+\begin{DoxyCompactList}\small\item\em Construct a top level window ( first call constructs application window ) \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A class for making windex objects. 
+
+Use the methods of this class to create windex objects, NOT the constructors of the objects. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1maker_aee4687ec851077556856d959d74c40d4}\label{classwex_1_1maker_aee4687ec851077556856d959d74c40d4}} 
+\index{wex::maker@{wex::maker}!make@{make}}
+\index{make@{make}!wex::maker@{wex::maker}}
+\doxysubsubsection{\texorpdfstring{make()}{make()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{classwex_1_1gui}{gui}}\& wex\+::maker\+::make (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Construct a top level window ( first call constructs application window ) 
+
+\begin{DoxyReturn}{Returns}
+reference to new window 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1maker_ac640445d9071a5430e70932059e2811f}\label{classwex_1_1maker_ac640445d9071a5430e70932059e2811f}} 
+\index{wex::maker@{wex::maker}!make@{make}}
+\index{make@{make}!wex::maker@{wex::maker}}
+\doxysubsubsection{\texorpdfstring{make()}{make()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class W , class P $>$ \\
+static W\& wex\+::maker\+::make (\begin{DoxyParamCaption}\item[{P \&}]{parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Construct widget. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em parent} & reference to parent window or widget \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+reference to new widget 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

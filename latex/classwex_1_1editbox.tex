@@ -1,0 +1,89 @@
+\hypertarget{classwex_1_1editbox}{}\doxysection{wex\+::editbox Class Reference}
+\label{classwex_1_1editbox}\index{wex::editbox@{wex::editbox}}
+
+
+A widget where user can enter a single line string.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::editbox\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1editbox}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1editbox_a3bdafc8d99f0b805d4263621a689ab89}\label{classwex_1_1editbox_a3bdafc8d99f0b805d4263621a689ab89}} 
+{\bfseries editbox} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+\mbox{\Hypertarget{classwex_1_1editbox_a91b72f2cb84528ace73f556be7d61ebd}\label{classwex_1_1editbox_a91b72f2cb84528ace73f556be7d61ebd}} 
+void \mbox{\hyperlink{classwex_1_1editbox_a91b72f2cb84528ace73f556be7d61ebd}{notification}} (WORD ntf)
+\begin{DoxyCompactList}\small\item\em editbox generated a notification -\/ nop \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1editbox_acbe15d8899012eb161eb911d35333b41}\label{classwex_1_1editbox_acbe15d8899012eb161eb911d35333b41}} 
+void {\bfseries text} (const std\+::string \&t)
+\item 
+\mbox{\Hypertarget{classwex_1_1editbox_ad0c8d1039d5ec4149c440343e39e5cf3}\label{classwex_1_1editbox_ad0c8d1039d5ec4149c440343e39e5cf3}} 
+std\+::string \mbox{\hyperlink{classwex_1_1editbox_ad0c8d1039d5ec4149c440343e39e5cf3}{text}} ()
+\begin{DoxyCompactList}\small\item\em get text in textbox \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1editbox_a25d708c209570ae7a1d9d75095a1663d}\label{classwex_1_1editbox_a25d708c209570ae7a1d9d75095a1663d}} 
+void \mbox{\hyperlink{classwex_1_1editbox_a25d708c209570ae7a1d9d75095a1663d}{readonly}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em disable ( or enable ) user editing \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A widget where user can enter a single line string. 
+
+
+\begin{DoxyPre}
+    // construct top level window
+    gui\& form = \mbox{\hyperlink{classwex_1_1maker_aee4687ec851077556856d959d74c40d4}{maker::make()}};
+    form.move(\{ 50,50,400,400\});
+    form.text("{}Label and Editbox demo"{});
+
+    // display labels
+    label\& lbA = maker::make<label>( form );
+    lbA.move( \{20, 20, 100, 30 \} );
+    lbA.text("{}A:"{});
+    label\& lbB = maker::make<label>( form );
+    lbB.move( \{20, 60, 100, 30 \} );
+    lbB.text("{}B:"{});
+
+    // display textboxes
+    editbox\& edit1 = maker::make<editbox>( form );
+    edit1.move( \{80, 20, 100, 30 \} );
+    edit1.text( "{}type value"{});
+    editbox\& edit2 = maker::make<editbox>( form );
+    edit2.move( \{80, 60, 100, 30 \} );
+    edit2.text( "{}type value"{});
+
+    // display a button
+    button\& btn = wex::maker::make<button>( form );
+    btn.move( \{20, 100, 150, 30 \} );
+    btn.text( "{}Show values entered"{} );
+    btn.tooltip("{}tooltip explaining button function"{});
+
+    // popup a message box when button is clicked
+    // showing the value entered in textbox
+    btn.events().click([\&]
+    \{
+        std::string msg =
+        "{}A is "{} + edit1.text() +
+        "{}, B is "{} + edit2.text();
+        msgbox(
+            form,
+            msg );
+    \});
+
+    form.show();
+\end{DoxyPre}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

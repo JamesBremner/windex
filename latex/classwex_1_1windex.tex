@@ -1,0 +1,58 @@
+\hypertarget{classwex_1_1windex}{}\doxysection{wex\+::windex Class Reference}
+\label{classwex_1_1windex}\index{wex::windex@{wex::windex}}
+
+
+A class containing a database of the current gui elements.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1windex_a11c43524210a88bbe6f843442e55ce6b}\label{classwex_1_1windex_a11c43524210a88bbe6f843442e55ce6b}} 
+\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$ \mbox{\hyperlink{classwex_1_1windex_a11c43524210a88bbe6f843442e55ce6b}{Add}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$g)
+\begin{DoxyCompactList}\small\item\em Add new gui element. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{classwex_1_1windex}{windex}} \& \mbox{\hyperlink{classwex_1_1windex_a1399a141f4efa2f0522b14363f014eed}{get}} ()
+\begin{DoxyCompactList}\small\item\em get reference to windex gui framework ( singleton ) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1windex_af3bbed0ea21536f113874e981994519d}\label{classwex_1_1windex_af3bbed0ea21536f113874e981994519d}} 
+static LRESULT CALLBACK {\bfseries Window\+Proc} (HWND hwnd, UINT u\+Msg, WPARAM w\+Param, LPARAM l\+Param)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1windex_aaa52aaf197294cb340a5349fb3a83389}\label{classwex_1_1windex_aaa52aaf197294cb340a5349fb3a83389}} 
+mgui\+\_\+t \mbox{\hyperlink{classwex_1_1windex_aaa52aaf197294cb340a5349fb3a83389}{my\+Gui}}
+\begin{DoxyCompactList}\small\item\em map of existing gui elements \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A class containing a database of the current gui elements. 
+
+This looks after directing messages to their intended gui element.
+
+It should NOT be used by application code. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1windex_a1399a141f4efa2f0522b14363f014eed}\label{classwex_1_1windex_a1399a141f4efa2f0522b14363f014eed}} 
+\index{wex::windex@{wex::windex}!get@{get}}
+\index{get@{get}!wex::windex@{wex::windex}}
+\doxysubsubsection{\texorpdfstring{get()}{get()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{classwex_1_1windex}{windex}}\& wex\+::windex\+::get (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+get reference to windex gui framework ( singleton ) 
+
+This creates a singleton instance of the windex class and returns as many references to it as needed.
+
+The windex ctor should never be called by app code -\/ it is private! 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

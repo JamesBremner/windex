@@ -1,0 +1,71 @@
+\hypertarget{classwex_1_1window2file}{}\doxysection{wex\+::window2file Class Reference}
+\label{classwex_1_1window2file}\index{wex::window2file@{wex::window2file}}
+
+
+transfer image between window contents and image file in PNG format.  
+
+
+
+
+{\ttfamily \#include $<$window2file.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classwex_1_1window2file_ab68e140c442bf1249b5e4bc9b586fade}{save}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} \&w, const std\+::string \&filename)
+\begin{DoxyCompactList}\small\item\em Save window contents to image file. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1window2file_a92901adb7e32ade50a1a7ce47a75b4b3}\label{classwex_1_1window2file_a92901adb7e32ade50a1a7ce47a75b4b3}} 
+void {\bfseries save} (HWND hw, const std\+::string \&filename)
+\item 
+bool \mbox{\hyperlink{classwex_1_1window2file_a87135781a1541fc8512dd8a90d9c1321}{draw}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} \&w, const std\+::string \&filename)
+\begin{DoxyCompactList}\small\item\em Draw png file in window. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+transfer image between window contents and image file in PNG format. 
+
+Add library gdiplus to linker library list 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1window2file_a87135781a1541fc8512dd8a90d9c1321}\label{classwex_1_1window2file_a87135781a1541fc8512dd8a90d9c1321}} 
+\index{wex::window2file@{wex::window2file}!draw@{draw}}
+\index{draw@{draw}!wex::window2file@{wex::window2file}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily bool wex\+::window2file\+::draw (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classwex_1_1gui}{gui}} \&}]{w,  }\item[{const std\+::string \&}]{filename }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Draw png file in window. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em w} & the window to draw into \\
+\hline
+\mbox{\texttt{ in}}  & {\em filename} & to be drawn \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if success 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1window2file_ab68e140c442bf1249b5e4bc9b586fade}\label{classwex_1_1window2file_ab68e140c442bf1249b5e4bc9b586fade}} 
+\index{wex::window2file@{wex::window2file}!save@{save}}
+\index{save@{save}!wex::window2file@{wex::window2file}}
+\doxysubsubsection{\texorpdfstring{save()}{save()}}
+{\footnotesize\ttfamily void wex\+::window2file\+::save (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classwex_1_1gui}{gui}} \&}]{w,  }\item[{const std\+::string \&}]{filename }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Save window contents to image file. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em w} & the window to save \\
+\hline
+\mbox{\texttt{ in}}  & {\em filename} & to save to \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/window2file.\+h\end{DoxyCompactItemize}

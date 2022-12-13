@@ -1,0 +1,153 @@
+\hypertarget{classwex_1_1tcp}{}\doxysection{wex\+::tcp Class Reference}
+\label{classwex_1_1tcp}\index{wex::tcp@{wex::tcp}}
+
+
+Read/\+Write to TCP/\+IP socket, client or server.  
+
+
+
+
+{\ttfamily \#include $<$tcp.\+h$>$}
+
+Inheritance diagram for wex\+::tcp\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1tcp}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classwex_1_1tcp_ab75d7a6aeebd58085b6a217a541a3890}{tcp}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\begin{DoxyCompactList}\small\item\em CTOR. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1tcp_ac1943453eb093cd5bf458296ba1aa6a1}{Retry\+Connect\+Server}} (bool f)
+\begin{DoxyCompactList}\small\item\em Configure \mbox{\hyperlink{classwex_1_1tcp_a01c87092db80f47f3c735efeb45e3656}{client()}} blocking. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1tcp_a01c87092db80f47f3c735efeb45e3656}{client}} (const std\+::string \&ipaddr=\char`\"{}127.\+0.\+0.\+1\char`\"{}, const std\+::string \&port=\char`\"{}27678\char`\"{})
+\begin{DoxyCompactList}\small\item\em Create client socket connected to server. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1tcp_a2d6190161000423e4b6a64032ce40b6e}{server}} (const std\+::string \&port=\char`\"{}27654\char`\"{})
+\begin{DoxyCompactList}\small\item\em Create server socket waiting for connection requests. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1tcp_a02b8a89e598d96214c7730e4b548413f}\label{classwex_1_1tcp_a02b8a89e598d96214c7730e4b548413f}} 
+bool \mbox{\hyperlink{classwex_1_1tcp_a02b8a89e598d96214c7730e4b548413f}{is\+Connected}} ()
+\begin{DoxyCompactList}\small\item\em true if valid connection \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1tcp_a035680f1989aa858d7ded2005e4ee020}{send}} (const std\+::string \&msg)
+\begin{DoxyCompactList}\small\item\em send message to peer \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1tcp_a424a91ff0e809951155f1c41159818f4}\label{classwex_1_1tcp_a424a91ff0e809951155f1c41159818f4}} 
+void {\bfseries send} (const std\+::vector$<$ unsigned char $>$ \&msg)
+\item 
+void \mbox{\hyperlink{classwex_1_1tcp_a33508b2ded065beb8297c210b2311080}{read}} ()
+\begin{DoxyCompactList}\small\item\em asynchronous read message on tcp connection \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1tcp_a6edc385e40fd725f2c8372ea19104b53}\label{classwex_1_1tcp_a6edc385e40fd725f2c8372ea19104b53}} 
+std\+::string \mbox{\hyperlink{classwex_1_1tcp_a6edc385e40fd725f2c8372ea19104b53}{read\+Msg}} () const
+\begin{DoxyCompactList}\small\item\em Get last message from peer. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1tcp_aba3b22b480e39a0af59227231e3616bb}\label{classwex_1_1tcp_aba3b22b480e39a0af59227231e3616bb}} 
+std\+::string {\bfseries server\+Port} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Read/\+Write to TCP/\+IP socket, client or server. 
+
+Events ( peer connection, read completion ) generate messages to the parent window specified in the constructor.
+
+For sample code, see \href{https://github.com/JamesBremner/windex/blob/master/demo/tcpdemo.cpp}{\texttt{ https\+://github.\+com/\+James\+Bremner/windex/blob/master/demo/tcpdemo.\+cpp}} 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classwex_1_1tcp_ab75d7a6aeebd58085b6a217a541a3890}\label{classwex_1_1tcp_ab75d7a6aeebd58085b6a217a541a3890}} 
+\index{wex::tcp@{wex::tcp}!tcp@{tcp}}
+\index{tcp@{tcp}!wex::tcp@{wex::tcp}}
+\doxysubsubsection{\texorpdfstring{tcp()}{tcp()}}
+{\footnotesize\ttfamily wex\+::tcp\+::tcp (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$}]{parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+CTOR. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em parent} & window that will receive event messages \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1tcp_a01c87092db80f47f3c735efeb45e3656}\label{classwex_1_1tcp_a01c87092db80f47f3c735efeb45e3656}} 
+\index{wex::tcp@{wex::tcp}!client@{client}}
+\index{client@{client}!wex::tcp@{wex::tcp}}
+\doxysubsubsection{\texorpdfstring{client()}{client()}}
+{\footnotesize\ttfamily void wex\+::tcp\+::client (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{ipaddr = {\ttfamily \char`\"{}127.0.0.1\char`\"{}},  }\item[{const std\+::string \&}]{port = {\ttfamily \char`\"{}27678\char`\"{}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Create client socket connected to server. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em ipaddr} & IP address or name of server, defaults to same computer \\
+\hline
+\mbox{\texttt{ in}}  & {\em port} & defaults to 27678 \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1tcp_a33508b2ded065beb8297c210b2311080}\label{classwex_1_1tcp_a33508b2ded065beb8297c210b2311080}} 
+\index{wex::tcp@{wex::tcp}!read@{read}}
+\index{read@{read}!wex::tcp@{wex::tcp}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily void wex\+::tcp\+::read (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+asynchronous read message on tcp connection 
+
+Throws exception if no tcp connection
+
+Returns immediatly.
+
+When message is received, the parent window will receive tcp\+Read event
+
+If the connection is closed, or suffers any error the same event will be invoked, so the \mbox{\hyperlink{classwex_1_1tcp_a02b8a89e598d96214c7730e4b548413f}{is\+Connected()}} method should be checked. \mbox{\Hypertarget{classwex_1_1tcp_ac1943453eb093cd5bf458296ba1aa6a1}\label{classwex_1_1tcp_ac1943453eb093cd5bf458296ba1aa6a1}} 
+\index{wex::tcp@{wex::tcp}!RetryConnectServer@{RetryConnectServer}}
+\index{RetryConnectServer@{RetryConnectServer}!wex::tcp@{wex::tcp}}
+\doxysubsubsection{\texorpdfstring{RetryConnectServer()}{RetryConnectServer()}}
+{\footnotesize\ttfamily void wex\+::tcp\+::\+Retry\+Connect\+Server (\begin{DoxyParamCaption}\item[{bool}]{f }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Configure \mbox{\hyperlink{classwex_1_1tcp_a01c87092db80f47f3c735efeb45e3656}{client()}} blocking. 
+
+true\+: keep trying until connection made ( default on construction ) false\+: if connection refused return after one attempt \mbox{\Hypertarget{classwex_1_1tcp_a035680f1989aa858d7ded2005e4ee020}\label{classwex_1_1tcp_a035680f1989aa858d7ded2005e4ee020}} 
+\index{wex::tcp@{wex::tcp}!send@{send}}
+\index{send@{send}!wex::tcp@{wex::tcp}}
+\doxysubsubsection{\texorpdfstring{send()}{send()}}
+{\footnotesize\ttfamily void wex\+::tcp\+::send (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{msg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+send message to peer 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em msg} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1tcp_a2d6190161000423e4b6a64032ce40b6e}\label{classwex_1_1tcp_a2d6190161000423e4b6a64032ce40b6e}} 
+\index{wex::tcp@{wex::tcp}!server@{server}}
+\index{server@{server}!wex::tcp@{wex::tcp}}
+\doxysubsubsection{\texorpdfstring{server()}{server()}}
+{\footnotesize\ttfamily void wex\+::tcp\+::server (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{port = {\ttfamily \char`\"{}27654\char`\"{}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Create server socket waiting for connection requests. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em port,defaults} & to 27654\\
+\hline
+\end{DoxyParams}
+Starts listening for client connection. Returns immediatly throws runtime\+\_\+error exception on error sends event\+Msg\+ID\+::tcp\+Server\+Accept message to parent window when new client accepted
+
+One connection will be accepted. This can be called again if the connection is closed to wait for another client. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/tcp.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,106 @@
+\hypertarget{classwex_1_1layout}{}\doxysection{wex\+::layout Class Reference}
+\label{classwex_1_1layout}\index{wex::layout@{wex::layout}}
+
+
+A panel which arranges the widgets it contains in a grid.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::layout\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classwex_1_1layout}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1layout_ab1ff4b35e8d525cd589c28b74e5f272c}\label{classwex_1_1layout_ab1ff4b35e8d525cd589c28b74e5f272c}} 
+{\bfseries layout} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+void \mbox{\hyperlink{classwex_1_1layout_a061dc69496286b3d874f35a3cc275586}{grid}} (int cols)
+\begin{DoxyCompactList}\small\item\em Specify number of cols to use for layout. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1layout_a8072675d7f3d4d78ee460f4e01d1f679}{col\+Widths}} (const std\+::vector$<$ int $>$ \&vw)
+\begin{DoxyCompactList}\small\item\em Specify column widths. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1layout_aa3139deccc9c1c8defb44d2ee7ade18e}{colfirst}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em Specify that widgets should be added to fill columns first. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1layout_a7878be732d9f2faf7b9495417bc97300}\label{classwex_1_1layout_a7878be732d9f2faf7b9495417bc97300}} 
+void {\bfseries draw} (PAINTSTRUCT \&ps)
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A panel which arranges the widgets it contains in a grid. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1layout_aa3139deccc9c1c8defb44d2ee7ade18e}\label{classwex_1_1layout_aa3139deccc9c1c8defb44d2ee7ade18e}} 
+\index{wex::layout@{wex::layout}!colfirst@{colfirst}}
+\index{colfirst@{colfirst}!wex::layout@{wex::layout}}
+\doxysubsubsection{\texorpdfstring{colfirst()}{colfirst()}}
+{\footnotesize\ttfamily void wex\+::layout\+::colfirst (\begin{DoxyParamCaption}\item[{bool}]{f = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Specify that widgets should be added to fill columns first. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em f} & column first flag, defaault true\\
+\hline
+\end{DoxyParams}
+By default ( if this method is not called ) rows are filled first
+
+
+\begin{DoxyPre}
+ 1    2
+ 3    4
+ 5    6
+ \end{DoxyPre}
+
+
+In column first, the widgets are added like this
+
+
+\begin{DoxyPre}
+ 1    4
+ 2    5
+ 3    6
+ \end{DoxyPre}
+ \mbox{\Hypertarget{classwex_1_1layout_a8072675d7f3d4d78ee460f4e01d1f679}\label{classwex_1_1layout_a8072675d7f3d4d78ee460f4e01d1f679}} 
+\index{wex::layout@{wex::layout}!colWidths@{colWidths}}
+\index{colWidths@{colWidths}!wex::layout@{wex::layout}}
+\doxysubsubsection{\texorpdfstring{colWidths()}{colWidths()}}
+{\footnotesize\ttfamily void wex\+::layout\+::col\+Widths (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ int $>$ \&}]{vw }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Specify column widths. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em vw} & vector of widths for each column \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1layout_a061dc69496286b3d874f35a3cc275586}\label{classwex_1_1layout_a061dc69496286b3d874f35a3cc275586}} 
+\index{wex::layout@{wex::layout}!grid@{grid}}
+\index{grid@{grid}!wex::layout@{wex::layout}}
+\doxysubsubsection{\texorpdfstring{grid()}{grid()}}
+{\footnotesize\ttfamily void wex\+::layout\+::grid (\begin{DoxyParamCaption}\item[{int}]{cols }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Specify number of cols to use for layout. 
+
+The child windows will be laid out in the specified number of columns with the required number of rows to show them all.
+
+The space between columns and rows will be adjusted so that all child windows will be visible.
+
+The size of the child windows will not be altered. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

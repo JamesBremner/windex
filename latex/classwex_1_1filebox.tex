@@ -1,0 +1,107 @@
+\hypertarget{classwex_1_1filebox}{}\doxysection{wex\+::filebox Class Reference}
+\label{classwex_1_1filebox}\index{wex::filebox@{wex::filebox}}
+
+
+A popup window where used can browse folders and select a file.  
+
+
+
+
+{\ttfamily \#include $<$filebox.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1filebox_ac31590568f29e2b087e026ed3e286e34}\label{classwex_1_1filebox_ac31590568f29e2b087e026ed3e286e34}} 
+{\bfseries filebox} (\mbox{\hyperlink{classwex_1_1gui}{gui}} \&parent)
+\item 
+\mbox{\Hypertarget{classwex_1_1filebox_a09e3c553259344f20eafd0860c4cdc7a}\label{classwex_1_1filebox_a09e3c553259344f20eafd0860c4cdc7a}} 
+void {\bfseries init\+Dir} (const std\+::string \&dir)
+\item 
+\mbox{\Hypertarget{classwex_1_1filebox_a95231cc3d5e607d4465ebcc4f2b4025d}\label{classwex_1_1filebox_a95231cc3d5e607d4465ebcc4f2b4025d}} 
+void {\bfseries init\+File} (const std\+::string \&fname)
+\item 
+void \mbox{\hyperlink{classwex_1_1filebox_a65d8c98096f88474e761621b313e04c0}{filter}} (const char $\ast$fbuf)
+\begin{DoxyCompactList}\small\item\em Set file filters. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1filebox_ad144dcdcfb6611c4ebe3d08e6a9f6702}\label{classwex_1_1filebox_ad144dcdcfb6611c4ebe3d08e6a9f6702}} 
+void \mbox{\hyperlink{classwex_1_1filebox_ad144dcdcfb6611c4ebe3d08e6a9f6702}{default\+Extension}} (const std\+::string \&ext)
+\begin{DoxyCompactList}\small\item\em default extension for saved file, appended to whatever user enters \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1filebox_a9478cc8ae98001d32ac5b321397a4f5d}\label{classwex_1_1filebox_a9478cc8ae98001d32ac5b321397a4f5d}} 
+void {\bfseries title} (const std\+::string \&fname)
+\item 
+std\+::string \mbox{\hyperlink{classwex_1_1filebox_a7bc1502dfe09a8a19fd9dcfa8b6bd25a}{open}} ()
+\begin{DoxyCompactList}\small\item\em prompt user for one file to open \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{classwex_1_1filebox_a55837ecab5daa393807d114dda3f050c}{open\+Multi}} ()
+\begin{DoxyCompactList}\small\item\em prompt user for one or multiple files \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classwex_1_1filebox_aeaaa7a6e971840cd8e23cd8c93846929}{save}} ()
+\begin{DoxyCompactList}\small\item\em prompt user for folder and filename to save \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1filebox_a3ddf3950a7af50786fb7bc4d84472d09}\label{classwex_1_1filebox_a3ddf3950a7af50786fb7bc4d84472d09}} 
+std\+::string \mbox{\hyperlink{classwex_1_1filebox_a3ddf3950a7af50786fb7bc4d84472d09}{path}} () const
+\begin{DoxyCompactList}\small\item\em get filename entered by user \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A popup window where used can browse folders and select a file. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1filebox_a65d8c98096f88474e761621b313e04c0}\label{classwex_1_1filebox_a65d8c98096f88474e761621b313e04c0}} 
+\index{wex::filebox@{wex::filebox}!filter@{filter}}
+\index{filter@{filter}!wex::filebox@{wex::filebox}}
+\doxysubsubsection{\texorpdfstring{filter()}{filter()}}
+{\footnotesize\ttfamily void wex\+::filebox\+::filter (\begin{DoxyParamCaption}\item[{const char $\ast$}]{fbuf }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set file filters. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & containing filter specifications\\
+\hline
+\end{DoxyParams}
+example\+:
+
+\char`\"{}\+Log Files\textbackslash{}0$\ast$.\+log\textbackslash{}0\+All\textbackslash{}0$\ast$.$\ast$\textbackslash{}0\char`\"{} \mbox{\Hypertarget{classwex_1_1filebox_a7bc1502dfe09a8a19fd9dcfa8b6bd25a}\label{classwex_1_1filebox_a7bc1502dfe09a8a19fd9dcfa8b6bd25a}} 
+\index{wex::filebox@{wex::filebox}!open@{open}}
+\index{open@{open}!wex::filebox@{wex::filebox}}
+\doxysubsubsection{\texorpdfstring{open()}{open()}}
+{\footnotesize\ttfamily std\+::string wex\+::filebox\+::open (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+prompt user for one file to open 
+
+\begin{DoxyReturn}{Returns}
+path to file to be opened, \char`\"{}\char`\"{} if cancelled If user selects multiple files, only the first will be returned 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1filebox_a55837ecab5daa393807d114dda3f050c}\label{classwex_1_1filebox_a55837ecab5daa393807d114dda3f050c}} 
+\index{wex::filebox@{wex::filebox}!openMulti@{openMulti}}
+\index{openMulti@{openMulti}!wex::filebox@{wex::filebox}}
+\doxysubsubsection{\texorpdfstring{openMulti()}{openMulti()}}
+{\footnotesize\ttfamily std\+::vector$<$std\+::string$>$ wex\+::filebox\+::open\+Multi (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+prompt user for one or multiple files 
+
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$std\+::string$>$ filenames 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1filebox_aeaaa7a6e971840cd8e23cd8c93846929}\label{classwex_1_1filebox_aeaaa7a6e971840cd8e23cd8c93846929}} 
+\index{wex::filebox@{wex::filebox}!save@{save}}
+\index{save@{save}!wex::filebox@{wex::filebox}}
+\doxysubsubsection{\texorpdfstring{save()}{save()}}
+{\footnotesize\ttfamily std\+::string wex\+::filebox\+::save (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+prompt user for folder and filename to save 
+
+\begin{DoxyReturn}{Returns}
+path to file to be saved, \char`\"{}\char`\"{} if cancelled 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/filebox.\+h\end{DoxyCompactItemize}

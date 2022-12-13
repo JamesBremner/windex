@@ -1,0 +1,95 @@
+\hypertarget{classwex_1_1button}{}\doxysection{wex\+::button Class Reference}
+\label{classwex_1_1button}\index{wex::button@{wex::button}}
+
+
+A widget that user can click to start an action.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::button\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1button}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1button_a3a41082986059a3a7a2c382fe2ffb48c}\label{classwex_1_1button_a3a41082986059a3a7a2c382fe2ffb48c}} 
+{\bfseries button} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+void \mbox{\hyperlink{classwex_1_1button_a1a902eaa9dec38a73a7cde0c16813df1}{image\+File}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Specify bitmap image to be used for button, read from file. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classwex_1_1button_aaa4bffd6eaea61b32b7232f001c34d71}{image\+Resource}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Specify bitmap image to be used for button, read from resource. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1button_a1ba012afb6ef2e5318a03040f795a734}\label{classwex_1_1button_a1ba012afb6ef2e5318a03040f795a734}} 
+virtual void \mbox{\hyperlink{classwex_1_1button_a1ba012afb6ef2e5318a03040f795a734}{draw}} (PAINTSTRUCT \&ps)
+\begin{DoxyCompactList}\small\item\em draw \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1button_ad6d0dfcf3103bcc7804f79e2d9aded00}\label{classwex_1_1button_ad6d0dfcf3103bcc7804f79e2d9aded00}} 
+HBITMAP {\bfseries my\+Bitmap}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A widget that user can click to start an action. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1button_a1a902eaa9dec38a73a7cde0c16813df1}\label{classwex_1_1button_a1a902eaa9dec38a73a7cde0c16813df1}} 
+\index{wex::button@{wex::button}!imageFile@{imageFile}}
+\index{imageFile@{imageFile}!wex::button@{wex::button}}
+\doxysubsubsection{\texorpdfstring{imageFile()}{imageFile()}}
+{\footnotesize\ttfamily void wex\+::button\+::image\+File (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Specify bitmap image to be used for button, read from file. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em name} & of file \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1button_aaa4bffd6eaea61b32b7232f001c34d71}\label{classwex_1_1button_aaa4bffd6eaea61b32b7232f001c34d71}} 
+\index{wex::button@{wex::button}!imageResource@{imageResource}}
+\index{imageResource@{imageResource}!wex::button@{wex::button}}
+\doxysubsubsection{\texorpdfstring{imageResource()}{imageResource()}}
+{\footnotesize\ttfamily int wex\+::button\+::image\+Resource (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Specify bitmap image to be used for button, read from resource. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em name} & of resource \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 for no error
+\end{DoxyReturn}
+The image is stored in the executable.
+
+Specify images to be built into the executable in a .rc file
+
+
+\begin{DoxyPre}
+    MAINICON ICON "{}app.ico"{}
+    ZOOM\_IN\_BLACK BITMAP "{}zoom\_in\_black.bmp"{}
+    ZOOM\_IN\_RED BITMAP "{}zoom\_in\_red.bmp"{}
+\end{DoxyPre}
+
+
+On error, will set button to blank. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

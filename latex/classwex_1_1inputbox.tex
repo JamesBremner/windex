@@ -1,0 +1,103 @@
+\hypertarget{classwex_1_1inputbox}{}\doxysection{wex\+::inputbox Class Reference}
+\label{classwex_1_1inputbox}\index{wex::inputbox@{wex::inputbox}}
+
+
+A popup window where user can edit a set of values.  
+
+
+
+
+{\ttfamily \#include $<$inputbox.\+h$>$}
+
+Inheritance diagram for wex\+::inputbox\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1inputbox}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1inputbox_af76113b027e2f3e2246018452fb9f827}\label{classwex_1_1inputbox_af76113b027e2f3e2246018452fb9f827}} 
+void {\bfseries clear} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1inputbox_ae94f33666f086751c9ff23f9699758bc}\label{classwex_1_1inputbox_ae94f33666f086751c9ff23f9699758bc}} 
+\mbox{\hyperlink{classwex_1_1property}{wex\+::property}} \& {\bfseries add} (const std\+::string \&name, const std\+::string \&def)
+\item 
+\mbox{\Hypertarget{classwex_1_1inputbox_a8b9ef202ed2160fb90e446a78ced6145}\label{classwex_1_1inputbox_a8b9ef202ed2160fb90e446a78ced6145}} 
+\mbox{\hyperlink{classwex_1_1property}{wex\+::property}} \& {\bfseries choice} (const std\+::string \&name, const std\+::vector$<$ std\+::string $>$ \&\mbox{\hyperlink{classwex_1_1choice}{choice}})
+\item 
+\mbox{\Hypertarget{classwex_1_1inputbox_ab4ed484f141f25b1a6d7f70f260b5d66}\label{classwex_1_1inputbox_ab4ed484f141f25b1a6d7f70f260b5d66}} 
+\mbox{\hyperlink{classwex_1_1property}{wex\+::property}} \& {\bfseries check} (const std\+::string \&name, bool def)
+\item 
+void \mbox{\hyperlink{classwex_1_1inputbox_a05e7d610bce1d0824c5f5c655368a8be}{show\+Modal}} ()
+\begin{DoxyCompactList}\small\item\em Show inputbox and suspend all other windows interactions until this is closed. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classwex_1_1inputbox_a201a609f944da62b0f26c5b40037ecbf}{value}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em get value saved in property attribute \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1inputbox_aff5a83696005e17775c3570c862bb537}\label{classwex_1_1inputbox_aff5a83696005e17775c3570c862bb537}} 
+bool {\bfseries is\+Checked} (const std\+::string \&name)
+\item 
+\mbox{\Hypertarget{classwex_1_1inputbox_ab3c01de85a067b15bd249c5ec2df4bd9}\label{classwex_1_1inputbox_ab3c01de85a067b15bd249c5ec2df4bd9}} 
+void {\bfseries grid\+Width} (int w)
+\item 
+\mbox{\Hypertarget{classwex_1_1inputbox_ab81261a004a15030f71a0e4e8a8c3aae}\label{classwex_1_1inputbox_ab81261a004a15030f71a0e4e8a8c3aae}} 
+void {\bfseries label\+Width} (int w)
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A popup window where user can edit a set of values. 
+
+Usage\+: 
+\begin{DoxyPre}
+    \mbox{\hyperlink{classwex_1_1inputbox}{wex::inputbox}} ib;
+    ib.add("{}A"{},"{}72"{});
+    ib.add("{}B"{},"{}4600"{});
+    ib.choice("{}Choose"{}, \{ "{}X"{}, "{}Y"{}\} );
+    ib.showModal();
+
+    std::string msg =
+        "{}A is "{} + ib.value("{}A"{}) +
+        "{}, B is "{} + ib.value("{}B"{}) +
+        "{}, choice is "{} + ib.value("{}Choose"{});
+    msgbox(
+        form,
+        msg );
+\end{DoxyPre}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1inputbox_a05e7d610bce1d0824c5f5c655368a8be}\label{classwex_1_1inputbox_a05e7d610bce1d0824c5f5c655368a8be}} 
+\index{wex::inputbox@{wex::inputbox}!showModal@{showModal}}
+\index{showModal@{showModal}!wex::inputbox@{wex::inputbox}}
+\doxysubsubsection{\texorpdfstring{showModal()}{showModal()}}
+{\footnotesize\ttfamily void wex\+::inputbox\+::show\+Modal (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Show inputbox and suspend all other windows interactions until this is closed. 
+
+The property grid has been expanded to fit the properties as they were added this will adjust the form size and OK button size to accomodate the grid adjust for grid size\mbox{\Hypertarget{classwex_1_1inputbox_a201a609f944da62b0f26c5b40037ecbf}\label{classwex_1_1inputbox_a201a609f944da62b0f26c5b40037ecbf}} 
+\index{wex::inputbox@{wex::inputbox}!value@{value}}
+\index{value@{value}!wex::inputbox@{wex::inputbox}}
+\doxysubsubsection{\texorpdfstring{value()}{value()}}
+{\footnotesize\ttfamily std\+::string wex\+::inputbox\+::value (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+get value saved in property attribute 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em name} & of property \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+property value, if property not found \char`\"{}property not found\char`\"{} 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/inputbox.\+h\end{DoxyCompactItemize}

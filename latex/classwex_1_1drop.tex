@@ -1,0 +1,62 @@
+\hypertarget{classwex_1_1drop}{}\doxysection{wex\+::drop Class Reference}
+\label{classwex_1_1drop}\index{wex::drop@{wex::drop}}
+
+
+A widget where users can drop files dragged from windows explorer.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::drop\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1drop}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1drop_af4736519dde8621653752e52d6643b7d}\label{classwex_1_1drop_af4736519dde8621653752e52d6643b7d}} 
+{\bfseries drop} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A widget where users can drop files dragged from windows explorer. 
+
+
+\begin{DoxyPre}
+    // construct top level window
+    gui\& form = \mbox{\hyperlink{classwex_1_1maker_aee4687ec851077556856d959d74c40d4}{wex::maker::make()}};
+    form.move(\{ 50,50,500,400\});
+    form.text("{}Drop files demo"{});
+
+    // widget for receiving dropped files
+    drop\& dropper = wex::maker::make<wex::drop>( form );
+    dropper.move( 10,10,490,390 );
+    label\& instructions = wex::maker::make<wex::label>( dropper );
+    instructions.move(30,30,400,200);
+    instructions.text("{}Drop files here"{});
+
+    // dropped files event handler
+    dropper.events().drop( [\&](const std::vector<std::string>\& files )
+    \{
+        // display list of dropped files
+        std::string msg;
+        msg = "{}Files dropped:\(\backslash\)n"{};
+        for( auto\& f : files )
+            msg += f + "{}\(\backslash\)n "{};
+        instructions.text( msg );
+        instructions.update();
+    \});
+
+    form.show();
+\end{DoxyPre}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

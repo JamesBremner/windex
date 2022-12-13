@@ -1,0 +1,142 @@
+\hypertarget{classwex_1_1radiobutton}{}\doxysection{wex\+::radiobutton Class Reference}
+\label{classwex_1_1radiobutton}\index{wex::radiobutton@{wex::radiobutton}}
+
+
+A widget that user can click to select one of an exclusive set of options.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::radiobutton\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1radiobutton}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1radiobutton_a012b1d3612c8a612bfe2d601b0138ed7}\label{classwex_1_1radiobutton_a012b1d3612c8a612bfe2d601b0138ed7}} 
+{\bfseries radiobutton} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+void \mbox{\hyperlink{classwex_1_1radiobutton_a47862778e6c30a261574fc742ee50ee0}{first}} ()
+\begin{DoxyCompactList}\small\item\em Make this button first of a new group. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1radiobutton_a799d9ad1e57bf0a640ef4127b66e3375}\label{classwex_1_1radiobutton_a799d9ad1e57bf0a640ef4127b66e3375}} 
+bool \mbox{\hyperlink{classwex_1_1radiobutton_a799d9ad1e57bf0a640ef4127b66e3375}{is\+Checked}} ()
+\begin{DoxyCompactList}\small\item\em true if checked \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classwex_1_1radiobutton_a54c0453f7f0e3b7a0a44a9e48b10f006}{checked\+Offset}} ()
+\begin{DoxyCompactList}\small\item\em Which button in group is checked. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1radiobutton_a67092b91e7e7518ac9c22a47c98889c7}\label{classwex_1_1radiobutton_a67092b91e7e7518ac9c22a47c98889c7}} 
+void \mbox{\hyperlink{classwex_1_1radiobutton_a67092b91e7e7518ac9c22a47c98889c7}{check}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em set value true( default ) or false \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1radiobutton_ac7a5678c992921f76dfc233217af3a1b}\label{classwex_1_1radiobutton_ac7a5678c992921f76dfc233217af3a1b}} 
+virtual void {\bfseries draw} (PAINTSTRUCT \&ps)
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A widget that user can click to select one of an exclusive set of options. 
+
+
+\begin{DoxyPre}
+    // construct top level window
+    gui\& form = \mbox{\hyperlink{classwex_1_1maker_aee4687ec851077556856d959d74c40d4}{wex::maker::make()}};
+    form.move(\{ 50,50,400,400\});
+    form.text("{}A windex radiobutton"{});
+
+    \mbox{\hyperlink{classwex_1_1groupbox}{wex::groupbox}}\& P = wex::maker::make<wex::groupbox>( form );
+    P.move( 5, 5, 350,200 );
+
+    // use laypout to atomatically arrange buttons in columns
+    \mbox{\hyperlink{classwex_1_1layout}{wex::layout}}\& L = wex::maker::make<wex::layout>(P  );
+    L.move( 50, 50,300,190);
+    L.grid( 2 );                // specify 2 columns
+    L.colfirst();               // specify column first order
+
+    // first group of radiobuttons
+    radiobutton\& rb1 = wex::maker::make<radiobutton>(L);
+    rb1.first();                // first in group of interacting buttons
+    rb1.move( \{20,20,100,30\} );
+    rb1.text("{}Alpha"{});
+    radiobutton\& rb2 = wex::maker::make<radiobutton>(L);
+    rb2.move( \{20,60,100,30\} );
+    rb2.text("{}Beta"{});
+    radiobutton\& rb3 = wex::maker::make<radiobutton>(L);
+    rb3.move( \{20,100,100,30\} );
+    rb3.text("{}Gamma"{});
+
+    // second group of radio buttons
+    radiobutton\& rb4 = wex::maker::make<radiobutton>(L);
+    rb4.first();                // first in group of interacting buttons
+    rb4.size( 80,30 );
+    rb4.text("{}X"{});
+    radiobutton\& rb5 = wex::maker::make<radiobutton>(L);
+    rb5.size( 80,30 );
+    rb5.text("{}Y"{});
+    radiobutton\& rb6 = wex::maker::make<radiobutton>(L);
+    rb6.size( 80,30 );
+    rb6.text("{}Z"{});
+
+    // display a button
+    button\& btn = wex::maker::make<button>( form );
+    btn.move( \{20, 250, 150, 30 \} );
+    btn.text( "{}Show values entered"{} );
+
+    // popup a message box when button is clicked
+    // showing the values entered
+    btn.events().click([\&]
+    \{
+        std::string msg;
+        if( rb1.isChecked() )
+            msg = "{}Alpha"{};
+        else if( rb2.isChecked() )
+            msg = "{}Beta"{};
+        else if( rb3.isChecked() )
+            msg = "{}Gamma"{};
+        else
+            msg = "{}Nothing"{};
+        msg += "{} is checked"{};
+        msgbox(
+            form,
+            msg );
+    \});
+
+    // show the application
+    form.show();
+\end{DoxyPre}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1radiobutton_a54c0453f7f0e3b7a0a44a9e48b10f006}\label{classwex_1_1radiobutton_a54c0453f7f0e3b7a0a44a9e48b10f006}} 
+\index{wex::radiobutton@{wex::radiobutton}!checkedOffset@{checkedOffset}}
+\index{checkedOffset@{checkedOffset}!wex::radiobutton@{wex::radiobutton}}
+\doxysubsubsection{\texorpdfstring{checkedOffset()}{checkedOffset()}}
+{\footnotesize\ttfamily int wex\+::radiobutton\+::checked\+Offset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Which button in group is checked. 
+
+\begin{DoxyReturn}{Returns}
+zero-\/based offset of checked button in group this button belongs to, -\/1 if none checked 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1radiobutton_a47862778e6c30a261574fc742ee50ee0}\label{classwex_1_1radiobutton_a47862778e6c30a261574fc742ee50ee0}} 
+\index{wex::radiobutton@{wex::radiobutton}!first@{first}}
+\index{first@{first}!wex::radiobutton@{wex::radiobutton}}
+\doxysubsubsection{\texorpdfstring{first()}{first()}}
+{\footnotesize\ttfamily void wex\+::radiobutton\+::first (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Make this button first of a new group. 
+
+The other buttons in a group will become false when one is clicked but buttons in different groups will not be changed.
+
+All succeeding buttons, those that were constructed after this button and remain in the same group, are also moved to the new group. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

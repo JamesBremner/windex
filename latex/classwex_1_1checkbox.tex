@@ -1,0 +1,49 @@
+\hypertarget{classwex_1_1checkbox}{}\doxysection{wex\+::checkbox Class Reference}
+\label{classwex_1_1checkbox}\index{wex::checkbox@{wex::checkbox}}
+
+
+A widget that user can click to toggle a true/false value.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::checkbox\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1checkbox}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1checkbox_a3f78f89d773fe2e46bd9acc2c8a6b585}\label{classwex_1_1checkbox_a3f78f89d773fe2e46bd9acc2c8a6b585}} 
+{\bfseries checkbox} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+\mbox{\Hypertarget{classwex_1_1checkbox_a896a907246dc121894dff64d77667b72}\label{classwex_1_1checkbox_a896a907246dc121894dff64d77667b72}} 
+void \mbox{\hyperlink{classwex_1_1checkbox_a896a907246dc121894dff64d77667b72}{plus}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em set type to plus, useful to indicate expanded or collapsed property categories \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1checkbox_afb214676e6b0b0610e2daefc775e8da1}\label{classwex_1_1checkbox_afb214676e6b0b0610e2daefc775e8da1}} 
+void {\bfseries check} (bool f=true)
+\item 
+\mbox{\Hypertarget{classwex_1_1checkbox_a2884b728f39b239286a8bfa4959c38d5}\label{classwex_1_1checkbox_a2884b728f39b239286a8bfa4959c38d5}} 
+bool {\bfseries is\+Checked} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1checkbox_a60b3156198a916da74e54e455282b9ff}\label{classwex_1_1checkbox_a60b3156198a916da74e54e455282b9ff}} 
+virtual void {\bfseries draw} (PAINTSTRUCT \&ps)
+\item 
+\mbox{\Hypertarget{classwex_1_1checkbox_afbc5513d84b0913aaf03c3c25ce4d8bd}\label{classwex_1_1checkbox_afbc5513d84b0913aaf03c3c25ce4d8bd}} 
+void {\bfseries click\+Function} (std\+::function$<$ void(void)$>$ f)
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A widget that user can click to toggle a true/false value. 
+
+This draws a custom checkbox that expands with the height of the widget ( set by \mbox{\hyperlink{classwex_1_1gui_a44fb9d06fdb73260e3f155c4cac6886c}{move()}} ) ( The native checkbox is very small and its size cannot be changed ) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

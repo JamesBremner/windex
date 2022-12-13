@@ -1,0 +1,463 @@
+\hypertarget{classwex_1_1gui}{}\doxysection{wex\+::gui Class Reference}
+\label{classwex_1_1gui}\index{wex::gui@{wex::gui}}
+
+
+The base class for all windex gui elements.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::gui\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{classwex_1_1gui}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classwex_1_1gui_ae8ced09227dcf59687bad25b5ac407e7}{gui}} ()
+\begin{DoxyCompactList}\small\item\em Construct top level window with no parent. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classwex_1_1gui_a7f0e7176dd175c8f759e4a90390d9a1d}{gui}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent, const char $\ast$window\+\_\+class=\char`\"{}windex\char`\"{}, unsigned long style=WS\+\_\+\+CHILD, unsigned long exstyle=WS\+\_\+\+EX\+\_\+\+CONTROLPARENT)
+\begin{DoxyCompactList}\small\item\em Construct child of a parent. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a147be1d7a983f4bab441e204f4925671}\label{classwex_1_1gui_a147be1d7a983f4bab441e204f4925671}} 
+void \mbox{\hyperlink{classwex_1_1gui_a147be1d7a983f4bab441e204f4925671}{child}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$w)
+\begin{DoxyCompactList}\small\item\em register child on this window \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_aa1a0301b5f6edf96a98140909865385f}\label{classwex_1_1gui_aa1a0301b5f6edf96a98140909865385f}} 
+children\+\_\+t \& \mbox{\hyperlink{classwex_1_1gui_aa1a0301b5f6edf96a98140909865385f}{children}} ()
+\begin{DoxyCompactList}\small\item\em get vector of children \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_ab069b01f31657558faa2778fd837be57}\label{classwex_1_1gui_ab069b01f31657558faa2778fd837be57}} 
+\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$ {\bfseries parent} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a61a57c4c9da7d8ae46383fe5507b08db}\label{classwex_1_1gui_a61a57c4c9da7d8ae46383fe5507b08db}} 
+\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$ \mbox{\hyperlink{classwex_1_1gui_a61a57c4c9da7d8ae46383fe5507b08db}{find}} (int id)
+\begin{DoxyCompactList}\small\item\em find child window with specified id \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a051f25995473e6aae3a5df6ff728194b}\label{classwex_1_1gui_a051f25995473e6aae3a5df6ff728194b}} 
+void {\bfseries focus} ()
+\item 
+void \mbox{\hyperlink{classwex_1_1gui_adaf4ee784a232178cc304f1a35208345}{bgcolor}} (int color)
+\begin{DoxyCompactList}\small\item\em Change background color. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_abd1b690203015f54831684fb629b9bc8}\label{classwex_1_1gui_abd1b690203015f54831684fb629b9bc8}} 
+void {\bfseries nobgerase} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_aa9d4d5a1d38d66755b53d8104e4c2f40}\label{classwex_1_1gui_aa9d4d5a1d38d66755b53d8104e4c2f40}} 
+void \mbox{\hyperlink{classwex_1_1gui_aa9d4d5a1d38d66755b53d8104e4c2f40}{enable}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em Enable/\+Disable, default enable. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a370fb311935e0a64ea325720909ff687}\label{classwex_1_1gui_a370fb311935e0a64ea325720909ff687}} 
+bool {\bfseries is\+Enabled} () const
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a5c022177b646cce21f13a24daa443587}\label{classwex_1_1gui_a5c022177b646cce21f13a24daa443587}} 
+void \mbox{\hyperlink{classwex_1_1gui_a5c022177b646cce21f13a24daa443587}{font\+Height}} (int h)
+\begin{DoxyCompactList}\small\item\em Change font height for this and all child windows. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a09c8e7f9fc543ea2834fb8f6b1ebfc2c}\label{classwex_1_1gui_a09c8e7f9fc543ea2834fb8f6b1ebfc2c}} 
+void {\bfseries font\+Name} (const std\+::string \&name)
+\item 
+void \mbox{\hyperlink{classwex_1_1gui_a590ea5a21ec6c78b56d5187637f938d3}{icon}} (const std\+::string \&iconfilename)
+\begin{DoxyCompactList}\small\item\em Change icon. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a0ee400401d7692892a49ac16a0771300}\label{classwex_1_1gui_a0ee400401d7692892a49ac16a0771300}} 
+void {\bfseries cursor} (char $\ast$cursor\+ID)
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a6e3cd96e949377f1c0aeb2ac812af40a}\label{classwex_1_1gui_a6e3cd96e949377f1c0aeb2ac812af40a}} 
+int {\bfseries id} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a6b7804e4f2675d4bb526c99587ca9649}\label{classwex_1_1gui_a6b7804e4f2675d4bb526c99587ca9649}} 
+int {\bfseries bgcolor} () const
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_ae652dc8654d0baaa1f3b513c2cb85f0b}\label{classwex_1_1gui_ae652dc8654d0baaa1f3b513c2cb85f0b}} 
+void {\bfseries text} (const std\+::string \&text)
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a77bfc43c5ed8d0472271f55f5bbf7645}\label{classwex_1_1gui_a77bfc43c5ed8d0472271f55f5bbf7645}} 
+std\+::string {\bfseries text} () const
+\item 
+void \mbox{\hyperlink{classwex_1_1gui_af20931bb772360d0c558696bdc5a7f27}{scroll}} (bool f\+Horiz=true)
+\begin{DoxyCompactList}\small\item\em Add scrollbars. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1gui_a2fb2b8257083205b0969be452e5db9cc}{scroll\+Range}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Set the scrolling range. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structwex_1_1s_mouse}{s\+Mouse}} \mbox{\hyperlink{classwex_1_1gui_ad6555f709577418760b1485f2c1b8ebb}{get\+Mouse\+Status}} ()
+\begin{DoxyCompactList}\small\item\em Get mouse status. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1gui_ae8a67ea974c35eb77635fe4802dea2d9}{run}} ()
+\begin{DoxyCompactList}\small\item\em Run the windows message loop. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1gui_a255b44718c4a36b7d18b9ac25c5900db}{tooltip}} (const std\+::string \&text, int width=0)
+\begin{DoxyCompactList}\small\item\em Add tooltip that pops up helpfully when mouse cursor hovers over widget. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a5cfd8a6ad4b7ec7aef497a8d32b3fb8f}\label{classwex_1_1gui_a5cfd8a6ad4b7ec7aef497a8d32b3fb8f}} 
+virtual LRESULT {\bfseries Window\+Message\+Handler} (HWND hwnd, UINT u\+Msg, WPARAM w\+Param, LPARAM l\+Param)
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_add964f7355c605c970391784463fdb37}\label{classwex_1_1gui_add964f7355c605c970391784463fdb37}} 
+virtual void \mbox{\hyperlink{classwex_1_1gui_add964f7355c605c970391784463fdb37}{show}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em Show window and all children. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a73d78d0c4a9dfc91560022389adefc62}\label{classwex_1_1gui_a73d78d0c4a9dfc91560022389adefc62}} 
+void \mbox{\hyperlink{classwex_1_1gui_a73d78d0c4a9dfc91560022389adefc62}{show\+Modal}} ()
+\begin{DoxyCompactList}\small\item\em Show this window and suspend all other windows interactions until this is closed. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a372c21bf2add01bae8fd56966b92b959}\label{classwex_1_1gui_a372c21bf2add01bae8fd56966b92b959}} 
+void \mbox{\hyperlink{classwex_1_1gui_a372c21bf2add01bae8fd56966b92b959}{end\+Modal}} ()
+\begin{DoxyCompactList}\small\item\em Stop modal interaction and close window. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1gui_a12afe321b01f6fabf33a06920a033dbc}{update}} ()
+\begin{DoxyCompactList}\small\item\em force widget to redraw completely \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1gui_a44fb9d06fdb73260e3f155c4cac6886c}{move}} (const std\+::vector$<$ int $>$ \&r)
+\begin{DoxyCompactList}\small\item\em Move the window. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1gui_a4e86a5cbef36f92585b08ff500cd250e}{size}} (int w, int h)
+\begin{DoxyCompactList}\small\item\em Change size without moving top left corner. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1gui_aca683392ec4207f17ec4a696f638f289}{move}} (int x, int y)
+\begin{DoxyCompactList}\small\item\em Change position without changing size. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a81de2a316bda2230c698fbf97268b212}\label{classwex_1_1gui_a81de2a316bda2230c698fbf97268b212}} 
+void {\bfseries move} (int x, int y, int w, int h)
+\item 
+std\+::vector$<$ int $>$ \mbox{\hyperlink{classwex_1_1gui_a20ff38a971725a989545936c199ab9d2}{size}} ()
+\begin{DoxyCompactList}\small\item\em Size of window client area. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a6a8dddcad3b4716cf20a873c66e56ffb}\label{classwex_1_1gui_a6a8dddcad3b4716cf20a873c66e56ffb}} 
+std\+::vector$<$ int $>$ {\bfseries lefttop} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a3bd5adef2577ee8c8a437da6fe90606d}\label{classwex_1_1gui_a3bd5adef2577ee8c8a437da6fe90606d}} 
+\mbox{\hyperlink{classwex_1_1eventhandler}{eventhandler}} \& \mbox{\hyperlink{classwex_1_1gui_a3bd5adef2577ee8c8a437da6fe90606d}{events}} ()
+\begin{DoxyCompactList}\small\item\em Get event handler. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a93349cbd28fb50067b965d54f7c3fa34}\label{classwex_1_1gui_a93349cbd28fb50067b965d54f7c3fa34}} 
+HWND \mbox{\hyperlink{classwex_1_1gui_a93349cbd28fb50067b965d54f7c3fa34}{handle}} ()
+\begin{DoxyCompactList}\small\item\em get window handle \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a3c71c7f326fd75958ab9076888c962d4}\label{classwex_1_1gui_a3c71c7f326fd75958ab9076888c962d4}} 
+void \mbox{\hyperlink{classwex_1_1gui_a3c71c7f326fd75958ab9076888c962d4}{delete\+\_\+list}} (std\+::vector$<$ HWND $>$ $\ast$\mbox{\hyperlink{classwex_1_1list}{list}})
+\begin{DoxyCompactList}\small\item\em set delete list for when gui is detroyed \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a4aee1acf79b050bff717d1746677b9a9}\label{classwex_1_1gui_a4aee1acf79b050bff717d1746677b9a9}} 
+void \mbox{\hyperlink{classwex_1_1gui_a4aee1acf79b050bff717d1746677b9a9}{setfont}} (LOGFONT \&logfont, HFONT \&\mbox{\hyperlink{classwex_1_1gui_af60ae1db269922e9fb342eb1bdec87b5}{font}})
+\begin{DoxyCompactList}\small\item\em change font for this and all child windows \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_ac2628f76bfb4e1aa4ada59c2723033ce}\label{classwex_1_1gui_ac2628f76bfb4e1aa4ada59c2723033ce}} 
+void {\bfseries set\+Async\+Read\+Complete\+Msg\+ID} (int id)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classwex_1_1gui_a35ecd0dadb78b8590a56814370ed65a3}{Create}} (HWND parent, const char $\ast$window\+\_\+class, DWORD style, DWORD exstyle=0, int id=0)
+\begin{DoxyCompactList}\small\item\em Create the managed window. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1gui_af60ae1db269922e9fb342eb1bdec87b5}{font}} (LOGFONT \&logfont, HFONT \&font)
+\begin{DoxyCompactList}\small\item\em get font details \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a7573277e0a75a61236b2ffd83306cf58}\label{classwex_1_1gui_a7573277e0a75a61236b2ffd83306cf58}} 
+void \mbox{\hyperlink{classwex_1_1gui_a7573277e0a75a61236b2ffd83306cf58}{create\+New\+Font}} ()
+\begin{DoxyCompactList}\small\item\em Replace font used by this and child windows from logfont. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_ae295c75d9e2bea42eea3288b4b6afecb}\label{classwex_1_1gui_ae295c75d9e2bea42eea3288b4b6afecb}} 
+virtual void {\bfseries draw} (PAINTSTRUCT \&ps)
+\item 
+int \mbox{\hyperlink{classwex_1_1gui_ae5b60fcc333c7902e4ffe4e30630c731}{New\+ID}} ()
+\begin{DoxyCompactList}\small\item\em Create new, unique ID for gui element. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a806001980af480dfe597e4a84107ff07}\label{classwex_1_1gui_a806001980af480dfe597e4a84107ff07}} 
+int {\bfseries scroll\+Move} (SCROLLINFO \&si, int code)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_afc5922d198c63ffb3faa56b4525d0a80}\label{classwex_1_1gui_afc5922d198c63ffb3faa56b4525d0a80}} 
+HWND {\bfseries my\+Handle}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_aecab1798cf7b048392d9b6ba107e63e2}\label{classwex_1_1gui_aecab1798cf7b048392d9b6ba107e63e2}} 
+\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$ {\bfseries my\+Parent}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_aaba13c11f5cec44c1619db491a27f138}\label{classwex_1_1gui_aaba13c11f5cec44c1619db491a27f138}} 
+\mbox{\hyperlink{classwex_1_1eventhandler}{eventhandler}} {\bfseries my\+Events}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a36aac214dc7436dac35b1d194e670669}\label{classwex_1_1gui_a36aac214dc7436dac35b1d194e670669}} 
+int {\bfseries my\+BGColor}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a5da388789147e8d7786778a98df4bfc9}\label{classwex_1_1gui_a5da388789147e8d7786778a98df4bfc9}} 
+HBRUSH {\bfseries my\+BGBrush}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a45c5e3a8426fbaedf4f9028b559213f6}\label{classwex_1_1gui_a45c5e3a8426fbaedf4f9028b559213f6}} 
+LOGFONT {\bfseries my\+Log\+Font}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a373e1d88ea4f09d35e14df8fe83e3627}\label{classwex_1_1gui_a373e1d88ea4f09d35e14df8fe83e3627}} 
+HFONT {\bfseries my\+Font}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_adcde271c9648cc0d2a3d0142ca7babd7}\label{classwex_1_1gui_adcde271c9648cc0d2a3d0142ca7babd7}} 
+std\+::vector$<$ HWND $>$ $\ast$ {\bfseries my\+Delete\+List}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a854b6178ad5326e3e7d355736d416033}\label{classwex_1_1gui_a854b6178ad5326e3e7d355736d416033}} 
+std\+::string {\bfseries my\+Text}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_ad2eac5d3e55d18596dba27c2d73d5235}\label{classwex_1_1gui_ad2eac5d3e55d18596dba27c2d73d5235}} 
+int {\bfseries my\+ID}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a8915727d454f9b0580a2a12480fe1964}\label{classwex_1_1gui_a8915727d454f9b0580a2a12480fe1964}} 
+std\+::vector$<$ \mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$ $>$ \mbox{\hyperlink{classwex_1_1gui_a8915727d454f9b0580a2a12480fe1964}{my\+Child}}
+\begin{DoxyCompactList}\small\item\em gui elements to be displayed in this window \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_ac4eb62c95293f3346ba8629594c94eaf}\label{classwex_1_1gui_ac4eb62c95293f3346ba8629594c94eaf}} 
+bool \mbox{\hyperlink{classwex_1_1gui_ac4eb62c95293f3346ba8629594c94eaf}{myf\+Modal}}
+\begin{DoxyCompactList}\small\item\em true if element is being shown as modal \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a6e18823009185f386d8351c1de8735f6}\label{classwex_1_1gui_a6e18823009185f386d8351c1de8735f6}} 
+bool \mbox{\hyperlink{classwex_1_1gui_a6e18823009185f386d8351c1de8735f6}{myf\+Enabled}}
+\begin{DoxyCompactList}\small\item\em true if not disabled \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a13205f22f8530237f73a74f9a4865bf9}\label{classwex_1_1gui_a13205f22f8530237f73a74f9a4865bf9}} 
+bool {\bfseries myfnobgerase}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a161b3410b8a956dc23fab9173c21da13}\label{classwex_1_1gui_a161b3410b8a956dc23fab9173c21da13}} 
+HWND {\bfseries my\+Tool\+Tip}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a2013c49c970bb19ea2ee67fcea042568}\label{classwex_1_1gui_a2013c49c970bb19ea2ee67fcea042568}} 
+unsigned int \mbox{\hyperlink{classwex_1_1gui_a2013c49c970bb19ea2ee67fcea042568}{my\+Async\+Read\+Complete\+Msg\+ID}}
+\begin{DoxyCompactList}\small\item\em handle to tooltip control for this gui element \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1gui_a31f0ed4aeed044aa8755d0b1c7966ff4}\label{classwex_1_1gui_a31f0ed4aeed044aa8755d0b1c7966ff4}} 
+char $\ast$ {\bfseries my\+Cursor\+ID}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a765ed54aeae5d6526a665b338c984156}\label{classwex_1_1gui_a765ed54aeae5d6526a665b338c984156}} 
+bool {\bfseries myf\+Scroll\+Horiz}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The base class for all windex gui elements. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classwex_1_1gui_ae8ced09227dcf59687bad25b5ac407e7}\label{classwex_1_1gui_ae8ced09227dcf59687bad25b5ac407e7}} 
+\index{wex::gui@{wex::gui}!gui@{gui}}
+\index{gui@{gui}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{gui()}{gui()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily wex\+::gui\+::gui (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct top level window with no parent. 
+
+Application code should NOT use this constructor directly, nor that of any specilaization classes. Intead use \mbox{\hyperlink{classwex_1_1maker_aee4687ec851077556856d959d74c40d4}{maker\+::make()}}. \mbox{\Hypertarget{classwex_1_1gui_a7f0e7176dd175c8f759e4a90390d9a1d}\label{classwex_1_1gui_a7f0e7176dd175c8f759e4a90390d9a1d}} 
+\index{wex::gui@{wex::gui}!gui@{gui}}
+\index{gui@{gui}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{gui()}{gui()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily wex\+::gui\+::gui (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$}]{parent,  }\item[{const char $\ast$}]{window\+\_\+class = {\ttfamily \char`\"{}windex\char`\"{}},  }\item[{unsigned long}]{style = {\ttfamily WS\+\_\+CHILD},  }\item[{unsigned long}]{exstyle = {\ttfamily WS\+\_\+EX\+\_\+CONTROLPARENT} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct child of a parent. 
+
+Application code should NOT use this constructor directly, nor that of any sepecilaization classes. Intead use \mbox{\hyperlink{classwex_1_1maker_aee4687ec851077556856d959d74c40d4}{maker\+::make()}}. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1gui_adaf4ee784a232178cc304f1a35208345}\label{classwex_1_1gui_adaf4ee784a232178cc304f1a35208345}} 
+\index{wex::gui@{wex::gui}!bgcolor@{bgcolor}}
+\index{bgcolor@{bgcolor}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{bgcolor()}{bgcolor()}}
+{\footnotesize\ttfamily void wex\+::gui\+::bgcolor (\begin{DoxyParamCaption}\item[{int}]{color }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Change background color. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em color} & in BGR format eg 0x0000\+FF for red \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_a35ecd0dadb78b8590a56814370ed65a3}\label{classwex_1_1gui_a35ecd0dadb78b8590a56814370ed65a3}} 
+\index{wex::gui@{wex::gui}!Create@{Create}}
+\index{Create@{Create}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily void wex\+::gui\+::\+Create (\begin{DoxyParamCaption}\item[{HWND}]{parent,  }\item[{const char $\ast$}]{window\+\_\+class,  }\item[{DWORD}]{style,  }\item[{DWORD}]{exstyle = {\ttfamily 0},  }\item[{int}]{id = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Create the managed window. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em parent} & handle of parent window \\
+\hline
+\mbox{\texttt{ in}}  & {\em window\+\_\+class} & controls which callback function handles window messages \\
+\hline
+\mbox{\texttt{ in}}  & {\em style} & \\
+\hline
+\mbox{\texttt{ in}}  & {\em exstyle} & \\
+\hline
+\mbox{\texttt{ in}}  & {\em id} & identifies which control generated notification \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_af60ae1db269922e9fb342eb1bdec87b5}\label{classwex_1_1gui_af60ae1db269922e9fb342eb1bdec87b5}} 
+\index{wex::gui@{wex::gui}!font@{font}}
+\index{font@{font}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{font()}{font()}}
+{\footnotesize\ttfamily void wex\+::gui\+::font (\begin{DoxyParamCaption}\item[{LOGFONT \&}]{logfont,  }\item[{HFONT \&}]{font }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+get font details 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em logfont} & logical font \\
+\hline
+\mbox{\texttt{ out}}  & {\em font} & Used by child window constructor to inherit font from parent. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_ad6555f709577418760b1485f2c1b8ebb}\label{classwex_1_1gui_ad6555f709577418760b1485f2c1b8ebb}} 
+\index{wex::gui@{wex::gui}!getMouseStatus@{getMouseStatus}}
+\index{getMouseStatus@{getMouseStatus}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{getMouseStatus()}{getMouseStatus()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structwex_1_1s_mouse}{s\+Mouse}} wex\+::gui\+::get\+Mouse\+Status (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get mouse status. 
+
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{structwex_1_1s_mouse}{s\+Mouse}} structure containing x and y positions, etc 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1gui_a590ea5a21ec6c78b56d5187637f938d3}\label{classwex_1_1gui_a590ea5a21ec6c78b56d5187637f938d3}} 
+\index{wex::gui@{wex::gui}!icon@{icon}}
+\index{icon@{icon}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{icon()}{icon()}}
+{\footnotesize\ttfamily void wex\+::gui\+::icon (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{iconfilename }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Change icon. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em iconfilename} & Use to set the application icon in the taskbar \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_a44fb9d06fdb73260e3f155c4cac6886c}\label{classwex_1_1gui_a44fb9d06fdb73260e3f155c4cac6886c}} 
+\index{wex::gui@{wex::gui}!move@{move}}
+\index{move@{move}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{move()}{move()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void wex\+::gui\+::move (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ int $>$ \&}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Move the window. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em r} & specify location and size r contains 4 values, \{ x, y, width, height \} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_aca683392ec4207f17ec4a696f638f289}\label{classwex_1_1gui_aca683392ec4207f17ec4a696f638f289}} 
+\index{wex::gui@{wex::gui}!move@{move}}
+\index{move@{move}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{move()}{move()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void wex\+::gui\+::move (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Change position without changing size. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em x} & left \\
+\hline
+\mbox{\texttt{ in}}  & {\em y} & top \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_ae5b60fcc333c7902e4ffe4e30630c731}\label{classwex_1_1gui_ae5b60fcc333c7902e4ffe4e30630c731}} 
+\index{wex::gui@{wex::gui}!NewID@{NewID}}
+\index{NewID@{NewID}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{NewID()}{NewID()}}
+{\footnotesize\ttfamily int wex\+::gui\+::\+New\+ID (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Create new, unique ID for gui element. 
+
+The first ID will be 1, and is assumed to be the application window which causes the application to quit when destroyed \mbox{\Hypertarget{classwex_1_1gui_ae8a67ea974c35eb77635fe4802dea2d9}\label{classwex_1_1gui_ae8a67ea974c35eb77635fe4802dea2d9}} 
+\index{wex::gui@{wex::gui}!run@{run}}
+\index{run@{run}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily void wex\+::gui\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Run the windows message loop. 
+
+This waits for events to occur and runs the requested event handler when they do.
+
+It does not return until the application window ( that is the first top level window created ) is closed \mbox{\Hypertarget{classwex_1_1gui_af20931bb772360d0c558696bdc5a7f27}\label{classwex_1_1gui_af20931bb772360d0c558696bdc5a7f27}} 
+\index{wex::gui@{wex::gui}!scroll@{scroll}}
+\index{scroll@{scroll}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{scroll()}{scroll()}}
+{\footnotesize\ttfamily void wex\+::gui\+::scroll (\begin{DoxyParamCaption}\item[{bool}]{f\+Horiz = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add scrollbars. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em f\+Horiz} & true if horizontal scroll reuired, default true \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_a2fb2b8257083205b0969be452e5db9cc}\label{classwex_1_1gui_a2fb2b8257083205b0969be452e5db9cc}} 
+\index{wex::gui@{wex::gui}!scrollRange@{scrollRange}}
+\index{scrollRange@{scrollRange}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{scrollRange()}{scrollRange()}}
+{\footnotesize\ttfamily void wex\+::gui\+::scroll\+Range (\begin{DoxyParamCaption}\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the scrolling range. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em width} & of the underlying window to be scrolled over \\
+\hline
+\mbox{\texttt{ in}}  & {\em height} & of the underlying window to be scrolled over\\
+\hline
+\end{DoxyParams}
+This sets how far scrolling can move horixonatally and vertically. The width and height should be set to the maximum locations to be shown when scrolled to the limits.
+
+This should be called again if the window size changes. \mbox{\Hypertarget{classwex_1_1gui_a20ff38a971725a989545936c199ab9d2}\label{classwex_1_1gui_a20ff38a971725a989545936c199ab9d2}} 
+\index{wex::gui@{wex::gui}!size@{size}}
+\index{size@{size}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{size()}{size()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily std\+::vector$<$int$>$ wex\+::gui\+::size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Size of window client area. 
+
+\begin{DoxyReturn}{Returns}
+vector \mbox{[}0\mbox{]} width of window in pixels \mbox{[}1\mbox{]} height of window in pixels 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1gui_a4e86a5cbef36f92585b08ff500cd250e}\label{classwex_1_1gui_a4e86a5cbef36f92585b08ff500cd250e}} 
+\index{wex::gui@{wex::gui}!size@{size}}
+\index{size@{size}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{size()}{size()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void wex\+::gui\+::size (\begin{DoxyParamCaption}\item[{int}]{w,  }\item[{int}]{h }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Change size without moving top left corner. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em w} & width \\
+\hline
+\mbox{\texttt{ in}}  & {\em h} & height \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_a255b44718c4a36b7d18b9ac25c5900db}\label{classwex_1_1gui_a255b44718c4a36b7d18b9ac25c5900db}} 
+\index{wex::gui@{wex::gui}!tooltip@{tooltip}}
+\index{tooltip@{tooltip}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{tooltip()}{tooltip()}}
+{\footnotesize\ttfamily void wex\+::gui\+::tooltip (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{text,  }\item[{int}]{width = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add tooltip that pops up helpfully when mouse cursor hovers over widget. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em text} & of tooltip \\
+\hline
+\mbox{\texttt{ in}}  & {\em width} & of multiline tooltip, default single line \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_a12afe321b01f6fabf33a06920a033dbc}\label{classwex_1_1gui_a12afe321b01f6fabf33a06920a033dbc}} 
+\index{wex::gui@{wex::gui}!update@{update}}
+\index{update@{update}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void wex\+::gui\+::update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+force widget to redraw completely 
+
+Windex makes no effort to auto update the screen display. If application code alters something and the change should be seen immediatly then \mbox{\hyperlink{classwex_1_1gui_a12afe321b01f6fabf33a06920a033dbc}{update()}} should be called, either on the widget that has changed or the top level window that contains the changed widgets. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

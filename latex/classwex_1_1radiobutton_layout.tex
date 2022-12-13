@@ -1,0 +1,118 @@
+\hypertarget{classwex_1_1radiobutton_layout}{}\doxysection{wex\+::radiobutton\+Layout Class Reference}
+\label{classwex_1_1radiobutton_layout}\index{wex::radiobuttonLayout@{wex::radiobuttonLayout}}
+
+
+Widget to layout a group of radio buttons.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::radiobutton\+Layout\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classwex_1_1radiobutton_layout}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1radiobutton_layout_aca3767429aa585b467d5a350d7bfb569}\label{classwex_1_1radiobutton_layout_aca3767429aa585b467d5a350d7bfb569}} 
+{\bfseries radiobutton\+Layout} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+\mbox{\hyperlink{classwex_1_1radiobutton}{radiobutton}} \& \mbox{\hyperlink{classwex_1_1radiobutton_layout_a6fb39872e4d361084b077aec816f2a12}{add}} ()
+\begin{DoxyCompactList}\small\item\em add a radio button \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1radiobutton_layout_ab475f75eff9985ff22fe0dac25eb1279}\label{classwex_1_1radiobutton_layout_ab475f75eff9985ff22fe0dac25eb1279}} 
+int \mbox{\hyperlink{classwex_1_1radiobutton_layout_ab475f75eff9985ff22fe0dac25eb1279}{checked}} ()
+\begin{DoxyCompactList}\small\item\em 0-\/based index of checked radio button \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1radiobutton_layout_a6b1a7804c640d1ab55933419cd28136c}{check}} (int i, bool f=true)
+\begin{DoxyCompactList}\small\item\em set status of radio button \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1radiobutton_layout_a6959878c2db603cefdfda04ced5d092a}{enable}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em Enable/disable all radio buttons. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Widget to layout a group of radio buttons. 
+
+Usage\+: 
+\begin{DoxyPre}
+    \mbox{\hyperlink{classwex_1_1radiobutton_layout}{wex::radiobuttonLayout}} \& myGroup = wex::maker::make<wex::radiobuttonLayout>( form );
+    myGroup.move( \{50,50,200,400\} );
+    myGroup.grid(1);        // layout in one column
+    \mbox{\hyperlink{classwex_1_1radiobutton}{wex::radiobutton}}\& rb = myGroup.add();
+    rb.text("{}Heart"{});
+    rb.size(60,20);
+    rb.events().click([this]
+    \{
+        Change( 1 );
+    \});
+    rb = myGroup.add();
+    rb.text("{}EMI 1"{});
+    rb.size(60,20);
+    rb.events().click([this]
+    \{
+        Change(2 );
+    \});
+    rb = myGroup.add();
+    rb.text("{}EMI 2"{});
+    rb.size(60,20);
+    rb.events().click([this]
+    \{
+        Change( 3 );
+    \});
+\end{DoxyPre}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1radiobutton_layout_a6fb39872e4d361084b077aec816f2a12}\label{classwex_1_1radiobutton_layout_a6fb39872e4d361084b077aec816f2a12}} 
+\index{wex::radiobuttonLayout@{wex::radiobuttonLayout}!add@{add}}
+\index{add@{add}!wex::radiobuttonLayout@{wex::radiobuttonLayout}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classwex_1_1radiobutton}{radiobutton}}\& wex\+::radiobutton\+Layout\+::add (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+add a radio button 
+
+\begin{DoxyReturn}{Returns}
+reference to radibutton 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1radiobutton_layout_a6b1a7804c640d1ab55933419cd28136c}\label{classwex_1_1radiobutton_layout_a6b1a7804c640d1ab55933419cd28136c}} 
+\index{wex::radiobuttonLayout@{wex::radiobuttonLayout}!check@{check}}
+\index{check@{check}!wex::radiobuttonLayout@{wex::radiobuttonLayout}}
+\doxysubsubsection{\texorpdfstring{check()}{check()}}
+{\footnotesize\ttfamily void wex\+::radiobutton\+Layout\+::check (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{bool}]{f = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+set status of radio button 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em i} & zero-\/based index of radio button \\
+\hline
+\mbox{\texttt{ in}}  & {\em f} & true or false, default true \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1radiobutton_layout_a6959878c2db603cefdfda04ced5d092a}\label{classwex_1_1radiobutton_layout_a6959878c2db603cefdfda04ced5d092a}} 
+\index{wex::radiobuttonLayout@{wex::radiobuttonLayout}!enable@{enable}}
+\index{enable@{enable}!wex::radiobuttonLayout@{wex::radiobuttonLayout}}
+\doxysubsubsection{\texorpdfstring{enable()}{enable()}}
+{\footnotesize\ttfamily void wex\+::radiobutton\+Layout\+::enable (\begin{DoxyParamCaption}\item[{bool}]{f = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enable/disable all radio buttons. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em f} & status required, true for enabled, default enabled \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

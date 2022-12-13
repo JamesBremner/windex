@@ -1,0 +1,59 @@
+\hypertarget{classwex_1_1modal_mgr}{}\doxysection{wex\+::modal\+Mgr Class Reference}
+\label{classwex_1_1modal_mgr}\index{wex::modalMgr@{wex::modalMgr}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classwex_1_1modal_mgr_a3905df25f353ffb450867ab96d274a0f}{set}} (int id, HWND h)
+\begin{DoxyCompactList}\small\item\em Set modal running. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classwex_1_1modal_mgr_a4e88864fa8175fc8e4d43f9877c08879}{can\+Close}} (int id)
+\begin{DoxyCompactList}\small\item\em Can a window be closed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1modal_mgr_aabbc477a6e3d25bab16980a2a6c0c485}\label{classwex_1_1modal_mgr_aabbc477a6e3d25bab16980a2a6c0c485}} 
+static \mbox{\hyperlink{classwex_1_1modal_mgr}{modal\+Mgr}} \& \mbox{\hyperlink{classwex_1_1modal_mgr_aabbc477a6e3d25bab16980a2a6c0c485}{get}} ()
+\begin{DoxyCompactList}\small\item\em get reference to singleton modal manager \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1modal_mgr_a4e88864fa8175fc8e4d43f9877c08879}\label{classwex_1_1modal_mgr_a4e88864fa8175fc8e4d43f9877c08879}} 
+\index{wex::modalMgr@{wex::modalMgr}!canClose@{canClose}}
+\index{canClose@{canClose}!wex::modalMgr@{wex::modalMgr}}
+\doxysubsubsection{\texorpdfstring{canClose()}{canClose()}}
+{\footnotesize\ttfamily bool wex\+::modal\+Mgr\+::can\+Close (\begin{DoxyParamCaption}\item[{int}]{id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Can a window be closed. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em is} & of window requesting to be closed \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if window can be closed
+\end{DoxyReturn}
+Window can be closed if no modal running or if window to be closed is the the running modal \mbox{\Hypertarget{classwex_1_1modal_mgr_a3905df25f353ffb450867ab96d274a0f}\label{classwex_1_1modal_mgr_a3905df25f353ffb450867ab96d274a0f}} 
+\index{wex::modalMgr@{wex::modalMgr}!set@{set}}
+\index{set@{set}!wex::modalMgr@{wex::modalMgr}}
+\doxysubsubsection{\texorpdfstring{set()}{set()}}
+{\footnotesize\ttfamily bool wex\+::modal\+Mgr\+::set (\begin{DoxyParamCaption}\item[{int}]{id,  }\item[{HWND}]{h }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set modal running. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em id} & of modal window starting to run \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if successful, false if other modal winow running
+\end{DoxyReturn}
+If other modal window running, it gets focus 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

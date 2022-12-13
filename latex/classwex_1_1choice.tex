@@ -1,0 +1,93 @@
+\hypertarget{classwex_1_1choice}{}\doxysection{wex\+::choice Class Reference}
+\label{classwex_1_1choice}\index{wex::choice@{wex::choice}}
+
+
+A widget where user can choose from a dropdown list of strings.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::choice\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1choice}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1choice_af987f95a2450d5720d76f86fe5ce3ad7}\label{classwex_1_1choice_af987f95a2450d5720d76f86fe5ce3ad7}} 
+{\bfseries choice} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+\mbox{\Hypertarget{classwex_1_1choice_aa147d8672dfaca27f6342fb211d24aa3}\label{classwex_1_1choice_aa147d8672dfaca27f6342fb211d24aa3}} 
+void \mbox{\hyperlink{classwex_1_1choice_aa147d8672dfaca27f6342fb211d24aa3}{move}} (int x, int y, int w, int h)
+\begin{DoxyCompactList}\small\item\em Override move to ensure height is sufficient to allow dropdown to apprear. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1choice_a390c294db741d6359f8e149c6c109630}\label{classwex_1_1choice_a390c294db741d6359f8e149c6c109630}} 
+void \mbox{\hyperlink{classwex_1_1choice_a390c294db741d6359f8e149c6c109630}{item\+Height}} (int h)
+\begin{DoxyCompactList}\small\item\em set item height in drop doown list \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1choice_a8c4aa96441ec99f73c2a6069b0ee941e}\label{classwex_1_1choice_a8c4aa96441ec99f73c2a6069b0ee941e}} 
+void \mbox{\hyperlink{classwex_1_1choice_a8c4aa96441ec99f73c2a6069b0ee941e}{add}} (const std\+::string \&s)
+\begin{DoxyCompactList}\small\item\em Add an option. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1choice_a07a4b86ed1550beb8fb1f1847aef0a74}\label{classwex_1_1choice_a07a4b86ed1550beb8fb1f1847aef0a74}} 
+void \mbox{\hyperlink{classwex_1_1choice_a07a4b86ed1550beb8fb1f1847aef0a74}{clear}} ()
+\begin{DoxyCompactList}\small\item\em Clear all options. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1choice_a956bf898533d8a52a85c4ff7b54645e1}{select}} (int i)
+\begin{DoxyCompactList}\small\item\em Select by index. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1choice_a9378eba68d0113567a982d46b9d04faa}{select}} (const std\+::string \&s)
+\begin{DoxyCompactList}\small\item\em Select by string. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1choice_a1817fe56ba165d8776044d084f311ea6}\label{classwex_1_1choice_a1817fe56ba165d8776044d084f311ea6}} 
+int \mbox{\hyperlink{classwex_1_1choice_a1817fe56ba165d8776044d084f311ea6}{selected\+Index}} ()
+\begin{DoxyCompactList}\small\item\em get index of selected item \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1choice_ac2b416db713e096a83b29452e908ffd5}\label{classwex_1_1choice_ac2b416db713e096a83b29452e908ffd5}} 
+std\+::string \mbox{\hyperlink{classwex_1_1choice_ac2b416db713e096a83b29452e908ffd5}{selected\+Text}} ()
+\begin{DoxyCompactList}\small\item\em get text of selected item \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1choice_a16ea1c5d523e69af8f1038f16cf30433}\label{classwex_1_1choice_a16ea1c5d523e69af8f1038f16cf30433}} 
+std\+::string \mbox{\hyperlink{classwex_1_1choice_a16ea1c5d523e69af8f1038f16cf30433}{text}} (int i)
+\begin{DoxyCompactList}\small\item\em get text by index \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1choice_abd9d0808ddb33bf2ff7ddefb63411765}\label{classwex_1_1choice_abd9d0808ddb33bf2ff7ddefb63411765}} 
+int \mbox{\hyperlink{classwex_1_1choice_abd9d0808ddb33bf2ff7ddefb63411765}{count}} ()
+\begin{DoxyCompactList}\small\item\em get count of items \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A widget where user can choose from a dropdown list of strings. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1choice_a9378eba68d0113567a982d46b9d04faa}\label{classwex_1_1choice_a9378eba68d0113567a982d46b9d04faa}} 
+\index{wex::choice@{wex::choice}!select@{select}}
+\index{select@{select}!wex::choice@{wex::choice}}
+\doxysubsubsection{\texorpdfstring{select()}{select()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void wex\+::choice\+::select (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Select by string. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em s} & the string to select \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1choice_a956bf898533d8a52a85c4ff7b54645e1}\label{classwex_1_1choice_a956bf898533d8a52a85c4ff7b54645e1}} 
+\index{wex::choice@{wex::choice}!select@{select}}
+\index{select@{select}!wex::choice@{wex::choice}}
+\doxysubsubsection{\texorpdfstring{select()}{select()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void wex\+::choice\+::select (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Select by index. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em i} & index of item to selecct, -\/1 clears selection \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

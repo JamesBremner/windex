@@ -1,0 +1,88 @@
+\hypertarget{classwex_1_1table}{}\doxysection{wex\+::table Class Reference}
+\label{classwex_1_1table}\index{wex::table@{wex::table}}
+
+
+A read only table of values.  
+
+
+
+
+{\ttfamily \#include $<$table.\+h$>$}
+
+Inheritance diagram for wex\+::table\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1table}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1table_a6994b15e5ab5045aa293e75c982ed308}\label{classwex_1_1table_a6994b15e5ab5045aa293e75c982ed308}} 
+{\bfseries table} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+void \mbox{\hyperlink{classwex_1_1table_af80c927d3154234b9c80f6542b6c3ba4}{set}} (const std\+::vector$<$ std\+::vector$<$ std\+::string $>$$>$ \&val)
+\begin{DoxyCompactList}\small\item\em Set table values. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1table_aa84111e491c80a7d53969d664cefec3e}{set}} (const std\+::vector$<$ std\+::string $>$ \&val, int colcount)
+\begin{DoxyCompactList}\small\item\em Set table values. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1table_a6734bde64a7a4146639a1056f396b8a9}{row\+Inc}} (int i)
+\begin{DoxyCompactList}\small\item\em Move display window. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A read only table of values. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1table_a6734bde64a7a4146639a1056f396b8a9}\label{classwex_1_1table_a6734bde64a7a4146639a1056f396b8a9}} 
+\index{wex::table@{wex::table}!rowInc@{rowInc}}
+\index{rowInc@{rowInc}!wex::table@{wex::table}}
+\doxysubsubsection{\texorpdfstring{rowInc()}{rowInc()}}
+{\footnotesize\ttfamily void wex\+::table\+::row\+Inc (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Move display window. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & increment for row to display at top of window \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1table_aa84111e491c80a7d53969d664cefec3e}\label{classwex_1_1table_aa84111e491c80a7d53969d664cefec3e}} 
+\index{wex::table@{wex::table}!set@{set}}
+\index{set@{set}!wex::table@{wex::table}}
+\doxysubsubsection{\texorpdfstring{set()}{set()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void wex\+::table\+::set (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ std\+::string $>$ \&}]{val,  }\item[{int}]{colcount }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set table values. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & 1D vector of values, cols in row \\
+\hline
+{\em colcount} & count of columns in a row \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1table_af80c927d3154234b9c80f6542b6c3ba4}\label{classwex_1_1table_af80c927d3154234b9c80f6542b6c3ba4}} 
+\index{wex::table@{wex::table}!set@{set}}
+\index{set@{set}!wex::table@{wex::table}}
+\doxysubsubsection{\texorpdfstring{set()}{set()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void wex\+::table\+::set (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ std\+::vector$<$ std\+::string $>$$>$ \&}]{val }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set table values. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & 2D vector of values, cols in rows \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/table.\+h\end{DoxyCompactItemize}

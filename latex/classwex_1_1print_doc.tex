@@ -1,0 +1,76 @@
+\hypertarget{classwex_1_1print_doc}{}\doxysection{wex\+::print\+Doc Class Reference}
+\label{classwex_1_1print_doc}\index{wex::printDoc@{wex::printDoc}}
+
+
+Print a text document.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classwex_1_1print_doc_a9dee684dc17c30f1b28de8636b9fdfc1}{print\+Doc}} (const std\+::string \&title=\char`\"{}print\+Doc\char`\"{})
+\begin{DoxyCompactList}\small\item\em CTOR. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1print_doc_a5001820d4115237092414966b7abe847}\label{classwex_1_1print_doc_a5001820d4115237092414966b7abe847}} 
+\mbox{\hyperlink{classwex_1_1print_doc_a5001820d4115237092414966b7abe847}{$\sim$print\+Doc}} ()
+\begin{DoxyCompactList}\small\item\em Finalize and send to printer. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1print_doc_aee0bce8d1e736a72446eb388f86b2d82}\label{classwex_1_1print_doc_aee0bce8d1e736a72446eb388f86b2d82}} 
+bool \mbox{\hyperlink{classwex_1_1print_doc_aee0bce8d1e736a72446eb388f86b2d82}{is\+Open}} ()
+\begin{DoxyCompactList}\small\item\em True if CTOR was successful. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1print_doc_a82de901fdc99e986430be4df207b43ac}\label{classwex_1_1print_doc_a82de901fdc99e986430be4df207b43ac}} 
+void {\bfseries page\+Start} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1print_doc_a4cf3f504d1655b858c0fd004eb28fc16}\label{classwex_1_1print_doc_a4cf3f504d1655b858c0fd004eb28fc16}} 
+void {\bfseries page\+End} ()
+\item 
+void \mbox{\hyperlink{classwex_1_1print_doc_aeba3f939df72fbdf7509e8d015a51dd2}{text}} (int x, int y, const std\+::string \&s)
+\begin{DoxyCompactList}\small\item\em Add some text. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Print a text document. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classwex_1_1print_doc_a9dee684dc17c30f1b28de8636b9fdfc1}\label{classwex_1_1print_doc_a9dee684dc17c30f1b28de8636b9fdfc1}} 
+\index{wex::printDoc@{wex::printDoc}!printDoc@{printDoc}}
+\index{printDoc@{printDoc}!wex::printDoc@{wex::printDoc}}
+\doxysubsubsection{\texorpdfstring{printDoc()}{printDoc()}}
+{\footnotesize\ttfamily wex\+::print\+Doc\+::print\+Doc (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{title = {\ttfamily \char`\"{}printDoc\char`\"{}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+CTOR. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em title} & that asppears in print spooler \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1print_doc_aeba3f939df72fbdf7509e8d015a51dd2}\label{classwex_1_1print_doc_aeba3f939df72fbdf7509e8d015a51dd2}} 
+\index{wex::printDoc@{wex::printDoc}!text@{text}}
+\index{text@{text}!wex::printDoc@{wex::printDoc}}
+\doxysubsubsection{\texorpdfstring{text()}{text()}}
+{\footnotesize\ttfamily void wex\+::print\+Doc\+::text (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y,  }\item[{const std\+::string \&}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add some text. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em x,y} & locatioon \\
+\hline
+\mbox{\texttt{ in}}  & {\em s} & the text\\
+\hline
+\end{DoxyParams}
+Each character needs about 100 by 100 location units 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,249 @@
+\hypertarget{classwex_1_1eventhandler}{}\doxysection{wex\+::eventhandler Class Reference}
+\label{classwex_1_1eventhandler}\index{wex::eventhandler@{wex::eventhandler}}
+
+
+A class where application code can register functions to be called when an event occurs.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a418dc9ffe74ef87d84473868cb8879f9}\label{classwex_1_1eventhandler_a418dc9ffe74ef87d84473868cb8879f9}} 
+bool {\bfseries on\+Leftdown} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a0236b13c97450ed233be159ca3cb2aeb}\label{classwex_1_1eventhandler_a0236b13c97450ed233be159ca3cb2aeb}} 
+void {\bfseries on\+Right\+Down} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a48b0306530d4d60bb36be7b7ff06951a}\label{classwex_1_1eventhandler_a48b0306530d4d60bb36be7b7ff06951a}} 
+void {\bfseries on\+Mouse\+Up} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_aea16e94aac4b317bcdf81fc814134b2d}\label{classwex_1_1eventhandler_aea16e94aac4b317bcdf81fc814134b2d}} 
+void {\bfseries on\+Double\+Click} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a3d71ca5d3d66460a6376d412cc997165}\label{classwex_1_1eventhandler_a3d71ca5d3d66460a6376d412cc997165}} 
+void {\bfseries on\+Draw} (PAINTSTRUCT \&ps)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a8b61d28eff5fe5ed5b71ace77eb92f52}\label{classwex_1_1eventhandler_a8b61d28eff5fe5ed5b71ace77eb92f52}} 
+void {\bfseries on\+Resize} (int w, int h)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_aac35a20115554d04d73ae3577b5a6461}\label{classwex_1_1eventhandler_aac35a20115554d04d73ae3577b5a6461}} 
+void {\bfseries on\+ScrollH} (int code)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a78012aaeeca31417a62630a2b60f9189}\label{classwex_1_1eventhandler_a78012aaeeca31417a62630a2b60f9189}} 
+void {\bfseries on\+ScrollV} (int code)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a150183fe54e6bd1284266eadb1907448}\label{classwex_1_1eventhandler_a150183fe54e6bd1284266eadb1907448}} 
+void {\bfseries on\+Menu\+Command} (int id)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_acb20ba758c153cc5df968ecbe228c82e}\label{classwex_1_1eventhandler_acb20ba758c153cc5df968ecbe228c82e}} 
+void {\bfseries on\+Keydown} (int keycode)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a44e04cd59780158f29ee589f33ca50e4}\label{classwex_1_1eventhandler_a44e04cd59780158f29ee589f33ca50e4}} 
+void {\bfseries on\+Mouse\+Move} (WPARAM w\+Param, LPARAM l\+Param)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_aef7a4f1bb6f9bc643600d0d553b16208}\label{classwex_1_1eventhandler_aef7a4f1bb6f9bc643600d0d553b16208}} 
+void {\bfseries on\+Mouse\+Enter} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a47d10737c96a12a10611d8be4a5e629a}\label{classwex_1_1eventhandler_a47d10737c96a12a10611d8be4a5e629a}} 
+void {\bfseries on\+Mouse\+Wheel} (int dist)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a1e54e7e2b2c60b52a6061fefbf3f5b44}\label{classwex_1_1eventhandler_a1e54e7e2b2c60b52a6061fefbf3f5b44}} 
+void {\bfseries on\+Mouse\+Leave} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_ab43755f8ffe1bae73e6ef1bd246e6f55}\label{classwex_1_1eventhandler_ab43755f8ffe1bae73e6ef1bd246e6f55}} 
+void {\bfseries on\+Timer} (int id)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a7131625eafed2c7aa4051bead49650a6}\label{classwex_1_1eventhandler_a7131625eafed2c7aa4051bead49650a6}} 
+bool {\bfseries on\+Select} (unsigned short id)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a51fe8c77e510456255ecdb3882a84cb9}\label{classwex_1_1eventhandler_a51fe8c77e510456255ecdb3882a84cb9}} 
+bool {\bfseries on\+Change} (unsigned short id)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_ac76f35c2bc43986eb99931842e60ecda}\label{classwex_1_1eventhandler_ac76f35c2bc43986eb99931842e60ecda}} 
+void {\bfseries on\+Slid} (unsigned short id)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_ac03ea83d9b236d920f726968592a15c6}\label{classwex_1_1eventhandler_ac03ea83d9b236d920f726968592a15c6}} 
+void {\bfseries on\+Drop\+Start} (HDROP h\+Drop)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a9b8a96fb09336a2b0b6f8e55f8ab449d}\label{classwex_1_1eventhandler_a9b8a96fb09336a2b0b6f8e55f8ab449d}} 
+void {\bfseries on\+Drop} (const std\+::vector$<$ std\+::string $>$ \&files)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a19d0413f788102ecd94d906fc636c9c8}\label{classwex_1_1eventhandler_a19d0413f788102ecd94d906fc636c9c8}} 
+void {\bfseries on\+Async\+Read\+Complete} (int id)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_acf96f99a77f5d08aa2b4c5fa1b505937}\label{classwex_1_1eventhandler_acf96f99a77f5d08aa2b4c5fa1b505937}} 
+void {\bfseries on\+Tcp\+Server\+Accept} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_aab4e878fd2f1dd6cee74c9cf849ead97}\label{classwex_1_1eventhandler_aab4e878fd2f1dd6cee74c9cf849ead97}} 
+void {\bfseries on\+Tcp\+Server\+Read\+Complete} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_ab7f7ce6e97836d67894522d78044caac}\label{classwex_1_1eventhandler_ab7f7ce6e97836d67894522d78044caac}} 
+bool {\bfseries on\+Quit\+App} ()
+\item 
+void \mbox{\hyperlink{classwex_1_1eventhandler_af421567019d65344881f9f6060d5bc7e}{click}} (std\+::function$<$ void(void)$>$ f, bool propogate=false)
+\begin{DoxyCompactList}\small\item\em register click event handler \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1eventhandler_a503d277efec7680118bf991850ff9ac6}{click\+Wex}} (std\+::function$<$ void(void)$>$ f)
+\begin{DoxyCompactList}\small\item\em register a function to do some housekeeping when clicked, before calling handler registered by application code \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a9867fc21bd6a8d24e070a6eb0260556e}\label{classwex_1_1eventhandler_a9867fc21bd6a8d24e070a6eb0260556e}} 
+void \mbox{\hyperlink{classwex_1_1eventhandler_a9867fc21bd6a8d24e070a6eb0260556e}{click\+Propogate}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em specify that click event should propogate to parent window after currently registered click event handler runs \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_aff472ff5640ee5d576ab9e0c7e9491c9}\label{classwex_1_1eventhandler_aff472ff5640ee5d576ab9e0c7e9491c9}} 
+void {\bfseries click\+Right} (std\+::function$<$ void(void)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_abf0c7a6045feca1c2ace87af831501b5}\label{classwex_1_1eventhandler_abf0c7a6045feca1c2ace87af831501b5}} 
+void {\bfseries click\+Double} (std\+::function$<$ void(void)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_ac9926649b83c4a80acc1f71196270d9a}\label{classwex_1_1eventhandler_ac9926649b83c4a80acc1f71196270d9a}} 
+void {\bfseries draw} (std\+::function$<$ void(PAINTSTRUCT \&ps)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a1db594a6413ea3f7baecdefdfe77062a}\label{classwex_1_1eventhandler_a1db594a6413ea3f7baecdefdfe77062a}} 
+void {\bfseries resize} (std\+::function$<$ void(int w, int h)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a401f6f46352fbe1dcfcdfee310d517d6}\label{classwex_1_1eventhandler_a401f6f46352fbe1dcfcdfee310d517d6}} 
+void {\bfseries scrollH} (std\+::function$<$ void(int code)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a468d9a350d9693ba4d2b31bb9aca83f4}\label{classwex_1_1eventhandler_a468d9a350d9693ba4d2b31bb9aca83f4}} 
+void {\bfseries scrollV} (std\+::function$<$ void(int code)$>$ f)
+\item 
+int \mbox{\hyperlink{classwex_1_1eventhandler_acf04c1336f9574b5eeb7469dcacd1ecb}{menu\+Command}} (std\+::function$<$ void(const std\+::string \&title)$>$ f, const std\+::string \&title)
+\begin{DoxyCompactList}\small\item\em Register function to run when menu item clicked. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_ab8554229bade31390ec7efa810da5b91}\label{classwex_1_1eventhandler_ab8554229bade31390ec7efa810da5b91}} 
+void {\bfseries select} (int id, std\+::function$<$ void(void)$>$ f)
+\item 
+void \mbox{\hyperlink{classwex_1_1eventhandler_ae871179ebe54e07b6c79cdd601a65700}{change}} (int id, std\+::function$<$ void(void)$>$ f)
+\begin{DoxyCompactList}\small\item\em register function to call when control changes \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a832955ebc025acb102cea8151d00ad6b}\label{classwex_1_1eventhandler_a832955ebc025acb102cea8151d00ad6b}} 
+void \mbox{\hyperlink{classwex_1_1eventhandler_a832955ebc025acb102cea8151d00ad6b}{keydown}} (std\+::function$<$ void(int keydown)$>$ f)
+\begin{DoxyCompactList}\small\item\em register function to call when key pressed. Function is passed key code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a873ef7c12b1c2f32ade412010cdb6d1f}\label{classwex_1_1eventhandler_a873ef7c12b1c2f32ade412010cdb6d1f}} 
+void {\bfseries mouse\+Enter} (std\+::function$<$ void(void)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_ad8a2248f7f7a191e9cbc8b8935ef4186}\label{classwex_1_1eventhandler_ad8a2248f7f7a191e9cbc8b8935ef4186}} 
+void {\bfseries mouse\+Move} (std\+::function$<$ void(\mbox{\hyperlink{structwex_1_1s_mouse}{s\+Mouse}} \&m)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_ae425583e03e80717fda30a0b4649f93a}\label{classwex_1_1eventhandler_ae425583e03e80717fda30a0b4649f93a}} 
+void {\bfseries mouse\+Wheel} (std\+::function$<$ void(int dist)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a1a56b96e2786639006618fdbe8cff79f}\label{classwex_1_1eventhandler_a1a56b96e2786639006618fdbe8cff79f}} 
+void {\bfseries mouse\+Up} (std\+::function$<$ void(void)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a1358a288197661c68c1eac6623f7c02d}\label{classwex_1_1eventhandler_a1358a288197661c68c1eac6623f7c02d}} 
+void {\bfseries mouse\+Leave} (std\+::function$<$ void(void)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_abf4cd182ea44e50164b384de41678601}\label{classwex_1_1eventhandler_abf4cd182ea44e50164b384de41678601}} 
+void {\bfseries timer} (std\+::function$<$ void(int id)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_aa2a247d34e03f769d2db1c06f7d7dbc9}\label{classwex_1_1eventhandler_aa2a247d34e03f769d2db1c06f7d7dbc9}} 
+void {\bfseries slid} (std\+::function$<$ void(int pos)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_acad487ae9df0a44acb6f1a8f231a9455}\label{classwex_1_1eventhandler_acad487ae9df0a44acb6f1a8f231a9455}} 
+void \mbox{\hyperlink{classwex_1_1eventhandler_acad487ae9df0a44acb6f1a8f231a9455}{drop\+Start}} (std\+::function$<$ void(HDROP h\+Drop)$>$ f)
+\begin{DoxyCompactList}\small\item\em register function to call when user drops files. App code should NOT call this! \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a2b5d00e3a3307a55d6a9b870194e2464}\label{classwex_1_1eventhandler_a2b5d00e3a3307a55d6a9b870194e2464}} 
+void \mbox{\hyperlink{classwex_1_1eventhandler_a2b5d00e3a3307a55d6a9b870194e2464}{drop}} (std\+::function$<$ void(const std\+::vector$<$ std\+::string $>$ \&files)$>$ f)
+\begin{DoxyCompactList}\small\item\em register function to call when files dropped by user have been extracted. App code use this! \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1eventhandler_a82c8097dcda93aa921f91f5a1c72448c}{async\+Read\+Complete}} (std\+::function$<$ void(int id)$>$ f)
+\begin{DoxyCompactList}\small\item\em register function to call when an asynchronous read completes. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_affb4f510313547e4520336e46ce567a1}\label{classwex_1_1eventhandler_affb4f510313547e4520336e46ce567a1}} 
+void {\bfseries tcp\+Server\+Accept} (std\+::function$<$ void(void)$>$ f)
+\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_adedad940446507ade68a5126cf1138f6}\label{classwex_1_1eventhandler_adedad940446507ade68a5126cf1138f6}} 
+void \mbox{\hyperlink{classwex_1_1eventhandler_adedad940446507ade68a5126cf1138f6}{tcp\+Read}} (std\+::function$<$ void(void)$>$ f)
+\begin{DoxyCompactList}\small\item\em register function to call when tcp read accurs \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_a81572cd0ce516c61beaba12fd46f8a8a}\label{classwex_1_1eventhandler_a81572cd0ce516c61beaba12fd46f8a8a}} 
+void \mbox{\hyperlink{classwex_1_1eventhandler_a81572cd0ce516c61beaba12fd46f8a8a}{quit\+App}} (std\+::function$<$ bool(void)$>$ f)
+\begin{DoxyCompactList}\small\item\em register function to call when application is about to quit The function should return true to allow the quit to proceed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A class where application code can register functions to be called when an event occurs. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1eventhandler_a82c8097dcda93aa921f91f5a1c72448c}\label{classwex_1_1eventhandler_a82c8097dcda93aa921f91f5a1c72448c}} 
+\index{wex::eventhandler@{wex::eventhandler}!asyncReadComplete@{asyncReadComplete}}
+\index{asyncReadComplete@{asyncReadComplete}!wex::eventhandler@{wex::eventhandler}}
+\doxysubsubsection{\texorpdfstring{asyncReadComplete()}{asyncReadComplete()}}
+{\footnotesize\ttfamily void wex\+::eventhandler\+::async\+Read\+Complete (\begin{DoxyParamCaption}\item[{std\+::function$<$ void(int id)$>$}]{f }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+register function to call when an asynchronous read completes. 
+
+The function parameter identifies the com class that completed the read \mbox{\Hypertarget{classwex_1_1eventhandler_ae871179ebe54e07b6c79cdd601a65700}\label{classwex_1_1eventhandler_ae871179ebe54e07b6c79cdd601a65700}} 
+\index{wex::eventhandler@{wex::eventhandler}!change@{change}}
+\index{change@{change}!wex::eventhandler@{wex::eventhandler}}
+\doxysubsubsection{\texorpdfstring{change()}{change()}}
+{\footnotesize\ttfamily void wex\+::eventhandler\+::change (\begin{DoxyParamCaption}\item[{int}]{id,  }\item[{std\+::function$<$ void(void)$>$}]{f }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+register function to call when control changes 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em id} & of control \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1eventhandler_af421567019d65344881f9f6060d5bc7e}\label{classwex_1_1eventhandler_af421567019d65344881f9f6060d5bc7e}} 
+\index{wex::eventhandler@{wex::eventhandler}!click@{click}}
+\index{click@{click}!wex::eventhandler@{wex::eventhandler}}
+\doxysubsubsection{\texorpdfstring{click()}{click()}}
+{\footnotesize\ttfamily void wex\+::eventhandler\+::click (\begin{DoxyParamCaption}\item[{std\+::function$<$ void(void)$>$}]{f,  }\item[{bool}]{propogate = {\ttfamily false} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+register click event handler 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em f} & the function to call when user clicks on gui in order to process event \\
+\hline
+\mbox{\texttt{ in}}  & {\em propogate} & specify that event should propogate to parent window after processing, default is false\\
+\hline
+\end{DoxyParams}
+A click occurs when the left mouse button is pressed \mbox{\Hypertarget{classwex_1_1eventhandler_a503d277efec7680118bf991850ff9ac6}\label{classwex_1_1eventhandler_a503d277efec7680118bf991850ff9ac6}} 
+\index{wex::eventhandler@{wex::eventhandler}!clickWex@{clickWex}}
+\index{clickWex@{clickWex}!wex::eventhandler@{wex::eventhandler}}
+\doxysubsubsection{\texorpdfstring{clickWex()}{clickWex()}}
+{\footnotesize\ttfamily void wex\+::eventhandler\+::click\+Wex (\begin{DoxyParamCaption}\item[{std\+::function$<$ void(void)$>$}]{f }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+register a function to do some housekeeping when clicked, before calling handler registered by application code 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em f} & the function to call\\
+\hline
+\end{DoxyParams}
+This should NOT be called by application code.
+
+For example, this looks after the check mark in checkboxes or the removal of the filled in dot of the other radio buttons in a group \mbox{\Hypertarget{classwex_1_1eventhandler_acf04c1336f9574b5eeb7469dcacd1ecb}\label{classwex_1_1eventhandler_acf04c1336f9574b5eeb7469dcacd1ecb}} 
+\index{wex::eventhandler@{wex::eventhandler}!menuCommand@{menuCommand}}
+\index{menuCommand@{menuCommand}!wex::eventhandler@{wex::eventhandler}}
+\doxysubsubsection{\texorpdfstring{menuCommand()}{menuCommand()}}
+{\footnotesize\ttfamily int wex\+::eventhandler\+::menu\+Command (\begin{DoxyParamCaption}\item[{std\+::function$<$ void(const std\+::string \&title)$>$}]{f,  }\item[{const std\+::string \&}]{title }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Register function to run when menu item clicked. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em f} & function to run when menu item with id is clicked \\
+\hline
+\mbox{\texttt{ in}}  & {\em title} & of menu item, passed as parameter to event handler \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+event handler index to be used as menu item index 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

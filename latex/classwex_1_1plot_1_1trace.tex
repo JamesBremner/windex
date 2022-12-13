@@ -1,0 +1,140 @@
+\hypertarget{classwex_1_1plot_1_1trace}{}\doxysection{wex\+::plot\+::trace Class Reference}
+\label{classwex_1_1plot_1_1trace}\index{wex::plot::trace@{wex::plot::trace}}
+
+
+Single trace to be plotted.  
+
+
+
+
+{\ttfamily \#include $<$plot2d.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classwex_1_1plot_1_1trace_aa94bc7ee5d49169d4e63ad07dd319ffe}{set}} (const std\+::vector$<$ double $>$ \&y)
+\begin{DoxyCompactList}\small\item\em set plot data \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a1be628cef14353757bb604b4b33f1316}\label{classwex_1_1plot_1_1trace_a1be628cef14353757bb604b4b33f1316}} 
+std\+::vector$<$ double $>$ {\bfseries get} () const
+\item 
+void \mbox{\hyperlink{classwex_1_1plot_1_1trace_ae55918ef4e0e098f5aa2a9dabfe66961}{add}} (double y)
+\begin{DoxyCompactList}\small\item\em add new value to real time data \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1plot_1_1trace_ac19be00c94ab6c37ed78c90e88de8626}{add}} (double x, double y)
+\begin{DoxyCompactList}\small\item\em add point to scatter trace \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a06b45af76cde6bc1ab02c153a4061d41}\label{classwex_1_1plot_1_1trace_a06b45af76cde6bc1ab02c153a4061d41}} 
+void \mbox{\hyperlink{classwex_1_1plot_1_1trace_a06b45af76cde6bc1ab02c153a4061d41}{color}} (int clr)
+\begin{DoxyCompactList}\small\item\em set color \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_ab4ba6ab70e4c6fc5cf8a2531ee2721f9}\label{classwex_1_1plot_1_1trace_ab4ba6ab70e4c6fc5cf8a2531ee2721f9}} 
+void \mbox{\hyperlink{classwex_1_1plot_1_1trace_ab4ba6ab70e4c6fc5cf8a2531ee2721f9}{thick}} (int t)
+\begin{DoxyCompactList}\small\item\em set trace thickness in pixels \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a5046d44833527f00a8db17c9b27395bb}\label{classwex_1_1plot_1_1trace_a5046d44833527f00a8db17c9b27395bb}} 
+int \mbox{\hyperlink{classwex_1_1plot_1_1trace_a5046d44833527f00a8db17c9b27395bb}{size}} ()
+\begin{DoxyCompactList}\small\item\em get number of points \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classwex_1_1plot_1_1trace_a204fdfcd6814dfbc71b8a745a5447e72}{value}} (double xfraction)
+\begin{DoxyCompactList}\small\item\em y value at fractional position along x-\/axis \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Single trace to be plotted. 
+
+Application code shouild not attempt to construct a trace Rather call one of plot\+::\+Add\+Point\+Trace, \mbox{\hyperlink{classwex_1_1plot_1_1plot_a9ff35dea82800622757536cb4e2df627}{plot\+::\+Add\+Real\+Time\+Trace}} or \mbox{\hyperlink{classwex_1_1plot_1_1plot_af55c5abc73bee295c1cdba6119b99b8c}{plot\+::\+Add\+Static\+Trace}} which return a reference to the trace which can be configured and be populated with data.
+
+
+\begin{DoxyPre}
+    form fm;
+
+     construct plot to be drawn on form
+
+    \mbox{\hyperlink{classwex_1_1plot_1_1plot}{plot::plot}} thePlot( fm );
+
+     construct plot trace
+
+    auto t1 = thePlot.AddStaticTrace();
+
+     provide some data for  trace
+
+    std::vector< double > d1 \{ 10, 15, 20, 25, 30, 25, 20, 15, 10 \};
+    t1.set( d1 );
+
+     plot in blue
+
+    t1.color( colors::blue );
+
+     show and run
+
+    fm.show();
+    exec();
+\end{DoxyPre}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_ac19be00c94ab6c37ed78c90e88de8626}\label{classwex_1_1plot_1_1trace_ac19be00c94ab6c37ed78c90e88de8626}} 
+\index{wex::plot::trace@{wex::plot::trace}!add@{add}}
+\index{add@{add}!wex::plot::trace@{wex::plot::trace}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void wex\+::plot\+::trace\+::add (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+add point to scatter trace 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em x} & location \\
+\hline
+\mbox{\texttt{ in}}  & {\em y} & location\\
+\hline
+\end{DoxyParams}
+An exception is thrown when this is called for a trace that is not scatter type \mbox{\Hypertarget{classwex_1_1plot_1_1trace_ae55918ef4e0e098f5aa2a9dabfe66961}\label{classwex_1_1plot_1_1trace_ae55918ef4e0e098f5aa2a9dabfe66961}} 
+\index{wex::plot::trace@{wex::plot::trace}!add@{add}}
+\index{add@{add}!wex::plot::trace@{wex::plot::trace}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void wex\+::plot\+::trace\+::add (\begin{DoxyParamCaption}\item[{double}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+add new value to real time data 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em y} & the new data point\\
+\hline
+\end{DoxyParams}
+An exception is thrown when this is called for a trace that is not real time type. \mbox{\Hypertarget{classwex_1_1plot_1_1trace_aa94bc7ee5d49169d4e63ad07dd319ffe}\label{classwex_1_1plot_1_1trace_aa94bc7ee5d49169d4e63ad07dd319ffe}} 
+\index{wex::plot::trace@{wex::plot::trace}!set@{set}}
+\index{set@{set}!wex::plot::trace@{wex::plot::trace}}
+\doxysubsubsection{\texorpdfstring{set()}{set()}}
+{\footnotesize\ttfamily void wex\+::plot\+::trace\+::set (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$ \&}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+set plot data 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em y} & vector of data points to display\\
+\hline
+\end{DoxyParams}
+Replaces any existing data. Plot is NOT refreshed. An exception is thrown when this is called for a trace that is not plot type \mbox{\Hypertarget{classwex_1_1plot_1_1trace_a204fdfcd6814dfbc71b8a745a5447e72}\label{classwex_1_1plot_1_1trace_a204fdfcd6814dfbc71b8a745a5447e72}} 
+\index{wex::plot::trace@{wex::plot::trace}!value@{value}}
+\index{value@{value}!wex::plot::trace@{wex::plot::trace}}
+\doxysubsubsection{\texorpdfstring{value()}{value()}}
+{\footnotesize\ttfamily double wex\+::plot\+::trace\+::value (\begin{DoxyParamCaption}\item[{double}]{xfraction }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+y value at fractional position along x-\/axis 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em xfraction} & x-\/axis position 0 to 1 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+y value at position, 0 if xfraction outside range 0 to 1 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/plot2d.\+h\end{DoxyCompactItemize}

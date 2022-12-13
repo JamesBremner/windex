@@ -1,0 +1,231 @@
+\hypertarget{classwex_1_1com}{}\doxysection{wex\+::com Class Reference}
+\label{classwex_1_1com}\index{wex::com@{wex::com}}
+
+
+read / write to COM serial port  
+
+
+
+
+{\ttfamily \#include $<$com.\+h$>$}
+
+Inheritance diagram for wex\+::com\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1com}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classwex_1_1com_a1c7760e830f62a867bb21f36b0f55725}{com}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\begin{DoxyCompactList}\small\item\em CTOR. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classwex_1_1com_a91bba49affba4cebbd3097667934878c}{open}} ()
+\begin{DoxyCompactList}\small\item\em Open connection to port. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1com_a5f9797e0c4157f60dddf064f9f347336}\label{classwex_1_1com_a5f9797e0c4157f60dddf064f9f347336}} 
+void {\bfseries close} ()
+\item 
+void \mbox{\hyperlink{classwex_1_1com_a2dc722e240d2cbac8906ad07a239b002}{read}} (int needed)
+\begin{DoxyCompactList}\small\item\em blocking read from COM port \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1com_a0d51bd0ef267f1baabad6f1b5223bc62}\label{classwex_1_1com_a0d51bd0ef267f1baabad6f1b5223bc62}} 
+std\+::vector$<$ unsigned char $>$ \mbox{\hyperlink{classwex_1_1com_a0d51bd0ef267f1baabad6f1b5223bc62}{read\+Data}} ()
+\begin{DoxyCompactList}\small\item\em get reference to buffer containg data that was read \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1com_a3a72bd1b037bd2a2162edcbb8abace0a}{read\+\_\+async}} (int bytes)
+\begin{DoxyCompactList}\small\item\em non-\/blocking read from COM port \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1com_af36bc9dfe03f13b2d0b2975b88c4bb87}\label{classwex_1_1com_af36bc9dfe03f13b2d0b2975b88c4bb87}} 
+int \mbox{\hyperlink{classwex_1_1com_af36bc9dfe03f13b2d0b2975b88c4bb87}{write}} (const std\+::vector$<$ unsigned char $>$ \&buffer)
+\begin{DoxyCompactList}\small\item\em Write buffer of data to the COM port. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1com_a7b42fe196345bb490a6d1cda939b9c03}\label{classwex_1_1com_a7b42fe196345bb490a6d1cda939b9c03}} 
+int \mbox{\hyperlink{classwex_1_1com_a7b42fe196345bb490a6d1cda939b9c03}{write}} (const std\+::string \&msg)
+\begin{DoxyCompactList}\small\item\em Write string of data to the COM port. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{Indent}\textbf{ Setters}\par
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1com_a5b2a2c185ee1b1aca9cc7db05db44bf1}\label{classwex_1_1com_a5b2a2c185ee1b1aca9cc7db05db44bf1}} 
+void \mbox{\hyperlink{classwex_1_1com_a5b2a2c185ee1b1aca9cc7db05db44bf1}{port}} (const std\+::string \&port)
+\begin{DoxyCompactList}\small\item\em Set port number to which connection will be made. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1com_a70c092a1c86de123ce2b0fd5fd05b619}{overlapped}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em Enable/\+Disable open connection overlapped. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1com_ab79065091600474a4e3199177a230e76}{CTSFlow\+Control}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em Enable/\+Disable CTS flow control. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1com_ad2f77e8a2a54e45c037eb34a69f61dae}{Device\+Control\+String}} (const std\+::string \&control\+String)
+\begin{DoxyCompactList}\small\item\em Configure device. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1com_a041da4574288872449e048eef5958abd}\label{classwex_1_1com_a041da4574288872449e048eef5958abd}} 
+void {\bfseries baud} (int rate)
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ Getters}\par
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1com_ae4296d3fa6169c1e4c9b94c3105ad011}\label{classwex_1_1com_ae4296d3fa6169c1e4c9b94c3105ad011}} 
+const std\+::string \& {\bfseries port\+Number} () const
+\item 
+\mbox{\Hypertarget{classwex_1_1com_a18053ff63728ceccbf7dce0cc3d2ee53}\label{classwex_1_1com_a18053ff63728ceccbf7dce0cc3d2ee53}} 
+int {\bfseries baud} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1com_aee892641a5b7813ad9e419594ecb00fa}\label{classwex_1_1com_aee892641a5b7813ad9e419594ecb00fa}} 
+bool \mbox{\hyperlink{classwex_1_1com_aee892641a5b7813ad9e419594ecb00fa}{is\+Open}} ()
+\begin{DoxyCompactList}\small\item\em true if connected \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classwex_1_1com_a6e28b863c8b6faf5dc37efdea9697746}{config\+Text}} ()
+\begin{DoxyCompactList}\small\item\em Get human readable port configuration. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1com_a4c30489b0c68b3fda4820acd12523c0e}\label{classwex_1_1com_a4c30489b0c68b3fda4820acd12523c0e}} 
+std\+::string \& {\bfseries error\+Msg} ()
+\end{DoxyCompactItemize}
+\end{Indent}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+read / write to COM serial port 
+
+For sample code, see \href{https://github.com/JamesBremner/windex/blob/master/demo/com.cpp}{\texttt{ https\+://github.\+com/\+James\+Bremner/windex/blob/master/demo/com.\+cpp}} 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classwex_1_1com_a1c7760e830f62a867bb21f36b0f55725}\label{classwex_1_1com_a1c7760e830f62a867bb21f36b0f55725}} 
+\index{wex::com@{wex::com}!com@{com}}
+\index{com@{com}!wex::com@{wex::com}}
+\doxysubsubsection{\texorpdfstring{com()}{com()}}
+{\footnotesize\ttfamily wex\+::com\+::com (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$}]{parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+CTOR. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em parent} & window which will receive messages when async read has completed \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1com_a6e28b863c8b6faf5dc37efdea9697746}\label{classwex_1_1com_a6e28b863c8b6faf5dc37efdea9697746}} 
+\index{wex::com@{wex::com}!configText@{configText}}
+\index{configText@{configText}!wex::com@{wex::com}}
+\doxysubsubsection{\texorpdfstring{configText()}{configText()}}
+{\footnotesize\ttfamily std\+::string wex\+::com\+::config\+Text (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get human readable port configuration. 
+
+\begin{DoxyReturn}{Returns}
+string 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1com_ab79065091600474a4e3199177a230e76}\label{classwex_1_1com_ab79065091600474a4e3199177a230e76}} 
+\index{wex::com@{wex::com}!CTSFlowControl@{CTSFlowControl}}
+\index{CTSFlowControl@{CTSFlowControl}!wex::com@{wex::com}}
+\doxysubsubsection{\texorpdfstring{CTSFlowControl()}{CTSFlowControl()}}
+{\footnotesize\ttfamily void wex\+::com\+::\+CTSFlow\+Control (\begin{DoxyParamCaption}\item[{bool}]{f = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enable/\+Disable CTS flow control. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em f} & true to enable, default true\\
+\hline
+\end{DoxyParams}
+If this is TRUE, the CTS (clear-\/to-\/send) signal is monitored for output flow control. If this is TRUE and CTS is turned off, output is suspended until CTS is sent again.
+
+This must be called before the port is opened. \mbox{\Hypertarget{classwex_1_1com_ad2f77e8a2a54e45c037eb34a69f61dae}\label{classwex_1_1com_ad2f77e8a2a54e45c037eb34a69f61dae}} 
+\index{wex::com@{wex::com}!DeviceControlString@{DeviceControlString}}
+\index{DeviceControlString@{DeviceControlString}!wex::com@{wex::com}}
+\doxysubsubsection{\texorpdfstring{DeviceControlString()}{DeviceControlString()}}
+{\footnotesize\ttfamily void wex\+::com\+::\+Device\+Control\+String (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{control\+String }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Configure device. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em control\+String} & The device-\/control information.\\
+\hline
+\end{DoxyParams}
+The device must be open.
+
+Control sring format \mbox{[}baud=b\mbox{]}\mbox{[}parity=p\mbox{]}\mbox{[}data=d\mbox{]}\mbox{[}stop=s\mbox{]}\mbox{[}to=\{on$\vert$off\}\mbox{]}\mbox{[}xon=\{on$\vert$off\}\mbox{]}\mbox{[}odsr=\{on$\vert$off\}\mbox{]}\mbox{[}octs=\{on$\vert$off\}\mbox{]}\mbox{[}dtr=\{on$\vert$off$\vert$hs\}\mbox{]}\mbox{[}rts=\{on$\vert$off$\vert$hs$\vert$tg\}\mbox{]}\mbox{[}idsr=\{on$\vert$off\}\mbox{]}
+
+For example, the following string specifies a baud rate of 1200, no parity, 8 data bits, and 1 stop bit\+:
+
+baud=1200 parity=N data=8 stop=1 \mbox{\Hypertarget{classwex_1_1com_a91bba49affba4cebbd3097667934878c}\label{classwex_1_1com_a91bba49affba4cebbd3097667934878c}} 
+\index{wex::com@{wex::com}!open@{open}}
+\index{open@{open}!wex::com@{wex::com}}
+\doxysubsubsection{\texorpdfstring{open()}{open()}}
+{\footnotesize\ttfamily bool wex\+::com\+::open (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Open connection to port. 
+
+\begin{DoxyReturn}{Returns}
+true if succesful
+\end{DoxyReturn}
+Opens with default configuration \char`\"{}baud=9600 parity=\+N data=8 stop=1\char`\"{}
+
+Reconfigure with \mbox{\hyperlink{classwex_1_1com_ad2f77e8a2a54e45c037eb34a69f61dae}{Device\+Control\+String()}}
+
+On error, a mesage will be available by calling error\+Msg(); \mbox{\Hypertarget{classwex_1_1com_a70c092a1c86de123ce2b0fd5fd05b619}\label{classwex_1_1com_a70c092a1c86de123ce2b0fd5fd05b619}} 
+\index{wex::com@{wex::com}!overlapped@{overlapped}}
+\index{overlapped@{overlapped}!wex::com@{wex::com}}
+\doxysubsubsection{\texorpdfstring{overlapped()}{overlapped()}}
+{\footnotesize\ttfamily void wex\+::com\+::overlapped (\begin{DoxyParamCaption}\item[{bool}]{f = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enable/\+Disable open connection overlapped. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em f} & true to enable overlapped, default true\\
+\hline
+\end{DoxyParams}
+If the COM port is opened overlapped
+\begin{DoxyItemize}
+\item read/writes are asynvhronous
+\item port csn be used for both reading and writing
+\end{DoxyItemize}
+
+This must be called before the port is opened. \mbox{\Hypertarget{classwex_1_1com_a2dc722e240d2cbac8906ad07a239b002}\label{classwex_1_1com_a2dc722e240d2cbac8906ad07a239b002}} 
+\index{wex::com@{wex::com}!read@{read}}
+\index{read@{read}!wex::com@{wex::com}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily void wex\+::com\+::read (\begin{DoxyParamCaption}\item[{int}]{needed }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+blocking read from COM port 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em needed} & byte count, -\/1 to read whatever becomes available\\
+\hline
+\end{DoxyParams}
+Data will be read into a vector of bytes, com\+::\+Read\+Data() provides a reference to this. \mbox{\Hypertarget{classwex_1_1com_a3a72bd1b037bd2a2162edcbb8abace0a}\label{classwex_1_1com_a3a72bd1b037bd2a2162edcbb8abace0a}} 
+\index{wex::com@{wex::com}!read\_async@{read\_async}}
+\index{read\_async@{read\_async}!wex::com@{wex::com}}
+\doxysubsubsection{\texorpdfstring{read\_async()}{read\_async()}}
+{\footnotesize\ttfamily void wex\+::com\+::read\+\_\+async (\begin{DoxyParamCaption}\item[{int}]{bytes }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+non-\/blocking read from COM port 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em bytes} & byte count to be read, -\/1 to read whatever becomes available\\
+\hline
+\end{DoxyParams}
+This will return imediatly.
+
+When the specified bytes have been read the parent window event $<$pr$>$async\+Read\+Complete will invoke its read handler in the thread that created the parent window. No multithreading is required by the application code.
+
+This uses the message 
+\begin{DoxyPre}id = WM\_APP+1\end{DoxyPre}
+, which must NOT be used anywhere in the application code. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/com.\+h\end{DoxyCompactItemize}

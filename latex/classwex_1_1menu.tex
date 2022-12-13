@@ -1,0 +1,145 @@
+\hypertarget{classwex_1_1menu}{}\doxysection{wex\+::menu Class Reference}
+\label{classwex_1_1menu}\index{wex::menu@{wex::menu}}
+
+
+A drop down list of options that user can click to start an action.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1menu_aee5470b8fa257e96fedb5cb5d95e7371}\label{classwex_1_1menu_aee5470b8fa257e96fedb5cb5d95e7371}} 
+{\bfseries menu} (\mbox{\hyperlink{classwex_1_1gui}{gui}} \&parent)
+\item 
+void \mbox{\hyperlink{classwex_1_1menu_ab50e9f8ca717730388435c90f966d001}{append}} (const std\+::string \&title, const std\+::function$<$ void(const std\+::string \&)$>$ \&f=\mbox{[}$\,$\mbox{]}(const std\+::string \&title) \{\})
+\begin{DoxyCompactList}\small\item\em Append menu item. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1menu_a16fb35c031a194c64ccd4596dc5ac1db}{append}} (const std\+::string \&title, \mbox{\hyperlink{classwex_1_1menu}{menu}} \&submenu)
+\begin{DoxyCompactList}\small\item\em Append submenu. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1menu_a3d09dba0f476a92661c29936427b4479}{popup}} (int x, int y)
+\begin{DoxyCompactList}\small\item\em Popup menu and run user selection. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1menu_abfcef6c2b9cc71a55d3c8b4828d4f9df}\label{classwex_1_1menu_abfcef6c2b9cc71a55d3c8b4828d4f9df}} 
+HMENU {\bfseries handle} ()
+\item 
+bool \mbox{\hyperlink{classwex_1_1menu_a490f4ecfe6e8e2246273b92e40d7efa5}{check}} (int index, bool f=true)
+\begin{DoxyCompactList}\small\item\em Set or unset check mark beside menu item. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1menu_a47d93612da7af19f064361cb076a6487}\label{classwex_1_1menu_a47d93612da7af19f064361cb076a6487}} 
+int \mbox{\hyperlink{classwex_1_1menu_a47d93612da7af19f064361cb076a6487}{size}} ()
+\begin{DoxyCompactList}\small\item\em Number of items in menu. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A drop down list of options that user can click to start an action. 
+
+
+\begin{DoxyPre}
+    // construct top level window
+    gui\& form = wex::windex::topWindow();
+    form.move(\{ 50,50,400,400\});
+    form.text("{}Menu demo"{});
+
+     int clicked = -\/1;
+
+    menu m( form );
+    m.append("{}test"{},[\&](const std::string \&title)
+    \{
+        clicked = 1;
+    \});
+    m.append("{}second"{},[\&](const std::string \&title)
+    \{
+        clicked = 2;
+    \});
+    m.append("{}third"{},[\&](const std::string \&title)
+    \{
+        clicked = 3;
+    \});
+    m.popup( form, 200,200 );
+
+    msgbox( form,std::string("{}item "{}) + std::to\_string(clicked) + "{} clicked"{});
+
+    form.show();
+\end{DoxyPre}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1menu_ab50e9f8ca717730388435c90f966d001}\label{classwex_1_1menu_ab50e9f8ca717730388435c90f966d001}} 
+\index{wex::menu@{wex::menu}!append@{append}}
+\index{append@{append}!wex::menu@{wex::menu}}
+\doxysubsubsection{\texorpdfstring{append()}{append()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void wex\+::menu\+::append (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{title,  }\item[{const std\+::function$<$ void(const std\+::string \&)$>$ \&}]{f = {\ttfamily \mbox{[}\mbox{]}(const~std\+:\+:string~\&title)~\{\}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Append menu item. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em title} & \\
+\hline
+\mbox{\texttt{ in}}  & {\em f} & function to be run when menu item clicked\\
+\hline
+\end{DoxyParams}
+The function signature is void f( const std\+::string\& title ).
+
+The title can be used by the function if it needs to know the menue item title that caused execution i.\+e when several items invoke the same function \mbox{\Hypertarget{classwex_1_1menu_a16fb35c031a194c64ccd4596dc5ac1db}\label{classwex_1_1menu_a16fb35c031a194c64ccd4596dc5ac1db}} 
+\index{wex::menu@{wex::menu}!append@{append}}
+\index{append@{append}!wex::menu@{wex::menu}}
+\doxysubsubsection{\texorpdfstring{append()}{append()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void wex\+::menu\+::append (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{title,  }\item[{\mbox{\hyperlink{classwex_1_1menu}{menu}} \&}]{submenu }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Append submenu. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em title} & \\
+\hline
+\mbox{\texttt{ in}}  & {\em submenu} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1menu_a490f4ecfe6e8e2246273b92e40d7efa5}\label{classwex_1_1menu_a490f4ecfe6e8e2246273b92e40d7efa5}} 
+\index{wex::menu@{wex::menu}!check@{check}}
+\index{check@{check}!wex::menu@{wex::menu}}
+\doxysubsubsection{\texorpdfstring{check()}{check()}}
+{\footnotesize\ttfamily bool wex\+::menu\+::check (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{bool}]{f = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set or unset check mark beside menu item. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em index} & 0-\/based index of menu item \\
+\hline
+\mbox{\texttt{ in}}  & {\em f} & true if menu item is to be checked, default true \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the menu item was previously checked 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1menu_a3d09dba0f476a92661c29936427b4479}\label{classwex_1_1menu_a3d09dba0f476a92661c29936427b4479}} 
+\index{wex::menu@{wex::menu}!popup@{popup}}
+\index{popup@{popup}!wex::menu@{wex::menu}}
+\doxysubsubsection{\texorpdfstring{popup()}{popup()}}
+{\footnotesize\ttfamily void wex\+::menu\+::popup (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Popup menu and run user selection. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em x} & location \\
+\hline
+\mbox{\texttt{ in}}  & {\em y} & location \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

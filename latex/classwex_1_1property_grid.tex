@@ -1,0 +1,221 @@
+\hypertarget{classwex_1_1property_grid}{}\doxysection{wex\+::property\+Grid Class Reference}
+\label{classwex_1_1property_grid}\index{wex::propertyGrid@{wex::propertyGrid}}
+
+
+A grid of properties.  
+
+
+
+
+{\ttfamily \#include $<$propertygrid.\+h$>$}
+
+Inheritance diagram for wex\+::property\+Grid\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classwex_1_1property_grid}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a9dc0f4304f2f5036dd3af6aaf4428b27}\label{classwex_1_1property_grid_a9dc0f4304f2f5036dd3af6aaf4428b27}} 
+typedef std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classwex_1_1property}{property}} $>$ {\bfseries prop\+\_\+t}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a6b9b1279708f059a1958fa535c5a26d7}\label{classwex_1_1property_grid_a6b9b1279708f059a1958fa535c5a26d7}} 
+{\bfseries property\+Grid} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a725253478e42fa99c32ad09e6fce17ef}\label{classwex_1_1property_grid_a725253478e42fa99c32ad09e6fce17ef}} 
+void {\bfseries clear} ()
+\item 
+\mbox{\hyperlink{classwex_1_1property}{property}} \& \mbox{\hyperlink{classwex_1_1property_grid_a841e14772fedde579e895bbc981579d4}{string}} (const std\+::string \&name, const std\+::string \&\mbox{\hyperlink{classwex_1_1property_grid_aa9d7db95673d02289822c873be55c460}{value}})
+\begin{DoxyCompactList}\small\item\em Add string property. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classwex_1_1property}{property}} \& \mbox{\hyperlink{classwex_1_1property_grid_a94e699f2bd7afd9b36bd9d7d57fd76c2}{choice}} (const std\+::string \&name, const std\+::vector$<$ std\+::string $>$ \&\mbox{\hyperlink{classwex_1_1choice}{choice}})
+\begin{DoxyCompactList}\small\item\em Add choice property. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classwex_1_1property}{property}} \& \mbox{\hyperlink{classwex_1_1property_grid_a60e41a80f83a431d3a0e5ebcfe081cdf}{check}} (const std\+::string \&name, bool f)
+\begin{DoxyCompactList}\small\item\em Add boolean property. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_ac6a9b9e321870877b0b90d36152c970d}\label{classwex_1_1property_grid_ac6a9b9e321870877b0b90d36152c970d}} 
+void \mbox{\hyperlink{classwex_1_1property_grid_ac6a9b9e321870877b0b90d36152c970d}{category}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Add categoty. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1property_grid_a6412bb2a7b4eea40d514ff5f416d0626}{add}} (boost\+::property\+\_\+tree\+::ptree \&pt)
+\begin{DoxyCompactList}\small\item\em Add properties from boost property tree. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_ae222e5202feaf6e73c99622218629a12}\label{classwex_1_1property_grid_ae222e5202feaf6e73c99622218629a12}} 
+boost\+::property\+\_\+tree\+::ptree \mbox{\hyperlink{classwex_1_1property_grid_ae222e5202feaf6e73c99622218629a12}{Boost\+Property\+Tree}} ()
+\begin{DoxyCompactList}\small\item\em Get properties as a boost property tree. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_aec1047b59388838f9192b917d2868112}\label{classwex_1_1property_grid_aec1047b59388838f9192b917d2868112}} 
+std\+::string \mbox{\hyperlink{classwex_1_1property_grid_aec1047b59388838f9192b917d2868112}{json}} ()
+\begin{DoxyCompactList}\small\item\em Get properties as a JSON string. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1property_grid_ae3f20fa2d5c3d2100c6e567711f4dd2d}{addjson}} (const std\+::string \&\mbox{\hyperlink{classwex_1_1property_grid_aec1047b59388838f9192b917d2868112}{json}})
+\begin{DoxyCompactList}\small\item\em Add properties for a JSON string. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_aa2ebe654b706b4d03a09e585072366bb}\label{classwex_1_1property_grid_aa2ebe654b706b4d03a09e585072366bb}} 
+void \mbox{\hyperlink{classwex_1_1property_grid_aa2ebe654b706b4d03a09e585072366bb}{scroll}} ()
+\begin{DoxyCompactList}\small\item\em Add vertical scrollbar. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a54e9ff5063cacc39227b5e48aee87151}\label{classwex_1_1property_grid_a54e9ff5063cacc39227b5e48aee87151}} 
+void \mbox{\hyperlink{classwex_1_1property_grid_a54e9ff5063cacc39227b5e48aee87151}{expand}} (const std\+::string name, bool fexpand=true)
+\begin{DoxyCompactList}\small\item\em Expand, or contract, category of properties. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a0347cde5934b9f004abeb5ae87494b30}\label{classwex_1_1property_grid_a0347cde5934b9f004abeb5ae87494b30}} 
+void {\bfseries expand\+All} (bool fexpand=true)
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a937c83efe710bf9a93c2fb8196b41c53}\label{classwex_1_1property_grid_a937c83efe710bf9a93c2fb8196b41c53}} 
+void {\bfseries move} (const std\+::vector$<$ int $>$ \&r)
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a8da95e3bfc995031d546e2336da850e9}\label{classwex_1_1property_grid_a8da95e3bfc995031d546e2336da850e9}} 
+void {\bfseries label\+Width} (int w)
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a7982de0d0ce0a9480c603872e11e93f2}\label{classwex_1_1property_grid_a7982de0d0ce0a9480c603872e11e93f2}} 
+void \mbox{\hyperlink{classwex_1_1property_grid_a7982de0d0ce0a9480c603872e11e93f2}{update}} ()
+\begin{DoxyCompactList}\small\item\em force every property to redraw its label \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_ada56a103b6f009f9d2f0446e8edfc3de}\label{classwex_1_1property_grid_ada56a103b6f009f9d2f0446e8edfc3de}} 
+\mbox{\hyperlink{classwex_1_1property}{property}} $\ast$ \mbox{\hyperlink{classwex_1_1property_grid_ada56a103b6f009f9d2f0446e8edfc3de}{find}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em get pointer to first property with name, ignoring categories \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_abd661706ffcccea51c315588bc8211ed}\label{classwex_1_1property_grid_abd661706ffcccea51c315588bc8211ed}} 
+\mbox{\hyperlink{classwex_1_1property}{property}} $\ast$ \mbox{\hyperlink{classwex_1_1property_grid_abd661706ffcccea51c315588bc8211ed}{find}} (const std\+::string \&\mbox{\hyperlink{classwex_1_1property_grid_ac6a9b9e321870877b0b90d36152c970d}{category}}, const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em get pointer to first property with name in a category \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_aa9d7db95673d02289822c873be55c460}\label{classwex_1_1property_grid_aa9d7db95673d02289822c873be55c460}} 
+const std\+::string \mbox{\hyperlink{classwex_1_1property_grid_aa9d7db95673d02289822c873be55c460}{value}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em get value in editbox of property with name \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_aaa12c29a1509d4fc1123ea2bb4d96112}\label{classwex_1_1property_grid_aaa12c29a1509d4fc1123ea2bb4d96112}} 
+bool {\bfseries is\+Checked} (const std\+::string \&name)
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a8c41f80dc0f8955821bb74a42976ae67}\label{classwex_1_1property_grid_a8c41f80dc0f8955821bb74a42976ae67}} 
+void \mbox{\hyperlink{classwex_1_1property_grid_a8c41f80dc0f8955821bb74a42976ae67}{save\+Values}} ()
+\begin{DoxyCompactList}\small\item\em save values in all property textboxes in the property\textquotesingle{}s my\+Value attribute \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a284c7f08c76aaed20e586f65bf698bdc}\label{classwex_1_1property_grid_a284c7f08c76aaed20e586f65bf698bdc}} 
+int {\bfseries prop\+Height} () const
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_ad1083aa8b795ab6f0d0821f5de7e28a4}\label{classwex_1_1property_grid_ad1083aa8b795ab6f0d0821f5de7e28a4}} 
+void \mbox{\hyperlink{classwex_1_1property_grid_ad1083aa8b795ab6f0d0821f5de7e28a4}{prop\+Height}} (int h)
+\begin{DoxyCompactList}\small\item\em set property display height in pixels. Default 25 \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_afd54b68c0da8963493c79e2d6e330d26}\label{classwex_1_1property_grid_afd54b68c0da8963493c79e2d6e330d26}} 
+void \mbox{\hyperlink{classwex_1_1property_grid_afd54b68c0da8963493c79e2d6e330d26}{category\+Height\+Low}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em set category height low i.\+e. just one property height, rather than 2x prop height \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a39174237a9d96004b07a1a97076f7242}\label{classwex_1_1property_grid_a39174237a9d96004b07a1a97076f7242}} 
+int {\bfseries width} () const
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_af28872bd19028bdd089a18c0f2f996e6}\label{classwex_1_1property_grid_af28872bd19028bdd089a18c0f2f996e6}} 
+int {\bfseries prop\+Count} () const
+\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_a083a60d7aa9c4423ff48bed0c1c936a6}\label{classwex_1_1property_grid_a083a60d7aa9c4423ff48bed0c1c936a6}} 
+void \mbox{\hyperlink{classwex_1_1property_grid_a083a60d7aa9c4423ff48bed0c1c936a6}{change}} (std\+::function$<$ void()$>$ f)
+\begin{DoxyCompactList}\small\item\em Register function to call when property value has changed. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1property_grid_af54da40e291231115cb42afc719d84e6}\label{classwex_1_1property_grid_af54da40e291231115cb42afc719d84e6}} 
+void \mbox{\hyperlink{classwex_1_1property_grid_af54da40e291231115cb42afc719d84e6}{name\+Click}} (std\+::function$<$ void(const std\+::string \&)$>$ f)
+\begin{DoxyCompactList}\small\item\em Register function to call when property name is clicked. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1property_grid_a9b6fe6e2dc4d51df59cfe3bef10c9266}{tab\+List}} (bool f=true)
+\begin{DoxyCompactList}\small\item\em Enable tab stepping through the properties. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A grid of properties. 
+
+Add boost to the compiler include search list 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1property_grid_a6412bb2a7b4eea40d514ff5f416d0626}\label{classwex_1_1property_grid_a6412bb2a7b4eea40d514ff5f416d0626}} 
+\index{wex::propertyGrid@{wex::propertyGrid}!add@{add}}
+\index{add@{add}!wex::propertyGrid@{wex::propertyGrid}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily void wex\+::property\+Grid\+::add (\begin{DoxyParamCaption}\item[{boost\+::property\+\_\+tree\+::ptree \&}]{pt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add properties from boost property tree. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em pt} & property tree\\
+\hline
+\end{DoxyParams}
+Top level becomes categories Second level becomes properties \mbox{\Hypertarget{classwex_1_1property_grid_ae3f20fa2d5c3d2100c6e567711f4dd2d}\label{classwex_1_1property_grid_ae3f20fa2d5c3d2100c6e567711f4dd2d}} 
+\index{wex::propertyGrid@{wex::propertyGrid}!addjson@{addjson}}
+\index{addjson@{addjson}!wex::propertyGrid@{wex::propertyGrid}}
+\doxysubsubsection{\texorpdfstring{addjson()}{addjson()}}
+{\footnotesize\ttfamily void wex\+::property\+Grid\+::addjson (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{json }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add properties for a JSON string. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em json} & string\\
+\hline
+\end{DoxyParams}
+Throws exception if format error in JSON \mbox{\Hypertarget{classwex_1_1property_grid_a60e41a80f83a431d3a0e5ebcfe081cdf}\label{classwex_1_1property_grid_a60e41a80f83a431d3a0e5ebcfe081cdf}} 
+\index{wex::propertyGrid@{wex::propertyGrid}!check@{check}}
+\index{check@{check}!wex::propertyGrid@{wex::propertyGrid}}
+\doxysubsubsection{\texorpdfstring{check()}{check()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classwex_1_1property}{property}}\& wex\+::property\+Grid\+::check (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name,  }\item[{bool}]{f }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add boolean property. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em name} & of property \\
+\hline
+\mbox{\texttt{ in}}  & {\em f} & default \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+reference to property 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1property_grid_a94e699f2bd7afd9b36bd9d7d57fd76c2}\label{classwex_1_1property_grid_a94e699f2bd7afd9b36bd9d7d57fd76c2}} 
+\index{wex::propertyGrid@{wex::propertyGrid}!choice@{choice}}
+\index{choice@{choice}!wex::propertyGrid@{wex::propertyGrid}}
+\doxysubsubsection{\texorpdfstring{choice()}{choice()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classwex_1_1property}{property}}\& wex\+::property\+Grid\+::choice (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name,  }\item[{const std\+::vector$<$ std\+::string $>$ \&}]{choice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add choice property. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em name} & of property \\
+\hline
+\mbox{\texttt{ in}}  & {\em choice} & vector of choices to be selected from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+reference to property 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1property_grid_a841e14772fedde579e895bbc981579d4}\label{classwex_1_1property_grid_a841e14772fedde579e895bbc981579d4}} 
+\index{wex::propertyGrid@{wex::propertyGrid}!string@{string}}
+\index{string@{string}!wex::propertyGrid@{wex::propertyGrid}}
+\doxysubsubsection{\texorpdfstring{string()}{string()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classwex_1_1property}{property}}\& wex\+::property\+Grid\+::string (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name,  }\item[{const std\+::string \&}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add string property. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em name} & of property \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & initial value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+reference to property 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1property_grid_a9b6fe6e2dc4d51df59cfe3bef10c9266}\label{classwex_1_1property_grid_a9b6fe6e2dc4d51df59cfe3bef10c9266}} 
+\index{wex::propertyGrid@{wex::propertyGrid}!tabList@{tabList}}
+\index{tabList@{tabList}!wex::propertyGrid@{wex::propertyGrid}}
+\doxysubsubsection{\texorpdfstring{tabList()}{tabList()}}
+{\footnotesize\ttfamily void wex\+::property\+Grid\+::tab\+List (\begin{DoxyParamCaption}\item[{bool}]{f = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Enable tab stepping through the properties. 
+
+Note\+: all windows need to have WS\+\_\+\+EX\+\_\+\+CONTROLPARENT style otherwise the message pump hangs \href{https://stackoverflow.com/a/11090609/16582}{\texttt{ https\+://stackoverflow.\+com/a/11090609/16582}} 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/propertygrid.\+h\end{DoxyCompactItemize}

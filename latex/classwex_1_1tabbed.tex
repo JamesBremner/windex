@@ -1,0 +1,107 @@
+\hypertarget{classwex_1_1tabbed}{}\doxysection{wex\+::tabbed Class Reference}
+\label{classwex_1_1tabbed}\index{wex::tabbed@{wex::tabbed}}
+
+
+A widget where user can select which panel to display by clicking a tab button.  
+
+
+
+
+{\ttfamily \#include $<$wex.\+h$>$}
+
+Inheritance diagram for wex\+::tabbed\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classwex_1_1tabbed}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1tabbed_acd65f4a0aa78f538d44cf3772a1523a0}\label{classwex_1_1tabbed_acd65f4a0aa78f538d44cf3772a1523a0}} 
+{\bfseries tabbed} (\mbox{\hyperlink{classwex_1_1gui}{gui}} $\ast$parent)
+\item 
+void \mbox{\hyperlink{classwex_1_1tabbed_a491da3eca40d3b4c208ec2be9ab0bbd8}{add}} (const std\+::string \&tabname, \mbox{\hyperlink{classwex_1_1gui}{gui}} \&\mbox{\hyperlink{classwex_1_1panel}{panel}})
+\begin{DoxyCompactList}\small\item\em add panel that can be displayed \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1tabbed_a12dcb6f7158dfd3f0a535311bfd8024d}\label{classwex_1_1tabbed_a12dcb6f7158dfd3f0a535311bfd8024d}} 
+void \mbox{\hyperlink{classwex_1_1tabbed_a12dcb6f7158dfd3f0a535311bfd8024d}{select}} (int i)
+\begin{DoxyCompactList}\small\item\em select panel to displayed \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1tabbed_a686444b24a32272e52c24ec408cdb9cd}\label{classwex_1_1tabbed_a686444b24a32272e52c24ec408cdb9cd}} 
+int \mbox{\hyperlink{classwex_1_1tabbed_a686444b24a32272e52c24ec408cdb9cd}{select}} () const
+\begin{DoxyCompactList}\small\item\em zero-\/based index of panel currently selected \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1tabbed_aa2f15df4caac96eee546a0678bb0318e}\label{classwex_1_1tabbed_aa2f15df4caac96eee546a0678bb0318e}} 
+void \mbox{\hyperlink{classwex_1_1tabbed_aa2f15df4caac96eee546a0678bb0318e}{tab\+Width}} (int w)
+\begin{DoxyCompactList}\small\item\em set width of tab buttons \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1tabbed_a216dbcdfed600ba2f91afe40e5fe59c4}\label{classwex_1_1tabbed_a216dbcdfed600ba2f91afe40e5fe59c4}} 
+void \mbox{\hyperlink{classwex_1_1tabbed_a216dbcdfed600ba2f91afe40e5fe59c4}{tab\+Changing}} (std\+::function$<$ void(int tab\+Index)$>$ f)
+\begin{DoxyCompactList}\small\item\em register function to call when tab is about to change This is only called when user changes the tab, not when app code call \mbox{\hyperlink{classwex_1_1tabbed_a12dcb6f7158dfd3f0a535311bfd8024d}{select()}} function Zero-\/based new tab index passed to registered function when called \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1tabbed_a72fe5e5b3d48179a5dfca19199794d93}\label{classwex_1_1tabbed_a72fe5e5b3d48179a5dfca19199794d93}} 
+void \mbox{\hyperlink{classwex_1_1tabbed_a72fe5e5b3d48179a5dfca19199794d93}{tab\+Changed}} (std\+::function$<$ void(int tab\+Index)$>$ f)
+\begin{DoxyCompactList}\small\item\em register function to call when tab has changed This is only called when user changes the tab, not when app code call \mbox{\hyperlink{classwex_1_1tabbed_a12dcb6f7158dfd3f0a535311bfd8024d}{select()}} function Zero-\/based tab index passed to registered function when called \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+A widget where user can select which panel to display by clicking a tab button. 
+
+Usage\+: 
+\begin{DoxyPre}
+    // construct top level window
+    gui\& form = \mbox{\hyperlink{classwex_1_1maker_aee4687ec851077556856d959d74c40d4}{wex::maker::make()}};
+    form.move(\{ 50,50,400,400\});
+    form.text("{}Tabbed Panel demo"{});
+
+    // construct tabbed panel
+    tabbed\& tabs = maker::make<tabbed>( form );
+    tabs.move( 50,50, 300, 200 );
+
+    // add some demo panels
+    panel\& cam1panel = maker::make<panel>( tabs );
+    label\& cam1label = maker::make<label>( cam1panel );
+    cam1label.move(30,100, 100,20 );
+    cam1label.text("{}CAM1 panel"{});
+    tabs.add( "{}CAM1"{}, cam1panel );
+
+    panel\& cam2panel = maker::make<panel>( tabs );
+    label\& cam2label = maker::make<label>( cam2panel );
+    cam2label.move(30,100, 100,20 );
+    cam2label.text("{}CAM2 panel"{});
+    tabs.add( "{}CAM2"{}, cam2panel );
+
+    panel\& cam3panel = maker::make<panel>( tabs );
+    label\& cam3label = maker::make<label>( cam3panel );
+    cam3label.move(30,100, 100,20 );
+    cam3label.text("{}CAM3 panel"{});
+    tabs.add( "{}CAM3"{}, cam3panel );
+
+    form.show();
+
+    // initially show the first panel
+    // must be donw after call to show, which displays the last panel added
+    tabs.select( 0 );
+\end{DoxyPre}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1tabbed_a491da3eca40d3b4c208ec2be9ab0bbd8}\label{classwex_1_1tabbed_a491da3eca40d3b4c208ec2be9ab0bbd8}} 
+\index{wex::tabbed@{wex::tabbed}!add@{add}}
+\index{add@{add}!wex::tabbed@{wex::tabbed}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily void wex\+::tabbed\+::add (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{tabname,  }\item[{\mbox{\hyperlink{classwex_1_1gui}{gui}} \&}]{panel }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+add panel that can be displayed 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em tabname} & text for button that brings up the panel \\
+\hline
+\mbox{\texttt{ in}}  & {\em panel} & to be displayed when tab selected.\\
+\hline
+\end{DoxyParams}
+Panel will be resized to fit neatly 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/wex.\+h\end{DoxyCompactItemize}

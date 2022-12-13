@@ -1,0 +1,105 @@
+\hypertarget{classwex_1_1c_socket}{}\doxysection{wex\+::c\+Socket Class Reference}
+\label{classwex_1_1c_socket}\index{wex::cSocket@{wex::cSocket}}
+
+
+Read/\+Write to TCP/\+IP socket, client or server.  
+
+
+
+
+{\ttfamily \#include $<$tcp.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classwex_1_1c_socket_a458719c8417457fb60b791d5c7142cff}{server}} (const std\+::string \&port, std\+::function$<$ void(std\+::string \&port)$>$ connect\+Handler, std\+::function$<$ void(std\+::string \&port, const std\+::string \&msg)$>$ read\+Handler)
+\begin{DoxyCompactList}\small\item\em Start server. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1c_socket_a2ce482118063fb3d42a171c70aed9554}{Retry\+Connect\+Server}} (bool f)
+\begin{DoxyCompactList}\small\item\em Configure \mbox{\hyperlink{classwex_1_1c_socket_a6c025bc61db28812cefe05d9d69b5782}{client()}} blocking. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1c_socket_a6c025bc61db28812cefe05d9d69b5782}{client}} (const std\+::string \&ipaddr, const std\+::string \&port, std\+::function$<$ void(std\+::string \&port, const std\+::string \&msg)$>$ read\+Handler)
+\begin{DoxyCompactList}\small\item\em Connect to server. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1c_socket_a901ad7c44cdc350152233717d83d5ca7}\label{classwex_1_1c_socket_a901ad7c44cdc350152233717d83d5ca7}} 
+bool {\bfseries is\+Connected} ()
+\item 
+\mbox{\Hypertarget{classwex_1_1c_socket_a299b27c869d8e2966e322c3dca59082e}\label{classwex_1_1c_socket_a299b27c869d8e2966e322c3dca59082e}} 
+void \mbox{\hyperlink{classwex_1_1c_socket_a299b27c869d8e2966e322c3dca59082e}{send}} (const std\+::string \&msg)
+\begin{DoxyCompactList}\small\item\em Send message to connected peer. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1c_socket_a71381b68cfd3b9c4ec030bf9dfdc43bf}{run}} ()
+\begin{DoxyCompactList}\small\item\em Start the windex event handler. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Read/\+Write to TCP/\+IP socket, client or server. 
+
+Events ( peer connection, read completion ) are handled by callbacks
+
+This does not require a parent window and so is suitable for console applications 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1c_socket_a6c025bc61db28812cefe05d9d69b5782}\label{classwex_1_1c_socket_a6c025bc61db28812cefe05d9d69b5782}} 
+\index{wex::cSocket@{wex::cSocket}!client@{client}}
+\index{client@{client}!wex::cSocket@{wex::cSocket}}
+\doxysubsubsection{\texorpdfstring{client()}{client()}}
+{\footnotesize\ttfamily void wex\+::c\+Socket\+::client (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{ipaddr,  }\item[{const std\+::string \&}]{port,  }\item[{std\+::function$<$ void(std\+::string \&port, const std\+::string \&msg)$>$}]{read\+Handler }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Connect to server. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em ipaddr} & \\
+\hline
+\mbox{\texttt{ in}}  & {\em port} & \\
+\hline
+\mbox{\texttt{ in}}  & {\em readhandler} & event handler to call when server sends a message \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1c_socket_a2ce482118063fb3d42a171c70aed9554}\label{classwex_1_1c_socket_a2ce482118063fb3d42a171c70aed9554}} 
+\index{wex::cSocket@{wex::cSocket}!RetryConnectServer@{RetryConnectServer}}
+\index{RetryConnectServer@{RetryConnectServer}!wex::cSocket@{wex::cSocket}}
+\doxysubsubsection{\texorpdfstring{RetryConnectServer()}{RetryConnectServer()}}
+{\footnotesize\ttfamily void wex\+::c\+Socket\+::\+Retry\+Connect\+Server (\begin{DoxyParamCaption}\item[{bool}]{f }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Configure \mbox{\hyperlink{classwex_1_1c_socket_a6c025bc61db28812cefe05d9d69b5782}{client()}} blocking. 
+
+true\+: keep trying until connection made ( default on construction ) false\+: if connection refused return after one attempt \mbox{\Hypertarget{classwex_1_1c_socket_a71381b68cfd3b9c4ec030bf9dfdc43bf}\label{classwex_1_1c_socket_a71381b68cfd3b9c4ec030bf9dfdc43bf}} 
+\index{wex::cSocket@{wex::cSocket}!run@{run}}
+\index{run@{run}!wex::cSocket@{wex::cSocket}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily void wex\+::c\+Socket\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Start the windex event handler. 
+
+This blocks!
+
+Call this once when everything has been setup
+
+This is used by console type applications. GUI applications should not call this They will call run on the main application window when setup is complete \mbox{\Hypertarget{classwex_1_1c_socket_a458719c8417457fb60b791d5c7142cff}\label{classwex_1_1c_socket_a458719c8417457fb60b791d5c7142cff}} 
+\index{wex::cSocket@{wex::cSocket}!server@{server}}
+\index{server@{server}!wex::cSocket@{wex::cSocket}}
+\doxysubsubsection{\texorpdfstring{server()}{server()}}
+{\footnotesize\ttfamily void wex\+::c\+Socket\+::server (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{port,  }\item[{std\+::function$<$ void(std\+::string \&port)$>$}]{connect\+Handler,  }\item[{std\+::function$<$ void(std\+::string \&port, const std\+::string \&msg)$>$}]{read\+Handler }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Start server. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em port} & to listen for clients \\
+\hline
+\mbox{\texttt{ in}}  & {\em connect\+Handler} & event handler to call when client connects \\
+\hline
+\mbox{\texttt{ in}}  & {\em read\+Handler} & event handler to call when client sends a message \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/tcp.\+h\end{DoxyCompactItemize}
