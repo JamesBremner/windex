@@ -142,6 +142,7 @@ namespace wex
             tcpRead([] {});
             quitApp([]
                     { return true; });
+            datePick([]( LPNMDATETIMECHANGE date ){});
         }
         bool onLeftdown()
         {
@@ -257,6 +258,10 @@ namespace wex
         bool onQuitApp()
         {
             return myQuitAppFunction();
+        }
+        void onDatePicked( LPNMDATETIMECHANGE date )
+        {
+            myDatePickFunction( date );
         }
         /////////////////////////// register event handlers /////////////////////
 
@@ -414,6 +419,37 @@ namespace wex
         {
             myQuitAppFunction = f;
         }
+        /** Register function to call when a date is picked
+         * 
+         * @param f function
+         * 
+         * The notification is sent to the date picker widget's parent
+         * ( if more than one date picker in application
+         *   ensure that they have different parent windows )
+         * 
+         * The function is passed a pointer to the date change structure
+         * which can be used like this
+         * <pre>
+        fm.events().datePick(
+        [](LPNMDATETIMECHANGE date)
+        {
+            std::cout << " date changed to "
+                      << date->st.wYear << "/"
+                      << date->st.wMonth << "/"
+                      << date->st.wDay << " "
+                      << date->dwFlags << "\n";
+        });
+        </pre>
+         * 
+         * Selecting a new date may call this funtion TWICE
+         * So if processing the new date is expensive
+         * check if the data has actually changed
+         * 
+         */
+        void datePick( std::function<void(LPNMDATETIMECHANGE)> f )
+        {
+            myDatePickFunction = f;
+        }
 
     private:
         bool myfClickPropogate;
@@ -443,6 +479,7 @@ namespace wex
         std::function<void(void)> myTcpServerAcceptFunction;
         std::function<void(void)> myTcpServerReadCompleteFunction;
         std::function<bool(void)> myQuitAppFunction;
+        std::function<void(LPNMDATETIMECHANGE)> myDatePickFunction;
 
         // event handlers registered by windex class
         std::function<void(void)> myClickFunWex;
@@ -704,8 +741,8 @@ namespace wex
             case 4:
                 rect.left = v[0];
                 rect.top = v[1];
-                rect.right = v[0]+v[2];
-                rect.bottom = v[1]+v[3];
+                rect.right = v[0] + v[2];
+                rect.bottom = v[1] + v[3];
                 DrawText(
                     myHDC,
                     t.c_str(),
@@ -1282,6 +1319,16 @@ namespace wex
 
                     return (INT_PTR)GetStockObject(NULL_BRUSH);
                 }
+
+                case WM_NOTIFY:
+                {
+                    NMHDR *pnmhdr = reinterpret_cast<NMHDR *>(lParam);
+                    if (pnmhdr->code == DTN_DATETIMECHANGE)
+                    {
+                        myEvents.onDatePicked( (LPNMDATETIMECHANGE)(lParam) );
+                    }
+                }
+                break;
 
                 case WM_LBUTTONDOWN:
                     // std::cout << "click on " << myText << "\n";
