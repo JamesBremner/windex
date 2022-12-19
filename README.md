@@ -18,6 +18,7 @@ multiline | A widget where user can enter a string, multiple lines
 gauge	|	A widget to display a value on a circular clock face
 radiobutton|	A widget that user can click to select one of an exclusive set of options
 slider	|	A widget which user can drag to change a value
+datebox | A widget where user can select a date from calender
 
 |PANELS||
 |---|---|
