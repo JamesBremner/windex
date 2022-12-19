@@ -142,7 +142,7 @@ namespace wex
             tcpRead([] {});
             quitApp([]
                     { return true; });
-            datePick([]( LPNMDATETIMECHANGE date ){});
+            datePick([](int id, LPNMDATETIMECHANGE date) {});
         }
         bool onLeftdown()
         {
@@ -259,9 +259,11 @@ namespace wex
         {
             return myQuitAppFunction();
         }
-        void onDatePicked( LPNMDATETIMECHANGE date )
+        void onDatePicked(
+            int idFrom,
+            LPNMDATETIMECHANGE date)
         {
-            myDatePickFunction( date );
+            myDatePickFunction(idFrom, date);
         }
         /////////////////////////// register event handlers /////////////////////
 
@@ -420,33 +422,32 @@ namespace wex
             myQuitAppFunction = f;
         }
         /** Register function to call when a date is picked
-         * 
+         *
          * @param f function
-         * 
+         *
          * The notification is sent to the date picker widget's parent
-         * ( if more than one date picker in application
-         *   ensure that they have different parent windows )
-         * 
-         * The function is passed a pointer to the date change structure
+         *
+         * The function is passed the id of the date picker widget and
+         * a pointer to the date change structure
          * which can be used like this
          * <pre>
         fm.events().datePick(
-        [](LPNMDATETIMECHANGE date)
+        [](int id,LPNMDATETIMECHANGE date)
         {
-            std::cout << " date changed to "
+            std::cout << "id " << id << " date changed to "
                       << date->st.wYear << "/"
                       << date->st.wMonth << "/"
                       << date->st.wDay << " "
                       << date->dwFlags << "\n";
         });
         </pre>
-         * 
+         *
          * Selecting a new date may call this funtion TWICE
          * So if processing the new date is expensive
          * check if the data has actually changed
-         * 
+         *
          */
-        void datePick( std::function<void(LPNMDATETIMECHANGE)> f )
+        void datePick(std::function<void(int, LPNMDATETIMECHANGE)> f)
         {
             myDatePickFunction = f;
         }
@@ -479,7 +480,7 @@ namespace wex
         std::function<void(void)> myTcpServerAcceptFunction;
         std::function<void(void)> myTcpServerReadCompleteFunction;
         std::function<bool(void)> myQuitAppFunction;
-        std::function<void(LPNMDATETIMECHANGE)> myDatePickFunction;
+        std::function<void(int, LPNMDATETIMECHANGE)> myDatePickFunction;
 
         // event handlers registered by windex class
         std::function<void(void)> myClickFunWex;
@@ -1325,7 +1326,9 @@ namespace wex
                     NMHDR *pnmhdr = reinterpret_cast<NMHDR *>(lParam);
                     if (pnmhdr->code == DTN_DATETIMECHANGE)
                     {
-                        myEvents.onDatePicked( (LPNMDATETIMECHANGE)(lParam) );
+                        myEvents.onDatePicked(
+                            pnmhdr->idFrom,
+                            (LPNMDATETIMECHANGE)(lParam));
                     }
                 }
                 break;
@@ -1680,20 +1683,24 @@ namespace wex
             DWORD style, DWORD exstyle = 0,
             int id = 0)
         {
-            myHandle = CreateWindowEx(
-                exstyle,      // Optional window styles.
-                window_class, // Window class
-                "widget",     // Window text
-                style,        // Window style
+                myHandle = CreateWindowEx(
+                    exstyle,      // Optional window styles.
+                    window_class, // Window class
+                    "widget",     // Window text
+                    style,        // Window style
 
-                // Size and position
-                CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                    // Size and position
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 
-                parent,                      // Parent window
-                reinterpret_cast<HMENU>(id), // Menu or control id
-                NULL,                        // Instance handle
-                NULL                         // Additional application data
-            );
+                    parent,                      // Parent window
+                    reinterpret_cast<HMENU>(id), // Menu or control id
+                    NULL,                        // Instance handle
+                    NULL                         // Additional application data
+                );
+
+            if (!myHandle)
+                throw std::runtime_error(
+                    "Create Window failed");
         }
 
         /** get font details
@@ -3197,6 +3204,8 @@ NOT the constructors of the objects.
     */
         static gui &make()
         {
+            datebox::init();
+
             return *windex::get().Add(new gui());
         }
     };
