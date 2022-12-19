@@ -765,7 +765,7 @@ int main()
     {
         filebox fb( form );
         msgbox mb(
-                fb.path() );
+                fb.open() );
     });
 
     button& btnrb = wex::maker::make<button>( l );
