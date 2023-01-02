@@ -11,7 +11,6 @@ namespace wex
               myRowDisplayCount(25),
               myRowStart(0)
         {
-
             registerEventHandlers();
         }
 
@@ -61,6 +60,11 @@ namespace wex
             myRowStart += i;
             if (myRowStart < 0)
                 myRowStart = 0;
+        }
+
+        void rowLastDisplay()
+        {
+            myRowStart = myContents.size() - 1;
         }
 
     private:
