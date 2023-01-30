@@ -1547,6 +1547,8 @@ namespace wex
         {
             InvalidateRect(myHandle, NULL, true);
             UpdateWindow(myHandle);
+            for( auto g : myChild )
+                g->update();
         }
 
         /** Move the window
