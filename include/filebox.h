@@ -81,7 +81,10 @@ namespace wex
                 }
             }
             else
+            {
+                auto err = CommDlgExtendedError();
                 myfname = "";
+            }
             return myfname;
         }
         /**
