@@ -1,5 +1,6 @@
 
 // include the header only windex gui framework
+#define windex_has_boost
 #include "wex.h"
 #include "propertygrid.h"
 #include "inputbox.h"
@@ -259,9 +260,9 @@ void RBDemo()
     wex::groupbox &P = wex::maker::make<wex::groupbox>(form);
     P.move({5, 5, 350, 200});
 
-    // use laypout to atomatically arrange buttons in columns
-    wex::layout &L = wex::maker::make<wex::layout>(P);
-    L.move(50, 50, 300, 190);
+    // use layout to atomatically arrange buttons in columns
+    wex::layout &L = wex::maker::make<wex::layout>(form);
+    L.move(50, 20, 300, 180);
     L.grid(2);    // specify 2 columns
     L.colfirst(); // specify column first order
 
@@ -275,7 +276,7 @@ void RBDemo()
     rb2.move({20, 60, 100, 30});
     rb2.text(group0labels[1]);
     radiobutton &rb3 = wex::maker::make<radiobutton>(L);
-    rb3.move({20, 100, 100, 30});
+    rb3.move({20, 100, 100, 20});
     rb3.text(group0labels[2]);
 
     // second group of radio buttons
@@ -288,7 +289,7 @@ void RBDemo()
     rb5.size(80, 30);
     rb5.text(group1labels[1]);
     radiobutton &rb6 = wex::maker::make<radiobutton>(L);
-    rb6.size(80, 30);
+    rb6.size(80, 20);
     rb6.text(group1labels[2]);
 
     // display a button
