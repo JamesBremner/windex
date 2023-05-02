@@ -254,7 +254,7 @@ void RBDemo()
 {
     // construct top level window
     gui &form = wex::maker::make();
-    form.move({50, 50, 400, 400});
+    form.move({50, 50, 400, 600});
     form.text("A windex radiobutton");
 
     wex::groupbox &P = wex::maker::make<wex::groupbox>(form);
@@ -292,6 +292,20 @@ void RBDemo()
     rb6.size(80, 20);
     rb6.text(group1labels[2]);
 
+    static std::vector<std::string> group2labels{"A", "B", "C"};
+    wex::radiobuttonLayout & rbL = wex::maker::make<wex::radiobuttonLayout>( form );
+    rbL.move( {50,300,200,400} );
+    rbL.grid(3);        // layout in 3 column
+    wex::radiobutton& rb10 = rbL.add();
+    rb10.text("A");
+    rb10.size(60,20);
+    wex::radiobutton& rb11 = rbL.add();
+    rb11.text("B");
+    rb11.size(60,20);
+    wex::radiobutton& rb12 = rbL.add();
+    rb12.text("C");
+    rb12.size(60,20);
+
     // display a button
     button &btn = wex::maker::make<button>(form);
     btn.move({20, 250, 150, 30});
@@ -312,9 +326,17 @@ void RBDemo()
             msg += " and " + group1labels[ coff ];
         else
             msg = " and nothing";
+        coff = rb10.checkedOffset();
+        if( coff >= 0 )
+            msg += " and " + group2labels[ coff ];
+        else
+            msg = " and nothing";        
 
         msgbox mb(
             msg ); });
+
+
+
 
     // show the application
     form.show();

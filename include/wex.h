@@ -1547,7 +1547,7 @@ namespace wex
         {
             InvalidateRect(myHandle, NULL, true);
             UpdateWindow(myHandle);
-            for( auto g : myChild )
+            for (auto g : myChild)
                 g->update();
         }
 
@@ -1685,20 +1685,20 @@ namespace wex
             DWORD style, DWORD exstyle = 0,
             int id = 0)
         {
-                myHandle = CreateWindowEx(
-                    exstyle,      // Optional window styles.
-                    window_class, // Window class
-                    "widget",     // Window text
-                    style,        // Window style
+            myHandle = CreateWindowEx(
+                exstyle,      // Optional window styles.
+                window_class, // Window class
+                "widget",     // Window text
+                style,        // Window style
 
-                    // Size and position
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                // Size and position
+                CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 
-                    parent,                      // Parent window
-                    reinterpret_cast<HMENU>(id), // Menu or control id
-                    NULL,                        // Instance handle
-                    NULL                         // Additional application data
-                );
+                parent,                      // Parent window
+                reinterpret_cast<HMENU>(id), // Menu or control id
+                NULL,                        // Instance handle
+                NULL                         // Additional application data
+            );
 
             if (!myHandle)
                 throw std::runtime_error(
@@ -2022,7 +2022,13 @@ namespace wex
             }
             int rowheight;
             if (!myfColFirst)
-                rowheight = (r.bottom - r.top) / ((myChild.size() + 1) / myColCount);
+            {
+                // rowheight = (r.bottom - r.top) / ((myChild.size() + 1) / myColCount);
+                int rowCount = (myChild.size() + 1) / myColCount;
+                if (!rowCount)
+                    rowCount = 1;
+                rowheight = (r.bottom - r.top) / rowCount;
+            }
             else
                 rowheight = 50;
 
@@ -2187,7 +2193,7 @@ namespace wex
     };
     /** A widget that user can click to select one of an exclusive set of options
 
-<pre>
+    <pre>
     // construct top level window
     gui& form = wex::maker::make();
     form.move({ 50,50,400,400});
@@ -2252,8 +2258,8 @@ namespace wex
 
     // show the application
     form.show();
-</pre>
-*/
+    </pre>
+    */
     class radiobutton : public gui
     {
     public:
@@ -2429,10 +2435,10 @@ namespace wex
 
     /** @brief A widget that user can click to toggle a true/false value
 
-This draws a custom checkbox that expands with the height of the widget ( set by move() )
-( The native checkbox is very small and its size cannot be changed )
+    This draws a custom checkbox that expands with the height of the widget ( set by move() )
+    ( The native checkbox is very small and its size cannot be changed )
 
-*/
+    */
     class checkbox : public gui
     {
         enum class eType
@@ -2552,7 +2558,7 @@ This draws a custom checkbox that expands with the height of the widget ( set by
         }
     };
     /** \brief A widget where user can enter a single line string.
-<pre>
+    <pre>
     // construct top level window
     gui& form = maker::make();
     form.move({ 50,50,400,400});
@@ -2593,8 +2599,8 @@ This draws a custom checkbox that expands with the height of the widget ( set by
     });
 
     form.show();
-</pre>
-*/
+    </pre>
+    */
     class editbox : public gui
     {
     public:
@@ -2784,7 +2790,7 @@ This draws a custom checkbox that expands with the height of the widget ( set by
      *
      * Event: select handler
      *
-   <pre>
+    <pre>
         list.events().select(
         list.id(), [this,&list]
         {
@@ -2885,11 +2891,11 @@ This draws a custom checkbox that expands with the height of the widget ( set by
 
     /** A class containing a database of the current gui elements
 
-This looks after directing messages to their intended gui element.
+    This looks after directing messages to their intended gui element.
 
-It should NOT be used by application code.
+    It should NOT be used by application code.
 
-*/
+    */
     class windex
     {
     public:
@@ -2978,7 +2984,7 @@ It should NOT be used by application code.
 
     /** \brief A drop down list of options that user can click to start an action.
 
-<pre>
+    <pre>
     // construct top level window
     gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
@@ -3004,9 +3010,9 @@ It should NOT be used by application code.
     msgbox( form,std::string("item ") + std::to_string(clicked) + " clicked");
 
     form.show();
-</pre>
+    </pre>
 
-*/
+    */
     class menu
     {
     public:
@@ -3133,14 +3139,14 @@ It should NOT be used by application code.
     };
     /** \brief Generate events at regularly timed intervals.
 
-<pre>
+    <pre>
     myDriveTimer = new wex::timer( fm, 50 );
     fm.events().timer([this](int id)
     {
         ... code to run when timer event occurs ...
     });
-</pre>
-*/
+    </pre>
+    */
     class timer
     {
     public:
@@ -3174,7 +3180,6 @@ It should NOT be used by application code.
         gui &myGUI;
         int myID;
     };
-
 }
 
 #include "widgets.h"
@@ -3353,24 +3358,24 @@ Usage:
     wex::radiobuttonLayout & myGroup = wex::maker::make<wex::radiobuttonLayout>( form );
     myGroup.move( {50,50,200,400} );
     myGroup.grid(1);        // layout in one column
-    wex::radiobutton& rb = myGroup.add();
-    rb.text("Heart");
-    rb.size(60,20);
-    rb.events().click([this]
+    wex::radiobutton& rb1 = myGroup.add();
+    rb1.text("Heart");
+    rb1.size(60,20);
+    rb1.events().click([this]
     {
         Change( 1 );
     });
-    rb = myGroup.add();
-    rb.text("EMI 1");
-    rb.size(60,20);
-    rb.events().click([this]
+    wex::radiobutton& rb2 = myGroup.add();
+    rb2.text("EMI 1");
+    rb2.size(60,20);
+    rb2.events().click([this]
     {
         Change(2 );
     });
-    rb = myGroup.add();
-    rb.text("EMI 2");
-    rb.size(60,20);
-    rb.events().click([this]
+    wex::radiobutton& rb3 = myGroup.add();
+    rb3.text("EMI 2");
+    rb3.size(60,20);
+    rb3.events().click([this]
     {
         Change( 3 );
     });
@@ -3384,7 +3389,7 @@ Usage:
         {
         }
         /** add a radio button
-        @return reference to radibutton
+        @return reference to radiobutton
     */
         radiobutton &add()
         {
@@ -3393,6 +3398,8 @@ Usage:
             {
                 myFirst = false;
                 rb.first();
+
+                rb.text("AAA");
             }
             return rb;
         }
