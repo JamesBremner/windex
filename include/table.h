@@ -5,7 +5,7 @@ namespace wex
      * 
      * The values are displayed in rows of columns.
      * The first column is assumed to be the row index.
-     * The row index is returned when the row is double clicked.
+     * The row index is returned when the row is clicked.
      * 
      * Usage:
      <pre>
@@ -15,6 +15,11 @@ namespace wex
         table &table1 = maker::make<table>(form);
         table1.move(10, 10, 350, 100);
         table1.set(table1data);
+        form.events().asyncReadComplete(
+        [&](int id)
+        {
+            std::cout <<"row " << id << "\n";
+        });
     </pre>
      */
 
