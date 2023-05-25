@@ -1,7 +1,12 @@
 namespace wex
 {
 
-    /// @brief A read only table of values
+    /** @brief A read only table of values
+     * 
+     * The values are displayed in rows of columns.
+     * The first column is assumed to row index.
+     * The row index is returned when the row is double clicked.
+     */
 
     class table : public gui
     {
@@ -11,14 +16,14 @@ namespace wex
               myRowDisplayCount(25),
               myRowStart(0)
         {
-
             registerEventHandlers();
+            text("");
         }
 
         /**
          * @brief Set table values
          * 
-         * @param val 2D vector of values, cols in rows
+         * @param val 2D vector of values.  The inner vector contains the column value of one row
          */
         void set(const std::vector<std::vector<std::string>> &val)
         {
@@ -27,7 +32,7 @@ namespace wex
         /**
          * @brief Set table values
          * 
-         * @param val     1D vector of values, cols in row
+         * @param val     1D vector of values, column by column
          * @param colcount count of columns in a row
          */
         void set(const std::vector<std::string> &val, int colcount)
@@ -41,12 +46,12 @@ namespace wex
                 std::vector<std::string> vrow;
                 for (int col = 0; col < colcount; col++)
                 {
-                    if (col == 1)
-                        vrow.push_back(
-                            val[row * colcount + col] + " " + val[row * colcount + col + 1]);
-                    else if (col == 2)
-                        continue;
-                    else
+                    // if (col == 0)
+                    //     vrow.push_back(
+                    //         val[row * colcount + col] + " " + val[row * colcount + col + 1]);
+                    // else if (col == 1)
+                    //     continue;
+                    // else
                         vrow.push_back(val[row * colcount + col]);
                 }
                 vvs.push_back(vrow);
@@ -63,8 +68,12 @@ namespace wex
                 myRowStart = 0;
         }
 
+        void rowLastDisplay()
+        {
+            myRowStart = myContents.size() - 1;
+        }
+
     private:
-        int myColCount;
         std::vector<std::vector<std::string>> myContents;
         std::vector<int> myRowID;
         int myRowDisplayCount;
@@ -78,7 +87,11 @@ namespace wex
                 return;
 
             int colCount = myContents[0].size();
-            int colWidth = size()[0] / (colCount - 1);
+            int colWidth;
+            if( colCount <= 1 )
+                colWidth = size()[0];
+            else
+                colWidth = size()[0] / (colCount - 1);
             int rowStop;
             if (myContents.size() < 20)
             {

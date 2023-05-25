@@ -383,8 +383,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
         /// Write buffer of data to the COM port
         int write(const std::vector<unsigned char> &buffer)
         {
-            std::cout << "Write buffersize " << buffer.size() << "\n";
-            std::cout << COMConfigText();
+            //std::cout << "Write buffersize " << buffer.size() << "\n";
+            //std::cout << configText();
 
             _OVERLAPPED over;
             memset(&over, 0, sizeof(over));

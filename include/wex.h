@@ -142,6 +142,7 @@ namespace wex
             tcpRead([] {});
             quitApp([]
                     { return true; });
+            datePick([](int id, LPNMDATETIMECHANGE date) {});
         }
         bool onLeftdown()
         {
@@ -257,6 +258,12 @@ namespace wex
         bool onQuitApp()
         {
             return myQuitAppFunction();
+        }
+        void onDatePicked(
+            int idFrom,
+            LPNMDATETIMECHANGE date)
+        {
+            myDatePickFunction(idFrom, date);
         }
         /////////////////////////// register event handlers /////////////////////
 
@@ -414,6 +421,36 @@ namespace wex
         {
             myQuitAppFunction = f;
         }
+        /** Register function to call when a date is picked
+         *
+         * @param f function
+         *
+         * The notification is sent to the date picker widget's parent
+         *
+         * The function is passed the id of the date picker widget and
+         * a pointer to the date change structure
+         * which can be used like this
+         * <pre>
+        fm.events().datePick(
+        [](int id,LPNMDATETIMECHANGE date)
+        {
+            std::cout << "id " << id << " date changed to "
+                      << date->st.wYear << "/"
+                      << date->st.wMonth << "/"
+                      << date->st.wDay << " "
+                      << date->dwFlags << "\n";
+        });
+        </pre>
+         *
+         * Selecting a new date may call this funtion TWICE
+         * So if processing the new date is expensive
+         * check if the data has actually changed
+         *
+         */
+        void datePick(std::function<void(int, LPNMDATETIMECHANGE)> f)
+        {
+            myDatePickFunction = f;
+        }
 
     private:
         bool myfClickPropogate;
@@ -443,6 +480,7 @@ namespace wex
         std::function<void(void)> myTcpServerAcceptFunction;
         std::function<void(void)> myTcpServerReadCompleteFunction;
         std::function<bool(void)> myQuitAppFunction;
+        std::function<void(int, LPNMDATETIMECHANGE)> myDatePickFunction;
 
         // event handlers registered by windex class
         std::function<void(void)> myClickFunWex;
@@ -704,8 +742,8 @@ namespace wex
             case 4:
                 rect.left = v[0];
                 rect.top = v[1];
-                rect.right = v[0]+v[2];
-                rect.bottom = v[1]+v[3];
+                rect.right = v[0] + v[2];
+                rect.bottom = v[1] + v[3];
                 DrawText(
                     myHDC,
                     t.c_str(),
@@ -1283,6 +1321,18 @@ namespace wex
                     return (INT_PTR)GetStockObject(NULL_BRUSH);
                 }
 
+                case WM_NOTIFY:
+                {
+                    NMHDR *pnmhdr = reinterpret_cast<NMHDR *>(lParam);
+                    if (pnmhdr->code == DTN_DATETIMECHANGE)
+                    {
+                        myEvents.onDatePicked(
+                            pnmhdr->idFrom,
+                            (LPNMDATETIMECHANGE)(lParam));
+                    }
+                }
+                break;
+
                 case WM_LBUTTONDOWN:
                     // std::cout << "click on " << myText << "\n";
                     if (!myfEnabled)
@@ -1497,6 +1547,8 @@ namespace wex
         {
             InvalidateRect(myHandle, NULL, true);
             UpdateWindow(myHandle);
+            for (auto g : myChild)
+                g->update();
         }
 
         /** Move the window
@@ -1647,6 +1699,10 @@ namespace wex
                 NULL,                        // Instance handle
                 NULL                         // Additional application data
             );
+
+            if (!myHandle)
+                throw std::runtime_error(
+                    "Create Window failed");
         }
 
         /** get font details
@@ -1966,7 +2022,13 @@ namespace wex
             }
             int rowheight;
             if (!myfColFirst)
-                rowheight = (r.bottom - r.top) / ((myChild.size() + 1) / myColCount);
+            {
+                // rowheight = (r.bottom - r.top) / ((myChild.size() + 1) / myColCount);
+                int rowCount = (myChild.size() + 1) / myColCount;
+                if (!rowCount)
+                    rowCount = 1;
+                rowheight = (r.bottom - r.top) / rowCount;
+            }
             else
                 rowheight = 50;
 
@@ -2131,7 +2193,7 @@ namespace wex
     };
     /** A widget that user can click to select one of an exclusive set of options
 
-<pre>
+    <pre>
     // construct top level window
     gui& form = wex::maker::make();
     form.move({ 50,50,400,400});
@@ -2196,8 +2258,8 @@ namespace wex
 
     // show the application
     form.show();
-</pre>
-*/
+    </pre>
+    */
     class radiobutton : public gui
     {
     public:
@@ -2373,10 +2435,10 @@ namespace wex
 
     /** @brief A widget that user can click to toggle a true/false value
 
-This draws a custom checkbox that expands with the height of the widget ( set by move() )
-( The native checkbox is very small and its size cannot be changed )
+    This draws a custom checkbox that expands with the height of the widget ( set by move() )
+    ( The native checkbox is very small and its size cannot be changed )
 
-*/
+    */
     class checkbox : public gui
     {
         enum class eType
@@ -2496,7 +2558,7 @@ This draws a custom checkbox that expands with the height of the widget ( set by
         }
     };
     /** \brief A widget where user can enter a single line string.
-<pre>
+    <pre>
     // construct top level window
     gui& form = maker::make();
     form.move({ 50,50,400,400});
@@ -2537,8 +2599,8 @@ This draws a custom checkbox that expands with the height of the widget ( set by
     });
 
     form.show();
-</pre>
-*/
+    </pre>
+    */
     class editbox : public gui
     {
     public:
@@ -2728,7 +2790,7 @@ This draws a custom checkbox that expands with the height of the widget ( set by
      *
      * Event: select handler
      *
-   <pre>
+    <pre>
         list.events().select(
         list.id(), [this,&list]
         {
@@ -2829,11 +2891,11 @@ This draws a custom checkbox that expands with the height of the widget ( set by
 
     /** A class containing a database of the current gui elements
 
-This looks after directing messages to their intended gui element.
+    This looks after directing messages to their intended gui element.
 
-It should NOT be used by application code.
+    It should NOT be used by application code.
 
-*/
+    */
     class windex
     {
     public:
@@ -2922,7 +2984,7 @@ It should NOT be used by application code.
 
     /** \brief A drop down list of options that user can click to start an action.
 
-<pre>
+    <pre>
     // construct top level window
     gui& form = wex::windex::topWindow();
     form.move({ 50,50,400,400});
@@ -2948,9 +3010,9 @@ It should NOT be used by application code.
     msgbox( form,std::string("item ") + std::to_string(clicked) + " clicked");
 
     form.show();
-</pre>
+    </pre>
 
-*/
+    */
     class menu
     {
     public:
@@ -3077,14 +3139,14 @@ It should NOT be used by application code.
     };
     /** \brief Generate events at regularly timed intervals.
 
-<pre>
+    <pre>
     myDriveTimer = new wex::timer( fm, 50 );
     fm.events().timer([this](int id)
     {
         ... code to run when timer event occurs ...
     });
-</pre>
-*/
+    </pre>
+    */
     class timer
     {
     public:
@@ -3118,7 +3180,6 @@ It should NOT be used by application code.
         gui &myGUI;
         int myID;
     };
-
 }
 
 #include "widgets.h"
@@ -3150,6 +3211,8 @@ NOT the constructors of the objects.
     */
         static gui &make()
         {
+            datebox::init();
+
             return *windex::get().Add(new gui());
         }
     };
@@ -3295,24 +3358,24 @@ Usage:
     wex::radiobuttonLayout & myGroup = wex::maker::make<wex::radiobuttonLayout>( form );
     myGroup.move( {50,50,200,400} );
     myGroup.grid(1);        // layout in one column
-    wex::radiobutton& rb = myGroup.add();
-    rb.text("Heart");
-    rb.size(60,20);
-    rb.events().click([this]
+    wex::radiobutton& rb1 = myGroup.add();
+    rb1.text("Heart");
+    rb1.size(60,20);
+    rb1.events().click([this]
     {
         Change( 1 );
     });
-    rb = myGroup.add();
-    rb.text("EMI 1");
-    rb.size(60,20);
-    rb.events().click([this]
+    wex::radiobutton& rb2 = myGroup.add();
+    rb2.text("EMI 1");
+    rb2.size(60,20);
+    rb2.events().click([this]
     {
         Change(2 );
     });
-    rb = myGroup.add();
-    rb.text("EMI 2");
-    rb.size(60,20);
-    rb.events().click([this]
+    wex::radiobutton& rb3 = myGroup.add();
+    rb3.text("EMI 2");
+    rb3.size(60,20);
+    rb3.events().click([this]
     {
         Change( 3 );
     });
@@ -3326,7 +3389,7 @@ Usage:
         {
         }
         /** add a radio button
-        @return reference to radibutton
+        @return reference to radiobutton
     */
         radiobutton &add()
         {
@@ -3335,6 +3398,8 @@ Usage:
             {
                 myFirst = false;
                 rb.first();
+
+                rb.text("AAA");
             }
             return rb;
         }

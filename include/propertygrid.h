@@ -1,6 +1,9 @@
 #pragma once
+#include <memory>
+#ifdef windex_has_boost
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#endif
 #include "wex.h"
 namespace wex
 {
@@ -340,6 +343,7 @@ namespace wex
             }
         }
 
+        #ifdef windex_has_boost
         void BoostPropertyTree(
             boost::property_tree::ptree &tree,
             const std::string &catname)
@@ -364,6 +368,7 @@ namespace wex
                         myCombobox.text(k));
             }
         }
+        #endif
 
     private:
         std::string myName;
@@ -461,6 +466,7 @@ Add boost to the compiler include search list
             CommonConstruction();
         }
 
+#ifdef windex_has_boost
         /** Add properties from boost property tree
         @param[in] pt property tree
 
@@ -556,6 +562,8 @@ Add boost to the compiler include search list
             add(tree);
             std::cout << "<-addjson\n";
         }
+
+#endif
 
         /// Add vertical scrollbar
         void scroll()

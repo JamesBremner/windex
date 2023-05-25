@@ -18,6 +18,7 @@ multiline | A widget where user can enter a string, multiple lines
 gauge	|	A widget to display a value on a circular clock face
 radiobutton|	A widget that user can click to select one of an exclusive set of options
 slider	|	A widget which user can drag to change a value
+datebox | A widget where user can select a date from calender
 
 |PANELS||
 |---|---|
@@ -65,7 +66,7 @@ No separate build step is required. since this is a header only library.  This a
 
  - Add `"include "wex.h";` to application source files that use windex.
  - Add the `include` folder to the compiler search directories.
- - Add the windows libraries gdi32, comdlg32 to the linker command
+ - Add the windows libraries gdi32, comdlg32 and Comctl32 to the linker command
 
 # Hello World
 
