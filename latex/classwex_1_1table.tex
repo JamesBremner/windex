@@ -26,12 +26,28 @@ void \mbox{\hyperlink{classwex_1_1table_af80c927d3154234b9c80f6542b6c3ba4}{set}}
 void \mbox{\hyperlink{classwex_1_1table_aa84111e491c80a7d53969d664cefec3e}{set}} (const std\+::vector$<$ std\+::string $>$ \&val, int colcount)
 \begin{DoxyCompactList}\small\item\em Set table values. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classwex_1_1table_a6734bde64a7a4146639a1056f396b8a9}{row\+Inc}} (int i)
-\begin{DoxyCompactList}\small\item\em Move display window. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Move display window. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1table_aedcf032113b06e553df719812079968c}\label{classwex_1_1table_aedcf032113b06e553df719812079968c}} 
+void {\bfseries row\+Last\+Display} ()
+\end{DoxyCompactItemize}
 \doxysubsection*{Additional Inherited Members}
 
 
 \doxysubsection{Detailed Description}
 A read only table of values. 
+
+The values are displayed in rows of columns. The first column is assumed to be the row index. The row index is returned when the row is double clicked.
+
+Usage\+: 
+\begin{DoxyPre}
+     std::vector<std::vector<std::string>> table1data\{
+        \{"{}1"{},"{}a"{}, "{}b"{}, "{}c"{}\},
+        \{"{}2"{},"{}x"{}, "{}y"{}, "{}z"{}\}\};
+    table \&table1 = maker::make<table>(form);
+    table1.move(10, 10, 350, 100);
+    table1.set(table1data);
+\end{DoxyPre}
+ 
 
 \doxysubsection{Member Function Documentation}
 \mbox{\Hypertarget{classwex_1_1table_a6734bde64a7a4146639a1056f396b8a9}\label{classwex_1_1table_a6734bde64a7a4146639a1056f396b8a9}} 
@@ -61,7 +77,7 @@ Set table values.
 
 
 \begin{DoxyParams}{Parameters}
-{\em val} & 1D vector of values, cols in row \\
+{\em val} & 1D vector of values, column by column \\
 \hline
 {\em colcount} & count of columns in a row \\
 \hline
@@ -78,7 +94,7 @@ Set table values.
 
 
 \begin{DoxyParams}{Parameters}
-{\em val} & 2D vector of values, cols in rows \\
+{\em val} & 2D vector of values. The inner vector contains the column value of one row \\
 \hline
 \end{DoxyParams}
 

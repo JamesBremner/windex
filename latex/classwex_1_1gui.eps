@@ -5,7 +5,7 @@
 %%For: 
 %Magnification: 1.00
 %%Orientation: Portrait
-%%BoundingBox: 0 0 500 1583.333374
+%%BoundingBox: 0 0 500 1666.666626
 %%Pages: 0
 %%BeginSetup
 %%EndSetup
@@ -19,12 +19,12 @@
 /marginwidth 10 def
 /distx 20 def
 /disty 40 def
-/boundaspect 0.315789 def  % aspect ratio of the BoundingBox (width/height)
+/boundaspect 0.300000 def  % aspect ratio of the BoundingBox (width/height)
 /boundx 500 def
 /boundy boundx boundaspect div def
 /xspacing 0 def
 /yspacing 0 def
-/rows 19 def
+/rows 20 def
 /cols 2 def
 /scalefactor 0 def
 /boxfont /Times-Roman findfont fontheight scalefont def
@@ -178,6 +178,7 @@ boxfont setfont
 (wex::checkbox) cw
 (wex::choice) cw
 (wex::com) cw
+(wex::datebox) cw
 (wex::drop) cw
 (wex::editbox) cw
 (wex::gauge) cw
@@ -203,11 +204,12 @@ boundx scalefactor div boundy scalefactor div scale
 
 % ----- classes -----
 
- (wex::gui) 0.000000 18.000000 box
- (wex::button) 1.000000 17.000000 box
- (wex::checkbox) 1.000000 16.000000 box
- (wex::choice) 1.000000 15.000000 box
- (wex::com) 1.000000 14.000000 box
+ (wex::gui) 0.000000 19.000000 box
+ (wex::button) 1.000000 18.000000 box
+ (wex::checkbox) 1.000000 17.000000 box
+ (wex::choice) 1.000000 16.000000 box
+ (wex::com) 1.000000 15.000000 box
+ (wex::datebox) 1.000000 14.000000 box
  (wex::drop) 1.000000 13.000000 box
  (wex::editbox) 1.000000 12.000000 box
  (wex::gauge) 1.000000 11.000000 box
@@ -227,7 +229,9 @@ boundx scalefactor div boundy scalefactor div scale
 % ----- relations -----
 
 solid
-1 0.000000 17.250000 out
+1 0.000000 18.250000 out
+solid
+0 0.000000 18.500000 hedge
 solid
 0 0.000000 17.500000 hedge
 solid
@@ -265,4 +269,4 @@ solid
 solid
 0 0.000000 0.500000 hedge
 solid
-0.000000 18.000000 0.500000 vedge
+0.000000 19.000000 0.500000 vedge

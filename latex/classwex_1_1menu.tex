@@ -36,31 +36,31 @@ A drop down list of options that user can click to start an action.
 
 
 \begin{DoxyPre}
-    // construct top level window
-    gui\& form = wex::windex::topWindow();
-    form.move(\{ 50,50,400,400\});
-    form.text("{}Menu demo"{});
+// construct top level window
+gui\& form = wex::windex::topWindow();
+form.move(\{ 50,50,400,400\});
+form.text("{}Menu demo"{});
 
-     int clicked = -\/1;
+ int clicked = -\/1;
 
-    menu m( form );
-    m.append("{}test"{},[\&](const std::string \&title)
-    \{
-        clicked = 1;
-    \});
-    m.append("{}second"{},[\&](const std::string \&title)
-    \{
-        clicked = 2;
-    \});
-    m.append("{}third"{},[\&](const std::string \&title)
-    \{
-        clicked = 3;
-    \});
-    m.popup( form, 200,200 );
+menu m( form );
+m.append("{}test"{},[\&](const std::string \&title)
+\{
+    clicked = 1;
+\});
+m.append("{}second"{},[\&](const std::string \&title)
+\{
+    clicked = 2;
+\});
+m.append("{}third"{},[\&](const std::string \&title)
+\{
+    clicked = 3;
+\});
+m.popup( form, 200,200 );
 
-    msgbox( form,std::string("{}item "{}) + std::to\_string(clicked) + "{} clicked"{});
+msgbox( form,std::string("{}item "{}) + std::to\_string(clicked) + "{} clicked"{});
 
-    form.show();
+form.show();
 \end{DoxyPre}
  
 

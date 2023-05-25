@@ -84,6 +84,9 @@ void {\bfseries on\+Tcp\+Server\+Read\+Complete} ()
 \mbox{\Hypertarget{classwex_1_1eventhandler_ab7f7ce6e97836d67894522d78044caac}\label{classwex_1_1eventhandler_ab7f7ce6e97836d67894522d78044caac}} 
 bool {\bfseries on\+Quit\+App} ()
 \item 
+\mbox{\Hypertarget{classwex_1_1eventhandler_aefeebc515e3bceedef4d112ed3aaea19}\label{classwex_1_1eventhandler_aefeebc515e3bceedef4d112ed3aaea19}} 
+void {\bfseries on\+Date\+Picked} (int id\+From, LPNMDATETIMECHANGE date)
+\item 
 void \mbox{\hyperlink{classwex_1_1eventhandler_af421567019d65344881f9f6060d5bc7e}{click}} (std\+::function$<$ void(void)$>$ f, bool propogate=false)
 \begin{DoxyCompactList}\small\item\em register click event handler \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classwex_1_1eventhandler_a503d277efec7680118bf991850ff9ac6}{click\+Wex}} (std\+::function$<$ void(void)$>$ f)
@@ -156,7 +159,9 @@ void \mbox{\hyperlink{classwex_1_1eventhandler_adedad940446507ade68a5126cf1138f6
 \begin{DoxyCompactList}\small\item\em register function to call when tcp read accurs \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classwex_1_1eventhandler_a81572cd0ce516c61beaba12fd46f8a8a}\label{classwex_1_1eventhandler_a81572cd0ce516c61beaba12fd46f8a8a}} 
 void \mbox{\hyperlink{classwex_1_1eventhandler_a81572cd0ce516c61beaba12fd46f8a8a}{quit\+App}} (std\+::function$<$ bool(void)$>$ f)
-\begin{DoxyCompactList}\small\item\em register function to call when application is about to quit The function should return true to allow the quit to proceed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em register function to call when application is about to quit The function should return true to allow the quit to proceed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1eventhandler_a64f008eaf7c6bd221f3a56d714ee1303}{date\+Pick}} (std\+::function$<$ void(int, LPNMDATETIMECHANGE)$>$ f)
+\begin{DoxyCompactList}\small\item\em Register function to call when a date is picked. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -222,7 +227,38 @@ register a function to do some housekeeping when clicked, before calling handler
 \end{DoxyParams}
 This should NOT be called by application code.
 
-For example, this looks after the check mark in checkboxes or the removal of the filled in dot of the other radio buttons in a group \mbox{\Hypertarget{classwex_1_1eventhandler_acf04c1336f9574b5eeb7469dcacd1ecb}\label{classwex_1_1eventhandler_acf04c1336f9574b5eeb7469dcacd1ecb}} 
+For example, this looks after the check mark in checkboxes or the removal of the filled in dot of the other radio buttons in a group \mbox{\Hypertarget{classwex_1_1eventhandler_a64f008eaf7c6bd221f3a56d714ee1303}\label{classwex_1_1eventhandler_a64f008eaf7c6bd221f3a56d714ee1303}} 
+\index{wex::eventhandler@{wex::eventhandler}!datePick@{datePick}}
+\index{datePick@{datePick}!wex::eventhandler@{wex::eventhandler}}
+\doxysubsubsection{\texorpdfstring{datePick()}{datePick()}}
+{\footnotesize\ttfamily void wex\+::eventhandler\+::date\+Pick (\begin{DoxyParamCaption}\item[{std\+::function$<$ void(int, LPNMDATETIMECHANGE)$>$}]{f }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Register function to call when a date is picked. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f} & function\\
+\hline
+\end{DoxyParams}
+The notification is sent to the date picker widget\textquotesingle{}s parent
+
+The function is passed the id of the date picker widget and a pointer to the date change structure which can be used like this 
+\begin{DoxyPre}
+fm.events().datePick(
+[](int id,LPNMDATETIMECHANGE date)
+\{
+    std::cout << "{}id "{} << id << "{} date changed to "{}
+              << date-\/>st.wYear << "{}/"{}
+              << date-\/>st.wMonth << "{}/"{}
+              << date-\/>st.wDay << "{} "{}
+              << date-\/>dwFlags << "{}\(\backslash\)n"{};
+\});
+\end{DoxyPre}
+
+
+Selecting a new date may call this funtion TWICE So if processing the new date is expensive check if the data has actually changed \mbox{\Hypertarget{classwex_1_1eventhandler_acf04c1336f9574b5eeb7469dcacd1ecb}\label{classwex_1_1eventhandler_acf04c1336f9574b5eeb7469dcacd1ecb}} 
 \index{wex::eventhandler@{wex::eventhandler}!menuCommand@{menuCommand}}
 \index{menuCommand@{menuCommand}!wex::eventhandler@{wex::eventhandler}}
 \doxysubsubsection{\texorpdfstring{menuCommand()}{menuCommand()}}
