@@ -4,8 +4,18 @@ namespace wex
     /** @brief A read only table of values
      * 
      * The values are displayed in rows of columns.
-     * The first column is assumed to row index.
+     * The first column is assumed to be the row index.
      * The row index is returned when the row is double clicked.
+     * 
+     * Usage:
+     <pre>
+         std::vector<std::vector<std::string>> table1data{
+            {"1","a", "b", "c"},
+            {"2","x", "y", "z"}};
+        table &table1 = maker::make<table>(form);
+        table1.move(10, 10, 350, 100);
+        table1.set(table1data);
+    </pre>
      */
 
     class table : public gui
