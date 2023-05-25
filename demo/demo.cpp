@@ -6,6 +6,7 @@
 #include "inputbox.h"
 #include "plot2d.h"
 #include "window2file.h"
+#include <table.h>
 
 using namespace wex;
 
@@ -293,18 +294,18 @@ void RBDemo()
     rb6.text(group1labels[2]);
 
     static std::vector<std::string> group2labels{"A", "B", "C"};
-    wex::radiobuttonLayout & rbL = wex::maker::make<wex::radiobuttonLayout>( form );
-    rbL.move( {50,300,200,400} );
-    rbL.grid(3);        // layout in 3 column
-    wex::radiobutton& rb10 = rbL.add();
+    wex::radiobuttonLayout &rbL = wex::maker::make<wex::radiobuttonLayout>(form);
+    rbL.move({50, 300, 200, 400});
+    rbL.grid(3); // layout in 3 column
+    wex::radiobutton &rb10 = rbL.add();
     rb10.text("A");
-    rb10.size(60,20);
-    wex::radiobutton& rb11 = rbL.add();
+    rb10.size(60, 20);
+    wex::radiobutton &rb11 = rbL.add();
     rb11.text("B");
-    rb11.size(60,20);
-    wex::radiobutton& rb12 = rbL.add();
+    rb11.size(60, 20);
+    wex::radiobutton &rb12 = rbL.add();
     rb12.text("C");
-    rb12.size(60,20);
+    rb12.size(60, 20);
 
     // display a button
     button &btn = wex::maker::make<button>(form);
@@ -334,9 +335,6 @@ void RBDemo()
 
         msgbox mb(
             msg ); });
-
-
-
 
     // show the application
     form.show();
@@ -406,18 +404,18 @@ void DatePicker()
         [&](int id, LPNMDATETIMECHANGE date)
         {
             if (id != db1.id())
-            return;
+                return;
 
             if (date->dwFlags == GDT_NONE)
             {
-                std::cout  << " date disabled\n";
+                std::cout << " date disabled\n";
                 return;
             }
             std::stringstream ss;
             ss << " date changed to "
-                      << date->st.wYear << "/"
-                      << date->st.wMonth << "/"
-                      << date->st.wDay << "\n";
+               << date->st.wYear << "/"
+               << date->st.wMonth << "/"
+               << date->st.wDay << "\n";
 
             msgbox mb(ss.str());
         });
@@ -725,6 +723,34 @@ void TabDemo()
     tabs.select(0);
 }
 
+void TableDemo()
+{
+    // construct top level window
+    gui &form = wex::maker::make();
+    form.move({50, 50, 400, 400});
+    form.text("Table demo");
+
+    std::vector<std::vector<std::string>> table1data{
+        {"1","a", "b", "c"},
+        {"2","x", "y", "z"}};
+    table &table1 = maker::make<table>(form);
+    table1.move(10, 10, 350, 100);
+    table1.set(table1data);
+
+    std::vector<std::string> table2data{
+        "1", "2", "3",
+        "4", "5", "6"};
+    table &table2 = maker::make<table>(form);
+    table2.move(10, 100, 350, 100);
+    table2.set(table2data,2);
+
+    table &table3 = maker::make<table>(form);
+    table3.move(10, 200, 350, 100);
+    table3.set(table2data,3);
+
+    form.show();
+}
+
 int main()
 {
 
@@ -852,6 +878,12 @@ int main()
     btntabs.text("Tabbed Panel");
     btntabs.events().click([&]
                            { TabDemo(); });
+
+    button &btntable = wex::maker::make<button>(l);
+    btntable.size(150, 30);
+    btntable.text("Table");
+    btntable.events().click([&]
+                            { TableDemo(); });
 
     // show the application
     form.show();
