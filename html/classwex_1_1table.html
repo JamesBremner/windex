@@ -322,7 +322,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A read only table of values. </p>
-<p>The values are displayed in rows of columns. The first column is assumed to be the row index. The row index is returned when the row is double clicked.</p>
+<p>The values are displayed in rows of columns. The first column is assumed to be the row index. The row index is returned when the row is clicked.</p>
 <p>Usage: </p><pre>
      std::vector&lt;std::vector&lt;std::string&gt;&gt; table1data{
         {"1","a", "b", "c"},
@@ -330,6 +330,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
     table &amp;table1 = maker::make&lt;table&gt;(form);
     table1.move(10, 10, 350, 100);
     table1.set(table1data);
+    form.events().asyncReadComplete(
+    [&amp;](int id)
+    {
+        std::cout &lt;&lt;"row " &lt;&lt; id &lt;&lt; "\n";
+    });
 </pre> </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a6734bde64a7a4146639a1056f396b8a9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6734bde64a7a4146639a1056f396b8a9">&#9670;&nbsp;</a></span>rowInc()</h2>
