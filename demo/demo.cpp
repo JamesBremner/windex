@@ -730,23 +730,34 @@ void TableDemo()
     form.move({50, 50, 400, 400});
     form.text("Table demo");
 
+    label& lb = maker::make<label>(form);
+    lb.move(30,300,50,30);
+    lb.text("");
+
     std::vector<std::vector<std::string>> table1data{
-        {"1","a", "b", "c"},
-        {"2","x", "y", "z"}};
+        {"1", "a", "b", "c"},
+        {"2", "x", "y", "z"}};
     table &table1 = maker::make<table>(form);
     table1.move(10, 10, 350, 100);
     table1.set(table1data);
+
+    form.events().asyncReadComplete(
+        [&](int id)
+        {
+            lb.text("row " + std::to_string(id));
+            lb.update();
+        });
 
     std::vector<std::string> table2data{
         "1", "2", "3",
         "4", "5", "6"};
     table &table2 = maker::make<table>(form);
     table2.move(10, 100, 350, 100);
-    table2.set(table2data,2);
+    table2.set(table2data, 2);
 
     table &table3 = maker::make<table>(form);
     table3.move(10, 200, 350, 100);
-    table3.set(table2data,3);
+    table3.set(table2data, 3);
 
     form.show();
 }
