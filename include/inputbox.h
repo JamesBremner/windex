@@ -106,7 +106,6 @@ public:
     }
     void gridWidth( int w )
     {
-        std::cout << "inputbox::gridWidth " << w << "\n";
         myGrid.move( { 50,50, w, 60});
     }
     void labelWidth( int w )

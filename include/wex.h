@@ -1527,7 +1527,6 @@ namespace wex
         /// Stop modal interaction and close window
         void endModal()
         {
-            std::cout << myText << " endModal\n";
             myfModal = false;
             modalMgr::get().set(0, 0);
             DestroyWindow(myHandle);

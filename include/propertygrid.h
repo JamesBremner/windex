@@ -79,7 +79,6 @@ namespace wex
         /// destructor
         ~property()
         {
-            std::cout << myName << " delete\n";
             myLabel.~label();
             myEditbox.~editbox();
             myCategoryExpanded.~checkbox();
