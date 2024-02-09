@@ -22,7 +22,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             : gui(parent),
               myCOMHandle(0),
               myfOverlapped(true),
-              myfCTSFlowControl(true)
+              myfCTSFlowControl(true),
+              myInputBufferLength( 0 )
         {
         }
         /// @name Setters
@@ -39,11 +40,11 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
 
         /** Enable/Disable open connection overlapped
          * @param[in] f true to enable overlapped, default true
-         * 
+         *
          * If the COM port is opened overlapped
          *   - read/writes are asynvhronous
          *   - port csn be used for both reading and writing
-         * 
+         *
          * This must be called before the port is opened.
          */
         void overlapped(bool f = true)
@@ -53,10 +54,10 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
 
         /** Enable/Disable CTS flow control
          * @param[in] f true to enable, default true
-         * 
+         *
          * If this is TRUE, the CTS (clear-to-send) signal is monitored for output flow control.
          * If this is TRUE and CTS is turned off, output is suspended until CTS is sent again.
-         * 
+         *
          * This must be called before the port is opened.
          */
         void CTSFlowControl(bool f = true)
@@ -106,6 +107,14 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             dcbSerialParams.fOutxCtsFlow = 0;
             SetCommState(myCOMHandle, &dcbSerialParams);
         }
+        /// @brief set device input buffer length
+        /// @param length 
+        /// output buffer remains at defualt ( 4K )
+        /// This must be called before the call to open
+        void deviceInputBuffer(int length)
+        {
+            myInputBufferLength = length;
+        }
 
         /// @name Getters
         ///@{
@@ -122,12 +131,12 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             GetCommState(myCOMHandle, &dcbSerialParams);
             return dcbSerialParams.BaudRate;
         }
-                /// true if connected
+        /// true if connected
         bool isOpen()
         {
             return myCOMHandle != 0;
         }
-               /** Get human readable port configuration
+        /** Get human readable port configuration
          * @return string
          */
         std::string configText()
@@ -180,7 +189,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                << "\nEvtChar " << dcb.EvtChar << "\n";
             return ss.str();
         }
-                std::string &errorMsg()
+        std::string &errorMsg()
         {
             return myError;
         }
@@ -206,13 +215,13 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                 dwFlagsAndAttributes = FILE_FLAG_OVERLAPPED;
 
             myCOMHandle = CreateFile(
-                myPortNumber.c_str(),         //port name
-                GENERIC_READ | GENERIC_WRITE, //Read/Write
+                myPortNumber.c_str(),         // port name
+                GENERIC_READ | GENERIC_WRITE, // Read/Write
                 0,                            // No Sharing
                 NULL,                         // No Security
                 OPEN_EXISTING,                // Open existing port only
                 dwFlagsAndAttributes,
-                //0,
+                // 0,
                 NULL); // Null for Comm Devices
 
             if (myCOMHandle == INVALID_HANDLE_VALUE)
@@ -262,6 +271,19 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
 
             // empty the input buffer
             PurgeComm(myCOMHandle, PURGE_RXCLEAR);
+
+            if (myInputBufferLength > 0)
+            {
+                // set device input buffer length
+                COMMPROP CommProp;
+                GetCommProperties(myCOMHandle, &CommProp);
+                if (!SetupComm(
+                        myCOMHandle,
+                        myInputBufferLength,
+                        CommProp.dwCurrentRxQueue))
+                    myError += " Input buffer resize failed";
+                return false;
+            }
 
             return true;
         }
@@ -318,10 +340,10 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                 _OVERLAPPED over;
                 memset(&over, 0, sizeof(over));
                 bool ret = ReadFile(
-                    myCOMHandle,                         //Handle of the Serial port
+                    myCOMHandle,                         // Handle of the Serial port
                     myRcvbuffer.data() + totalBytesRead, // pointer to buffer
                     chunk,                               // amount to read
-                    &NoBytesRead,                        //Number of bytes read
+                    &NoBytesRead,                        // Number of bytes read
                     &over);
                 if (!ret)
                 {
@@ -332,7 +354,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                 totalBytesRead += chunk;
                 needed -= chunk;
 
-                //std::cout << "COM read block read " << totalBytesRead << "\n";
+                // std::cout << "COM read block read " << totalBytesRead << "\n";
             } while (needed > 0);
         }
 
@@ -360,7 +382,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
         void read_async(
             int bytes)
         {
-            //std::cout << "com read_async " << bytes << "\n";
+            // std::cout << "com read_async " << bytes << "\n";
 
             // start blocking read in own thread
             myFuture = std::async(
@@ -379,12 +401,12 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             We can return now and get on with something else
         */
         }
- 
+
         /// Write buffer of data to the COM port
         int write(const std::vector<unsigned char> &buffer)
         {
-            //std::cout << "Write buffersize " << buffer.size() << "\n";
-            //std::cout << configText();
+            // std::cout << "Write buffersize " << buffer.size() << "\n";
+            // std::cout << configText();
 
             _OVERLAPPED over;
             memset(&over, 0, sizeof(over));
@@ -392,8 +414,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             bool ret = WriteFile(
                 myCOMHandle,        // Handle to the Serial port
                 buffer.data(),      // Data to be written to the port
-                buffer.size(),      //No of bytes to write
-                &dNoOfBytesWritten, //Bytes written
+                buffer.size(),      // No of bytes to write
+                &dNoOfBytesWritten, // Bytes written
                 &over);
             if (!ret)
             {
@@ -408,7 +430,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                         HasOverlappedIoCompleted(&over);
                         if (over.Internal != STATUS_PENDING)
                         {
-                            //for better or worse the write has completed
+                            // for better or worse the write has completed
                             break;
                         }
 
@@ -428,7 +450,7 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
                     return buffer.size();
                 }
             }
-            //std::cout << "write " << dNoOfBytesWritten << "\n";
+            // std::cout << "write " << dNoOfBytesWritten << "\n";
             return dNoOfBytesWritten;
         }
 
@@ -445,7 +467,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
         HANDLE myCOMHandle;
         std::future<void> myFuture;
         std::thread *myThread;
-        std::vector<unsigned char> myRcvbuffer;
+        std::vector<unsigned char> myRcvbuffer; // memory buffer to copy data read from devicer
+        int myInputBufferLength;                // device input buffer. 0 for default ( 4K )
         std::string myError;
         bool myfOverlapped;
         bool myfCTSFlowControl;
@@ -479,8 +502,8 @@ For sample code, see https://github.com/JamesBremner/windex/blob/master/demo/com
             const int check_interval_msecs = 50;
             while (myFuture.wait_for(std::chrono::milliseconds(check_interval_msecs)) == std::future_status::timeout)
             {
-                //std::cout << '.' << std::flush;
-                // read still running, loop and check again after an interval
+                // std::cout << '.' << std::flush;
+                //  read still running, loop and check again after an interval
             }
 
             // read complete
