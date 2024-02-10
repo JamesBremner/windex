@@ -981,8 +981,8 @@ private:
         scale::get().set( myXOffset, myXScale, myYOffset, myYScale );
         scale::get().bounds( myMinX, myMaxX, myMinY, myMaxY );
 
-        std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
-        std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
+        // std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
+        // std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
     }
 
     void CalulateDataBounds()
