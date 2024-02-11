@@ -273,22 +273,25 @@ namespace wex
                     //     myY.end());
                     // tymin = *result.first;
                     // tymax = *result.second;
-                    if( myLastValid < 0 ) {
+                    if (myLastValid < 0)
+                    {
                         tymin = -5;
                         tymax = 5;
-                    } else {
+                    }
+                    else
+                    {
                         tymin = myY[0];
                         tymax = myY[0];
-                        for( int k = 1; k < myLastValid; k++ ) {
+                        for (int k = 1; k < myLastValid; k++)
+                        {
                             double y = myY[k];
-                            if( y == 123e123)
+                            if (y == 123e123)
                                 break;
-                            if( y < tymin )
+                            if (y < tymin)
                                 tymin = y;
-                            if( y > tymax )
+                            if (y > tymax)
                                 tymax = y;
                         }
-                                               
                     }
                 }
             }
@@ -339,54 +342,67 @@ namespace wex
                     break;
 
                 case eType::realtime:
-
                 {
                     // loop over data points
-                    if( myLastValid < 0 )
+                    if (myLastValid < 0)
                         break;
+
+
 
                     // they are stored in a circular buffer
                     // so we have to start with the oldest data point
-                    int yidx = myRealTimeNext - 1;
-                    if( yidx < 0 )
-                        yidx = myY.size()-1;
-                    do
+                    int yidx = myRealTimeNext;
+                    int xidx = 0;
+                    while (true)
                     {
-                        if (myY[yidx] == DBL_MAX)
+                        if( ! first )
+                            if( yidx == myRealTimeNext )
+                                break;
+
+                        // check for empty data point
+                        if (myY[yidx] == 123e123)
                         {
+                            // the trace is not yet full
+                            // so keep going to find the beginning of the data that has arrived
                             yidx++;
                             if (yidx >= (int)myY.size())
                                 yidx = 0;
+                            continue;
                         }
 
-                        double x = scale::get().X2Pixel(yidx);
+                        
+
+                        // scale data point to pixels
+                        double x = scale::get().X2Pixel(xidx);
                         double y = scale::get().Y2Pixel(myY[yidx]);
 
                         // the next data point
                         // with wrap-around if the end of the vector is reached
                         yidx++;
-                        if (yidx >= (int)myY.size())
+                        xidx++;
+
+                        // check for end of data
+                        if (yidx == myRealTimeNext)
+                            break;
+
+                        // check for buffer wrap
+                        if (yidx >= (int)myY.size() - 1)
                             yidx = 0;
 
                         if (first)
                         {
                             first = false;
-                            prevX = x;
-                            prev = y;
-                            continue;
                         }
-                        // draw line from previous to this data point
-                        S.line(
-                            {(int)prevX, (int)prev, (int)x, (int)y});
+                        else
+                        {
+                            // draw line from previous to this data point
+                            S.line(
+                                {(int)prevX, (int)prev, (int)x, (int)y});
+                        }
 
                         prevX = x;
                         prev = y;
-
                     }
-
-                    // check for end of circular buffer
-                    // ( most recent point )
-                    while (yidx != myRealTimeNext - 1);
                 }
                 break;
                 }
@@ -562,7 +578,7 @@ namespace wex
                 {
                     tick = mn;
                 }
-                if( tick < 0 )
+                if (tick < 0)
                     return vl;
 
                 while (true)
