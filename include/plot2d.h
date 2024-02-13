@@ -119,14 +119,21 @@ namespace wex
 
                 Replaces any existing data.  Plot is NOT refreshed.
                 An exception is thrown when this is called
-                for a trace that is not plot type
+                for a trace that is not plot or scatter type
             */
             void set(const std::vector<double> &y)
             {
-                if (myType != eType::plot)
-                    throw std::runtime_error("nanaplot error: plot data added to non plot trace");
+                if ((myType != eType::plot) && (myType != eType::scatter))
+                    throw std::runtime_error("plot2d error: plot data added to non plot/scatter trace");
 
                 myY = y;
+            }
+            void setScatterX(const std::vector<double> &x)
+            {
+                if (myType != eType::scatter)
+                    throw std::runtime_error("plot2d error: plot X added to non scatter trace");
+
+                myX = x;
             }
             std::vector<double> get() const
             {
@@ -162,10 +169,18 @@ namespace wex
             void add(double x, double y)
             {
                 if (myType != eType::scatter)
-                    throw std::runtime_error("nanaplot error: point data added to non scatter type trace");
+                    throw std::runtime_error("plot2d error: point data added to non scatter type trace");
                 myX.push_back(x);
                 myY.push_back(y);
             }
+
+            /// @brief clear data from trace
+            void clear()
+            {
+                myX.clear();
+                myY.clear();
+            }
+
             /// set color
             void color(int clr)
             {
@@ -335,9 +350,11 @@ namespace wex
 
                     for (int k = 0; k < (int)myX.size(); k++)
                     {
+                        int ypixel = scale::get().Y2Pixel(myY[k]) - 5;
+                        int h = scale::get().Y2Pixel(0) - ypixel;
                         S.rectangle(
-                            {scale::get().X2Pixel(myX[k]) - 5, scale::get().Y2Pixel(myY[k]) - 5,
-                             10, 10});
+                            {scale::get().X2Pixel(myX[k]) - 5, ypixel,
+                             10, h});
                     }
                     break;
 
@@ -347,16 +364,14 @@ namespace wex
                     if (myLastValid < 0)
                         break;
 
-
-
                     // they are stored in a circular buffer
                     // so we have to start with the oldest data point
                     int yidx = myRealTimeNext;
                     int xidx = 0;
                     while (true)
                     {
-                        if( ! first )
-                            if( yidx == myRealTimeNext )
+                        if (!first)
+                            if (yidx == myRealTimeNext)
                                 break;
 
                         // check for empty data point
@@ -369,8 +384,6 @@ namespace wex
                                 yidx = 0;
                             continue;
                         }
-
-                        
 
                         // scale data point to pixels
                         double x = scale::get().X2Pixel(xidx);
@@ -840,6 +853,16 @@ namespace wex
             {
                 myAxis->grid(enable);
                 myAxisX->grid(enable);
+            }
+
+            void setFixedScale(
+                double minX, double minY, double maxX, double maxY)
+            {
+                myZoomXMin = minX;
+                myZoomYMin = minY;
+                myZoomXMax = maxX;
+                myZoomYMax = maxY;
+                myfFit = false;
             }
 
             int traceCount() const
