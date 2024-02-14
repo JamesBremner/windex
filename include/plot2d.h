@@ -350,11 +350,9 @@ namespace wex
 
                     for (int k = 0; k < (int)myX.size(); k++)
                     {
-                        int ypixel = scale::get().Y2Pixel(myY[k]) - 5;
-                        int h = scale::get().Y2Pixel(0) - ypixel;
                         S.rectangle(
-                            {scale::get().X2Pixel(myX[k]) - 5, ypixel,
-                             10, h});
+                            {scale::get().X2Pixel(myX[k]) - 5, scale::get().Y2Pixel(myY[k]) - 5,
+                             5,5});
                     }
                     break;
 
