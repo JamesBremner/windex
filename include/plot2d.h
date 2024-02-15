@@ -352,7 +352,7 @@ namespace wex
                     {
                         S.rectangle(
                             {scale::get().X2Pixel(myX[k]) - 5, scale::get().Y2Pixel(myY[k]) - 5,
-                             5,5});
+                             5, 5});
                     }
                     break;
 
@@ -442,6 +442,7 @@ namespace wex
             {
                 shapes S(ps);
                 S.color(0xFFFFFF - myParent.bgcolor());
+                S.textHeight(15);
                 if (!myfX)
                 {
                     // Y-axis
@@ -589,8 +590,8 @@ namespace wex
                 {
                     tick = mn;
                 }
-                if (tick < 0)
-                    return vl;
+                // if (tick < 0)
+                //     return vl;
 
                 while (true)
                 {
@@ -716,78 +717,88 @@ namespace wex
             {
                 text("Plot");
 
-                events().draw([this](PAINTSTRUCT &ps)
-                              {
-            // check there are traces that need to be drawn
-            if( ! myTrace.size() )
-                return;
-
-            // calculate scaling factors
-            // so plot will fit
-            CalcScale(
-                ps.rcPaint.right,
-                ps.rcPaint.bottom );
-
-            // draw axis
-            myAxis->update( ps );
-            myAxisX->update( ps );
-
-            // loop over traces
-            for( auto t : myTrace )
-            {
-                // draw a trace
-                t->update( ps );
-            }
-
-            if( isGoodDrag() )
-            {
-                // display selected area by drawing a box around it
-                wex::shapes S(ps);
-
-                // contrast to background color
-                S.color( 0xFFFFFF ^ bgcolor() );
-
-                S.line( { myStartDragX, myStartDragY, myStopDragX, myStartDragY } );
-                S.line( { myStopDragX, myStartDragY, myStopDragX, myStopDragY } );
-                S.line( { myStopDragX, myStopDragY, myStartDragX, myStopDragY } );
-                S.line( { myStartDragX, myStopDragY, myStartDragX, myStartDragY } );
-            } });
-
-                events().click([&]
-                               {
-            // start dragging for selected area
-            auto m = getMouseStatus();
-            myStartDragX = m.x;
-            myStartDragY = m.y;
-            myStopDragX = -1;
-            myfDrag = true; });
-                events().mouseMove([&](wex::sMouse &m)
-                                   {
-            // extend selected area as mouse is dragged
-            dragExtend( m ); });
-                events().mouseUp([&]
-                                 {
-            // check if user has completed a good drag operation
-            if( isGoodDrag() )
-            {
-                myZoomXMin = scale::get()
-                .Pixel2X( myStartDragX );
-                myZoomXMax = scale::get().Pixel2X( myStopDragX );
-                myZoomYMax = scale::get().Pixel2Y( myStartDragY );
-                myZoomYMin = scale::get().Pixel2Y( myStopDragY );
-                myfZoom = true;
-                //std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
-                //std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
-            }
-            myfDrag = false;
-            update(); });
-                events().clickRight([&]
-                                    {
-            // restore autofit
-            autoFit(); });
-
                 myAxis = new axis(*this);
                 myAxisX = new axis(*this, true);
+
+                events().draw(
+                    [this](PAINTSTRUCT &ps)
+                    {
+                        // check there are traces that need to be drawn
+                        if (!myTrace.size())
+                            return;
+
+                        // calculate scaling factors
+                        // so plot will fit
+                        CalcScale(
+                            ps.rcPaint.right,
+                            ps.rcPaint.bottom);
+
+                        // draw axis
+                        myAxis->update(ps);
+                        myAxisX->update(ps);
+
+                        // loop over traces
+                        for (auto t : myTrace)
+                        {
+                            // draw a trace
+                            t->update(ps);
+                        }
+
+                        if (isGoodDrag())
+                        {
+                            // display selected area by drawing a box around it
+                            wex::shapes S(ps);
+
+                            // contrast to background color
+                            S.color(0xFFFFFF ^ bgcolor());
+
+                            S.line({myStartDragX, myStartDragY, myStopDragX, myStartDragY});
+                            S.line({myStopDragX, myStartDragY, myStopDragX, myStopDragY});
+                            S.line({myStopDragX, myStopDragY, myStartDragX, myStopDragY});
+                            S.line({myStartDragX, myStopDragY, myStartDragX, myStartDragY});
+                        }
+                    });
+
+                events().click(
+                    [&]
+                    {
+                        // start dragging for selected area
+                        auto m = getMouseStatus();
+                        myStartDragX = m.x;
+                        myStartDragY = m.y;
+                        myStopDragX = -1;
+                        myfDrag = true;
+                    });
+                events().mouseMove(
+                    [&](wex::sMouse &m)
+                    {
+                        // extend selected area as mouse is dragged
+                        dragExtend(m);
+                    });
+                events().mouseUp(
+                    [&]
+                    {
+                        // check if user has completed a good drag operation
+                        if (isGoodDrag())
+                        {
+                            myZoomXMin = scale::get()
+                                             .Pixel2X(myStartDragX);
+                            myZoomXMax = scale::get().Pixel2X(myStopDragX);
+                            myZoomYMax = scale::get().Pixel2Y(myStartDragY);
+                            myZoomYMin = scale::get().Pixel2Y(myStopDragY);
+                            myfZoom = true;
+                            // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
+                            // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
+                        }
+                        myfDrag = false;
+                        update();
+                    });
+                events().clickRight(
+                    [&]
+                    {
+                        // restore autofit
+                        autoFit();
+                    });
             }
 
             ~plot()

@@ -780,7 +780,9 @@ namespace wex
             DeleteObject(hFont);
         }
 
-        /// Set text height
+        /// @brief Set text height
+        /// @param h height
+        /// default height 20 if not called
         void textHeight(int h)
         {
             myLogfont.lfHeight = h;
