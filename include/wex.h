@@ -2846,7 +2846,7 @@ namespace wex
         /** Delete by index
         @param[in] i index of item to delete
     */
-        void select(int i)
+        void deleteItem(int i)
         {
             SendMessage(
                 handle(),
