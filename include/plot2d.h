@@ -127,7 +127,8 @@ namespace wex
                     throw std::runtime_error("plot2d error: plot data added to non plot/scatter trace");
 
                 myY = y;
-            }
+                myLastValid = myY.size() - 1;
+           }
             void setScatterX(const std::vector<double> &x)
             {
                 if (myType != eType::scatter)
