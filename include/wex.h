@@ -2834,13 +2834,23 @@ namespace wex
                 (WPARAM)0, (LPARAM)0);
         }
         /** Select by index
-        @param[in] i index of item to selecct, -1 clears selection
+        @param[in] i index of item to select, -1 clears selection
     */
         void select(int i)
         {
             SendMessage(
                 handle(),
                 LB_SETCURSEL,
+                (WPARAM)i, (LPARAM)0);
+        }
+        /** Delete by index
+        @param[in] i index of item to delete
+    */
+        void select(int i)
+        {
+            SendMessage(
+                handle(),
+                LB_DELETESTRING,
                 (WPARAM)i, (LPARAM)0);
         }
         /** Select by string
