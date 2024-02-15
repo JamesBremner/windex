@@ -433,7 +433,7 @@ namespace wex
                 @param[in} xaxis true for x ( horixonatl ) axis, defaults to false ( vertical )
             */
             axis(gui &p, bool xaxis = false)
-                : myfGrid(false), myfX(xaxis), myParent(p)
+                : myfGrid(false), myfX(xaxis), myParent(p), myfXset(false)
             {
             }
 
@@ -482,17 +482,8 @@ namespace wex
                     int xmn_px = scale::get().X2Pixel(mn);
                     int xmx_px = scale::get().X2Pixel(mx);
 
-                    float xmin_label_value = myXStartValue;
-                    float xmax_label_value = myXStartValue + myXScaleValue * (mx - mn);
-
-                    S.text(std::to_string((int)xmin_label_value), {xmn_px, ypos + 3, 50, 15});
-                    S.text(std::to_string((int)xmax_label_value), {xmx_px - 25, ypos + 3, 50, 15});
-
                     S.line({xmn_px, ypos,
                             xmx_px, ypos});
-                    S.text(myMaxXLabel,
-                           {xmx_px - 50, ypos + 3,
-                            50, 15});
 
                     if (myfGrid)
                     {
@@ -516,6 +507,23 @@ namespace wex
                                 S.pixel(x, k + 1);
                             }
                         }
+                    }
+                    else
+                    {
+                        // there is no grid
+                        // so just label the minimu, maximum x points
+                        float xmin_label_value = 0;
+                        float xmax_label_value = 100;
+                        if (myfXset)
+                        {
+                            xmin_label_value = myXStartValue;
+                            xmax_label_value = myXStartValue + myXScaleValue * (mx - mn);
+                        }
+                        S.text(std::to_string((int)xmin_label_value), {xmn_px, ypos + 3, 50, 15});
+                        S.text(std::to_string((int)xmax_label_value), {xmx_px - 25, ypos + 3, 50, 15});
+                        S.text(myMaxXLabel,
+                               {xmx_px - 50, ypos + 3,
+                                50, 15});
                     }
                 }
             }
@@ -552,6 +560,7 @@ namespace wex
             {
                 myXStartValue = start;
                 myXScaleValue = scale;
+                myfXset = true;
             }
 
         private:
@@ -562,6 +571,7 @@ namespace wex
             std::string myMaxXLabel;
             std::string myMinYLabel;
             std::string myMaxYLabel;
+            bool myfXset;
             int myMinXValue;
             int myMaxXValue;
             float myXStartValue;
