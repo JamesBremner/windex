@@ -270,6 +270,9 @@ namespace wex
             {
                 if (myY.size())
                 {
+
+                    // find the x limits
+
                     if (myType == eType::realtime || myX.size() == 0)
                     {
                         txmin = 0;
@@ -283,30 +286,42 @@ namespace wex
                         txmin = *result.first;
                         txmax = *result.second;
                     }
-                    // auto result = std::minmax_element(
-                    //     myY.begin(),
-                    //     myY.end());
-                    // tymin = *result.first;
-                    // tymax = *result.second;
-                    if (myLastValid < 0)
+
+                    // find the y limits
+
+                    if (myType == eType::realtime)
                     {
-                        tymin = -5;
-                        tymax = 5;
+                        if (myLastValid < 0)
+                        {
+                            tymin = -5;
+                            tymax = 5;
+                        }
+                        else
+                        {
+                            // TODO: Keep track if the entire real time circular buffer has been filled
+                            // so that this can be optimized by a call to std::minmax_element
+                            tymin = myY[0];
+                            tymax = myY[0];
+                            for (int k = 1; k < myLastValid; k++)
+                            {
+                                double y = myY[k];
+                                if (y == 123e123)       
+                                    break;              // this value has not yet been filled
+                                if (y < tymin)
+                                    tymin = y;
+                                if (y > tymax)
+                                    tymax = y;
+                            }
+                        }
                     }
                     else
                     {
-                        tymin = myY[0];
-                        tymax = myY[0];
-                        for (int k = 1; k < myLastValid; k++)
-                        {
-                            double y = myY[k];
-                            if (y == 123e123)
-                                break;
-                            if (y < tymin)
-                                tymin = y;
-                            if (y > tymax)
-                                tymax = y;
-                        }
+                        // scatter or static trace
+                        auto result = std::minmax_element(
+                            myY.begin(),
+                            myY.end());
+                        tymin = *result.first;
+                        tymax = *result.second;
                     }
                 }
             }
