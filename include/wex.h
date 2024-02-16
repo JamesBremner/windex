@@ -829,7 +829,8 @@ namespace wex
     nor that of any specilaization classes.  Intead use maker::make().
     */
         gui()
-            : myParent(NULL), myBGColor(0xC8C8C8), myBGBrush(CreateSolidBrush(myBGColor)), myDeleteList(0), myfModal(false), myfEnabled(true), myfnobgerase(false), myToolTip(NULL), myAsyncReadCompleteMsgID(0), myCursorID(0)
+            : myParent(NULL), myBGColor(0xC8C8C8), myBGBrush(CreateSolidBrush(myBGColor)), myTextColor(0),
+            myDeleteList(0), myfModal(false), myfEnabled(true), myfnobgerase(false), myToolTip(NULL), myAsyncReadCompleteMsgID(0), myCursorID(0)
         {
             myID = NewID();
             Create(
@@ -899,6 +900,8 @@ namespace wex
                 WM_SETFONT,
                 (WPARAM)myFont,
                 0);
+
+            myTextColor = 0;
         }
         virtual ~gui()
         {
@@ -1012,6 +1015,10 @@ namespace wex
         int bgcolor() const
         {
             return myBGColor;
+        }
+        void textColor( int c )
+        {
+            myTextColor = c;
         }
         void text(const std::string &text)
         {
@@ -1658,6 +1665,7 @@ namespace wex
         gui *myParent;
         eventhandler myEvents;
         int myBGColor;
+        int myTextColor;
         HBRUSH myBGBrush;
         LOGFONT myLogFont;
         HFONT myFont;
@@ -1736,7 +1744,7 @@ namespace wex
                 color = 0xAAAAAA;
             SetTextColor(
                 ps.hdc,
-                color);
+                myTextColor);
             if (myParent)
             {
                 SelectObject(ps.hdc, myFont);
@@ -2145,7 +2153,7 @@ namespace wex
                     color = 0xAAAAAA;
                 SetTextColor(
                     ps.hdc,
-                    color);
+                    myTextColor);
                 SetBkColor(
                     ps.hdc,
                     myBGColor);
@@ -2389,7 +2397,7 @@ namespace wex
                 color = 0xAAAAAA;
             SetTextColor(
                 ps.hdc,
-                color);
+                myTextColor);
             SetBkColor(
                 ps.hdc,
                 myBGColor);

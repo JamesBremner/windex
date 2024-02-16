@@ -480,8 +480,8 @@ void ScrollDemo()
             // add text to end
             list.add(eb.text());
 
-            //scroll added text into view
-            list.select(list.count()-1);
+            // scroll added text into view
+            list.select(list.count() - 1);
         });
 
     form.show();
@@ -621,8 +621,8 @@ void PlotDemo()
     // construct plot to be drawn on form
     wex::plot::plot &thePlot = wex::maker::make<wex::plot::plot>(fm);
     thePlot.bgcolor(0);
-    thePlot.XValues(0,5);
-    thePlot.grid( true );
+    thePlot.XValues(0, 5);
+    thePlot.grid(true);
 
     //  resize plot when form resizes
     fm.events().resize([&](int w, int h)
@@ -630,6 +630,12 @@ void PlotDemo()
         thePlot.size( w-100, h-200 );
         thePlot.move( 30, 100 );
         thePlot.update(); });
+
+    wex::label &plotLabel = wex::maker::make<wex::label>(thePlot);
+    plotLabel.move(100, 100, 130, 20);
+    plotLabel.bgcolor(0xFFFFFF);
+    plotLabel.textColor(0x0000FF);
+    plotLabel.text("this is a plot label");
 
     wex::button &btnStatic = wex::maker::make<wex::button>(fm);
     btnStatic.move(100, 10, 50, 20);
@@ -810,6 +816,7 @@ int main()
     // display a button
     button &btnhello = wex::maker::make<button>(l);
     btnhello.size(150, 30);
+    btnhello.textColor(0);
     btnhello.text("Label and Editbox");
     btnhello.events().click([]
                             { helloworld(); });
