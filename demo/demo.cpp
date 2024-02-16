@@ -700,7 +700,7 @@ void PlotDemo()
 
         // construct timer as static so the destructor is not called
         // when it goes out of scope
-        static timer t( fm, 10 ); });
+        static timer t( fm, 100 ); });
 
     fm.show();
 }

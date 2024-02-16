@@ -78,6 +78,116 @@ namespace wex
             double myXMin, myXMax, myYMin, myYMax;
         };
         /// @endcond
+
+        class cCircularBuffer
+        {
+            int myCurrentID;
+            int myLastValid;
+            int mySize;
+            bool myfWrapped;
+            bool myfCurrentLast;
+            bool myfIterating;
+
+        public:
+            cCircularBuffer()
+                : myCurrentID(-1), myLastValid(-1), mySize(-1),
+                  myfWrapped(false), myfCurrentLast(false), myfIterating(false)
+            {
+            }
+
+            /// @brief set largest buffer index
+            /// @param s
+            void set(int s)
+            {
+                mySize = s;
+            }
+
+            /// true if buffer has some data
+            bool isValidData() const
+            {
+                return myLastValid >= 0;
+            }
+
+            /// true if buffer is full of data
+            bool isFull()
+            {
+                return myfWrapped;
+            }
+
+            /// register an addition of a data point to the buffer
+            /// throws exception if buffer size has not been set
+            /// throws exception if called while an iteration is ongoing
+            int add()
+            {
+                if (mySize < 0)
+                    throw std::logic_error(
+                        "cCircularBuffer::add() called without size buffer");
+
+                if (myfIterating)
+                    throw std::logic_error(
+                        "cCircularBuffer::add() called during iteration");
+
+                myLastValid++;
+                if (myLastValid > mySize)
+                {
+                    myLastValid = 0;
+                    myfWrapped = true;
+                }
+                return myLastValid;
+            }
+
+            /// @brief start new iteration through buffer
+            /// @return first index, -1 if buffer empty
+            /// iteration must run to completion without adding any new data
+            int first()
+            {
+                if (myLastValid < 0)
+                    return -1;
+                myfIterating = true;
+                if (!myfWrapped)
+                {
+                    myCurrentID = 0;
+                    myfCurrentLast = false;
+                    if (myLastValid == 0)
+                        myfCurrentLast = true;
+                }
+                else
+                {
+                    myCurrentID = myLastValid + 1;
+                    if (myCurrentID > mySize)
+                        myCurrentID = 0;
+                    myfCurrentLast = false;
+                }
+                return myCurrentID;
+            }
+
+            /// @brief next index in current iteration
+            /// @return
+            int next()
+            {
+                // check for no data in buffer
+                if (myLastValid < 0)
+                    return -1;
+
+                // check for end of data
+                if (myfCurrentLast)
+                {
+                    myfIterating = false;
+                    return -1;
+                }
+
+                myCurrentID++;
+
+                if (myCurrentID > mySize)
+                    myCurrentID = 0;
+
+                if (myCurrentID == myLastValid)
+                    myfCurrentLast = true;
+
+                return myCurrentID;
+            }
+        };
+
         /** \brief Single trace to be plotted
 
             Application code shouild not attempt to construct a trace
@@ -150,12 +260,7 @@ namespace wex
             {
                 if (myType != eType::realtime)
                     throw std::runtime_error("plot2d error: realtime data added to non realtime trace");
-                myY[myRealTimeNext++] = y;
-                if (myRealTimeNext >= (int)myY.size())
-                    myRealTimeNext = 0;
-                myLastValid++;
-                if (myLastValid > myY.size())
-                    myLastValid = myY.size() - 1;
+                myY[myCircular.add()] = y;
             }
 
             /** \brief add point to scatter trace
@@ -214,10 +319,9 @@ namespace wex
             plot *myPlot;
             std::vector<double> myX;
             std::vector<double> myY;
+            cCircularBuffer myCircular;
             int myColor;
             int myThick;
-            int myRealTimeNext;
-            int myLastValid;
             enum class eType
             {
                 plot,
@@ -249,10 +353,9 @@ namespace wex
             void realTime(int w)
             {
                 myType = eType::realtime;
-                myRealTimeNext = 0;
-                myLastValid = -1;
                 myY.clear();
-                myY.resize(w, 123e123);
+                myY.resize(w);
+                myCircular.set(w);
             }
 
             /** \brief Convert trace to point operation for scatter plots */
@@ -291,27 +394,33 @@ namespace wex
 
                     if (myType == eType::realtime)
                     {
-                        if (myLastValid < 0)
+                        if (!myCircular.isValidData())
                         {
                             tymin = -5;
                             tymax = 5;
+                            return;
                         }
-                        else
+
+                        if (myCircular.isFull())
                         {
-                            // TODO: Keep track if the entire real time circular buffer has been filled
-                            // so that this can be optimized by a call to std::minmax_element
-                            tymin = myY[0];
-                            tymax = myY[0];
-                            for (int k = 1; k < myLastValid; k++)
-                            {
-                                double y = myY[k];
-                                if (y == 123e123)       
-                                    break;              // this value has not yet been filled
-                                if (y < tymin)
-                                    tymin = y;
-                                if (y > tymax)
-                                    tymax = y;
-                            }
+                            auto result = std::minmax_element(
+                                myY.begin(),
+                                myY.end());
+                            tymin = *result.first;
+                            tymax = *result.second;
+                        }
+
+                        tymin = myY[0];
+                        tymax = myY[0];
+                        for (int idx = myCircular.first();
+                             idx >= 0;
+                             idx = myCircular.next())
+                        {
+                            double y = myY[idx];
+                            if (y < tymin)
+                                tymin = y;
+                            if (y > tymax)
+                                tymax = y;
                         }
                     }
                     else
@@ -373,47 +482,15 @@ namespace wex
 
                 case eType::realtime:
                 {
-                    // loop over data points
-                    if (myLastValid < 0)
-                        break;
-
-                    // they are stored in a circular buffer
-                    // so we have to start with the oldest data point
-                    int yidx = myRealTimeNext;
                     int xidx = 0;
-                    while (true)
+                    for (int yidx = myCircular.first();
+                         yidx >= 0;
+                         yidx = myCircular.next())
                     {
-                        if (!first)
-                            if (yidx == myRealTimeNext)
-                                break;
-
-                        // check for empty data point
-                        if (myY[yidx] == 123e123)
-                        {
-                            // the trace is not yet full
-                            // so keep going to find the beginning of the data that has arrived
-                            yidx++;
-                            if (yidx >= (int)myY.size())
-                                yidx = 0;
-                            continue;
-                        }
 
                         // scale data point to pixels
                         double x = scale::get().X2Pixel(xidx);
                         double y = scale::get().Y2Pixel(myY[yidx]);
-
-                        // the next data point
-                        // with wrap-around if the end of the vector is reached
-                        yidx++;
-                        xidx++;
-
-                        // check for end of data
-                        if (yidx == myRealTimeNext)
-                            break;
-
-                        // check for buffer wrap
-                        if (yidx >= (int)myY.size() - 1)
-                            yidx = 0;
 
                         if (first)
                         {
@@ -428,6 +505,8 @@ namespace wex
 
                         prevX = x;
                         prev = y;
+
+                        xidx++;
                     }
                 }
                 break;
