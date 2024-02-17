@@ -79,14 +79,20 @@ namespace wex
         };
         /// @endcond
 
+        /** @brief Maintain indices of circular buffer
+         * 
+         * When the buffer is full, new data over-writes the oldest ( wraps around )
+         * The data is stored in an external buffer
+         * Wrap around is done by manipulating the indices, rather than actually moving the buffer contents
+         */
         class cCircularBuffer
         {
-            int myCurrentID;
-            int myLastValid;
-            int mySize;
-            bool myfWrapped;
-            bool myfCurrentLast;
-            bool myfIterating;
+            int myCurrentID;            // buffer index for current iteration
+            int myLastValid;            // index of most recent data point
+            int mySize;                 // largest buffer index
+            bool myfWrapped;            // true if buffer is full aand wrap around has occurred
+            bool myfCurrentLast;        // true if current iteration is at most recent data point
+            bool myfIterating;          // an iteration is in progress
 
         public:
             cCircularBuffer()
@@ -96,7 +102,8 @@ namespace wex
             }
 
             /// @brief set largest buffer index
-            /// @param s
+            /// @param s size of buffer
+            /// Must be called before any data is added
             void set(int s)
             {
                 mySize = s;
@@ -136,7 +143,7 @@ namespace wex
                 return myLastValid;
             }
 
-            /// @brief start new iteration through buffer
+            /// @brief start new iteration through buffer from oldest to most recent
             /// @return first index, -1 if buffer empty
             /// iteration must run to completion without adding any new data
             int first()
@@ -161,8 +168,8 @@ namespace wex
                 return myCurrentID;
             }
 
-            /// @brief next index in current iteration
-            /// @return
+            /// @brief next buffer index in current iteration
+            /// @return buffer index, -1 if iteration complete or problem
             int next()
             {
                 // check for no data in buffer
@@ -190,7 +197,7 @@ namespace wex
 
         /** \brief Single trace to be plotted
 
-            Application code shouild not attempt to construct a trace
+            Application code should not attempt to construct a trace
             Rather call one of plot::AddPointTrace, plot::AddRealTimeTrace or plot::AddStaticTrace
             which return a reference to the trace which can be configured
             and be populated with data.
@@ -316,18 +323,18 @@ namespace wex
         private:
             friend plot;
 
-            plot *myPlot;
-            std::vector<double> myX;
-            std::vector<double> myY;
-            cCircularBuffer myCircular;
-            int myColor;
-            int myThick;
+            plot *myPlot;               // plot where this trace is displayed
+            std::vector<double> myX;    // X value of each data point
+            std::vector<double> myY;    // Y value of each data point
+            cCircularBuffer myCircular; // maintain indices of circular buffer used by real time trace
+            int myColor;                // trace color
+            int myThick;                // trace thickness
             enum class eType
             {
                 plot,
                 realtime,
                 scatter
-            } myType;
+            } myType;                   // trace type
 
             /** CTOR
             Application code should not call this constructor
@@ -349,6 +356,9 @@ namespace wex
             @param[in] w number of data points to display
 
             Data points older than w scroll off the left edge of the plot and are lost
+
+            X-axis represents time, with 'present' at right end.
+            Assumes data points are evenly spaced in time
             */
             void realTime(int w)
             {
@@ -396,6 +406,7 @@ namespace wex
                     {
                         if (!myCircular.isValidData())
                         {
+                            // no data is buffer
                             tymin = -5;
                             tymax = 5;
                             return;
@@ -403,6 +414,7 @@ namespace wex
 
                         if (myCircular.isFull())
                         {
+                            // buffer is full
                             auto result = std::minmax_element(
                                 myY.begin(),
                                 myY.end());
@@ -410,6 +422,8 @@ namespace wex
                             tymax = *result.second;
                         }
 
+                        // buffer is partially full
+                        // set bounds using the data that has been received so far
                         tymin = myY[0];
                         tymax = myY[0];
                         for (int idx = myCircular.first();
@@ -482,6 +496,7 @@ namespace wex
 
                 case eType::realtime:
                 {
+                    // loop over data in circular buffer
                     int xidx = 0;
                     for (int yidx = myCircular.first();
                          yidx >= 0;

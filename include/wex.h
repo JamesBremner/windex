@@ -1016,6 +1016,10 @@ namespace wex
         {
             return myBGColor;
         }
+        /// @brief Set text color
+        /// @param c color 0xBBGGRR e.g. 0x0000FF for red
+        /// If not called, defaults to black
+        /// children do not inherit this
         void textColor( int c )
         {
             myTextColor = c;
