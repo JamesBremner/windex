@@ -780,7 +780,9 @@ namespace wex
             DeleteObject(hFont);
         }
 
-        /// Set text height
+        /// @brief Set text height
+        /// @param h height
+        /// default height 20 if not called
         void textHeight(int h)
         {
             myLogfont.lfHeight = h;
@@ -827,7 +829,8 @@ namespace wex
     nor that of any specilaization classes.  Intead use maker::make().
     */
         gui()
-            : myParent(NULL), myBGColor(0xC8C8C8), myBGBrush(CreateSolidBrush(myBGColor)), myDeleteList(0), myfModal(false), myfEnabled(true), myfnobgerase(false), myToolTip(NULL), myAsyncReadCompleteMsgID(0), myCursorID(0)
+            : myParent(NULL), myBGColor(0xC8C8C8), myBGBrush(CreateSolidBrush(myBGColor)), myTextColor(0),
+            myDeleteList(0), myfModal(false), myfEnabled(true), myfnobgerase(false), myToolTip(NULL), myAsyncReadCompleteMsgID(0), myCursorID(0)
         {
             myID = NewID();
             Create(
@@ -897,6 +900,8 @@ namespace wex
                 WM_SETFONT,
                 (WPARAM)myFont,
                 0);
+
+            myTextColor = 0;
         }
         virtual ~gui()
         {
@@ -1010,6 +1015,14 @@ namespace wex
         int bgcolor() const
         {
             return myBGColor;
+        }
+        /// @brief Set text color
+        /// @param c color 0xBBGGRR e.g. 0x0000FF for red
+        /// If not called, defaults to black
+        /// children do not inherit this
+        void textColor( int c )
+        {
+            myTextColor = c;
         }
         void text(const std::string &text)
         {
@@ -1527,7 +1540,6 @@ namespace wex
         /// Stop modal interaction and close window
         void endModal()
         {
-            std::cout << myText << " endModal\n";
             myfModal = false;
             modalMgr::get().set(0, 0);
             DestroyWindow(myHandle);
@@ -1657,6 +1669,7 @@ namespace wex
         gui *myParent;
         eventhandler myEvents;
         int myBGColor;
+        int myTextColor;
         HBRUSH myBGBrush;
         LOGFONT myLogFont;
         HFONT myFont;
@@ -1735,7 +1748,7 @@ namespace wex
                 color = 0xAAAAAA;
             SetTextColor(
                 ps.hdc,
-                color);
+                myTextColor);
             if (myParent)
             {
                 SelectObject(ps.hdc, myFont);
@@ -2144,7 +2157,7 @@ namespace wex
                     color = 0xAAAAAA;
                 SetTextColor(
                     ps.hdc,
-                    color);
+                    myTextColor);
                 SetBkColor(
                     ps.hdc,
                     myBGColor);
@@ -2388,7 +2401,7 @@ namespace wex
                 color = 0xAAAAAA;
             SetTextColor(
                 ps.hdc,
-                color);
+                myTextColor);
             SetBkColor(
                 ps.hdc,
                 myBGColor);
@@ -2835,13 +2848,23 @@ namespace wex
                 (WPARAM)0, (LPARAM)0);
         }
         /** Select by index
-        @param[in] i index of item to selecct, -1 clears selection
+        @param[in] i index of item to select, -1 clears selection
     */
         void select(int i)
         {
             SendMessage(
                 handle(),
                 LB_SETCURSEL,
+                (WPARAM)i, (LPARAM)0);
+        }
+        /** Delete by index
+        @param[in] i index of item to delete
+    */
+        void deleteItem(int i)
+        {
+            SendMessage(
+                handle(),
+                LB_DELETESTRING,
                 (WPARAM)i, (LPARAM)0);
         }
         /** Select by string

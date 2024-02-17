@@ -68,6 +68,8 @@ No separate build step is required. since this is a header only library.  This a
  - Add the `include` folder to the compiler search directories.
  - Add the windows libraries gdi32, comdlg32 and Comctl32 to the linker command
 
+More details in the wiki at https://github.com/JamesBremner/windex/wiki/Build-Instructions
+
 # Hello World
 
 Complete [sample code](https://github.com/JamesBremner/windex/wiki/hello-world) for a hello world application.

@@ -1,5 +1,5 @@
 INCS=-I../../include -I../../../raven-set -I../../../await/include \
-	-I../../../../code_ext/boost/boost1_78
+	-I../../../../code_ext/boost/boost_1_84_0
 LIBS=-lgdiplus -lgdi32 -lcomdlg32 -lws2_32 -lwsock32 -lComctl32
 
 demo: ../../demo/demo.cpp 
@@ -12,5 +12,5 @@ tcp: ../../demo/tcpdemo.cpp ../../../raven-set/ctcp.cpp
 	$(LIBS)
 
 comdemo: ../../demo/com.cpp 
-	g++ -g ../../demo/com.cpp -o../../bin/comdemo.exe  $(INCS) $(LIBS)
+	g++ -O2 ../../demo/com.cpp -o../../bin/comdemo.exe  $(INCS) $(LIBS)
 

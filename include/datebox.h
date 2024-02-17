@@ -5,6 +5,7 @@
 
 namespace wex
 {
+    /// @brief A popup window where user can select a date from a calendar
     class datebox : public gui
     {
     public:

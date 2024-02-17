@@ -1,0 +1,12 @@
+# Simplified demo makefile
+# Use this if you do not need the TCP and COM serial port features
+
+INCS=-I../../include   \
+	-I../../../../code_ext/boost/boost_1_84_0
+LIBS=-lgdiplus -lgdi32 -lcomdlg32 -lComctl32
+
+demo: ../../demo/demo.cpp 
+	g++ -g ../../demo/demo.cpp -o../../bin/demo.exe  $(INCS) $(LIBS)
+     
+
+

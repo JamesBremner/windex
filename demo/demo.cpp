@@ -451,18 +451,39 @@ void ScrollDemo()
 {
     // construct top level window
     gui &form = wex::maker::make();
-    form.scroll();
     form.move({50, 50, 400, 400});
-    form.scrollRange(600, 600);
     form.text("Scroll demo");
 
-    // display labels
-    label &lbA = wex::maker::make<label>(form);
-    lbA.move({20, 20, 500, 30});
-    lbA.text("AXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    label &lbB = wex::maker::make<label>(form);
-    lbB.move({20, 580, 550, 30});
-    lbB.text("580 580 580");
+    // construct list
+    wex::list &list = wex::maker::make<wex::list>(form);
+    list.move(10, 10, 200, 100);
+    list.add("this is a demo");
+    list.add("line 2 ");
+    list.add("line 3");
+    list.add("line 4 ");
+    list.add("line 5 ");
+    list.add("line 6 ");
+    list.add("line 7 ");
+    list.add("line 8 ");
+    list.add("line 9 ");
+
+    wex::editbox &eb = wex::maker::make<wex::editbox>(form);
+    eb.move(50, 150, 200, 20);
+    eb.text("enter some text");
+
+    wex::button &bn = wex::maker::make<wex::button>(form);
+    bn.move(300, 150, 50, 20);
+    bn.text("ADD");
+    bn.events().click(
+        [&]()
+        {
+            // add text to end
+            list.add(eb.text());
+
+            // scroll added text into view
+            list.select(list.count() - 1);
+        });
+
     form.show();
 }
 
@@ -600,13 +621,21 @@ void PlotDemo()
     // construct plot to be drawn on form
     wex::plot::plot &thePlot = wex::maker::make<wex::plot::plot>(fm);
     thePlot.bgcolor(0);
-    // thePlot.Grid( true );
+    thePlot.XValues(0, 5);
+    thePlot.grid(true);
+
     //  resize plot when form resizes
     fm.events().resize([&](int w, int h)
                        {
         thePlot.size( w-100, h-200 );
         thePlot.move( 30, 100 );
         thePlot.update(); });
+
+    wex::label &plotLabel = wex::maker::make<wex::label>(thePlot);
+    plotLabel.move(100, 100, 130, 20);
+    plotLabel.bgcolor(0xFFFFFF);
+    plotLabel.textColor(0x0000FF);
+    plotLabel.text("this is a plot label");
 
     wex::button &btnStatic = wex::maker::make<wex::button>(fm);
     btnStatic.move(100, 10, 50, 20);
@@ -677,7 +706,7 @@ void PlotDemo()
 
         // construct timer as static so the destructor is not called
         // when it goes out of scope
-        static timer t( fm, 10 ); });
+        static timer t( fm, 100 ); });
 
     fm.show();
 }
@@ -730,8 +759,8 @@ void TableDemo()
     form.move({50, 50, 400, 400});
     form.text("Table demo");
 
-    label& lb = maker::make<label>(form);
-    lb.move(30,300,50,30);
+    label &lb = maker::make<label>(form);
+    lb.move(30, 300, 50, 30);
     lb.text("");
 
     std::vector<std::vector<std::string>> table1data{
@@ -787,6 +816,7 @@ int main()
     // display a button
     button &btnhello = wex::maker::make<button>(l);
     btnhello.size(150, 30);
+    btnhello.textColor(0);
     btnhello.text("Label and Editbox");
     btnhello.events().click([]
                             { helloworld(); });
