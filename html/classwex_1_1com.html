@@ -133,6 +133,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a041da4574288872449e048eef5958abd"><td class="memItemLeft" align="right" valign="top"><a id="a041da4574288872449e048eef5958abd"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>baud</b> (int rate)</td></tr>
 <tr class="separator:a041da4574288872449e048eef5958abd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6c2c11ba3bde6a12fb6b95ad21fc7ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1com.html#ac6c2c11ba3bde6a12fb6b95ad21fc7ad">deviceInputBuffer</a> (int length)</td></tr>
+<tr class="memdesc:ac6c2c11ba3bde6a12fb6b95ad21fc7ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">set device input buffer length  <a href="classwex_1_1com.html#ac6c2c11ba3bde6a12fb6b95ad21fc7ad">More...</a><br /></td></tr>
+<tr class="separator:ac6c2c11ba3bde6a12fb6b95ad21fc7ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Getters</div></td></tr>
 <tr class="memitem:ae4296d3fa6169c1e4c9b94c3105ad011"><td class="memItemLeft" align="right" valign="top"><a id="ae4296d3fa6169c1e4c9b94c3105ad011"></a>
 const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>portNumber</b> () const</td></tr>
@@ -207,6 +210,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>id</b> ()</td></tr>
 <tr class="memitem:a6b7804e4f2675d4bb526c99587ca9649 inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="a6b7804e4f2675d4bb526c99587ca9649"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>bgcolor</b> () const</td></tr>
 <tr class="separator:a6b7804e4f2675d4bb526c99587ca9649 inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93580515d08a0e8402f4669f23284eac inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1gui.html#a93580515d08a0e8402f4669f23284eac">textColor</a> (int c)</td></tr>
+<tr class="memdesc:a93580515d08a0e8402f4669f23284eac inherit pub_methods_classwex_1_1gui"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set text color.  <a href="classwex_1_1gui.html#a93580515d08a0e8402f4669f23284eac">More...</a><br /></td></tr>
+<tr class="separator:a93580515d08a0e8402f4669f23284eac inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae652dc8654d0baaa1f3b513c2cb85f0b inherit pub_methods_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="ae652dc8654d0baaa1f3b513c2cb85f0b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>text</b> (const std::string &amp;text)</td></tr>
 <tr class="separator:ae652dc8654d0baaa1f3b513c2cb85f0b inherit pub_methods_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -319,6 +325,9 @@ HWND&#160;</td><td class="memItemRight" valign="bottom"><b>myHandle</b></td></tr
 <tr class="memitem:a36aac214dc7436dac35b1d194e670669 inherit pro_attribs_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="a36aac214dc7436dac35b1d194e670669"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>myBGColor</b></td></tr>
 <tr class="separator:a36aac214dc7436dac35b1d194e670669 inherit pro_attribs_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29a5beadf8ef07d068bc6381033f781d inherit pro_attribs_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="a29a5beadf8ef07d068bc6381033f781d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>myTextColor</b></td></tr>
+<tr class="separator:a29a5beadf8ef07d068bc6381033f781d inherit pro_attribs_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5da388789147e8d7786778a98df4bfc9 inherit pro_attribs_classwex_1_1gui"><td class="memItemLeft" align="right" valign="top"><a id="a5da388789147e8d7786778a98df4bfc9"></a>
 HBRUSH&#160;</td><td class="memItemRight" valign="bottom"><b>myBGBrush</b></td></tr>
 <tr class="separator:a5da388789147e8d7786778a98df4bfc9 inherit pro_attribs_classwex_1_1gui"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -504,6 +513,40 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>myfScrollHoriz</b></t
 <p>Control sring format [baud=b][parity=p][data=d][stop=s][to={on|off}][xon={on|off}][odsr={on|off}][octs={on|off}][dtr={on|off|hs}][rts={on|off|hs|tg}][idsr={on|off}]</p>
 <p>For example, the following string specifies a baud rate of 1200, no parity, 8 data bits, and 1 stop bit:</p>
 <p>baud=1200 parity=N data=8 stop=1 </p>
+
+</div>
+</div>
+<a id="ac6c2c11ba3bde6a12fb6b95ad21fc7ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6c2c11ba3bde6a12fb6b95ad21fc7ad">&#9670;&nbsp;</a></span>deviceInputBuffer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wex::com::deviceInputBuffer </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>length</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>set device input buffer length </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">length</td><td>output buffer remains at defualt ( 4K ) This must be called before the call to open </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

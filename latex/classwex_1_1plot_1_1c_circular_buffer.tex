@@ -1,0 +1,83 @@
+\hypertarget{classwex_1_1plot_1_1c_circular_buffer}{}\doxysection{wex\+::plot\+::c\+Circular\+Buffer Class Reference}
+\label{classwex_1_1plot_1_1c_circular_buffer}\index{wex::plot::cCircularBuffer@{wex::plot::cCircularBuffer}}
+
+
+Maintain indices of circular buffer.  
+
+
+
+
+{\ttfamily \#include $<$plot2d.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classwex_1_1plot_1_1c_circular_buffer_aa0735054e4a40048758fa9b593ef22bd}{set}} (int s)
+\begin{DoxyCompactList}\small\item\em set largest buffer index \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1c_circular_buffer_ae0ffa7932f1bda9e5dc21466bea27464}\label{classwex_1_1plot_1_1c_circular_buffer_ae0ffa7932f1bda9e5dc21466bea27464}} 
+bool \mbox{\hyperlink{classwex_1_1plot_1_1c_circular_buffer_ae0ffa7932f1bda9e5dc21466bea27464}{is\+Valid\+Data}} () const
+\begin{DoxyCompactList}\small\item\em true if buffer has some data \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1c_circular_buffer_a14e0b4fb34b5d1fab78962d0151a2726}\label{classwex_1_1plot_1_1c_circular_buffer_a14e0b4fb34b5d1fab78962d0151a2726}} 
+bool \mbox{\hyperlink{classwex_1_1plot_1_1c_circular_buffer_a14e0b4fb34b5d1fab78962d0151a2726}{is\+Full}} ()
+\begin{DoxyCompactList}\small\item\em true if buffer is full of data \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1c_circular_buffer_ac50768bf01ff801718f5a1058291ead6}\label{classwex_1_1plot_1_1c_circular_buffer_ac50768bf01ff801718f5a1058291ead6}} 
+int \mbox{\hyperlink{classwex_1_1plot_1_1c_circular_buffer_ac50768bf01ff801718f5a1058291ead6}{add}} ()
+\begin{DoxyCompactList}\small\item\em register an addition of a data point to the buffer throws exception if buffer size has not been set throws exception if called while an iteration is ongoing \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classwex_1_1plot_1_1c_circular_buffer_a0719145e2d2b581f8cfbf900de0d88e4}{first}} ()
+\begin{DoxyCompactList}\small\item\em start new iteration through buffer from oldest to most recent \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classwex_1_1plot_1_1c_circular_buffer_ad875ac8aa1da5e4595426c4e9a16bc1c}{next}} ()
+\begin{DoxyCompactList}\small\item\em next buffer index in current iteration \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Maintain indices of circular buffer. 
+
+When the buffer is full, new data over-\/writes the oldest ( wraps around ) The data is stored in an external buffer Wrap around is done by manipulating the indices, rather than actually moving the buffer contents 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1plot_1_1c_circular_buffer_a0719145e2d2b581f8cfbf900de0d88e4}\label{classwex_1_1plot_1_1c_circular_buffer_a0719145e2d2b581f8cfbf900de0d88e4}} 
+\index{wex::plot::cCircularBuffer@{wex::plot::cCircularBuffer}!first@{first}}
+\index{first@{first}!wex::plot::cCircularBuffer@{wex::plot::cCircularBuffer}}
+\doxysubsubsection{\texorpdfstring{first()}{first()}}
+{\footnotesize\ttfamily int wex\+::plot\+::c\+Circular\+Buffer\+::first (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+start new iteration through buffer from oldest to most recent 
+
+\begin{DoxyReturn}{Returns}
+first index, -\/1 if buffer empty iteration must run to completion without adding any new data 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1plot_1_1c_circular_buffer_ad875ac8aa1da5e4595426c4e9a16bc1c}\label{classwex_1_1plot_1_1c_circular_buffer_ad875ac8aa1da5e4595426c4e9a16bc1c}} 
+\index{wex::plot::cCircularBuffer@{wex::plot::cCircularBuffer}!next@{next}}
+\index{next@{next}!wex::plot::cCircularBuffer@{wex::plot::cCircularBuffer}}
+\doxysubsubsection{\texorpdfstring{next()}{next()}}
+{\footnotesize\ttfamily int wex\+::plot\+::c\+Circular\+Buffer\+::next (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+next buffer index in current iteration 
+
+\begin{DoxyReturn}{Returns}
+buffer index, -\/1 if iteration complete or problem 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1plot_1_1c_circular_buffer_aa0735054e4a40048758fa9b593ef22bd}\label{classwex_1_1plot_1_1c_circular_buffer_aa0735054e4a40048758fa9b593ef22bd}} 
+\index{wex::plot::cCircularBuffer@{wex::plot::cCircularBuffer}!set@{set}}
+\index{set@{set}!wex::plot::cCircularBuffer@{wex::plot::cCircularBuffer}}
+\doxysubsubsection{\texorpdfstring{set()}{set()}}
+{\footnotesize\ttfamily void wex\+::plot\+::c\+Circular\+Buffer\+::set (\begin{DoxyParamCaption}\item[{int}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+set largest buffer index 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & size of buffer Must be called before any data is added \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/plot2d.\+h\end{DoxyCompactItemize}

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['open_99',['open',['../classwex_1_1com.html#a91bba49affba4cebbd3097667934878c',1,'wex::com::open()'],['../classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a',1,'wex::filebox::open()']]],
-  ['openmulti_100',['openMulti',['../classwex_1_1filebox.html#a55837ecab5daa393807d114dda3f050c',1,'wex::filebox']]],
-  ['overlapped_101',['overlapped',['../classwex_1_1com.html#a70c092a1c86de123ce2b0fd5fd05b619',1,'wex::com']]]
+  ['open_105',['open',['../classwex_1_1com.html#a91bba49affba4cebbd3097667934878c',1,'wex::com::open()'],['../classwex_1_1filebox.html#a7bc1502dfe09a8a19fd9dcfa8b6bd25a',1,'wex::filebox::open()']]],
+  ['openmulti_106',['openMulti',['../classwex_1_1filebox.html#a55837ecab5daa393807d114dda3f050c',1,'wex::filebox']]],
+  ['overlapped_107',['overlapped',['../classwex_1_1com.html#a70c092a1c86de123ce2b0fd5fd05b619',1,'wex::com']]]
 ];

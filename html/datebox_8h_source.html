@@ -76,28 +76,28 @@ $(function() {
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>wex</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
-<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classwex_1_1datebox.html">    8</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classwex_1_1datebox.html">datebox</a> : <span class="keyword">public</span> <a class="code" href="classwex_1_1gui.html">gui</a></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <a class="code" href="classwex_1_1datebox.html">datebox</a>(<a class="code" href="classwex_1_1gui.html">gui</a> *parent)</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            : <a class="code" href="classwex_1_1gui.html#ae8ced09227dcf59687bad25b5ac407e7">gui</a>(parent, DATETIMEPICK_CLASS,</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            WS_BORDER | WS_CHILD | WS_VISIBLE | DTS_SHOWNONE)</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        {</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            <span class="keywordtype">int</span> dbg = 0;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        }</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> init()</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            INITCOMMONCONTROLSEX icex;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            icex.dwSize = <span class="keyword">sizeof</span>(icex);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            icex.dwICC = ICC_DATE_CLASSES;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keywordflow">if</span>( ! InitCommonControlsEx(&amp;icex) )</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;InitCommonControlsEx failed&quot;</span>);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        }</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    };</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;}</div>
-<div class="ttc" id="aclasswex_1_1datebox_html"><div class="ttname"><a href="classwex_1_1datebox.html">wex::datebox</a></div><div class="ttdef"><b>Definition:</b> datebox.h:9</div></div>
-<div class="ttc" id="aclasswex_1_1gui_html"><div class="ttname"><a href="classwex_1_1gui.html">wex::gui</a></div><div class="ttdoc">The base class for all windex gui elements.</div><div class="ttdef"><b>Definition:</b> wex.h:822</div></div>
-<div class="ttc" id="aclasswex_1_1gui_html_ae8ced09227dcf59687bad25b5ac407e7"><div class="ttname"><a href="classwex_1_1gui.html#ae8ced09227dcf59687bad25b5ac407e7">wex::gui::gui</a></div><div class="ttdeci">gui()</div><div class="ttdoc">Construct top level window with no parent.</div><div class="ttdef"><b>Definition:</b> wex.h:829</div></div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classwex_1_1datebox.html">    9</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classwex_1_1datebox.html">datebox</a> : <span class="keyword">public</span> <a class="code" href="classwex_1_1gui.html">gui</a></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <a class="code" href="classwex_1_1datebox.html">datebox</a>(<a class="code" href="classwex_1_1gui.html">gui</a> *parent)</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            : <a class="code" href="classwex_1_1gui.html#ae8ced09227dcf59687bad25b5ac407e7">gui</a>(parent, DATETIMEPICK_CLASS,</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            WS_BORDER | WS_CHILD | WS_VISIBLE | DTS_SHOWNONE)</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <span class="keywordtype">int</span> dbg = 0;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        }</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> init()</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            INITCOMMONCONTROLSEX icex;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            icex.dwSize = <span class="keyword">sizeof</span>(icex);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            icex.dwICC = ICC_DATE_CLASSES;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            <span class="keywordflow">if</span>( ! InitCommonControlsEx(&amp;icex) )</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;InitCommonControlsEx failed&quot;</span>);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        }</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    };</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;}</div>
+<div class="ttc" id="aclasswex_1_1datebox_html"><div class="ttname"><a href="classwex_1_1datebox.html">wex::datebox</a></div><div class="ttdoc">A popup window where user can select a date from a calendar.</div><div class="ttdef"><b>Definition:</b> datebox.h:10</div></div>
+<div class="ttc" id="aclasswex_1_1gui_html"><div class="ttname"><a href="classwex_1_1gui.html">wex::gui</a></div><div class="ttdoc">The base class for all windex gui elements.</div><div class="ttdef"><b>Definition:</b> wex.h:824</div></div>
+<div class="ttc" id="aclasswex_1_1gui_html_ae8ced09227dcf59687bad25b5ac407e7"><div class="ttname"><a href="classwex_1_1gui.html#ae8ced09227dcf59687bad25b5ac407e7">wex::gui::gui</a></div><div class="ttdeci">gui()</div><div class="ttdoc">Construct top level window with no parent.</div><div class="ttdef"><b>Definition:</b> wex.h:831</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

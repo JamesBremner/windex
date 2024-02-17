@@ -32,6 +32,8 @@ void \mbox{\hyperlink{classwex_1_1list_a13f12f751e69a8522d24195de9d612a2}{clear}
 \begin{DoxyCompactList}\small\item\em Clear all options. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classwex_1_1list_a873db8191d06c5699a5bd3bbd8284bfe}{select}} (int i)
 \begin{DoxyCompactList}\small\item\em Select by index. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1list_a1dc2d6e4eec079e69844c560464d1457}{delete\+Item}} (int i)
+\begin{DoxyCompactList}\small\item\em Delete by index. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classwex_1_1list_ad4e6fb52257611fe5b1d3cf49ca32336}{select}} (const std\+::string \&s)
 \begin{DoxyCompactList}\small\item\em Select by string. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{classwex_1_1list_a6df5f0067037ca4c01842be4efb08f1d}{selected\+Index}} ()
@@ -61,6 +63,21 @@ Event\+: select handler
  
 
 \doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classwex_1_1list_a1dc2d6e4eec079e69844c560464d1457}\label{classwex_1_1list_a1dc2d6e4eec079e69844c560464d1457}} 
+\index{wex::list@{wex::list}!deleteItem@{deleteItem}}
+\index{deleteItem@{deleteItem}!wex::list@{wex::list}}
+\doxysubsubsection{\texorpdfstring{deleteItem()}{deleteItem()}}
+{\footnotesize\ttfamily void wex\+::list\+::delete\+Item (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Delete by index. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em i} & index of item to delete \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{classwex_1_1list_ad4e6fb52257611fe5b1d3cf49ca32336}\label{classwex_1_1list_ad4e6fb52257611fe5b1d3cf49ca32336}} 
 \index{wex::list@{wex::list}!select@{select}}
 \index{select@{select}!wex::list@{wex::list}}
@@ -88,7 +105,7 @@ Select by index.
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em i} & index of item to selecct, -\/1 clears selection \\
+\mbox{\texttt{ in}}  & {\em i} & index of item to select, -\/1 clears selection \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{classwex_1_1list_a6df5f0067037ca4c01842be4efb08f1d}\label{classwex_1_1list_a6df5f0067037ca4c01842be4efb08f1d}} 

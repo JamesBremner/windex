@@ -52,7 +52,9 @@ void \mbox{\hyperlink{classwex_1_1com_ad2f77e8a2a54e45c037eb34a69f61dae}{Device\
 \begin{DoxyCompactList}\small\item\em Configure device. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classwex_1_1com_a041da4574288872449e048eef5958abd}\label{classwex_1_1com_a041da4574288872449e048eef5958abd}} 
 void {\bfseries baud} (int rate)
-\end{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classwex_1_1com_ac6c2c11ba3bde6a12fb6b95ad21fc7ad}{device\+Input\+Buffer}} (int length)
+\begin{DoxyCompactList}\small\item\em set device input buffer length \end{DoxyCompactList}\end{DoxyCompactItemize}
 \end{Indent}
 \begin{Indent}\textbf{ Getters}\par
 \begin{DoxyCompactItemize}
@@ -150,7 +152,22 @@ Control sring format \mbox{[}baud=b\mbox{]}\mbox{[}parity=p\mbox{]}\mbox{[}data=
 
 For example, the following string specifies a baud rate of 1200, no parity, 8 data bits, and 1 stop bit\+:
 
-baud=1200 parity=N data=8 stop=1 \mbox{\Hypertarget{classwex_1_1com_a91bba49affba4cebbd3097667934878c}\label{classwex_1_1com_a91bba49affba4cebbd3097667934878c}} 
+baud=1200 parity=N data=8 stop=1 \mbox{\Hypertarget{classwex_1_1com_ac6c2c11ba3bde6a12fb6b95ad21fc7ad}\label{classwex_1_1com_ac6c2c11ba3bde6a12fb6b95ad21fc7ad}} 
+\index{wex::com@{wex::com}!deviceInputBuffer@{deviceInputBuffer}}
+\index{deviceInputBuffer@{deviceInputBuffer}!wex::com@{wex::com}}
+\doxysubsubsection{\texorpdfstring{deviceInputBuffer()}{deviceInputBuffer()}}
+{\footnotesize\ttfamily void wex\+::com\+::device\+Input\+Buffer (\begin{DoxyParamCaption}\item[{int}]{length }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+set device input buffer length 
+
+
+\begin{DoxyParams}{Parameters}
+{\em length} & output buffer remains at defualt ( 4K ) This must be called before the call to open \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1com_a91bba49affba4cebbd3097667934878c}\label{classwex_1_1com_a91bba49affba4cebbd3097667934878c}} 
 \index{wex::com@{wex::com}!open@{open}}
 \index{open@{open}!wex::com@{wex::com}}
 \doxysubsubsection{\texorpdfstring{open()}{open()}}

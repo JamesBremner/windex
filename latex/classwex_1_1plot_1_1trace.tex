@@ -14,13 +14,19 @@ Single trace to be plotted.
 \item 
 void \mbox{\hyperlink{classwex_1_1plot_1_1trace_aa94bc7ee5d49169d4e63ad07dd319ffe}{set}} (const std\+::vector$<$ double $>$ \&y)
 \begin{DoxyCompactList}\small\item\em set plot data \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a1be628cef14353757bb604b4b33f1316}\label{classwex_1_1plot_1_1trace_a1be628cef14353757bb604b4b33f1316}} 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a481d14c441db5fa5a1b3df1e9e5d43d1}\label{classwex_1_1plot_1_1trace_a481d14c441db5fa5a1b3df1e9e5d43d1}} 
+void {\bfseries set\+ScatterX} (const std\+::vector$<$ double $>$ \&x)
+\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a927795af2072b5af3826d53f94f625dd}\label{classwex_1_1plot_1_1trace_a927795af2072b5af3826d53f94f625dd}} 
 std\+::vector$<$ double $>$ {\bfseries get} () const
 \item 
 void \mbox{\hyperlink{classwex_1_1plot_1_1trace_ae55918ef4e0e098f5aa2a9dabfe66961}{add}} (double y)
 \begin{DoxyCompactList}\small\item\em add new value to real time data \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classwex_1_1plot_1_1trace_ac19be00c94ab6c37ed78c90e88de8626}{add}} (double x, double y)
 \begin{DoxyCompactList}\small\item\em add point to scatter trace \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_acce8ac1e1cd332011813408dd0552192}\label{classwex_1_1plot_1_1trace_acce8ac1e1cd332011813408dd0552192}} 
+void \mbox{\hyperlink{classwex_1_1plot_1_1trace_acce8ac1e1cd332011813408dd0552192}{clear}} ()
+\begin{DoxyCompactList}\small\item\em clear data from trace \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classwex_1_1plot_1_1trace_a06b45af76cde6bc1ab02c153a4061d41}\label{classwex_1_1plot_1_1trace_a06b45af76cde6bc1ab02c153a4061d41}} 
 void \mbox{\hyperlink{classwex_1_1plot_1_1trace_a06b45af76cde6bc1ab02c153a4061d41}{color}} (int clr)
 \begin{DoxyCompactList}\small\item\em set color \end{DoxyCompactList}\item 
@@ -37,7 +43,7 @@ double \mbox{\hyperlink{classwex_1_1plot_1_1trace_a204fdfcd6814dfbc71b8a745a5447
 \doxysubsection{Detailed Description}
 Single trace to be plotted. 
 
-Application code shouild not attempt to construct a trace Rather call one of plot\+::\+Add\+Point\+Trace, \mbox{\hyperlink{classwex_1_1plot_1_1plot_a9ff35dea82800622757536cb4e2df627}{plot\+::\+Add\+Real\+Time\+Trace}} or \mbox{\hyperlink{classwex_1_1plot_1_1plot_af55c5abc73bee295c1cdba6119b99b8c}{plot\+::\+Add\+Static\+Trace}} which return a reference to the trace which can be configured and be populated with data.
+Application code should not attempt to construct a trace Rather call one of plot\+::\+Add\+Point\+Trace, \mbox{\hyperlink{classwex_1_1plot_1_1plot_a9ff35dea82800622757536cb4e2df627}{plot\+::\+Add\+Real\+Time\+Trace}} or \mbox{\hyperlink{classwex_1_1plot_1_1plot_af55c5abc73bee295c1cdba6119b99b8c}{plot\+::\+Add\+Static\+Trace}} which return a reference to the trace which can be configured and be populated with data.
 
 
 \begin{DoxyPre}
@@ -115,7 +121,7 @@ set plot data
 \mbox{\texttt{ in}}  & {\em y} & vector of data points to display\\
 \hline
 \end{DoxyParams}
-Replaces any existing data. Plot is NOT refreshed. An exception is thrown when this is called for a trace that is not plot type \mbox{\Hypertarget{classwex_1_1plot_1_1trace_a204fdfcd6814dfbc71b8a745a5447e72}\label{classwex_1_1plot_1_1trace_a204fdfcd6814dfbc71b8a745a5447e72}} 
+Replaces any existing data. Plot is NOT refreshed. An exception is thrown when this is called for a trace that is not plot or scatter type \mbox{\Hypertarget{classwex_1_1plot_1_1trace_a204fdfcd6814dfbc71b8a745a5447e72}\label{classwex_1_1plot_1_1trace_a204fdfcd6814dfbc71b8a745a5447e72}} 
 \index{wex::plot::trace@{wex::plot::trace}!value@{value}}
 \index{value@{value}!wex::plot::trace@{wex::plot::trace}}
 \doxysubsubsection{\texorpdfstring{value()}{value()}}

@@ -65,6 +65,8 @@ int {\bfseries id} ()
 \mbox{\Hypertarget{classwex_1_1gui_a6b7804e4f2675d4bb526c99587ca9649}\label{classwex_1_1gui_a6b7804e4f2675d4bb526c99587ca9649}} 
 int {\bfseries bgcolor} () const
 \item 
+void \mbox{\hyperlink{classwex_1_1gui_a93580515d08a0e8402f4669f23284eac}{text\+Color}} (int c)
+\begin{DoxyCompactList}\small\item\em Set text color. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classwex_1_1gui_ae652dc8654d0baaa1f3b513c2cb85f0b}\label{classwex_1_1gui_ae652dc8654d0baaa1f3b513c2cb85f0b}} 
 void {\bfseries text} (const std\+::string \&text)
 \item 
@@ -156,6 +158,9 @@ HWND {\bfseries my\+Handle}
 \item 
 \mbox{\Hypertarget{classwex_1_1gui_a36aac214dc7436dac35b1d194e670669}\label{classwex_1_1gui_a36aac214dc7436dac35b1d194e670669}} 
 int {\bfseries my\+BGColor}
+\item 
+\mbox{\Hypertarget{classwex_1_1gui_a29a5beadf8ef07d068bc6381033f781d}\label{classwex_1_1gui_a29a5beadf8ef07d068bc6381033f781d}} 
+int {\bfseries my\+Text\+Color}
 \item 
 \mbox{\Hypertarget{classwex_1_1gui_a5da388789147e8d7786778a98df4bfc9}\label{classwex_1_1gui_a5da388789147e8d7786778a98df4bfc9}} 
 HBRUSH {\bfseries my\+BGBrush}
@@ -427,6 +432,21 @@ Change size without moving top left corner.
 \mbox{\texttt{ in}}  & {\em w} & width \\
 \hline
 \mbox{\texttt{ in}}  & {\em h} & height \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_a93580515d08a0e8402f4669f23284eac}\label{classwex_1_1gui_a93580515d08a0e8402f4669f23284eac}} 
+\index{wex::gui@{wex::gui}!textColor@{textColor}}
+\index{textColor@{textColor}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{textColor()}{textColor()}}
+{\footnotesize\ttfamily void wex\+::gui\+::text\+Color (\begin{DoxyParamCaption}\item[{int}]{c }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set text color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & color 0x\+BBGGRR e.\+g. 0x0000\+FF for red If not called, defaults to black children do not inherit this \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{classwex_1_1gui_a255b44718c4a36b7d18b9ac25c5900db}\label{classwex_1_1gui_a255b44718c4a36b7d18b9ac25c5900db}} 

@@ -83,15 +83,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa94bc7ee5d49169d4e63ad07dd319ffe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#aa94bc7ee5d49169d4e63ad07dd319ffe">set</a> (const std::vector&lt; double &gt; &amp;y)</td></tr>
 <tr class="memdesc:aa94bc7ee5d49169d4e63ad07dd319ffe"><td class="mdescLeft">&#160;</td><td class="mdescRight">set plot data  <a href="classwex_1_1plot_1_1trace.html#aa94bc7ee5d49169d4e63ad07dd319ffe">More...</a><br /></td></tr>
 <tr class="separator:aa94bc7ee5d49169d4e63ad07dd319ffe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1be628cef14353757bb604b4b33f1316"><td class="memItemLeft" align="right" valign="top"><a id="a1be628cef14353757bb604b4b33f1316"></a>
+<tr class="memitem:a481d14c441db5fa5a1b3df1e9e5d43d1"><td class="memItemLeft" align="right" valign="top"><a id="a481d14c441db5fa5a1b3df1e9e5d43d1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setScatterX</b> (const std::vector&lt; double &gt; &amp;x)</td></tr>
+<tr class="separator:a481d14c441db5fa5a1b3df1e9e5d43d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a927795af2072b5af3826d53f94f625dd"><td class="memItemLeft" align="right" valign="top"><a id="a927795af2072b5af3826d53f94f625dd"></a>
 std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> () const</td></tr>
-<tr class="separator:a1be628cef14353757bb604b4b33f1316"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a927795af2072b5af3826d53f94f625dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae55918ef4e0e098f5aa2a9dabfe66961"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#ae55918ef4e0e098f5aa2a9dabfe66961">add</a> (double y)</td></tr>
 <tr class="memdesc:ae55918ef4e0e098f5aa2a9dabfe66961"><td class="mdescLeft">&#160;</td><td class="mdescRight">add new value to real time data  <a href="classwex_1_1plot_1_1trace.html#ae55918ef4e0e098f5aa2a9dabfe66961">More...</a><br /></td></tr>
 <tr class="separator:ae55918ef4e0e098f5aa2a9dabfe66961"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac19be00c94ab6c37ed78c90e88de8626"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#ac19be00c94ab6c37ed78c90e88de8626">add</a> (double x, double y)</td></tr>
 <tr class="memdesc:ac19be00c94ab6c37ed78c90e88de8626"><td class="mdescLeft">&#160;</td><td class="mdescRight">add point to scatter trace  <a href="classwex_1_1plot_1_1trace.html#ac19be00c94ab6c37ed78c90e88de8626">More...</a><br /></td></tr>
 <tr class="separator:ac19be00c94ab6c37ed78c90e88de8626"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acce8ac1e1cd332011813408dd0552192"><td class="memItemLeft" align="right" valign="top"><a id="acce8ac1e1cd332011813408dd0552192"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#acce8ac1e1cd332011813408dd0552192">clear</a> ()</td></tr>
+<tr class="memdesc:acce8ac1e1cd332011813408dd0552192"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear data from trace <br /></td></tr>
+<tr class="separator:acce8ac1e1cd332011813408dd0552192"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06b45af76cde6bc1ab02c153a4061d41"><td class="memItemLeft" align="right" valign="top"><a id="a06b45af76cde6bc1ab02c153a4061d41"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#a06b45af76cde6bc1ab02c153a4061d41">color</a> (int clr)</td></tr>
 <tr class="memdesc:a06b45af76cde6bc1ab02c153a4061d41"><td class="mdescLeft">&#160;</td><td class="mdescRight">set color <br /></td></tr>
@@ -110,7 +117,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Single trace to be plotted. </p>
-<p>Application code shouild not attempt to construct a trace Rather call one of plot::AddPointTrace, <a class="el" href="classwex_1_1plot_1_1plot.html#a9ff35dea82800622757536cb4e2df627" title="Add real time trace.">plot::AddRealTimeTrace</a> or <a class="el" href="classwex_1_1plot_1_1plot.html#af55c5abc73bee295c1cdba6119b99b8c" title="Add static trace.">plot::AddStaticTrace</a> which return a reference to the trace which can be configured and be populated with data.</p>
+<p>Application code should not attempt to construct a trace Rather call one of plot::AddPointTrace, <a class="el" href="classwex_1_1plot_1_1plot.html#a9ff35dea82800622757536cb4e2df627" title="Add real time trace.">plot::AddRealTimeTrace</a> or <a class="el" href="classwex_1_1plot_1_1plot.html#af55c5abc73bee295c1cdba6119b99b8c" title="Add static trace.">plot::AddStaticTrace</a> which return a reference to the trace which can be configured and be populated with data.</p>
 <pre>
     form fm;
 
@@ -248,7 +255,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   </table>
   </dd>
 </dl>
-<p>Replaces any existing data. Plot is NOT refreshed. An exception is thrown when this is called for a trace that is not plot type </p>
+<p>Replaces any existing data. Plot is NOT refreshed. An exception is thrown when this is called for a trace that is not plot or scatter type </p>
 
 </div>
 </div>
