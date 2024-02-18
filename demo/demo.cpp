@@ -644,6 +644,11 @@ void PlotDemo()
         {
             plotLabel.text(std::to_string(m.x) + ", " + std::to_string(m.y));
             plotLabel.update();
+
+            // since we have consumed the mouse move event
+            // let the plot zoom function know what the mouse is doing
+            thePlot.dragExtend(m);
+
         });
 
     wex::button &btnStatic = wex::maker::make<wex::button>(fm);
