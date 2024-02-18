@@ -637,6 +637,15 @@ void PlotDemo()
     plotLabel.textColor(0x0000FF);
     plotLabel.text("this is a plot label");
 
+    // update label with mouse cursor position
+    // note that this disables the zoom function
+    thePlot.events().mouseMove(
+        [&](wex::sMouse &m)
+        {
+            plotLabel.text(std::to_string(m.x) + ", " + std::to_string(m.y));
+            plotLabel.update();
+        });
+
     wex::button &btnStatic = wex::maker::make<wex::button>(fm);
     btnStatic.move(100, 10, 50, 20);
     btnStatic.text("Static");
@@ -649,8 +658,6 @@ void PlotDemo()
 
         // provide some data for first trace
         std::vector< double > d1 { 10, 15, 20, 25, 30, 25, 20, 15, 10 };
-//        for( double& d : d1 )
-//            d = d / 1000;
         t1.set( d1 );
 
         // plot in blue
@@ -658,8 +665,6 @@ void PlotDemo()
 
         // provide data for second trace
         std::vector< double > d2 { 20, 59, 60, 59, 20 };
-//        for( double& d : d2 )
-//            d = d / 1000;
         t2.set( d2 );
 
         // plot in red
