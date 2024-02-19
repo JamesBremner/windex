@@ -600,20 +600,22 @@ namespace wex
                         int xtickinc = (xmx_px - xmn_px) / tickCount;
                         for (int kxtick = 0; kxtick <= tickCount; kxtick++)
                         {
-                            int x = xmn_px + xtickinc * kxtick;
-                            float tick_label_value = myXStartValue + myXScaleValue * (int)scale::get().Pixel2X(x);
-                            // std::cout << kxtick <<" "<< tick_label_value <<" "<< myXStartValue <<" "<<myXScaleValue<<" "<< xxxx <<  "\n";
+                            float tick_label_value = myXStartValue 
+                                + myXScaleValue * (int)scale::get().Pixel2X(xmn_px + xtickinc * kxtick);
+                            int xPixel = scale::get().X2Pixel(tick_label_value/myXScaleValue);
+                            // std::cout << kxtick <<" "<< tick_label_value <<" "<< myXStartValue <<" "<<myXScaleValue
+                            //     <<  xPixel << "\n";
                             S.text(
                                 std::to_string(tick_label_value).substr(0, 4),
-                                {x, ypos + 1, 50, 15});
+                                {xPixel, ypos + 1, 50, 15});
 
                             for (
                                 int k = scale::get().Y2Pixel(scale::get().maxY());
                                 k < scale::get().Y2Pixel(scale::get().minY());
                                 k = k + 25)
                             {
-                                S.pixel(x, k);
-                                S.pixel(x, k + 1);
+                                S.pixel(xPixel, k);
+                                S.pixel(xPixel, k + 1);
                             }
                         }
                     }
