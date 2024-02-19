@@ -632,24 +632,10 @@ void PlotDemo()
         thePlot.update(); });
 
     wex::label &plotLabel = wex::maker::make<wex::label>(thePlot);
-    plotLabel.move(100, 100, 130, 20);
+    plotLabel.move(100, 100, 250, 20);
     plotLabel.bgcolor(0xFFFFFF);
     plotLabel.textColor(0x0000FF);
     plotLabel.text("this is a plot label");
-
-    // update label with mouse cursor position
-    // note that this disables the zoom function
-    thePlot.events().mouseMove(
-        [&](wex::sMouse &m)
-        {
-            plotLabel.text(std::to_string(m.x) + ", " + std::to_string(m.y));
-            plotLabel.update();
-
-            // since we have consumed the mouse move event
-            // let the plot zoom function know what the mouse is doing
-            thePlot.dragExtend(m);
-
-        });
 
     wex::button &btnStatic = wex::maker::make<wex::button>(fm);
     btnStatic.move(100, 10, 50, 20);
@@ -674,6 +660,21 @@ void PlotDemo()
 
         // plot in red
         t2.color( 0xFF0000 );
+
+        // update label with mouse cursor position, pixels and user units
+        thePlot.events().mouseMove(
+        [&](wex::sMouse &m)
+        {        
+            std::stringstream ss;
+            ss << m.x <<", "<< m.y <<" = user: "<<  thePlot.pixel2Xuser(m.x) <<", "<< thePlot.pixel2Yuser(m.y);
+            plotLabel.text(ss.str());
+            plotLabel.update();
+
+            // since we have consumed the mouse move event
+            // let the plot zoom function know what the mouse is doing
+            thePlot.dragExtend(m);
+
+        });
 
         thePlot.update(); });
 

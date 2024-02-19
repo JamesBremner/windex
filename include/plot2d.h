@@ -674,6 +674,12 @@ namespace wex
                 myfXset = true;
             }
 
+            // get conversion from X index in trace to  X user units
+            float xScaleValue() const
+            {
+                return myXScaleValue;
+            }
+
         private:
             bool myfGrid;
             bool myfX; // true for x-axis
@@ -1019,14 +1025,6 @@ namespace wex
                 return ret;
             }
 
-            void debug()
-            {
-                for (auto t : myTrace)
-                {
-                    std::cout << "debugtsize " << t->size() << "\n";
-                }
-            }
-
             /// Remove all traces from plot
             void clear()
             {
@@ -1091,9 +1089,20 @@ namespace wex
                 return myTrace;
             }
 
-            bool isZoomed()
+            bool isZoomed() const
             {
                 return myfZoom;
+            }
+
+            /// get X user value from x pixel
+            double pixel2Xuser( int xpixel ) const
+            {
+                return myAxisX->xScaleValue() * scale::get().Pixel2X(xpixel);
+            }
+            /// get Y user value from y pixel
+            double pixel2Yuser( int ypixel ) const
+            {
+                return scale::get().Pixel2Y(ypixel);
             }
 
         private:
