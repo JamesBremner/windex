@@ -80,19 +80,19 @@ namespace wex
         /// @endcond
 
         /** @brief Maintain indices of circular buffer
-         * 
+         *
          * When the buffer is full, new data over-writes the oldest ( wraps around )
          * The data is stored in an external buffer
          * Wrap around is done by manipulating the indices, rather than actually moving the buffer contents
          */
         class cCircularBuffer
         {
-            int myCurrentID;            // buffer index for current iteration
-            int myLastValid;            // index of most recent data point
-            int mySize;                 // largest buffer index
-            bool myfWrapped;            // true if buffer is full aand wrap around has occurred
-            bool myfCurrentLast;        // true if current iteration is at most recent data point
-            bool myfIterating;          // an iteration is in progress
+            int myCurrentID;     // buffer index for current iteration
+            int myLastValid;     // index of most recent data point
+            int mySize;          // largest buffer index
+            bool myfWrapped;     // true if buffer is full aand wrap around has occurred
+            bool myfCurrentLast; // true if current iteration is at most recent data point
+            bool myfIterating;   // an iteration is in progress
 
         public:
             cCircularBuffer()
@@ -334,7 +334,7 @@ namespace wex
                 plot,
                 realtime,
                 scatter
-            } myType;                   // trace type
+            } myType; // trace type
 
             /** CTOR
             Application code should not call this constructor
@@ -542,13 +542,15 @@ namespace wex
                 @param[in} xaxis true for x ( horixonatl ) axis, defaults to false ( vertical )
             */
             axis(gui &p, bool xaxis = false)
-                : myfGrid(false), myfX(xaxis), myParent(p), myfXset(false)
+                : myfGrid(false), myfX(xaxis), myParent(p), myfXset(false),
+                  myXStartValue(FLT_MAX)
             {
             }
 
             /// draw
             void update(PAINTSTRUCT &ps)
             {
+
                 shapes S(ps);
                 S.color(0xFFFFFF - myParent.bgcolor());
                 S.textHeight(15);
@@ -600,9 +602,8 @@ namespace wex
                         int xtickinc = (xmx_px - xmn_px) / tickCount;
                         for (int kxtick = 0; kxtick <= tickCount; kxtick++)
                         {
-                            float tick_label_value = myXStartValue 
-                                + myXScaleValue * (int)scale::get().Pixel2X(xmn_px + xtickinc * kxtick);
-                            int xPixel = scale::get().X2Pixel(tick_label_value/myXScaleValue);
+                            float tick_label_value = myXStartValue + myXScaleValue * (int)scale::get().Pixel2X(xmn_px + xtickinc * kxtick);
+                            int xPixel = scale::get().X2Pixel(tick_label_value / myXScaleValue);
                             // std::cout << kxtick <<" "<< tick_label_value <<" "<< myXStartValue <<" "<<myXScaleValue
                             //     <<  xPixel << "\n";
                             S.text(
@@ -672,6 +673,11 @@ namespace wex
                 myXStartValue = start;
                 myXScaleValue = scale;
                 myfXset = true;
+            }
+
+            bool isStartValue() const
+            {
+                return ( myXStartValue < FLT_MAX );
             }
 
             // get conversion from X index in trace to  X user units
@@ -853,6 +859,21 @@ namespace wex
                         // check there are traces that need to be drawn
                         if (!myTrace.size())
                             return;
+
+                        // check traces contain data
+                        bool OK = false;
+                        for( auto t : myTrace )
+                            if( t->size() )
+                                {
+                                    OK = true;
+                                    break;
+                                }
+                        if( ! OK ) {
+                            shapes S(ps);
+                            S.color(0x0000FF);
+                            S.text("No data",{5,5});
+                            return;
+                        }
 
                         // calculate scaling factors
                         // so plot will fit
@@ -1071,11 +1092,11 @@ namespace wex
                 myStopDragY = m.y;
                 update();
             }
-            /** Set conversion from y value index to x user units
+            /** Set conversion from index of x value buffer to x user units
             @param[in] start x user value of first y-value
             @param[in] scale to convert from index to user value
 
-            Used to label the x-axis
+            Used to label the x-axis and draw grid lines if enabled
             */
             void XValues(
                 float start,
@@ -1095,12 +1116,12 @@ namespace wex
             }
 
             /// get X user value from x pixel
-            double pixel2Xuser( int xpixel ) const
+            double pixel2Xuser(int xpixel) const
             {
                 return myAxisX->xScaleValue() * scale::get().Pixel2X(xpixel);
             }
             /// get Y user value from y pixel
-            double pixel2Yuser( int ypixel ) const
+            double pixel2Yuser(int ypixel) const
             {
                 return scale::get().Pixel2Y(ypixel);
             }
@@ -1161,11 +1182,15 @@ namespace wex
                 myXOffset = 50 - myXScale * myMinX;
                 myYOffset = h - 20 + myYScale * myMinY;
 
-                scale::get().set(myXOffset, myXScale, myYOffset, myYScale);
+                scale::get().set(myXOffset, myXScale, myYOffset, myYScale);  
                 scale::get().bounds(myMinX, myMaxX, myMinY, myMaxY);
 
                 // std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
                 // std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
+
+                // If user has not called XValues(), set X-axis scale to 1
+                if( ! myAxisX->isStartValue() )
+                    XValues( 0, 1 );
             }
 
             void CalulateDataBounds()
