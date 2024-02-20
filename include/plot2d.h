@@ -677,7 +677,7 @@ namespace wex
 
             bool isStartValue() const
             {
-                return ( myXStartValue < FLT_MAX );
+                return (myXStartValue < FLT_MAX);
             }
 
             // get conversion from X index in trace to  X user units
@@ -856,30 +856,10 @@ namespace wex
                 events().draw(
                     [this](PAINTSTRUCT &ps)
                     {
-                        // check there are traces that need to be drawn
-                        if (!myTrace.size())
-                            return;
-
-                        // check traces contain data
-                        bool OK = false;
-                        for( auto t : myTrace )
-                            if( t->size() )
-                                {
-                                    OK = true;
-                                    break;
-                                }
-                        if( ! OK ) {
-                            shapes S(ps);
-                            S.color(0x0000FF);
-                            S.text("No data",{5,5});
-                            return;
-                        }
-
                         // calculate scaling factors
                         // so plot will fit
-                        CalcScale(
-                            ps.rcPaint.right,
-                            ps.rcPaint.bottom);
+                        if (!CalcScale(ps))
+                            return;
 
                         // draw axis
                         myAxis->update(ps);
@@ -892,19 +872,7 @@ namespace wex
                             t->update(ps);
                         }
 
-                        if (isGoodDrag())
-                        {
-                            // display selected area by drawing a box around it
-                            wex::shapes S(ps);
-
-                            // contrast to background color
-                            S.color(0xFFFFFF ^ bgcolor());
-
-                            S.line({myStartDragX, myStartDragY, myStopDragX, myStartDragY});
-                            S.line({myStopDragX, myStartDragY, myStopDragX, myStopDragY});
-                            S.line({myStopDragX, myStopDragY, myStartDragX, myStopDragY});
-                            S.line({myStartDragX, myStopDragY, myStartDragX, myStartDragY});
-                        }
+                        drawSelectedArea(ps);
                     });
 
                 events().click(
@@ -1157,13 +1125,35 @@ namespace wex
             double myZoomYMax;
             // std::function<void(void)> myClickRightFunction;
 
-            /** calculate scaling factors so plot will fit in window client area
-                @param[in] w width
-                @param[in] h height
-            */
-            void CalcScale(int w, int h)
+            /// @brief calculate scaling factors so plot will fit in window client area
+            /// @param ps
+            /// @return true if succesful
+            bool CalcScale(PAINTSTRUCT &ps)
             {
+                int w = ps.rcPaint.right;
+                int h = ps.rcPaint.bottom;
+
                 // std::cout << "Plot::CalcScale " << w << " " << h << "\n";
+
+                // check there are traces that need to be drawn
+                if (!myTrace.size())
+                    return false;
+
+                // check traces contain data
+                bool OK = false;
+                for (auto t : myTrace)
+                    if (t->size())
+                    {
+                        OK = true;
+                        break;
+                    }
+                if (!OK)
+                {
+                    shapes S(ps);
+                    S.color(0x0000FF);
+                    S.text("No data", {5, 5});
+                    return false;
+                }
 
                 if (myfFit)
                 {
@@ -1182,15 +1172,17 @@ namespace wex
                 myXOffset = 50 - myXScale * myMinX;
                 myYOffset = h - 20 + myYScale * myMinY;
 
-                scale::get().set(myXOffset, myXScale, myYOffset, myYScale);  
+                scale::get().set(myXOffset, myXScale, myYOffset, myYScale);
                 scale::get().bounds(myMinX, myMaxX, myMinY, myMaxY);
 
                 // std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
                 // std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
 
                 // If user has not called XValues(), set X-axis scale to 1
-                if( ! myAxisX->isStartValue() )
-                    XValues( 0, 1 );
+                if (!myAxisX->isStartValue())
+                    XValues(0, 1);
+
+                return true;
             }
 
             void CalulateDataBounds()
@@ -1227,6 +1219,22 @@ namespace wex
             bool isGoodDrag()
             {
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
+            }
+            void drawSelectedArea(PAINTSTRUCT &ps)
+            {
+                if (!isGoodDrag())
+                    return;
+
+                // display selected area by drawing a box around it
+                wex::shapes S(ps);
+
+                // contrast to background color
+                S.color(0xFFFFFF ^ bgcolor());
+
+                S.line({myStartDragX, myStartDragY, myStopDragX, myStartDragY});
+                S.line({myStopDragX, myStartDragY, myStopDragX, myStopDragY});
+                S.line({myStopDragX, myStopDragY, myStartDragX, myStopDragY});
+                S.line({myStartDragX, myStopDragY, myStartDragX, myStartDragY});
             }
         };
 
