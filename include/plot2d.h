@@ -598,14 +598,15 @@ namespace wex
 
                     if (myfGrid)
                     {
+                        int xOffsetPixel = scale::get().X2Pixel( myXStartValue / myXScaleValue);
                         int tickCount = 8;
                         int xtickinc = (xmx_px - xmn_px) / tickCount;
                         for (int kxtick = 0; kxtick <= tickCount; kxtick++)
                         {
                             float tick_label_value = myXStartValue + myXScaleValue * (int)scale::get().Pixel2X(xmn_px + xtickinc * kxtick);
-                            int xPixel = scale::get().X2Pixel(tick_label_value / myXScaleValue);
+                            int xPixel = scale::get().X2Pixel(tick_label_value / myXScaleValue) - xOffsetPixel;
                             // std::cout << kxtick <<" "<< tick_label_value <<" "<< myXStartValue <<" "<<myXScaleValue
-                            //     <<  xPixel << "\n";
+                            //     <<" "<<  xPixel << "\n";
                             S.text(
                                 std::to_string(tick_label_value).substr(0, 4),
                                 {xPixel, ypos + 1, 50, 15});
@@ -623,7 +624,7 @@ namespace wex
                     else
                     {
                         // there is no grid
-                        // so just label the minimu, maximum x points
+                        // so just label the minimum, maximum x points
                         float xmin_label_value = 0;
                         float xmax_label_value = 100;
                         if (myfXset)

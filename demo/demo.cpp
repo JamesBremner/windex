@@ -621,7 +621,7 @@ void PlotDemo()
     // construct plot to be drawn on form
     wex::plot::plot &thePlot = wex::maker::make<wex::plot::plot>(fm);
     thePlot.bgcolor(0);
-    thePlot.XValues(0, 5);
+    thePlot.XValues(100, 5);
     thePlot.grid(true);
 
     //  resize plot when form resizes
