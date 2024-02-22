@@ -598,15 +598,17 @@ namespace wex
 
                     if (myfGrid)
                     {
-                        int xOffsetPixel = scale::get().X2Pixel( myXStartValue / myXScaleValue);
+                        int xOffsetPixel = scale::get().X2Pixel(myXStartValue / myXScaleValue);
                         int tickCount = 8;
                         int xtickinc = (xmx_px - xmn_px) / tickCount;
                         for (int kxtick = 0; kxtick <= tickCount; kxtick++)
                         {
                             float tick_label_value = myXStartValue + myXScaleValue * (int)scale::get().Pixel2X(xmn_px + xtickinc * kxtick);
-                            int xPixel = scale::get().X2Pixel(tick_label_value / myXScaleValue) - xOffsetPixel;
-                            // std::cout << kxtick <<" "<< tick_label_value <<" "<< myXStartValue <<" "<<myXScaleValue
-                            //     <<" "<<  xPixel << "\n";
+                            int xPixel = scale::get().X2Pixel((tick_label_value - myXStartValue) / myXScaleValue);
+
+                            // std::cout << "tick " << kxtick << " " << tick_label_value << " " << myXStartValue << " " << myXScaleValue
+                            //           << " " << xPixel << " pixel2X " << scale::get().Pixel2X(xPixel) << "\n";
+
                             S.text(
                                 std::to_string(tick_label_value).substr(0, 4),
                                 {xPixel, ypos + 1, 50, 15});
@@ -685,6 +687,10 @@ namespace wex
             float xScaleValue() const
             {
                 return myXScaleValue;
+            }
+            float xStartValue() const
+            {
+                return myXStartValue;
             }
 
         private:
@@ -1071,6 +1077,7 @@ namespace wex
                 float start,
                 float scale)
             {
+                myMinX = start;
                 myAxisX->XValues(start, scale);
             }
 
@@ -1087,7 +1094,7 @@ namespace wex
             /// get X user value from x pixel
             double pixel2Xuser(int xpixel) const
             {
-                return myAxisX->xScaleValue() * scale::get().Pixel2X(xpixel);
+                return myAxisX->xStartValue() + myAxisX->xScaleValue() * scale::get().Pixel2X(xpixel);
             }
             /// get Y user value from y pixel
             double pixel2Yuser(int ypixel) const
