@@ -46,10 +46,22 @@ namespace wex
             {
                 return myYOffset - myYScale * y;
             }
+            
+            /// @brief get X index value from x pixel
+            /// @param x pixel
+            /// @return 0 if there is a problem
             double Pixel2X(int x) const
             {
+                if (myXScale < 0.0001)
+                {
+                    /* Probably means there is no data in the plot
+                    So simply return 0
+                    */
+                    return 0;
+                }
                 return ((double)(x - myXOffset)) / myXScale;
             }
+
             double Pixel2Y(int y) const
             {
                 return ((double)(myYOffset - y)) / myYScale;
