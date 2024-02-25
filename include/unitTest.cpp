@@ -21,16 +21,17 @@ TEST(plot_Xscale)
 
     thePlot.CalcScale(500,200);
 
-    wex::plot::scale& scale = wex::plot::scale::get();
+    auto& scale = thePlot.XScale_get();
+    //scale.text();
 
     CHECK_EQUAL(50,scale.XI2XP( 0 ));
 
-    CHECK_EQUAL(432,scale.XI2XP( 8 ));
+    CHECK_EQUAL(480,scale.XI2XP( 8 ));
     CHECK_CLOSE(100,scale.XP2XU(50),0.5);
-    CHECK_CLOSE(140,scale.XP2XU(432),0.5);
+    CHECK_CLOSE(140,scale.XP2XU(480),0.5);
 
     CHECK_CLOSE(100,thePlot.pixel2Xuser(50),0.5);
-    CHECK_CLOSE(140,thePlot.pixel2Xuser(432),0.5);
+    CHECK_CLOSE(140,thePlot.pixel2Xuser(480),0.5);
 
     }
 main()

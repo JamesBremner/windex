@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <vector>
 #include <algorithm>
 #include <limits>
 #include <cfloat>
@@ -27,123 +28,26 @@ namespace wex
 
             void set(int xo, double xs, int yo, double ys)
             {
-                myXOffset = xo;
-                myXScale = xs;
                 myYOffset = yo;
                 myYScale = ys;
             }
             void bounds(double XMin, double XMax, double YMin, double YMax)
             {
-                myXMin = XMin;
-                myXIMax = XMax;
+                //     std::cout << "scale::bounds "
+                //               << XMin << " " << XMax << " " << YMin << " " << YMax << "\n";
+
                 myYMin = YMin;
                 myYMax = YMax;
             }
 
-            // xvalue conversion factors
-            void xpstart_set(int start)
-            {
-                xpstart = start;
-            }
-            void xustart_set(double start)
-            {
-                xustart = start;
-            }
-            double XUStart(int xustart) const
-            {
-                return xustart;
-            }
-            void sxi2xp_set(double s)
-            {
-                xpstart = 50;
-                sxi2xp = s;
-            }
-            void sxi2xu_set(double s)
-            {
-                sxi2xu = s;
-            }
-
-            // Convert between x values
-
-            int XI2XP(int xi) const
-            {
-                return xi * sxi2xp + xpstart;
-            }
-            int XU2XP(double xu) const
-            {
-                return XI2XP(XU2XI(xu));
-            }
-            int XU2XI(double xu) const
-            {
-                return (xu - xustart) / sxi2xu;
-            }
-            int XI2XU(int xi) const
-            {
-                return xi * sxi2xu + xustart;
-            }
-            double XP2XU(int pixel) const
-            {
-                return XI2XU(XP2XI(pixel));
-            }
-            double XI2XU(double xi) const
-            {
-                return xi * sxi2xu + xustart;
-            }
-            double XP2XI(int pixel) const
-            {
-                return (pixel - xpstart) / sxi2xp;
-            }
-            int XPstart() const
-            {
-                return xpstart;
-            }
-            int X2Pixel(double x) const
-            {
-                return (int)round(myXOffset + myXScale * x);
-            }
             int Y2Pixel(double y) const
             {
                 return myYOffset - myYScale * y;
             }
-            /// @brief get X index value from x pixel
-            /// @param x pixel
-            /// @return 0 if there is a problem
-            double Pixel2XI(int x) const
-            {
-                if (myXScale < 0.0001)
-                {
-                    /* Probably means there is no data in the plot
-                    So simply return 0
-                    */
-                    return 0;
-                }
-                return ((double)(x - myXOffset)) / myXScale;
-            }
-            // double Pixel2XU(int xp) const
-            // {
-            //     return myXUStart + Pixel2XI(xp) * myScalexi2xu;
-            // }
-            // pixel from x user
-            // int XI2Pixel(double xu) const
-            // {
-            //     return (XU2XI(xu));
-            // }
-            // // x index from x user
-            // int XU2XI(int xu) const
-            // {
-            //     return (xu - myXUStart) / myScalexi2xu;
-            // }
+
             double Pixel2Y(int y) const
             {
                 return ((double)(myYOffset - y)) / myYScale;
-            }
-            int minX() const
-            {
-                return myXMin;
-            }
-            int maxXI() const
-            {
-                return myXIMax;
             }
             double minY() const
             {
@@ -155,15 +59,9 @@ namespace wex
             }
 
         private:
-            double myXScale, myYScale;
-            int myXOffset;
+            double myYScale;
             int myYOffset;
-            double myXMin, myXIMax, myYMin, myYMax;
-
-            int xpstart;    // pixel location of xi = 0
-            double xustart; // x user value of xi = 0
-            double sxi2xp;  // scale conversion x index to pixel
-            double sxi2xu;  // scale conversion from x index to x user
+            double myYMin, myYMax;
         };
         /// @endcond
 
@@ -319,6 +217,13 @@ namespace wex
         class trace
         {
         public:
+            enum class eType
+            {
+                plot,
+                realtime,
+                scatter
+            } myType; // trace type
+
             /** \brief set plot data
                 @param[in] y vector of data points to display
 
@@ -386,13 +291,23 @@ namespace wex
             {
                 myColor = clr;
             }
+            int color() const
+            {
+                return myColor;
+            }
+
             /// set trace thickness in pixels
             void thick(int t)
             {
                 myThick = t;
             }
+            int thick() const
+            {
+                return myThick;
+            }
+
             /// get number of points
-            int size()
+            int size() const
             {
                 return (int)myY.size();
             }
@@ -408,6 +323,20 @@ namespace wex
                 return myY[(int)(xfraction * myY.size())];
             }
 
+            const std::vector<double> &getY()
+            {
+                if (myType != eType::realtime)
+                    return myY;
+
+                static std::vector<double> ret;
+                ret.clear();
+                for (int yidx = myCircular.first();
+                     yidx >= 0;
+                     yidx = myCircular.next())
+                    ret.push_back(myY[yidx]);
+                return ret;
+            }
+
         private:
             friend plot;
 
@@ -417,12 +346,6 @@ namespace wex
             cCircularBuffer myCircular; // maintain indices of circular buffer used by real time trace
             int myColor;                // trace color
             int myThick;                // trace thickness
-            enum class eType
-            {
-                plot,
-                realtime,
-                scatter
-            } myType; // trace type
 
             /** CTOR
             Application code should not call this constructor
@@ -466,7 +389,7 @@ namespace wex
 
             /// min and max values in trace
             void bounds(
-                double &txmin, double &txmax,
+                int &txmin, int &txmax,
                 double &tymin, double &tymax)
             {
                 if (myY.size())
@@ -474,19 +397,23 @@ namespace wex
 
                     // find the x limits
 
-                    if (myType == eType::realtime || myX.size() == 0)
-                    {
-                        txmin = 0;
-                        txmax = myY.size();
-                    }
-                    else
-                    {
-                        auto result = std::minmax_element(
-                            myX.begin(),
-                            myX.end());
-                        txmin = *result.first;
-                        txmax = *result.second;
-                    }
+                    txmin = 0;
+                    txmax = myY.size() - 1;
+
+                    // if (myType == eType::realtime || myX.size() == 0)
+                    //  {
+                    //      txmin = 0;
+                    //      txmax = myY.size();
+                    //  }
+                    //  else
+                    //  {
+                    //      // auto result = std::minmax_element(
+                    //      //     myX.begin(),
+                    //      //     myX.end());
+                    //      // txmin = *result.first;
+                    //      // txmax = *result.second;
+                    //      txmin =
+                    //  }
 
                     // find the y limits
 
@@ -536,85 +463,142 @@ namespace wex
                     }
                 }
             }
+        };
 
-            /// draw
-            void update(PAINTSTRUCT &ps)
+        /**
+         * @brief Manage X value
+         *
+         * Each point along the x axis is convertable to
+         *
+         * XP  the pixel where iy is displayed
+         * XI  the index into the data buffer where the data value is stored
+         * XU  the user value ascribed to the point
+         *
+         */
+        class XScale
+        {
+        public:
+            //  conversion factors
+
+            void xpstart_set(int start)
             {
-
-                shapes S(ps);
-                S.penThick(myThick);
-                S.color(myColor);
-
-                bool first = true;
-                int xi = 0;
-                //        float xinc = myPlot->xinc();
-                double prevX, prev;
-
-                switch (myType)
-                {
-                case eType::plot:
-                {
-                    POINT p;
-                    std::vector<POINT> vp;
-                    for (auto y : myY)
-                    {
-                        // scale
-                        p.x = scale::get().X2Pixel(xi);
-                        ;
-                        p.y = scale::get().Y2Pixel(y);
-
-                        vp.push_back(p);
-                        xi++;
-                    }
-
-                    S.polyLine(vp.data(), myY.size());
-                }
-
-                break;
-
-                case eType::scatter:
-
-                    for (int k = 0; k < (int)myX.size(); k++)
-                    {
-                        S.rectangle(
-                            {scale::get().X2Pixel(myX[k]) - 5, scale::get().Y2Pixel(myY[k]) - 5,
-                             5, 5});
-                    }
-                    break;
-
-                case eType::realtime:
-                {
-                    // loop over data in circular buffer
-                    int xidx = 0;
-                    for (int yidx = myCircular.first();
-                         yidx >= 0;
-                         yidx = myCircular.next())
-                    {
-
-                        // scale data point to pixels
-                        double x = scale::get().X2Pixel(xidx);
-                        double y = scale::get().Y2Pixel(myY[yidx]);
-
-                        if (first)
-                        {
-                            first = false;
-                        }
-                        else
-                        {
-                            // draw line from previous to this data point
-                            S.line(
-                                {(int)prevX, (int)prev, (int)x, (int)y});
-                        }
-
-                        prevX = x;
-                        prev = y;
-
-                        xidx++;
-                    }
-                }
-                break;
-                }
+                xpstart = start;
             }
+            void xustart_set(double start)
+            {
+                xustart = start;
+            }
+            void ximax_set(int xi)
+            {
+                ximax = xi;
+            }
+            int XImax() const
+            {
+                return ximax;
+            }
+            double XUStart(int xustart) const
+            {
+                return xustart;
+            }
+
+            /// @brief set scaling from index to pixel
+            /// @param axisWidth in pixels
+            /// fixes xpstart to 50 pixels
+            /// sets scale to index range divided by axis width pixels
+
+            void sxi2xp_set(int axisWidth)
+            {
+                xpstart = 50;
+                sxi2xp = axisWidth / (double)ximax;
+            }
+            void sxi2xu_set(double s)
+            {
+                sxi2xu = s;
+            }
+
+            // Convert between x values
+
+            int XI2XP(int xi) const
+            {
+                return xi * sxi2xp + xpstart;
+            }
+            int XU2XP(double xu) const
+            {
+                return XI2XP(XU2XI(xu));
+            }
+            int XU2XI(double xu) const
+            {
+                return (xu - xustart) / sxi2xu;
+            }
+            int XI2XU(int xi) const
+            {
+                return xi * sxi2xu + xustart;
+            }
+            double XP2XU(int pixel) const
+            {
+                return XI2XU(XP2XI(pixel));
+            }
+            double XI2XU(double xi) const
+            {
+                return xi * sxi2xu + xustart;
+            }
+            double XP2XI(int pixel) const
+            {
+                if (sxi2xp < 0.001)
+                {
+                    /* Probably means there is no data in the plot
+                    So simply return 0
+                    */
+                    return 0;
+                }
+                return (pixel - xpstart) / sxi2xp;
+            }
+            int XPstart() const
+            {
+                return xpstart;
+            }
+            // double Pixel2XU(int xp) const
+            // {
+            //     return myXUStart + Pixel2XI(xp) * myScalexi2xu;
+            // }
+            // pixel from x user
+            // int XI2Pixel(double xu) const
+            // {
+            //     return (XU2XI(xu));
+            // }
+            // // x index from x user
+            // int XU2XI(int xu) const
+            // {
+            //     return (xu - myXUStart) / myScalexi2xu;
+            // }
+
+            // int minX() const
+            // {
+            //     return myXMin;
+            // }
+            // int maxXI() const
+            // {
+            //     return myXIMax;
+            // }
+
+            void text() const
+            {
+                std::cout
+                    << "xpstart " << xpstart
+                    << " ximax " << ximax
+                    << " sxi2xp " << sxi2xp
+                    << "\n";
+            }
+
+        private:
+            int xpstart;
+            double xistart;
+            double xustart;
+
+            int ximax;
+
+            double sxi2xp;
+            double sxi2xu;
         };
 
         /** \brief Draw a 2D plot
@@ -729,10 +713,7 @@ namespace wex
 
                         // loop over traces
                         for (auto t : myTrace)
-                        {
-                            // draw a trace
-                            t->update(ps);
-                        }
+                            drawTrace(t, S);
 
                         drawSelectedArea(ps);
                     });
@@ -757,19 +738,27 @@ namespace wex
                     [&]
                     {
                         // check if user has completed a good drag operation
-                        if (isGoodDrag())
-                        {
-                            myZoomXMin = scale::get()
-                                             .XP2XU(myStartDragX);
-                            myZoomXMax = scale::get().XP2XU(myStopDragX);
-                            myZoomYMax = scale::get().Pixel2Y(myStartDragY);
-                            myZoomYMin = scale::get().Pixel2Y(myStopDragY);
-                            myfZoom = true;
-                            // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
-                            // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
-                        }
-                        myfDrag = false;
-                        update();
+                        // if (isGoodDrag())
+                        // {
+                        //     scale &scaleref = scale::get();
+                        //     myZoomXMin = scale::get()
+                        //                      .XP2XU(myStartDragX);
+                        //     myZoomXMax = scale::get().XP2XU(myStopDragX);
+                        //     myZoomYMax = scale::get().Pixel2Y(myStartDragY);
+                        //     myZoomYMin = scale::get().Pixel2Y(myStopDragY);
+
+                        //     scaleref.bounds(
+                        //         scaleref.XP2XI(myZoomXMin),
+                        //         scaleref.XP2XI(myZoomXMax),
+                        //         myZoomYMin,
+                        //         myZoomYMax);
+
+                        //     myfZoom = true;
+                        //     // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
+                        //     // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
+                        // }
+                        // myfDrag = false;
+                        // update();
                     });
                 events().clickRight(
                     [&]
@@ -919,9 +908,8 @@ namespace wex
                 float start_xu,
                 float scale_xi2xu)
             {
-                scale::get().xustart_set(start_xu);
-                scale::get().sxi2xu_set(scale_xi2xu);
-                //myAxisX->XValues(start_xu, scale_xi2xu);
+                myXScale.xustart_set(start_xu);
+                myXScale.sxi2xu_set(scale_xi2xu);
                 myfXset = true;
             }
 
@@ -958,27 +946,28 @@ namespace wex
                     CalulateDataBounds();
                 }
 
-                if (fabs(myMaxX - myMinXU) < 0.0001)
-                    myXScale = 1;
-                else
-                    myXScale = (w - 70) / (myMaxX - myMinXU);
+                // if (fabs(myMaxX - myMinXU) < 0.0001)
+                //     myXScale.sxi2xp_set(1);
+                // else
+                myXScale.sxi2xp_set((w - 70));
+
                 if (fabs(myMaxY - myMinY) < minDataRange)
                     myYScale = 1;
                 else
                     myYScale = (h - 70) / (myMaxY - myMinY);
 
-                myXOffset = 50 - myXScale * myMinXU;
+                // myXOffset = 50 - myXScale * myMinXU;
                 myYOffset = h - 20 + myYScale * myMinY;
 
-                scale::get().sxi2xp_set(myXScale);
-                scale::get().set(myXOffset, myXScale, myYOffset, myYScale);
-                scale::get().bounds(myMinXU, myMaxX, myMinY, myMaxY);
+                // scale::get().sxi2xp_set(myXScale);
+                scale::get().set(myXOffset, 0, myYOffset, myYScale);
+                scale::get().bounds(0, 0, myMinY, myMaxY);
 
                 // std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
                 // std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
 
                 // If user has not called XValues(), set X-axis scale to 1
-                if ( ! myfXset )
+                if (!myfXset)
                     XUValues(0, 1);
 
                 return true;
@@ -997,16 +986,21 @@ namespace wex
             /// get X user value from x pixel
             double pixel2Xuser(int xpixel) const
             {
-                return scale::get().XP2XU(xpixel);
+                return myXScale.XP2XU(xpixel);
             }
             int xuser2pixel(double xu) const
             {
-                return scale::get().XU2XP(xu);
+                return myXScale.XU2XP(xu);
             }
             /// get Y user value from y pixel
             double pixel2Yuser(int ypixel) const
             {
                 return scale::get().Pixel2Y(ypixel);
+            }
+
+            const XScale &XScale_get() const
+            {
+                return myXScale;
             }
 
         private:
@@ -1024,7 +1018,8 @@ namespace wex
             double myMinXU;       // minimum user X value
             double myMaxX;
             double myMinY, myMaxY;
-            double myXScale, myYScale;
+            XScale myXScale;
+            double myYScale;
             int myXOffset;
             int myYOffset;
 
@@ -1055,25 +1050,28 @@ namespace wex
                 }
                 else
                 {
-                    myMinXI = 0;
+                    int minXI = 0;
+                    int maxXI = 0;
                     myTrace[0]->bounds(
-                        myMinXU, myMaxX,
+                        minXI, maxXI,
                         myMinY, myMaxY);
                     for (auto &t : myTrace)
                     {
-                        double txmin, txmax, tymin, tymax;
+                        int txmin, txmax;
+                        double tymin, tymax;
                         txmin = txmax = tymax = 0;
                         tymin = std::numeric_limits<double>::max();
                         t->bounds(txmin, txmax, tymin, tymax);
                         if (txmin < myMinXU)
                             myMinXU = txmin;
-                        if (txmax > myMaxX)
-                            myMaxX = txmax;
+                        if (txmax > maxXI)
+                            maxXI = txmax;
                         if (tymin < myMinY)
                             myMinY = tymin;
                         if (tymax > myMaxY)
                             myMaxY = tymax;
                     }
+                    myXScale.ximax_set(maxXI);
                 }
             }
             bool isGoodDrag()
@@ -1157,7 +1155,7 @@ namespace wex
                             60, yp});
                     if (myfGrid)
                         for (int kp = 65;
-                             kp < scale::get().X2Pixel(scale::get().maxXI());
+                             kp < myXScale.XI2XP(myXScale.XImax());
                              kp += 25)
                         {
                             S.pixel(kp, yp);
@@ -1172,6 +1170,7 @@ namespace wex
             {
                 S.color(0xFFFFFF - bgcolor());
                 S.textHeight(15);
+                S.line({myXScale.XI2XP(0), ypos, myXScale.XI2XP(myXScale.XImax()), ypos});
                 if (!myfGrid)
                 {
                     // there is no grid
@@ -1180,16 +1179,18 @@ namespace wex
                     float xmax_label_value = 100;
                     if (myfXset)
                     {
-                        xmin_label_value = scale::get().XI2XU(0);
-                        xmax_label_value = scale::get().XI2XU(myMaxXI);
+                        xmin_label_value = myXScale.XI2XU(0);
+                        xmax_label_value = myXScale.XI2XU(myMaxXI);
                     }
-                    S.text(std::to_string((int)xmin_label_value), {scale::get().XI2XP(0), ypos + 3, 50, 15});
-                    S.text(std::to_string((int)xmax_label_value), {scale::get().XI2XP(myMaxXI) - 25, ypos + 3, 50, 15});
+                    S.text(std::to_string((int)xmin_label_value), {myXScale.XI2XP(0), ypos + 3, 50, 15});
+                    S.text(std::to_string((int)xmax_label_value), {myXScale.XI2XP(myMaxXI) - 25, ypos + 3, 50, 15});
                     // S.text(myMaxXLabel,
                     //        {xmx_px - 50, ypos + 3,
                     //         50, 15});
                     return;
                 }
+                // there is a grid
+
                 int tickCount = 8;
                 float xitickinc = (myMaxXI - myMinXI) / tickCount;
 
@@ -1200,9 +1201,8 @@ namespace wex
                 for (int kxtick = 0; kxtick <= tickCount; kxtick++)
                 {
                     float tickXI = kxtick * xitickinc;
-                    ;
-                    float tick_label_value = scale::get().XI2XU(tickXI);
-                    int xPixel = scale::get().XI2XP(tickXI);
+                    float tick_label_value = myXScale.XI2XU(tickXI);
+                    int xPixel = myXScale.XI2XP(tickXI);
 
                     // std::cout << "tick " << kxtick << " " << tick_label_value << " " << myXStartValue << " " << myXScaleValue
                     //           << " " << xPixel << " pixel2X " << scale::get().Pixel2X(xPixel) << "\n";
@@ -1219,6 +1219,74 @@ namespace wex
                         S.pixel(xPixel, k);
                         S.pixel(xPixel, k + 1);
                     }
+                }
+            }
+            void drawTrace(trace *t, shapes &S)
+            {
+                S.penThick(t->thick());
+                S.color(t->color());
+
+                bool first = true;
+                int xi = 0;
+                double prevX, prev;
+
+                switch (t->myType)
+                {
+                case trace::eType::plot:
+                {
+                    POINT p;
+                    std::vector<POINT> vp;
+                    for (auto y : t->getY())
+                    {
+                        // scale
+                        p.x = myXScale.XI2XP(xi++);
+                        p.y = scale::get().Y2Pixel(y);
+                        vp.push_back(p);
+                    }
+                    S.polyLine(vp.data(), t->size());
+                }
+                break;
+
+                case trace::eType::scatter:
+
+                    for (auto y : t->getY())
+                    {
+                        S.rectangle(
+                            {myXScale.XI2XP(xi++) - 5, scale::get().Y2Pixel(y) - 5,
+                             5, 5});
+                    }
+                    break;
+
+                case trace::eType::realtime:
+                {
+
+                    for (auto y : t->getY())
+                    {
+
+                        // scale data point to pixels
+                        double x = myXScale.XI2XP(xi++);
+                        double yp = scale::get().Y2Pixel(y);
+
+                        if (first)
+                        {
+                            first = false;
+                        }
+                        else
+                        {
+                            // draw line from previous to this data point
+                            S.line(
+                                {(int)prevX, (int)prev, (int)x, (int)yp});
+                        }
+
+                        prevX = x;
+                        prev = yp;
+                    }
+                }
+                break;
+
+                default:
+                    throw std::runtime_error(
+                        "Trace type NYI");
                 }
             }
             void drawSelectedArea(PAINTSTRUCT &ps)
@@ -1238,6 +1306,5 @@ namespace wex
                 S.line({myStartDragX, myStopDragY, myStartDragX, myStartDragY});
             }
         };
-
     }
 }
