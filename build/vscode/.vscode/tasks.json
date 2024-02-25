@@ -48,6 +48,22 @@
 			"problemMatcher": [
 				"$gcc"
 			]
+		},
+		{
+			"label": "unitTest",
+			"command": "mingw32-make.exe",
+			"args": [
+				"-f",
+				"makefile",
+				"test"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"problemMatcher": [
+				"$gcc"
+			]
 		}
 		// {
 		// 	"label": "echo",

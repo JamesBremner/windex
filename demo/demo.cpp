@@ -621,15 +621,17 @@ void PlotDemo()
     // construct plot to be drawn on form
     wex::plot::plot &thePlot = wex::maker::make<wex::plot::plot>(fm);
     thePlot.bgcolor(0);
-    thePlot.XValues(100, 5);
+    thePlot.XUValues(100, 5);
     thePlot.grid(true);
 
     //  resize plot when form resizes
-    fm.events().resize([&](int w, int h)
+    fm.events().resize(
+        [&](int w, int h)
                        {
         thePlot.size( w-100, h-200 );
         thePlot.move( 30, 100 );
-        thePlot.update(); });
+        thePlot.update();
+         });
 
     wex::label &plotLabel = wex::maker::make<wex::label>(thePlot);
     plotLabel.move(100, 100, 250, 20);
