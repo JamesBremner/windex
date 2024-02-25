@@ -616,249 +616,6 @@ namespace wex
                 }
             }
         };
-        /// @cond
-        /** \brief Draw decorated axis line
-
-            This class is internal and none of its methods should be
-            called by the application code
-        */
-        class axis
-        {
-        public:
-            /** CTOR
-                @param[in] p pointer to plot panel
-                @param[in} xaxis true for x ( horixonatl ) axis, defaults to false ( vertical )
-            */
-            axis(gui &p, bool xaxis = false)
-                : myfGrid(false), myfX(xaxis), myParent(p), myfXset(false),
-                  myXStartValue(FLT_MAX)
-            {
-            }
-
-            /// draw
-            void update(PAINTSTRUCT &ps)
-            {
-
-                shapes S(ps);
-                S.color(0xFFFFFF - myParent.bgcolor());
-                S.textHeight(15);
-                if (!myfX)
-                {
-                    // Y-axis
-
-                    double mn = scale::get().minY();
-                    double mx = scale::get().maxY();
-                    S.line({50, scale::get().Y2Pixel(mn),
-                            50, scale::get().Y2Pixel(mx)});
-                    for (double y : tickValues(mn, mx))
-                    {
-                        int yp = scale::get().Y2Pixel(y);
-                        S.text(numberformat(y),
-                               {0, yp - 8, 50, 15});
-                        S.line({50, yp,
-                                60, yp});
-                        if (myfGrid)
-                            for (int kp = 65;
-                                 kp < scale::get().X2Pixel(scale::get().maxXI());
-                                 kp += 25)
-                            {
-                                S.pixel(kp, yp);
-                                S.pixel(kp + 1, yp);
-                            }
-                    }
-                    int yp = scale::get().Y2Pixel(mx);
-                    S.text(myMaxYLabel,
-                           {0, yp + 10, 50, 15});
-                }
-            }
-                // else
-                // {
-                //     // x-axis
-                //     int ypos = ps.rcPaint.bottom - 20;
-
-                //     double mn = scale::get().minX();
-                //     double mx = scale::get().maxXI();
-
-                //     int xmn_px = scale::get().XPstart();
-                //     int xmx_px = scale::get().XI2XP(mx);
-
-                //     S.line({xmn_px, ypos,
-                //             xmx_px, ypos});
-
-                //     if (myfGrid)
-                //     {
-                //         int tickCount = 8;
-                //         float xitickinc = (myMaxXI - myMinXI) / tickCount;
-
-                //         // if possible, place tick marks at integer values of x index
-                //         if (xitickinc > 1)
-                //             xitickinc = ceil(xitickinc);
-
-                //         for (int kxtick = 0; kxtick <= tickCount; kxtick++)
-                //         {
-                //             float tick_label_value = kxtick * xitickinc;
-                //             int xPixel = scale.get().XI2XP(tick_label_value);
-
-                //             // std::cout << "tick " << kxtick << " " << tick_label_value << " " << myXStartValue << " " << myXScaleValue
-                //             //           << " " << xPixel << " pixel2X " << scale::get().Pixel2X(xPixel) << "\n";
-
-                //             S.text(
-                //                 std::to_string(tick_label_value).substr(0, 4),
-                //                 {xPixel, ypos + 1, 50, 15});
-
-                //             for (
-                //                 int k = scale::get().Y2Pixel(scale::get().maxY());
-                //                 k < scale::get().Y2Pixel(scale::get().minY());
-                //                 k = k + 25)
-                //             {
-                //                 S.pixel(xPixel, k);
-                //                 S.pixel(xPixel, k + 1);
-                //             }
-                //         }
-                //     }
-                //     else
-                //     {
-                //         // there is no grid
-                //         // so just label the minimum, maximum x points
-                //         float xmin_label_value = 0;
-                //         float xmax_label_value = 100;
-                //         if (myfXset)
-                //         {
-                //             xmin_label_value = myXStartValue;
-                //             xmax_label_value = myXStartValue + myXScaleValue * (mx - mn);
-                //         }
-                //         S.text(std::to_string((int)xmin_label_value), {xmn_px, ypos + 3, 50, 15});
-                //         S.text(std::to_string((int)xmax_label_value), {xmx_px - 25, ypos + 3, 50, 15});
-                //         S.text(myMaxXLabel,
-                //                {xmx_px - 50, ypos + 3,
-                //                 50, 15});
-                //     }
-                // }
-                //}
-
-            void grid(bool f)
-            {
-                myfGrid = f;
-            }
-
-            void XLabels(
-                const std::string min,
-                const std::string max)
-            {
-                myMinXLabel = min;
-                myMaxXLabel = max;
-            }
-            void YLabels(
-                const std::string min,
-                const std::string max)
-            {
-                myMinYLabel = min;
-                myMaxYLabel = max;
-            }
-
-            /** Set conversion from y value index to x user units
-                @param[in] start x user value of first y-value
-                @param[in] scale to convert from index to user value
-
-                Used to label the x-axis
-            */
-            void XValues(
-                float start,
-                float scale)
-            {
-                myXStartValue = start;
-                myXScaleValue = scale;
-                myfXset = true;
-            }
-
-            bool isStartValue() const
-            {
-                return (myXStartValue < FLT_MAX);
-            }
-
-            // get conversion from X index in trace to  X user units
-            float xScaleValue() const
-            {
-                return myXScaleValue;
-            }
-            float xStartValue() const
-            {
-                return myXStartValue;
-            }
-
-        private:
-            bool myfGrid;
-            bool myfX; // true for x-axis
-            gui &myParent;
-            std::string myMinXLabel;
-            std::string myMaxXLabel;
-            std::string myMinYLabel;
-            std::string myMaxYLabel;
-            bool myfXset;
-            int myMinXValue;
-            int myMaxXValue;
-            float myXStartValue;
-            float myXScaleValue;
-
-            std::vector<double> tickValues(
-                double mn, double mx)
-            {
-                std::vector<double> vl;
-                double range = mx - mn;
-                if (range < minDataRange)
-                {
-                    // plot is single valued
-                    // display just one tick
-                    vl.push_back(mn);
-                    return vl;
-                }
-                double inc = range / 4;
-                double tick;
-                if (inc > 1)
-                {
-                    inc = (int)inc;
-                    tick = (int)mn;
-                }
-                else
-                {
-                    tick = mn;
-                }
-                // if (tick < 0)
-                //     return vl;
-
-                while (true)
-                {
-                    double v = tick;
-                    if (v > 100)
-                        v = ((int)v / 100) * 100;
-                    else if (v > 10)
-                        v = ((int)v / 10) * 10;
-                    vl.push_back(v);
-                    tick += inc;
-                    if (tick >= mx)
-                        break;
-                }
-                vl.push_back(mx);
-                return vl;
-            }
-            /** format number with 2 significant digits
-            https://stackoverflow.com/a/17211620/16582
-            */
-            std::string numberformat(double f)
-            {
-                if (f == 0)
-                {
-                    return "0";
-                }
-                int n = 2;                                         // number of significant digits
-                int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
-                double order = ::pow(10., n - d);
-                std::stringstream ss;
-                ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
-                return ss.str();
-            }
-        };
-        /// @endcond
 
         /** \brief Draw a 2D plot
 
@@ -950,9 +707,6 @@ namespace wex
             {
                 text("Plot");
 
-                myAxis = new axis(*this);
-                myAxisX = new axis(*this, true);
-
                 events().draw(
                     [this](PAINTSTRUCT &ps)
                     {
@@ -968,10 +722,8 @@ namespace wex
                         wex::shapes S(ps);
 
                         // draw axis
-                        myAxis->update(ps);
-                        myAxisX->update(ps);
-
-                        drawXGrid(
+                        drawYAxis(S);
+                        drawXAxis(
                             S,
                             ps.rcPaint.bottom - 20);
 
@@ -1029,8 +781,6 @@ namespace wex
 
             ~plot()
             {
-                delete myAxis;
-                delete myAxisX;
             }
 
             /** \brief Add static trace
@@ -1086,8 +836,8 @@ namespace wex
             /** \brief Enable display of grid markings */
             void grid(bool enable)
             {
-                myAxis->grid(enable);
-                myAxisX->grid(enable);
+                // myAxis->grid(enable);
+                // myAxisX->grid(enable);
                 myfGrid = enable;
             }
 
@@ -1151,18 +901,6 @@ namespace wex
                 update();
             }
 
-            void XLabels(
-                const std::string min,
-                const std::string max)
-            {
-                myAxisX->XLabels(min, max);
-            }
-            void YLabels(
-                const std::string min,
-                const std::string max)
-            {
-                myAxis->YLabels(min, max);
-            }
             void dragExtend(sMouse &m)
             {
                 if (!myfDrag)
@@ -1183,7 +921,7 @@ namespace wex
             {
                 scale::get().xustart_set(start_xu);
                 scale::get().sxi2xu_set(scale_xi2xu);
-                myAxisX->XValues(start_xu, scale_xi2xu);
+                //myAxisX->XValues(start_xu, scale_xi2xu);
                 myfXset = true;
             }
 
@@ -1240,7 +978,7 @@ namespace wex
                 // std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
 
                 // If user has not called XValues(), set X-axis scale to 1
-                if (!myAxisX->isStartValue())
+                if ( ! myfXset )
                     XUValues(0, 1);
 
                 return true;
@@ -1275,8 +1013,8 @@ namespace wex
             /// window where plot will be drawn
             //    window myParent;
 
-            axis *myAxis;
-            axis *myAxisX;
+            // axis *myAxis;
+            // axis *myAxisX;
 
             /// plot traces
             std::vector<trace *> myTrace;
@@ -1290,9 +1028,9 @@ namespace wex
             int myXOffset;
             int myYOffset;
 
-            bool myfFit; /// true if scale should fit plot to window
-            bool myfGrid;  // true if tick and grid marks reuired
-            bool myfXset;  // true if the x user range has been set
+            bool myfFit;  /// true if scale should fit plot to window
+            bool myfGrid; // true if tick and grid marks reuired
+            bool myfXset; // true if the x user range has been set
 
             bool myfDrag;
             bool myfZoom;
@@ -1342,11 +1080,98 @@ namespace wex
             {
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
             }
-            void drawXGrid(wex::shapes &S, int ypos)
-            {   
 
-                // S.color(0xFFFFFF - myParent.bgcolor());
-                // S.textHeight(15);
+            std::vector<double> ytickValues()
+            {
+                std::vector<double> vl;
+                double mn = myMinY;
+                double mx = myMaxY;
+                double range = mx - mn;
+                if (range < minDataRange)
+                {
+                    // plot is single valued
+                    // display just one tick
+                    vl.push_back(mn);
+                    return vl;
+                }
+                double inc = range / 4;
+                double tick;
+                if (inc > 1)
+                {
+                    inc = (int)inc;
+                    tick = (int)mn;
+                }
+                else
+                {
+                    tick = mn;
+                }
+                // if (tick < 0)
+                //     return vl;
+
+                while (true)
+                {
+                    double v = tick;
+                    if (v > 100)
+                        v = ((int)v / 100) * 100;
+                    else if (v > 10)
+                        v = ((int)v / 10) * 10;
+                    vl.push_back(v);
+                    tick += inc;
+                    if (tick >= mx)
+                        break;
+                }
+                vl.push_back(mx);
+                return vl;
+            }
+            /** format number with 2 significant digits
+            https://stackoverflow.com/a/17211620/16582
+            */
+            std::string numberformat(double f)
+            {
+                if (f == 0)
+                {
+                    return "0";
+                }
+                int n = 2;                                         // number of significant digits
+                int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
+                double order = ::pow(10., n - d);
+                std::stringstream ss;
+                ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
+                return ss.str();
+            }
+            void drawYAxis(wex::shapes &S)
+            {
+                S.color(0xFFFFFF - bgcolor());
+                S.textHeight(15);
+
+                double mn = scale::get().minY();
+                double mx = scale::get().maxY();
+                S.line({50, scale::get().Y2Pixel(mn),
+                        50, scale::get().Y2Pixel(mx)});
+                for (double y : ytickValues())
+                {
+                    int yp = scale::get().Y2Pixel(y);
+                    S.text(numberformat(y),
+                           {0, yp - 8, 50, 15});
+                    S.line({50, yp,
+                            60, yp});
+                    if (myfGrid)
+                        for (int kp = 65;
+                             kp < scale::get().X2Pixel(scale::get().maxXI());
+                             kp += 25)
+                        {
+                            S.pixel(kp, yp);
+                            S.pixel(kp + 1, yp);
+                        }
+                }
+                int yp = scale::get().Y2Pixel(mx);
+                // S.text(myMaxYLabel,
+                //        {0, yp + 10, 50, 15});
+            }
+            void drawXAxis(wex::shapes &S, int ypos)
+            {
+                S.color(0xFFFFFF - bgcolor());
+                S.textHeight(15);
                 if (!myfGrid)
                 {
                     // there is no grid
@@ -1355,8 +1180,8 @@ namespace wex
                     float xmax_label_value = 100;
                     if (myfXset)
                     {
-                        xmin_label_value = scale::get().XI2XU( 0 );
-                        xmax_label_value = scale::get().XI2XU( myMaxXI );
+                        xmin_label_value = scale::get().XI2XU(0);
+                        xmax_label_value = scale::get().XI2XU(myMaxXI);
                     }
                     S.text(std::to_string((int)xmin_label_value), {scale::get().XI2XP(0), ypos + 3, 50, 15});
                     S.text(std::to_string((int)xmax_label_value), {scale::get().XI2XP(myMaxXI) - 25, ypos + 3, 50, 15});
@@ -1374,7 +1199,8 @@ namespace wex
 
                 for (int kxtick = 0; kxtick <= tickCount; kxtick++)
                 {
-                    float tickXI = kxtick * xitickinc;;
+                    float tickXI = kxtick * xitickinc;
+                    ;
                     float tick_label_value = scale::get().XI2XU(tickXI);
                     int xPixel = scale::get().XI2XP(tickXI);
 
