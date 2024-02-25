@@ -912,6 +912,15 @@ namespace wex
                 myXScale.sxi2xu_set(scale_xi2xu);
                 myfXset = true;
             }
+            /// @brief for backward compatability
+            /// @param start_xu 
+            /// @param scale_xi2xu 
+            void XValues(
+                float start_xu,
+                float scale_xi2xu)
+            {
+                XUValues( start_xu, scale_xi2xu );
+            }
 
             /// @brief calculate scaling factors so plot will fit in window client area
             /// @return true if succesful
