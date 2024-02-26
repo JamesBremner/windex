@@ -16,53 +16,6 @@ namespace wex
     {
         class plot;
         /// @cond
-        /// Plot dimensions
-        class scale
-        {
-        public:
-            static scale &get()
-            {
-                static scale theInstance;
-                return theInstance;
-            }
-
-            void set(int xo, double xs, int yo, double ys)
-            {
-                myYOffset = yo;
-                myYScale = ys;
-            }
-            void bounds(double XMin, double XMax, double YMin, double YMax)
-            {
-                //     std::cout << "scale::bounds "
-                //               << XMin << " " << XMax << " " << YMin << " " << YMax << "\n";
-
-                myYMin = YMin;
-                myYMax = YMax;
-            }
-
-            int Y2Pixel(double y) const
-            {
-                return myYOffset - myYScale * y;
-            }
-
-            double Pixel2Y(int y) const
-            {
-                return ((double)(myYOffset - y)) / myYScale;
-            }
-            double minY() const
-            {
-                return myYMin;
-            }
-            double maxY() const
-            {
-                return myYMax;
-            }
-
-        private:
-            double myYScale;
-            int myYOffset;
-            double myYMin, myYMax;
-        };
         /// @endcond
 
         /** @brief Maintain indices of circular buffer
@@ -488,6 +441,19 @@ namespace wex
             {
                 xustart = start;
             }
+            void zoom_set( double umin,double umax)
+            {
+                double umin_new = umin;
+                int imin_new = XU2XI( umin );
+                double umax_new = umax;
+                int imax_new = XU2XI( umax );
+
+                xustart = umin;
+                xistart = imin_new;
+                ximax   = imax_new;
+
+                sxi2xp = xpmax
+            }
             void ximax_set(int xi)
             {
                 ximax = xi;
@@ -572,14 +538,10 @@ namespace wex
             //     return (xu - myXUStart) / myScalexi2xu;
             // }
 
-            // int minX() const
-            // {
-            //     return myXMin;
-            // }
-            // int maxXI() const
-            // {
-            //     return myXIMax;
-            // }
+            double XUmax() const
+            {
+                return XI2XU(ximax);
+            }
 
             void text() const
             {
@@ -599,6 +561,79 @@ namespace wex
 
             double sxi2xp;
             double sxi2xu;
+        };
+
+        /// @brief Manage connversions between data values and y pixels
+        ///
+        /// Note: pixels run from 0 at top of window towards bottom
+        class YScale
+        {
+            double yvmin;  // smallest value in data
+            double yvmax;  // largest value in data
+            int ypmin;     // y pixel showing smallest data value
+            int ypmax;     // y pixel showing largest data value
+            double syv2yp; // scale from data value to y pixel
+
+        public:
+            void YVrange(double min, double max)
+            {
+                yvmin = min;
+                yvmax = max;
+                calcScale();
+            }
+            double YVrange() const
+            {
+                return yvmax - yvmin;
+            }
+
+            /// @brief  set range of pixels
+            /// @param min  pixel that will represent the lowest value
+            /// @param max pixel that will represent the largest value
+            /// Since the pixel indices run from the top of the window, min wil be greater than max
+
+            void YPrange(int min, int max)
+            {
+                ypmin = min;
+                ypmax = max;
+                calcScale();
+            }
+
+            double YP2YV(int pixel) const
+            {
+                return yvmin - (ypmin - pixel) / syv2yp;
+            }
+            int YV2YP(double v) const
+            {
+                return ypmin + syv2yp * (v - yvmin);
+            }
+            int YPmin() const
+            {
+                return ypmin;
+            }
+            int YPmax() const
+            {
+                return ypmax;
+            }
+            void text() const
+            {
+                std::cout << "yv " << yvmin << " " << yvmax
+                          << " xp " << ypmin << " " << ypmax
+                          << " " << syv2yp
+                          << "\n";
+            }
+
+        private:
+            void calcScale()
+            {
+                double yvrange = yvmax - yvmin;
+                if (fabs(yvrange) < 0.00001)
+                {
+                    // seems like there are no meaningful data
+                    syv2yp = 1;
+                    return;
+                }
+                syv2yp = -(ypmin - ypmax) / yvrange;
+            }
         };
 
         /** \brief Draw a 2D plot
@@ -737,28 +772,26 @@ namespace wex
                 events().mouseUp(
                     [&]
                     {
-                        // check if user has completed a good drag operation
-                        // if (isGoodDrag())
-                        // {
-                        //     scale &scaleref = scale::get();
-                        //     myZoomXMin = scale::get()
-                        //                      .XP2XU(myStartDragX);
-                        //     myZoomXMax = scale::get().XP2XU(myStopDragX);
-                        //     myZoomYMax = scale::get().Pixel2Y(myStartDragY);
-                        //     myZoomYMin = scale::get().Pixel2Y(myStopDragY);
+                        //check if user has completed a good drag operation
+                        if (isGoodDrag())
+                        {
+                            myZoomXMin = myXScale.XP2XU(myStartDragX);
+                            myZoomXMax = myXScale.XP2XU(myStopDragX);
+                            myZoomYMax = myYScale.YP2YV(myStartDragY);
+                            myZoomYMin = myYScale.YP2YV(myStopDragY);
 
-                        //     scaleref.bounds(
-                        //         scaleref.XP2XI(myZoomXMin),
-                        //         scaleref.XP2XI(myZoomXMax),
-                        //         myZoomYMin,
-                        //         myZoomYMax);
+                            // scaleref.bounds(
+                            //     scaleref.XP2XI(myZoomXMin),
+                            //     scaleref.XP2XI(myZoomXMax),
+                            //     myZoomYMin,
+                            //     myZoomYMax);
 
-                        //     myfZoom = true;
-                        //     // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
-                        //     // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
-                        // }
-                        // myfDrag = false;
-                        // update();
+                            myfZoom = true;
+                            // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
+                            // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
+                        }
+                        myfDrag = false;
+                        update();
                     });
                 events().clickRight(
                     [&]
@@ -845,24 +878,24 @@ namespace wex
                 return (int)myTrace.size();
             }
 
-            /** get step size along x-axis */
-            float xinc() const
-            {
-                return myXinc;
-            }
+            // /** get step size along x-axis */
+            // float xinc() const
+            // {
+            //     return myXinc;
+            // }
 
             /* get data bounds
                 @return vector of doubles { minX, minY, maxX, maxY
             */
-            std::vector<double> bounds() const
-            {
-                std::vector<double> ret;
-                ret.push_back(myMinXU);
-                ret.push_back(myMinY);
-                ret.push_back(myMaxX);
-                ret.push_back(myMaxY);
-                return ret;
-            }
+            // std::vector<double> bounds() const
+            // {
+            //     std::vector<double> ret;
+            //     ret.push_back(myMinXU);
+            //     ret.push_back(myMinY);
+            //     ret.push_back(myMaxX);
+            //     ret.push_back(myMaxY);
+            //     return ret;
+            // }
 
             /// Remove all traces from plot
             void clear()
@@ -877,8 +910,7 @@ namespace wex
             void axisYminmax(double min, double max)
             {
                 myfFit = false;
-                myMinY = min;
-                myMaxY = max;
+                myYScale.YVrange(min, max);
             }
 
             /// Enable auto-fit scaling and remove any zoom setting
@@ -913,13 +945,13 @@ namespace wex
                 myfXset = true;
             }
             /// @brief for backward compatability
-            /// @param start_xu 
-            /// @param scale_xi2xu 
+            /// @param start_xu
+            /// @param scale_xi2xu
             void XValues(
                 float start_xu,
                 float scale_xi2xu)
             {
-                XUValues( start_xu, scale_xi2xu );
+                XUValues(start_xu, scale_xi2xu);
             }
 
             /// @brief calculate scaling factors so plot will fit in window client area
@@ -934,46 +966,75 @@ namespace wex
 
                 // check traces contain data
                 bool OK = false;
-                myMinXI = 0;
-                myMaxXI = 0;
+                myXScale.ximax_set(0);
                 for (auto t : myTrace)
                 {
                     int ts = t->size();
                     if (ts)
                     {
                         OK = true;
-                        if (ts > myMaxXI)
-                            myMaxXI = ts;
+
+                        if (ts > myXScale.XImax())
+                            myXScale.ximax_set(ts);
                         break;
                     }
                 }
                 if (!OK)
                     return false;
 
-                if (myfFit)
+                if( myfZoom )
                 {
-                    CalulateDataBounds();
+                    myXScale.xustart_set( myZoomXMin );
+                    myXScale.XU( myZoomXMin );
+                                        myMinXU = myZoomXMin;
+                    myMaxX = myZoomXMax;
+                    myMinY = myZoomYMin;
+                    myMaxY = myZoomYMax;
+
+                    myXScale.ximax_set()
+
+                    return true;
                 }
 
-                // if (fabs(myMaxX - myMinXU) < 0.0001)
-                //     myXScale.sxi2xp_set(1);
+                if (myfFit)
+                {
+                    double min = DBL_MAX;
+                    double max = -DBL_MAX;
+                    for (auto t : myTrace)
+                    {
+                        int ximin, ximax;
+                        double yvmin, yvmax;
+                        t->bounds(ximin, ximax, yvmin, yvmax);
+                        if (yvmin < min)
+                            min = yvmin;
+                        if (yvmax > max)
+                            max = yvmax;
+                    }
+                    myYScale.YVrange(min, max);
+                    myYScale.YPrange(h - 40, 10);
+
+                    myXScale.sxi2xp_set((w - 70));
+                }
+
+                // // if (fabs(myMaxX - myMinXU) < 0.0001)
+                // //     myXScale.sxi2xp_set(1);
+                // // else
+                // myXScale.sxi2xp_set((w - 70));
+
+                // if (fabs(myMaxY - myMinY) < minDataRange)
+                //     myYScale = 1;
                 // else
-                myXScale.sxi2xp_set((w - 70));
+                //     myYScale = (h - 70) / (myMaxY - myMinY);
 
-                if (fabs(myMaxY - myMinY) < minDataRange)
-                    myYScale = 1;
-                else
-                    myYScale = (h - 70) / (myMaxY - myMinY);
+                // // myXOffset = 50 - myXScale * myMinXU;
+                // myYOffset = h - 20 + myYScale * myMinY;
 
-                // myXOffset = 50 - myXScale * myMinXU;
-                myYOffset = h - 20 + myYScale * myMinY;
+                // // scale::get().sxi2xp_set(myXScale);
+                // scale::get().set(myXOffset, 0, myYOffset, myYScale);
+                // scale::get().bounds(0, 0, myMinY, myMaxY);
 
-                // scale::get().sxi2xp_set(myXScale);
-                scale::get().set(myXOffset, 0, myYOffset, myYScale);
-                scale::get().bounds(0, 0, myMinY, myMaxY);
-
-                // std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
-                // std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
+                // // std::cout << "X " << myMinX <<" "<< myMaxX <<" "<< myXScale << "\n";
+                // // std::cout << "Y " << myMinY <<" "<< myMaxY <<" "<< myYScale << "\n";
 
                 // If user has not called XValues(), set X-axis scale to 1
                 if (!myfXset)
@@ -1004,7 +1065,7 @@ namespace wex
             /// get Y user value from y pixel
             double pixel2Yuser(int ypixel) const
             {
-                return scale::get().Pixel2Y(ypixel);
+                return myYScale.YP2YV(ypixel);
             }
 
             const XScale &XScale_get() const
@@ -1022,15 +1083,15 @@ namespace wex
             /// plot traces
             std::vector<trace *> myTrace;
 
-            float myXinc;
-            int myMinXI, myMaxXI; // range of index values
-            double myMinXU;       // minimum user X value
-            double myMaxX;
-            double myMinY, myMaxY;
+            // float myXinc;
+            // int myMinXI, myMaxXI; // range of index values
+            // double myMinXU;       // minimum user X value
+            // double myMaxX;
+            // double myMinY, myMaxY;
             XScale myXScale;
-            double myYScale;
-            int myXOffset;
-            int myYOffset;
+            YScale myYScale;
+            // int myXOffset;
+            // int myYOffset;
 
             bool myfFit;  /// true if scale should fit plot to window
             bool myfGrid; // true if tick and grid marks reuired
@@ -1048,41 +1109,41 @@ namespace wex
             double myZoomYMax;
             // std::function<void(void)> myClickRightFunction;
 
-            void CalulateDataBounds()
-            {
-                if (myfZoom)
-                {
-                    myMinXU = myZoomXMin;
-                    myMaxX = myZoomXMax;
-                    myMinY = myZoomYMin;
-                    myMaxY = myZoomYMax;
-                }
-                else
-                {
-                    int minXI = 0;
-                    int maxXI = 0;
-                    myTrace[0]->bounds(
-                        minXI, maxXI,
-                        myMinY, myMaxY);
-                    for (auto &t : myTrace)
-                    {
-                        int txmin, txmax;
-                        double tymin, tymax;
-                        txmin = txmax = tymax = 0;
-                        tymin = std::numeric_limits<double>::max();
-                        t->bounds(txmin, txmax, tymin, tymax);
-                        if (txmin < myMinXU)
-                            myMinXU = txmin;
-                        if (txmax > maxXI)
-                            maxXI = txmax;
-                        if (tymin < myMinY)
-                            myMinY = tymin;
-                        if (tymax > myMaxY)
-                            myMaxY = tymax;
-                    }
-                    myXScale.ximax_set(maxXI);
-                }
-            }
+            // void CalulateDataBounds()
+            // {
+            //     if (myfZoom)
+            //     {
+            //         myMinXU = myZoomXMin;
+            //         myMaxX = myZoomXMax;
+            //         myMinY = myZoomYMin;
+            //         myMaxY = myZoomYMax;
+            //     }
+            //     else
+            //     {
+            //         int minXI = 0;
+            //         int maxXI = 0;
+            //         myTrace[0]->bounds(
+            //             minXI, maxXI,
+            //             myMinY, myMaxY);
+            //         for (auto &t : myTrace)
+            //         {
+            //             int txmin, txmax;
+            //             double tymin, tymax;
+            //             txmin = txmax = tymax = 0;
+            //             tymin = std::numeric_limits<double>::max();
+            //             t->bounds(txmin, txmax, tymin, tymax);
+            //             if (txmin < myMinXU)
+            //                 myMinXU = txmin;
+            //             if (txmax > maxXI)
+            //                 maxXI = txmax;
+            //             if (tymin < myMinY)
+            //                 myMinY = tymin;
+            //             if (tymax > myMaxY)
+            //                 myMaxY = tymax;
+            //         }
+            //         myXScale.ximax_set(maxXI);
+            //     }
+            // }
             bool isGoodDrag()
             {
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
@@ -1091,8 +1152,8 @@ namespace wex
             std::vector<double> ytickValues()
             {
                 std::vector<double> vl;
-                double mn = myMinY;
-                double mx = myMaxY;
+                double mn = myYScale.YPmax();
+                double mx = myYScale.YPmin();
                 double range = mx - mn;
                 if (range < minDataRange)
                 {
@@ -1101,30 +1162,30 @@ namespace wex
                     vl.push_back(mn);
                     return vl;
                 }
-                double inc = range / 4;
-                double tick;
+                double inc = myYScale.YVrange() / 4;
+                double tickValue;
                 if (inc > 1)
                 {
                     inc = (int)inc;
-                    tick = (int)mn;
+                    tickValue = myYScale.YP2YV(myYScale.YPmin());
                 }
                 else
                 {
-                    tick = mn;
+                    tickValue = mn;
                 }
                 // if (tick < 0)
                 //     return vl;
 
                 while (true)
                 {
-                    double v = tick;
+                    double v = tickValue;
                     if (v > 100)
                         v = ((int)v / 100) * 100;
                     else if (v > 10)
                         v = ((int)v / 10) * 10;
                     vl.push_back(v);
-                    tick += inc;
-                    if (tick >= mx)
+                    tickValue += inc;
+                    if (tickValue >= mx)
                         break;
                 }
                 vl.push_back(mx);
@@ -1151,13 +1212,12 @@ namespace wex
                 S.color(0xFFFFFF - bgcolor());
                 S.textHeight(15);
 
-                double mn = scale::get().minY();
-                double mx = scale::get().maxY();
-                S.line({50, scale::get().Y2Pixel(mn),
-                        50, scale::get().Y2Pixel(mx)});
+                S.line({50, myYScale.YPmin(),
+                        50, myYScale.YPmax()});
+
                 for (double y : ytickValues())
                 {
-                    int yp = scale::get().Y2Pixel(y);
+                    int yp = myYScale.YV2YP(y);
                     S.text(numberformat(y),
                            {0, yp - 8, 50, 15});
                     S.line({50, yp,
@@ -1171,9 +1231,9 @@ namespace wex
                             S.pixel(kp + 1, yp);
                         }
                 }
-                int yp = scale::get().Y2Pixel(mx);
-                // S.text(myMaxYLabel,
-                //        {0, yp + 10, 50, 15});
+                // int yp = scale::get().Y2Pixel(mx);
+                //  S.text(myMaxYLabel,
+                //         {0, yp + 10, 50, 15});
             }
             void drawXAxis(wex::shapes &S, int ypos)
             {
@@ -1189,10 +1249,10 @@ namespace wex
                     if (myfXset)
                     {
                         xmin_label_value = myXScale.XI2XU(0);
-                        xmax_label_value = myXScale.XI2XU(myMaxXI);
+                        xmax_label_value = myXScale.XUmax();
                     }
                     S.text(std::to_string((int)xmin_label_value), {myXScale.XI2XP(0), ypos + 3, 50, 15});
-                    S.text(std::to_string((int)xmax_label_value), {myXScale.XI2XP(myMaxXI) - 25, ypos + 3, 50, 15});
+                    S.text(std::to_string((int)xmax_label_value), {myXScale.XU2XP(xmax_label_value) - 25, ypos + 3, 50, 15});
                     // S.text(myMaxXLabel,
                     //        {xmx_px - 50, ypos + 3,
                     //         50, 15});
@@ -1201,7 +1261,7 @@ namespace wex
                 // there is a grid
 
                 int tickCount = 8;
-                float xitickinc = (myMaxXI - myMinXI) / tickCount;
+                float xitickinc = myXScale.XImax() / tickCount;
 
                 // if possible, place tick marks at integer values of x index
                 if (xitickinc > 1)
@@ -1221,8 +1281,8 @@ namespace wex
                         {xPixel, ypos + 1, 50, 15});
 
                     for (
-                        int k = scale::get().Y2Pixel(scale::get().maxY());
-                        k < scale::get().Y2Pixel(scale::get().minY());
+                        int k = myYScale.YPmin();
+                        k < myYScale.YPmax();
                         k = k + 25)
                     {
                         S.pixel(xPixel, k);
@@ -1249,7 +1309,7 @@ namespace wex
                     {
                         // scale
                         p.x = myXScale.XI2XP(xi++);
-                        p.y = scale::get().Y2Pixel(y);
+                        p.y = myYScale.YV2YP(y);
                         vp.push_back(p);
                     }
                     S.polyLine(vp.data(), t->size());
@@ -1261,7 +1321,7 @@ namespace wex
                     for (auto y : t->getY())
                     {
                         S.rectangle(
-                            {myXScale.XI2XP(xi++) - 5, scale::get().Y2Pixel(y) - 5,
+                            {myXScale.XI2XP(xi++) - 5, myYScale.YV2YP(y) - 5,
                              5, 5});
                     }
                     break;
@@ -1274,7 +1334,7 @@ namespace wex
 
                         // scale data point to pixels
                         double x = myXScale.XI2XP(xi++);
-                        double yp = scale::get().Y2Pixel(y);
+                        double yp = myYScale.YV2YP(y);
 
                         if (first)
                         {
