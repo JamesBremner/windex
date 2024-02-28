@@ -79,7 +79,7 @@ public:
     The property grid has been expanded to fit the properties as they were added
     this will adjust the form size and OK button size to accomodate the grid
     */
-    void showModal()
+    void show()
     {
         /// adjust for grid size
         auto wh = myGrid.size();
@@ -88,6 +88,15 @@ public:
 
         // base class showModal
         gui::showModal();
+    }
+    /** @brief  Redirect calls to ShowModal to Show instead
+     Inputbox is a popup handling the modal dialog itself
+     This should not be called
+     for backwards compatibility, it redirects to Show()
+     */
+    void showModal()
+    {
+        show();
     }
     /** get value saved in property attribute
         @param[in] name of property

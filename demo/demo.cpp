@@ -237,12 +237,13 @@ void PGDemo()
 void InputboxDemo(gui &form)
 {
     wex::inputbox ib;
-    ib.gridWidth(800);
+    ib.gridWidth(200);
     ib.add("A", "72");
     ib.add("B", "4600");
     ib.choice("Choose", {"X", "Y"});
     std::cout << "showing modal " << ib.id() << "\n";
-    ib.showModal();
+
+    ib.show();
 
     std::string msg =
         "A is " + ib.value("A") +
