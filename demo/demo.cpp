@@ -231,7 +231,7 @@ void PGDemo()
     pg.events().click([&]
                       { msgbox mb("pg click"); });
 
-    form.showModal();
+    form.show();
 }
 
 void InputboxDemo(gui &form)
