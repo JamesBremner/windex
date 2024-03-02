@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <sstream>
 #include <iomanip>
 #include <vector>
@@ -8,14 +7,12 @@
 #include <limits>
 #include <cfloat>
 
-#include <wex.h>
-
 // minimum data range that will produce sensible plots
 #define minDataRange 0.000001
 
 namespace wex
 {
-    namespace plot 
+    namespace plot
     {
         class plot;
         /// @cond
@@ -134,111 +131,6 @@ namespace wex
                     myfCurrentLast = true;
 
                 return myCurrentID;
-            }
-        };
-
-        /**
-         * @brief Scale state machine
-         *
-         * https://github.com/JamesBremner/windex/issues/30#issuecomment-1971379013
-         */
-        class scaleStateMachine
-        {
-        public:
-            enum class eState
-            {
-                none,
-                fit,
-                fix,
-                fitzoom,
-                fixzoom,
-            };
-            enum class eEvent
-            {
-                start,
-                zoom,
-                unzoom,
-                fix,
-                fit,
-            };
-
-            eState myState;
-
-            scaleStateMachine()
-                : myState(eState::fit)
-            {
-            }
-
-            /// @brief Handle an event
-            /// @param event
-            /// @return new state, or eState::none if event to be ignored
-            eState event(eEvent event)
-            {
-                switch (event)
-                {
-
-                case eEvent::start:
-                    // handled by constructor
-                    return eState::fit;
-
-                case eEvent::zoom:
-                    switch (myState)
-                    {
-                    case eState::fit:
-                        myState = eState::fitzoom;
-                        break;
-                    case eState::fix:
-                        myState = eState::fixzoom;
-                        break;
-                    default:
-                        return eState::none;
-                    }
-                    break;
-
-                case eEvent::unzoom:
-                    switch (myState)
-                    {
-                    case eState::fitzoom:
-                        myState = eState::fit;
-                        break;
-                    case eState::fixzoom:
-                        myState = eState::fix;
-                        break;
-                    default:
-                        return eState::none;
-                    }
-                    break;
-
-                case eEvent::fix:
-                    switch (myState)
-                    {
-                    case eState::fit:
-                        myState = eState::fix;
-                        break;
-                    default:
-                        return eState::none;
-                    }
-                    break;
-
-                case eEvent::fit:
-                    switch (myState)
-                    {
-                    case eState::fix:
-                        myState = eState::fit;
-                        break;
-                    default:
-                        return eState::none;
-                    }
-                    break;
-
-                default:
-                    throw std::runtime_error(
-                        "plot scaleStateMachine unrecognized event");
-                }
-
-                std::cout << "scaleStateMachine state change " << (int)myState << "\n";
-
-                return myState;
             }
         };
 
@@ -538,55 +430,45 @@ namespace wex
          */
         class XScale
         {
-            scaleStateMachine::eState &theState;
+            int xpstart; // min pixel ( where the Y- axis is drawn )
+            int xpmax;
 
-            int xpmin; // min pixel
-            int xpmax; // max pixel
+            int xistart; // index min ( usually zero )
+            int ximax;   // index max ( number of data points )
 
-            int ximin; // min data index
-            int ximax; // max data index
+            double xustart; // user value for first data point
+            double xumax;
 
-            double xumin;   // min displayed x user value
-            double xuximin; // user x value for ximin
-            double xumax;   // max user x value displayed
-            double xixumin; // data index for user x min
+            double sxi2xp; // scale from data index to x pixel
+            double sxi2xu; // scale from data index to user value
 
-            double xuminfix;
-            double xumaxfix;
+            bool fZoomed;
 
-            double sxi2xu; // scale from data index to x user
-            double sxi2xp; // scale from data index to pixel
-            double sxu2xp; // scale from x user to pixel
+            double xistart_zoom; // index min ( usually zero )
+            double ximax_zoom;   // index max ( number of data points )
+
+            double xustart_zoom; // user value for first data point
+            double xumax_zoom;
+
+            double sxi2xp_zoom; // scale from data index to x pixel
+            double sxi2xu_zoom; // scale from data index to user value
 
         public:
-            XScale(scaleStateMachine &machine)
-                : theState(machine.myState)
+            // set pixel range for unzoomed x-axis
+            void XPrange(int start, int max)
             {
-            }
-            void xiSet(int min, int max)
-            {
-                ximin = min;
-                ximax = max;
-            }
-            void xpSet(int min, int max)
-            {
-                xpmin = min;
+                fZoomed = false;
+                xpstart = start;
                 xpmax = max;
+                sxi2xp = (xpmax - xpstart) / (ximax - xistart);
             }
-
-            /// @brief set data index to user x conversion parameters
-            /// @param u0   // user x at start of data buffer
-            /// @param sc   // scale from data buffer inex to user x
-
-            void xi2xuSet(double u0, double sc)
+            void XUValues(
+                float start_xu,
+                float scale_xi2xu)
             {
-                xuximin = u0;
-                sxi2xu = sc;
-            }
-            void fixSet(double min, double max)
-            {
-                xuminfix = min;
-                xumaxfix = max;
+                fZoomed = false;
+                xustart = start_xu;
+                sxi2xu = scale_xi2xu;
             }
 
             /// @brief switch on zooming into a subset of the data
@@ -595,414 +477,161 @@ namespace wex
 
             void zoom(double umin, double umax)
             {
+                xustart_zoom = umin;
+                xistart_zoom = XU2XI(umin);
+                xumax_zoom = umax;
+                ximax_zoom = XU2XI(umax);
+
+                double xurange = xumax_zoom - xustart_zoom;
+                if (xurange < 0.00001)
+                {
+                    sxi2xp_zoom = 1;
+                    sxi2xu_zoom = 1;
+                }
+                else
+                {
+                    sxi2xp_zoom = (xpmax - xpstart) / (ximax_zoom - xistart_zoom);
+                    sxi2xu_zoom = (xumax_zoom - xustart_zoom) / (ximax_zoom - xistart_zoom);
+                }
+
+                fZoomed = true;
+
+                // std::cout << " x zoomset ";
+                // text();
             }
+
             void zoomExit()
             {
+                fZoomed = false;
             }
 
-            void calculate()
+            void ximax_set(int xi)
             {
-                switch (theState)
-                {
-                case scaleStateMachine::eState::fit:
-                    xumin = xuximin;
-                    xumax = xumin + sxi2xu * ximax;
-                    sxi2xp = (double)(xpmax - xpmin) / (ximax - ximin);
-                    sxu2xp = (xpmax - xpmin) / (xumax - xumin);
-                    break;
-
-                case scaleStateMachine::eState::fix:
-                {
-                    xumin = xuminfix;
-                    xumax = xumaxfix;
-                    xixumin = (xumin - xuximin) / sxi2xu;
-                    double xixumax = (xumax - xuximin) / sxi2xu;
-                    sxi2xp = (xpmax - xpmin) / (xixumax - xixumin);
-                    sxu2xp = (xpmax - xpmin) / (xumax - xumin);
-                }
-                break;
-                }
+                xistart = 0;
+                ximax = xi;
+                xumax = XI2XU(ximax);
             }
+            double XIStart() const
+            {
+                if (!fZoomed)
+                    return xistart;
+                return xistart_zoom;
+            }
+            double XImax() const
+            {
+                if (!fZoomed)
+                    return ximax;
+                return ximax_zoom;
+            }
+            double XUStart(int xustart) const
+            {
+                return xustart;
+            }
+
+            // Convert between x values
 
             int XI2XP(double xi) const
             {
-                return round(xpmin + sxi2xp * (xi - xixumin));
+                if (!fZoomed)
+                    return xi * sxi2xp + xpstart;
+                return (xi - xistart_zoom) * sxi2xp_zoom + xpstart;
+            }
+            int XU2XP(double xu) const
+            {
+                return XI2XP(XU2XI(xu));
+            }
+            double XU2XI(double xu) const
+            {
+                return (xu - xustart) / sxi2xu;
+            }
+            int XI2XU(int xi) const
+            {
+                return xi * sxi2xu + xustart;
             }
             double XP2XU(int pixel) const
             {
-                return xumin + (pixel - xpmin) / sxu2xp;
+                return XI2XU(XP2XI(pixel));
             }
-            int XU2XP( double xu ) const
+            double XI2XU(double xi) const
             {
-                return round( xpmin + sxu2xp * (xu - xumin) );
+                if (!fZoomed)
+                    return xi * sxi2xu + xustart;
+                return (xi - xistart_zoom) * sxi2xu_zoom + xustart_zoom;
+            }
+            double XP2XI(int pixel) const
+            {
+                if (!fZoomed)
+                {
+                    if (sxi2xp < 0.001)
+                    {
+                        /* Probably means there is no data in the plot
+                        So simply return 0
+                        */
+                        return 0;
+                    }
+                    return (pixel - xpstart) / sxi2xp;
+                }
+                if (sxi2xp_zoom < 0.001)
+                {
+                    /* Probably means there is no data in the plot
+                    So simply return 0
+                    */
+                    return 0;
+                }
+                return xistart_zoom + (pixel - xpstart) / sxi2xp_zoom;
+            }
+            int XPstart() const
+            {
+                return xpstart;
+            }
+            // double Pixel2XU(int xp) const
+            // {
+            //     return myXUStart + Pixel2XI(xp) * myScalexi2xu;
+            // }
+            // pixel from x user
+            // int XI2Pixel(double xu) const
+            // {
+            //     return (XU2XI(xu));
+            // }
+            // // x index from x user
+            // int XU2XI(int xu) const
+            // {
+            //     return (xu - myXUStart) / myScalexi2xu;
+            // }
+
+            double XUmax() const
+            {
+                return XI2XU(ximax);
             }
 
-            int XUmin() const
+            double XUDisplayRange() const
             {
-                return xumin;
-            }
-            int XUmax() const
-            {
-                return xumax;
-            }
-            int XPmin() const
-            {
-                return xpmin;
-            }
-            int XPmax() const
-            {
-                return xpmax;
+                return xumax - xustart;
             }
 
             void text() const
             {
                 std::cout
-                    << "state " << (int)theState
-                    << " xpstart " << xpmin << " xpmax " << xpmax
-                    << " xistart " << ximin << " ximax " << ximax
-                    << " xustart " << xumin << " xumax " << xumax
+                    << "xpstart " << xpstart << " xpmax " << xpmax
+                    << " xistart " << xistart << " ximax " << ximax
+                    << " xustart " << xustart << " xumax " << xumax
                     << " sxi2xp " << sxi2xp
-                    << " sxi2xu " << sxi2xu
                     << "\n";
+                if (fZoomed)
+                    std::cout
+                        << "xpstart " << xpstart << " xpmax " << xpmax
+                        << " xistart " << xistart_zoom << " ximax " << ximax_zoom
+                        << " xustart " << xustart_zoom << " xumax " << xumax_zoom
+                        << " sxi2xp " << sxi2xp_zoom
+                        << "\n";
             }
         };
-
-        // class XScale
-        // {
-        //     scaleStateMachine &theScaleStateMachine;
-
-        //     int xpstart; // min pixel ( where the Y- axis is drawn )
-        //     int xpmax;
-
-        //     int xistart; // index min ( usually zero )
-        //     int ximax;   // index max ( number of data points )
-
-        //     double xustart; // user value for first data point
-        //     double xumax;
-
-        //     double sxi2xp; // scale from data index to x pixel
-        //     double sxi2xu; // scale from data index to user value
-
-        //     bool fZoomed;
-
-        //     double xistart_zoom; // index min ( usually zero )
-        //     double ximax_zoom;   // index max ( number of data points )
-
-        //     double xustart_zoom; // user value for first data point
-        //     double xumax_zoom;
-
-        //     double sxi2xp_zoom; // scale from data index to x pixel
-        //     double sxi2xu_zoom; // scale from data index to user value
-
-        //     double xuxistart; // user X at start of data buffer
-        //     double xixustart; // databuffer index at start of xu displayed
-        //     double xuminfit;
-        //     double xumaxfit;
-
-        // public:
-        //     XScale(scaleStateMachine &stateMachine)
-        //         : theScaleStateMachine(stateMachine)
-        //     {
-        //     }
-        //     // set pixel range for x-axis
-        //     void XPrange(int start, int max)
-        //     {
-        //         xpstart = start;
-        //         xpmax = max;
-        //         if (fabs(ximax - xistart) > 0.0001)
-        //             sxi2xp = (xpmax - xpstart) / (ximax - xistart);
-        //     }
-        //     void XIValues(double start, double max)
-        //     {
-        //         xistart = start;
-        //         ximax = max;
-
-        //         // switch (theScaleStateMachine.myState)
-        //         // {
-        //         // case scaleStateMachine::eState::fit:
-        //         //     xistart = start;
-        //         //     ximax = max;
-        //         //     break;
-        //         // case scaleStateMachine::eState::fitzoom:
-        //         // case scaleStateMachine::eState::fixzoom:
-        //         // case scaleStateMachine::eState::fix:
-        //         //     xistart_zoom = start;
-        //         //     ximax_zoom = max;
-        //         //     break;
-        //         // default:
-        //         //     break;
-        //         // }
-        //     }
-
-        //     /// @brief Specify conversion of data buffer indices to x user values
-        //     /// @param start the user x values of first data point
-        //     /// @param scale_xi2xu scale from data buffer indices to x user values
-
-        //     void XUValues(
-        //         float start,
-        //         float scale_xi2xu)
-        //     {
-        //         xuxistart = start;
-        //         sxi2xu = scale_xi2xu;
-        //     }
-
-        //     void XUminmax(double min, double max)
-        //     {
-        //         xustart = min;
-        //         xumax = max;
-
-        //         // switch (theScaleStateMachine.myState)
-        //         // {
-
-        //         // case scaleStateMachine::eState::fit:
-        //         //     xustart = min;
-        //         //     xumax = max;
-        //         //     break;
-
-        //         // case scaleStateMachine::eState::fix:
-        //         //     xustart_zoom = min;
-        //         //     xumax_zoom = max;
-        //         //     xistart_zoom = min / sxi2xu;
-        //         //     ximax_zoom = max / sxi2xu;
-        //         //     break;
-
-        //         // default:
-        //         //     break;
-        //         // }
-        //     }
-
-        //     /// @brief switch on zooming into a subset of the data
-        //     /// @param umin minimum user x to display
-        //     /// @param umax maximum user x to display
-
-        //     void zoom(double umin, double umax)
-        //     {
-        //         xustart_zoom = umin;
-        //         xistart_zoom = XU2XI(umin);
-        //         xumax_zoom = umax;
-        //         ximax_zoom = XU2XI(umax);
-
-        //         double xurange = xumax_zoom - xustart_zoom;
-        //         if (xurange < 0.00001)
-        //         {
-        //             sxi2xp_zoom = 1;
-        //             sxi2xu_zoom = 1;
-        //         }
-        //         else
-        //         {
-        //             sxi2xp_zoom = (xpmax - xpstart) / (ximax_zoom - xistart_zoom);
-        //             sxi2xu_zoom = (xumax_zoom - xustart_zoom) / (ximax_zoom - xistart_zoom);
-        //         }
-
-        //         fZoomed = true;
-
-        //         // std::cout << " x zoomset ";
-        //         // text();
-        //     }
-
-        //     void zoomExit()
-        //     {
-        //         fZoomed = false;
-        //     }
-
-        //     void ximax_set(int xi)
-        //     {
-        //         xistart = 0;
-        //         ximax = xi;
-        //         xumax = XI2XU(ximax);
-        //     }
-
-        //     void setFit(double min, double max)
-        //     {
-        //         xuminfit = min;
-        //         xumaxfit = max;
-        //     }
-
-        //     void calcScale()
-        //     {
-        //         switch (theScaleStateMachine.myState)
-        //         {
-
-        //         case scaleStateMachine::eState::fit:
-        //         {
-        //             double range = ximax - xistart;
-        //             if (fabs(range) < 0.000001)
-        //                 throw std::runtime_error(
-        //                     "plot scale bad parameters");
-
-        //             sxi2xp = (xpmax - xpstart) / range;
-        //             xumax = xustart + sxi2xu * ximax;
-        //             xixustart = 0;
-        //         }
-        //         break;
-
-        //         case scaleStateMachine::eState::fix:
-        //         {
-        //             std::cout << "=> XScale calcScale\n";
-        //             text();
-
-        //             xustart = xuminfit;
-        //             xumax = xumaxfit;
-
-        //             sxi2xp = (ximax - xistart) / (xuxistart + sxi2xu * (ximax - xistart));
-
-        //             // xixustart = (xuminfit - xuxistart) / sx
-        //         }
-        //         break;
-        //         }
-        //         // else
-        //         // {
-        //         //     // double range = ximax_zoom - xistart_zoom;
-        //         //     // if (fabs(range) < 0.000001)
-        //         //     //     throw std::runtime_error(
-        //         //     //         "plot scale bad parameters");
-
-        //         //     // sxi2xp = (xpmax - xpstart) / range;
-        //         //     // sxi2xu = (xumax_zoom - xistart_zoom) / range;
-        //         // }
-        //     }
-        //     double XIStart() const
-        //     {
-        //         if (theScaleStateMachine.myState == scaleStateMachine::eState::fit)
-        //             return xistart;
-        //         return xistart_zoom;
-        //     }
-        //     double XImax() const
-        //     {
-        //         if (theScaleStateMachine.myState == scaleStateMachine::eState::fit)
-        //             return ximax;
-        //         return ximax_zoom;
-        //     }
-        //     double XUStart() const
-        //     {
-        //         return xustart;
-        //     }
-
-        //     // Convert between x values
-
-        //     int XI2XP(double xi) const
-        //     {
-        //         return xpstart + xi * sxi2xp;
-
-        //         // switch (theScaleStateMachine.myState)
-        //         // {
-        //         // case scaleStateMachine::eState::fit:
-        //         //     return xpstart + xi * sxi2xp;
-
-        //         // case scaleStateMachine::eState::fix:
-        //         //     {
-        //         //         double xu = xustart + xi;
-        //         //     }
-        //         //     //return xpstart + ((xpmax - xpstart) / (xumaxfit - xuminfit)) * (xustart + sxi2xp * xi);
-
-        //         // default:
-        //         //     return xi;
-        //         // }
-        //     }
-        //     int XU2XP(double xu) const
-        //     {
-        //         return XI2XP(XU2XI(xu));
-        //     }
-        //     double XU2XI(double xu) const
-        //     {
-        //         double xi = (xu - xustart) / sxi2xu - xuxistart;
-        //         return xi;
-        //     }
-        //     int XI2XU(int xi) const
-        //     {
-        //         return xi * sxi2xu + xustart;
-        //     }
-        //     double XP2XU(int pixel) const
-        //     {
-        //         return XI2XU(XP2XI(pixel));
-        //     }
-        //     double XI2XU(double xi) const
-        //     {
-        //         if (!fZoomed)
-        //             return xi * sxi2xu + xustart;
-        //         return (xi - xistart_zoom) * sxi2xu_zoom + xustart_zoom;
-        //     }
-        //     double XP2XI(int pixel) const
-        //     {
-        //         if (!fZoomed)
-        //         {
-        //             if (sxi2xp < 0.001)
-        //             {
-        //                 /* Probably means there is no data in the plot
-        //                 So simply return 0
-        //                 */
-        //                 return 0;
-        //             }
-        //             return (pixel - xpstart) / sxi2xp;
-        //         }
-        //         if (sxi2xp_zoom < 0.001)
-        //         {
-        //             /* Probably means there is no data in the plot
-        //             So simply return 0
-        //             */
-        //             return 0;
-        //         }
-        //         return xistart_zoom + (pixel - xpstart) / sxi2xp_zoom;
-        //     }
-        //     int XPstart() const
-        //     {
-        //         return xpstart;
-        //     }
-        //     int XPmax() const
-        //     {
-        //         return xpmax;
-        //     }
-        //     // double Pixel2XU(int xp) const
-        //     // {
-        //     //     return myXUStart + Pixel2XI(xp) * myScalexi2xu;
-        //     // }
-        //     // pixel from x user
-        //     // int XI2Pixel(double xu) const
-        //     // {
-        //     //     return (XU2XI(xu));
-        //     // }
-        //     // // x index from x user
-        //     // int XU2XI(int xu) const
-        //     // {
-        //     //     return (xu - myXUStart) / myScalexi2xu;
-        //     // }
-
-        //     double XUmax() const
-        //     {
-        //         return XI2XU(ximax);
-        //     }
-
-        //     double XUDisplayRange() const
-        //     {
-        //         return xumax - xustart;
-        //     }
-
-        //     void text() const
-        //     {
-        //         std::cout
-        //             << "state " << (int)theScaleStateMachine.myState
-        //             << " xpstart " << xpstart << " xpmax " << xpmax
-        //             << " xistart " << xistart << " ximax " << ximax
-        //             << " xustart " << xustart << " xumax " << xumax
-        //             << " sxi2xp " << sxi2xp
-        //             << " sxi2xu " << sxi2xu
-        //             << "\n";
-        //         if (theScaleStateMachine.myState != scaleStateMachine::eState::fit)
-        //             std::cout
-        //                 << " zoom xpstart " << xpstart << " xpmax " << xpmax
-        //                 << " xistart " << xistart_zoom << " ximax " << ximax_zoom
-        //                 << " xustart " << xustart_zoom << " xumax " << xumax_zoom
-        //                 << " sxi2xp " << sxi2xp_zoom
-        //                 << "\n";
-        //     }
-        // };
 
         /// @brief Manage connversions between data values and y pixels
         ///
         /// Note: pixels run from 0 at top of window towards bottom
         class YScale
         {
-            scaleStateMachine &theScaleStateMachine;
             double yvmin;  // smallest value in data
             double yvmax;  // largest value in data
             int ypmin;     // y pixel showing smallest data value
@@ -1010,11 +639,6 @@ namespace wex
             double syv2yp; // scale from data value to y pixel
 
         public:
-            YScale(scaleStateMachine &scaleMachine)
-                : theScaleStateMachine(scaleMachine)
-            {
-            }
-
             void YVrange(double min, double max)
             {
                 yvmin = min;
@@ -1069,6 +693,7 @@ namespace wex
                           << "\n";
             }
 
+        private:
             void calcScale()
             {
                 double yvrange = yvmax - yvmin;
@@ -1168,9 +793,7 @@ namespace wex
                 @param[in] parent window where plot will be drawn
             */
             plot(gui *parent)
-                : gui(parent), myfFit(true), myfDrag(false), myfZoom(false),
-                  myXScale(myScaleStateMachine),
-                  myYScale(myScaleStateMachine)
+                : gui(parent), myfFit(true), myfDrag(false), myfZoom(false)
             {
                 text("Plot");
 
@@ -1223,22 +846,17 @@ namespace wex
                         // check if user has completed a good drag operation
                         if (isGoodDrag())
                         {
-                            // check for valid event
-                            if (myScaleStateMachine.event(scaleStateMachine::eEvent::zoom) != scaleStateMachine::eState::none)
-                            {
-                                double myZoomXMin = myXScale.XP2XU(myStartDragX);
-                                double myZoomXMax = myXScale.XP2XU(myStopDragX);
-                                double myZoomYMax = myYScale.YP2YV(myStartDragY);
-                                double myZoomYMin = myYScale.YP2YV(myStopDragY);
+                            double myZoomXMin = myXScale.XP2XU(myStartDragX);
+                            double myZoomXMax = myXScale.XP2XU(myStopDragX);
+                            double myZoomYMax = myYScale.YP2YV(myStartDragY);
+                            double myZoomYMin = myYScale.YP2YV(myStopDragY);
 
-                                myXScale.zoom(myZoomXMin, myZoomXMax);
-                                myYScale.zoom_set(myZoomYMin, myZoomYMax);
+                            myXScale.zoom(myZoomXMin, myZoomXMax);
+                            myYScale.zoom_set(myZoomYMin, myZoomYMax);
 
-                                myfZoom = true;
-
-                                // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
-                                // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
-                            }
+                            myfZoom = true;
+                            // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
+                            // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
                         }
                         myfDrag = false;
                         update();
@@ -1246,21 +864,8 @@ namespace wex
                 events().clickRight(
                     [&]
                     {
-                        switch (myScaleStateMachine.event(scaleStateMachine::eEvent::unzoom))
-                        {
-
-                        case scaleStateMachine::eState::none:
-                            return;
-
-                        case scaleStateMachine::eState::fit:
-                            // restore autofit
-                            autoFit();
-                            return;
-
-                        case scaleStateMachine::eState::fix:
-                            // restore fix
-                            return;
-                        }
+                        // restore autofit
+                        autoFit();
                     });
             }
 
@@ -1324,32 +929,12 @@ namespace wex
                 myfGrid = enable;
             }
 
-            /// @brief Set fixed scale
-            /// @param minX minimum user x
-            /// @param maxX maximum user X
-            /// @param minY minimum Y
-            /// @param maxY maximum Y
-
             void setFixedScale(
-                double minX, double maxX, double minY, double maxY)
+                double minX, double minY, double maxX, double maxY)
             {
-                if (maxX <= minX || maxY <= minY)
-                    throw std::runtime_error(
-                        "plot::setFixedScale bad params");
-
-                // change scale state
-                if (
-                    myScaleStateMachine.event(
-                        scaleStateMachine::eEvent::fix) == scaleStateMachine::eState::none)
-                    return;
-
-                if (!myfXset)
-                    XUValues(0, 1);
-
-                myXScale.fixSet(minX, maxX);
+                myXScale.zoom(minX, maxX);
                 myYScale.zoom_set(minY, maxY);
-
-                myXScale.text();
+                myfFit = false;
             }
 
             int traceCount() const
@@ -1386,12 +971,11 @@ namespace wex
                 @param[in] min enforced min Y
                 @param[in] max enforced max Y
             */
-            // void fixYVminmax(double min, double max)
-            // {
-            //     myfFit = false;
-            //     myfZoom = false;
-            //     myYScale.YVrange(min, max);
-            // }
+            void axisYminmax(double min, double max)
+            {
+                myfFit = false;
+                myYScale.YVrange(min, max);
+            }
 
             /// Enable auto-fit scaling and remove any zoom setting
             void autoFit()
@@ -1421,7 +1005,7 @@ namespace wex
                 float start_xu,
                 float scale_xi2xu)
             {
-                myXScale.xi2xuSet(start_xu, scale_xi2xu);
+                myXScale.XUValues(start_xu, scale_xi2xu);
                 myfXset = true;
             }
 
@@ -1449,92 +1033,50 @@ namespace wex
                 if (!myTrace.size())
                     return false;
 
-                // set pixel ranges for the axis
-                myYScale.YPrange(h - 40, 10);
-                myXScale.xpSet(50, w - 70);
-
-                int ximin, ximax;
-                double ymin, ymax;
-                switch (myScaleStateMachine.myState)
+                // check traces contain data
+                bool OK = false;
+                myXScale.ximax_set(0);
+                for (auto t : myTrace)
                 {
-                case scaleStateMachine::eState::fit:
+                    int ts = t->size();
+                    if (ts)
+                    {
+                        OK = true;
 
-                    calcDataBounds(ximin, ximax, ymin, ymax);
-                    myXScale.xiSet(ximin, ximax);
-                    myYScale.YVrange(ymin, ymax);
-                    myXScale.calculate();
-                    myYScale.calcScale();
-                    break;
-
-                case scaleStateMachine::eState::fix:
-                    calcDataBounds(ximin, ximax, ymin, ymax);
-                    myXScale.xiSet(ximin, ximax);
-                    myXScale.calculate();
-                    myYScale.calcScale();
-                    break;
-
-                default:
+                        if (ts > myXScale.XImax())
+                            myXScale.ximax_set(ts);
+                        break;
+                    }
+                }
+                if (!OK)
                     return false;
+
+                if (myfZoom)
+                    return true;
+
+                if (myfFit)
+                {
+                    double min = DBL_MAX;
+                    double max = -DBL_MAX;
+                    for (auto t : myTrace)
+                    {
+                        int ximin, ximax;
+                        double yvmin, yvmax;
+                        t->bounds(ximin, ximax, yvmin, yvmax);
+                        if (yvmin < min)
+                            min = yvmin;
+                        if (yvmax > max)
+                            max = yvmax;
+                    }
+                    myYScale.YVrange(min, max);
+                    myYScale.YPrange(h - 40, 10);
+                    myXScale.XPrange(50, w - 70);
+
+                    // std::cout << "fit: ";
+                    // myXScale.text();
                 }
 
-                myXScale.text();
                 return true;
-
-                // // check that we are fitting scale to data
-                // if (myScaleStateMachine.myState != scaleStateMachine::eState::fit)
-                // {
-                //     myXScale.calcScale();
-                //     return true;
-                // }
-
-                // // check traces contain data
-                // bool OK = false;
-                // int ximax = 0;
-                // for (auto t : myTrace)
-                // {
-                //     int ts = t->size();
-                //     if (ts)
-                //     {
-                //         OK = true;
-
-                //         if (ts > ximax)
-                //             ximax = ts;
-                //         break;
-                //     }
-                // }
-                // if (!OK)
-                //     return false;
-
-                // myXScale.ximax_set(ximax);
-                // myXScale.calcScale();
-
-                // if (myScaleStateMachine.myState != scaleStateMachine::eState::fit)
-                //     return true;
-
-                // if (myfZoom)
-                //     return true;
-
-                // if (myfFit)
-                // {
-                //     double min = DBL_MAX;
-                //     double max = -DBL_MAX;
-                //     for (auto t : myTrace)
-                //     {
-                //         int ximin, ximax;
-                //         double yvmin, yvmax;
-                //         t->bounds(ximin, ximax, yvmin, yvmax);
-                //         if (yvmin < min)
-                //             min = yvmin;
-                //         if (yvmax > max)
-                //             max = yvmax;
-                //     }
-                //     myYScale.YVrange(min, max);
-
-                //     // std::cout << "fit: ";
-                //     // myXScale.text();
-                // }
-
-                // return true;
             }
 
             std::vector<trace *> &traces()
@@ -1566,8 +1108,6 @@ namespace wex
             /// plot traces
             std::vector<trace *> myTrace;
 
-            // scales
-            scaleStateMachine myScaleStateMachine;
             XScale myXScale;
             YScale myYScale;
 
@@ -1582,30 +1122,41 @@ namespace wex
             int myStopDragX;
             int myStopDragY;
 
-            void calcDataBounds(
-                int &xmin, int &xmax,
-                double &ymin, double &ymax)
-            {
-                myTrace[0]->bounds(
-                    xmin, xmax,
-                    ymin, ymax);
-                for (auto &t : myTrace)
-                {
-                    int txmin, txmax;
-                    double tymin, tymax;
-                    txmin = txmax = tymax = 0;
-                    tymin = std::numeric_limits<double>::max();
-                    t->bounds(txmin, txmax, tymin, tymax);
-                    if (txmin < xmin)
-                        xmin = txmin;
-                    if (txmax > xmax)
-                        xmax = txmax;
-                    if (tymin < ymin)
-                        ymin = tymin;
-                    if (tymax > ymax)
-                        ymax = tymax;
-                }
-            }
+            // void CalulateDataBounds()
+            // {
+            //     if (myfZoom)
+            //     {
+            //         myMinXU = myZoomXMin;
+            //         myMaxX = myZoomXMax;
+            //         myMinY = myZoomYMin;
+            //         myMaxY = myZoomYMax;
+            //     }
+            //     else
+            //     {
+            //         int minXI = 0;
+            //         int maxXI = 0;
+            //         myTrace[0]->bounds(
+            //             minXI, maxXI,
+            //             myMinY, myMaxY);
+            //         for (auto &t : myTrace)
+            //         {
+            //             int txmin, txmax;
+            //             double tymin, tymax;
+            //             txmin = txmax = tymax = 0;
+            //             tymin = std::numeric_limits<double>::max();
+            //             t->bounds(txmin, txmax, tymin, tymax);
+            //             if (txmin < myMinXU)
+            //                 myMinXU = txmin;
+            //             if (txmax > maxXI)
+            //                 maxXI = txmax;
+            //             if (tymin < myMinY)
+            //                 myMinY = tymin;
+            //             if (tymax > myMaxY)
+            //                 myMaxY = tymax;
+            //         }
+            //         myXScale.ximax_set(maxXI);
+            //     }
+            // }
             bool isGoodDrag()
             {
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
@@ -1686,7 +1237,7 @@ namespace wex
                             60, yp});
                     if (myfGrid)
                     {
-                        auto kpmax = myXScale.XPmax();
+                        auto kpmax = myXScale.XI2XP(myXScale.XImax());
                         for (int kp = 65;
                              kp < kpmax;
                              kp += 25)
@@ -1704,7 +1255,7 @@ namespace wex
             {
                 S.color(0xFFFFFF - bgcolor());
                 S.textHeight(15);
-                S.line({myXScale.XPmin(), ypos, myXScale.XPmax(), ypos});
+                S.line({myXScale.XI2XP(0), ypos, myXScale.XI2XP(myXScale.XImax()), ypos});
                 if (!myfGrid)
                 {
                     // there is no grid
@@ -1713,40 +1264,43 @@ namespace wex
                     float xmax_label_value = 100;
                     if (myfXset)
                     {
-                        xmin_label_value = myXScale.XUmin();
+                        xmin_label_value = myXScale.XI2XU(0);
                         xmax_label_value = myXScale.XUmax();
                     }
-                    S.text(std::to_string((int)xmin_label_value), {myXScale.XPmin(), ypos + 3, 50, 15});
-                    S.text(std::to_string((int)xmax_label_value), {myXScale.XPmax() - 25, ypos + 3, 50, 15});
+                    S.text(std::to_string((int)xmin_label_value), {myXScale.XI2XP(0), ypos + 3, 50, 15});
+                    S.text(std::to_string((int)xmax_label_value), {myXScale.XU2XP(xmax_label_value) - 25, ypos + 3, 50, 15});
+                    // S.text(myMaxXLabel,
+                    //        {xmx_px - 50, ypos + 3,
+                    //         50, 15});
                     return;
                 }
                 // there is a grid
 
                 int tickCount = 8;
-                float xutickinc = (myXScale.XUmax() - myXScale.XUmin()) / tickCount;
+                float xitickinc = (myXScale.XImax() - myXScale.XIStart()) / tickCount;
 
-                std::cout << "X ticks ";
-                myXScale.text();
-                std::cout
-                    << " xutickinc " << xutickinc
-                    << "\n";
+                // std::cout
+                //     << "ximin " << myXScale.XIStart()
+                //     << " ximax " << myXScale.XImax()
+                //     << " xitickinc " << xitickinc
+                //     << "\n";
 
                 // if possible, place tick marks at integer values of x index
-                if (xutickinc > 1)
-                    xutickinc = floor(xutickinc);
+                if (xitickinc > 1)
+                    xitickinc = floor(xitickinc);
 
                 for (int kxtick = 0; kxtick <= tickCount; kxtick++)
                 {
-                    float tickXU = myXScale.XUmin() + kxtick * xutickinc;
-                    // float tick_label_value = myXScale.XI2XU(tickXU);
-                    int xPixel = myXScale.XU2XP(tickXU);
+                    float tickXI = myXScale.XIStart() + kxtick * xitickinc;
+                    float tick_label_value = myXScale.XI2XU(tickXI);
+                    int xPixel = myXScale.XI2XP(tickXI);
 
-                    std::cout << "tick " << kxtick << " xu " << tickXU
-                              //<< " " << tick_label_value
-                              << " " << xPixel << "\n";
+                    // std::cout << "tick " << kxtick << " xi " << tickXI
+                    //           << " " << tick_label_value
+                    //           << " " << xPixel << "\n";
 
                     S.text(
-                        std::to_string(tickXU).substr(0, 4),
+                        std::to_string(tick_label_value).substr(0, 4),
                         {xPixel, ypos + 1, 50, 15});
 
                     for (
