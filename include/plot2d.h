@@ -15,7 +15,7 @@
 
 namespace wex
 {
-    namespace plot 
+    namespace plot
     {
         class plot;
         /// @cond
@@ -236,7 +236,7 @@ namespace wex
                         "plot scaleStateMachine unrecognized event");
                 }
 
-                std::cout << "scaleStateMachine state change " << (int)myState << "\n";
+                // std::cout << "scaleStateMachine state change " << (int)myState << "\n";
 
                 return myState;
             }
@@ -553,6 +553,8 @@ namespace wex
 
             double xuminfix;
             double xumaxfix;
+            double xuminZoom;
+            double xumaxZoom;
 
             double sxi2xu; // scale from data index to x user
             double sxi2xp; // scale from data index to pixel
@@ -595,6 +597,8 @@ namespace wex
 
             void zoom(double umin, double umax)
             {
+                xuminZoom = umin;
+                xumaxZoom = umax;
             }
             void zoomExit()
             {
@@ -607,6 +611,7 @@ namespace wex
                 case scaleStateMachine::eState::fit:
                     xumin = xuximin;
                     xumax = xumin + sxi2xu * ximax;
+                    xixumin = 0;
                     sxi2xp = (double)(xpmax - xpmin) / (ximax - ximin);
                     sxu2xp = (xpmax - xpmin) / (xumax - xumin);
                     break;
@@ -621,20 +626,37 @@ namespace wex
                     sxu2xp = (xpmax - xpmin) / (xumax - xumin);
                 }
                 break;
+
+                case scaleStateMachine::eState::fitzoom:
+                {
+                    xumin = xuminZoom;
+                    xumax = xumaxZoom;
+                    xixumin = (xumin - xuximin) / sxi2xu;
+                    double xixumax = (xumax - xuximin) / sxi2xu;
+                    sxi2xp = (xpmax - xpmin) / (xixumax - xixumin);
+                    sxu2xp = (xpmax - xpmin) / (xumax - xumin);
+                }
+                break;
                 }
             }
 
             int XI2XP(double xi) const
             {
+                // std::cout << "XI2XP " << xi
+                //     << " xpmin " << xpmin
+                //     << " sxi2xp " << sxi2xp
+                //     << " xixumin " << xixumin
+                //     << "\n";
+
                 return round(xpmin + sxi2xp * (xi - xixumin));
             }
             double XP2XU(int pixel) const
             {
                 return xumin + (pixel - xpmin) / sxu2xp;
             }
-            int XU2XP( double xu ) const
+            int XU2XP(double xu) const
             {
-                return round( xpmin + sxu2xp * (xu - xumin) );
+                return round(xpmin + sxu2xp * (xu - xumin));
             }
 
             int XUmin() const
@@ -1019,7 +1041,7 @@ namespace wex
             {
                 yvmin = min;
                 yvmax = max;
-                calcScale();
+                calculate();
             }
             double YVrange() const
             {
@@ -1035,14 +1057,14 @@ namespace wex
             {
                 ypmin = min;
                 ypmax = max;
-                calcScale();
+                calculate();
             }
 
             void zoom_set(double min, double max)
             {
                 yvmin = min;
                 yvmax = max;
-                calcScale();
+                calculate();
             }
 
             double YP2YV(int pixel) const
@@ -1069,7 +1091,7 @@ namespace wex
                           << "\n";
             }
 
-            void calcScale()
+            void calculate()
             {
                 double yvrange = yvmax - yvmin;
                 if (fabs(yvrange) < 0.00001)
@@ -1349,7 +1371,7 @@ namespace wex
                 myXScale.fixSet(minX, maxX);
                 myYScale.zoom_set(minY, maxY);
 
-                myXScale.text();
+                // myXScale.text();
             }
 
             int traceCount() const
@@ -1462,79 +1484,26 @@ namespace wex
                     calcDataBounds(ximin, ximax, ymin, ymax);
                     myXScale.xiSet(ximin, ximax);
                     myYScale.YVrange(ymin, ymax);
-                    myXScale.calculate();
-                    myYScale.calcScale();
                     break;
 
                 case scaleStateMachine::eState::fix:
                     calcDataBounds(ximin, ximax, ymin, ymax);
                     myXScale.xiSet(ximin, ximax);
-                    myXScale.calculate();
-                    myYScale.calcScale();
+                    break;
+
+                case scaleStateMachine::eState::fitzoom:
                     break;
 
                 default:
                     return false;
                 }
 
-                myXScale.text();
+                myXScale.calculate();
+                myYScale.calculate();
+
+                // myXScale.text();
+
                 return true;
-
-                // // check that we are fitting scale to data
-                // if (myScaleStateMachine.myState != scaleStateMachine::eState::fit)
-                // {
-                //     myXScale.calcScale();
-                //     return true;
-                // }
-
-                // // check traces contain data
-                // bool OK = false;
-                // int ximax = 0;
-                // for (auto t : myTrace)
-                // {
-                //     int ts = t->size();
-                //     if (ts)
-                //     {
-                //         OK = true;
-
-                //         if (ts > ximax)
-                //             ximax = ts;
-                //         break;
-                //     }
-                // }
-                // if (!OK)
-                //     return false;
-
-                // myXScale.ximax_set(ximax);
-                // myXScale.calcScale();
-
-                // if (myScaleStateMachine.myState != scaleStateMachine::eState::fit)
-                //     return true;
-
-                // if (myfZoom)
-                //     return true;
-
-                // if (myfFit)
-                // {
-                //     double min = DBL_MAX;
-                //     double max = -DBL_MAX;
-                //     for (auto t : myTrace)
-                //     {
-                //         int ximin, ximax;
-                //         double yvmin, yvmax;
-                //         t->bounds(ximin, ximax, yvmin, yvmax);
-                //         if (yvmin < min)
-                //             min = yvmin;
-                //         if (yvmax > max)
-                //             max = yvmax;
-                //     }
-                //     myYScale.YVrange(min, max);
-
-                //     // std::cout << "fit: ";
-                //     // myXScale.text();
-                // }
-
-                // return true;
             }
 
             std::vector<trace *> &traces()
@@ -1725,11 +1694,11 @@ namespace wex
                 int tickCount = 8;
                 float xutickinc = (myXScale.XUmax() - myXScale.XUmin()) / tickCount;
 
-                std::cout << "X ticks ";
-                myXScale.text();
-                std::cout
-                    << " xutickinc " << xutickinc
-                    << "\n";
+                // std::cout << "X ticks ";
+                // myXScale.text();
+                // std::cout
+                //     << " xutickinc " << xutickinc
+                //     << "\n";
 
                 // if possible, place tick marks at integer values of x index
                 if (xutickinc > 1)
@@ -1741,9 +1710,8 @@ namespace wex
                     // float tick_label_value = myXScale.XI2XU(tickXU);
                     int xPixel = myXScale.XU2XP(tickXU);
 
-                    std::cout << "tick " << kxtick << " xu " << tickXU
-                              //<< " " << tick_label_value
-                              << " " << xPixel << "\n";
+                    // std::cout << "tick " << kxtick << " xu " << tickXU
+                    //           << " " << xPixel << "\n";
 
                     S.text(
                         std::to_string(tickXU).substr(0, 4),

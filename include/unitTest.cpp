@@ -4,6 +4,27 @@
 #include "wex.h"
 #include "plot2d.h"
 
+TEST(zoom)
+{
+    wex::plot::scaleStateMachine M;
+    wex::plot::XScale X( M );
+    X.xiSet(0,8);
+    X.xpSet(0, 400);
+    X.xi2xuSet(100, 5);
+    X.calculate();
+
+    CHECK_CLOSE(140, X.XUmax(), 0.5);
+    CHECK_CLOSE(110, X.XP2XU(100), 0.5);
+
+    M.event(wex::plot::scaleStateMachine::eEvent::zoom);
+    X.zoom(110, 120);
+    X.calculate();
+    CHECK_CLOSE(110, X.XP2XU(0), 0.5);
+    CHECK_CLOSE(112.5, X.XP2XU(100), 0.5);
+    CHECK_CLOSE(115, X.XP2XU(200), 0.5);
+    CHECK_CLOSE(120, X.XP2XU(400), 0.5);
+}
+
 TEST(plot_XScale2fit )
 {
     wex::plot::scaleStateMachine M;
@@ -87,21 +108,7 @@ TEST(plot_Yscale)
     CHECK_EQUAL(0, Y.YP2YV(105));
     CHECK_EQUAL(50, Y.YP2YV(20));
 }
-// TEST(zoom)
-// {
-//     wex::plot::scaleStateMachine M;
-//     wex::plot::XScale X( M );
-//     X.ximax_set(8);
-//     X.XPrange(0, 400);
-//     X.XUValues(100, 5);
 
-//     CHECK_CLOSE(140, X.XUmax(), 0.5);
-//     CHECK_CLOSE(110, X.XP2XU(100), 0.5);
-//     X.zoom(110, 120);
-//     CHECK_CLOSE(112.5, X.XP2XU(100), 0.5);
-//     CHECK_CLOSE(115, X.XP2XU(200), 0.5);
-//     CHECK_CLOSE(120, X.XP2XU(400), 0.5);
-// }
 
 TEST(plot_setFixedScale)
 {
