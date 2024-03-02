@@ -679,6 +679,9 @@ void PlotDemo()
 
         });
 
+        thePlot.setFixedScale(
+            0,200,0,200 );
+
         thePlot.update(); });
 
     wex::button &btnScatter = wex::maker::make<wex::button>(fm);
