@@ -36,8 +36,6 @@ TEST(plot_XScale2fit )
 
     X.calculate();
 
-    X.text();
-
     CHECK_EQUAL( 50, X.XI2XP(0));
     CHECK_EQUAL( 1000, X.XI2XP(4));
     CHECK_EQUAL( 1950, X.XI2XP(8));
@@ -59,8 +57,6 @@ TEST(plot_XScale2fix )
     X.fixSet( 0, 200 );
 
     X.calculate();
-
-    X.text();
 
     CHECK_EQUAL( 1000, X.XI2XP(0));
     CHECK_EQUAL( 1190, X.XI2XP(4));

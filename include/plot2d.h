@@ -18,8 +18,8 @@ namespace wex
     namespace plot
     {
         class plot;
+
         /// @cond
-        /// @endcond
 
         /** @brief Maintain indices of circular buffer
          *
@@ -628,6 +628,7 @@ namespace wex
                 break;
 
                 case scaleStateMachine::eState::fitzoom:
+                case scaleStateMachine::eState::fixzoom:
                 {
                     xumin = xuminZoom;
                     xumax = xumaxZoom;
@@ -1024,25 +1025,31 @@ namespace wex
         /// Note: pixels run from 0 at top of window towards bottom
         class YScale
         {
-            scaleStateMachine &theScaleStateMachine;
-            double yvmin;  // smallest value in data
-            double yvmax;  // largest value in data
+            scaleStateMachine::eState &theState;
+            double yvmin;  // smallest value in data currently displayed
+            double yvmax;  // largest value in data currently displayed
             int ypmin;     // y pixel showing smallest data value
             int ypmax;     // y pixel showing largest data value
             double syv2yp; // scale from data value to y pixel
+            double yvminZoom;  // smallest value in data when zoomed
+            double yvmaxZoom;  // largest value in data when zoomed
+            double yvminFit;  // smallest value in data when fitted
+            double yvmaxFit;  // largest value in data when fitted
+            double yvminFix;  // smallest value in data when fixed
+            double yvmaxFix;  // largest value in data when fixed
 
         public:
             YScale(scaleStateMachine &scaleMachine)
-                : theScaleStateMachine(scaleMachine)
+                : theState(scaleMachine.myState)
             {
             }
 
             void YVrange(double min, double max)
             {
-                yvmin = min;
-                yvmax = max;
-                calculate();
+                yvminFit = min;
+                yvmaxFit = max;
             }
+
             double YVrange() const
             {
                 return yvmax - yvmin;
@@ -1060,12 +1067,17 @@ namespace wex
                 calculate();
             }
 
-            void zoom_set(double min, double max)
+            void zoom(double min, double max)
             {
-                yvmin = min;
-                yvmax = max;
-                calculate();
+                yvminZoom = min;
+                yvmaxZoom = max;
             }
+
+            void fixSet(double min, double max)
+        {
+                yvminFix = min;
+                yvmaxFix = max;
+        }
 
             double YP2YV(int pixel) const
             {
@@ -1093,6 +1105,24 @@ namespace wex
 
             void calculate()
             {
+                switch( theState )
+                {
+                    case scaleStateMachine::eState::fit:
+                        yvmin = yvminFit;
+                        yvmax = yvmaxFit;
+                        break;
+
+                    case scaleStateMachine::eState::fix:
+                        yvmin = yvminFix;
+                        yvmax = yvmaxFix;
+                        break;
+
+                    case scaleStateMachine::eState::fitzoom:
+                    case scaleStateMachine::eState::fixzoom:
+                        yvmin = yvminZoom;
+                        yvmax = yvmaxZoom;
+                        break;
+                }
                 double yvrange = yvmax - yvmin;
                 if (fabs(yvrange) < 0.00001)
                 {
@@ -1100,6 +1130,7 @@ namespace wex
                     syv2yp = 1;
                     return;
                 }
+
                 syv2yp = -(ypmin - ypmax) / yvrange;
             }
         };
@@ -1183,6 +1214,9 @@ namespace wex
         </pre>
 
          */
+
+        /// @endcond
+
         class plot : public gui
         {
         public:
@@ -1190,7 +1224,7 @@ namespace wex
                 @param[in] parent window where plot will be drawn
             */
             plot(gui *parent)
-                : gui(parent), myfFit(true), myfDrag(false), myfZoom(false),
+                : gui(parent), myfDrag(false),
                   myXScale(myScaleStateMachine),
                   myYScale(myScaleStateMachine)
             {
@@ -1254,9 +1288,9 @@ namespace wex
                                 double myZoomYMin = myYScale.YP2YV(myStopDragY);
 
                                 myXScale.zoom(myZoomXMin, myZoomXMax);
-                                myYScale.zoom_set(myZoomYMin, myZoomYMax);
+                                myYScale.zoom(myZoomYMin, myZoomYMax);
 
-                                myfZoom = true;
+                                //myfZoom = true;
 
                                 // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
                                 // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
@@ -1265,24 +1299,12 @@ namespace wex
                         myfDrag = false;
                         update();
                     });
+
                 events().clickRight(
                     [&]
                     {
-                        switch (myScaleStateMachine.event(scaleStateMachine::eEvent::unzoom))
-                        {
-
-                        case scaleStateMachine::eState::none:
-                            return;
-
-                        case scaleStateMachine::eState::fit:
-                            // restore autofit
-                            autoFit();
-                            return;
-
-                        case scaleStateMachine::eState::fix:
-                            // restore fix
-                            return;
-                        }
+                        myScaleStateMachine.event(scaleStateMachine::eEvent::unzoom);
+                        update();
                     });
             }
 
@@ -1369,7 +1391,7 @@ namespace wex
                     XUValues(0, 1);
 
                 myXScale.fixSet(minX, maxX);
-                myYScale.zoom_set(minY, maxY);
+                myYScale.fixSet(minY, maxY);
 
                 // myXScale.text();
             }
@@ -1379,26 +1401,7 @@ namespace wex
                 return (int)myTrace.size();
             }
 
-            // /** get step size along x-axis */
-            // float xinc() const
-            // {
-            //     return myXinc;
-            // }
-
-            /* get data bounds
-                @return vector of doubles { minX, minY, maxX, maxY
-            */
-            // std::vector<double> bounds() const
-            // {
-            //     std::vector<double> ret;
-            //     ret.push_back(myMinXU);
-            //     ret.push_back(myMinY);
-            //     ret.push_back(myMaxX);
-            //     ret.push_back(myMaxY);
-            //     return ret;
-            // }
-
-            /// Remove all traces from plot
+             /// Remove all traces from plot
             void clear()
             {
                 myTrace.clear();
@@ -1416,14 +1419,14 @@ namespace wex
             // }
 
             /// Enable auto-fit scaling and remove any zoom setting
-            void autoFit()
-            {
-                myfFit = true;
-                myfDrag = false;
-                myfZoom = false;
-                myXScale.zoomExit();
-                update();
-            }
+            // void autoFit()
+            // {
+            //     myfFit = true;
+            //     myfDrag = false;
+            //     myfZoom = false;
+            //     myXScale.zoomExit();
+            //     update();
+            // }
 
             void dragExtend(sMouse &m)
             {
@@ -1492,6 +1495,7 @@ namespace wex
                     break;
 
                 case scaleStateMachine::eState::fitzoom:
+                case scaleStateMachine::eState::fixzoom:
                     break;
 
                 default:
@@ -1511,10 +1515,10 @@ namespace wex
                 return myTrace;
             }
 
-            bool isZoomed() const
-            {
-                return myfZoom;
-            }
+            // bool isZoomed() const
+            // {
+            //     return myfZoom;
+            // }
 
             /// get X user value from x pixel
             double pixel2Xuser(int xpixel) const
@@ -1540,12 +1544,10 @@ namespace wex
             XScale myXScale;
             YScale myYScale;
 
-            bool myfFit;  /// true if scale should fit plot to window
-            bool myfGrid; // true if tick and grid marks reuired
-            bool myfXset; // true if the x user range has been set
+            bool myfGrid;   // true if tick and grid marks reuired
+            bool myfXset;   // true if the x user range has been set
+            bool myfDrag;   // drag in progress
 
-            bool myfDrag;
-            bool myfZoom;
             int myStartDragX;
             int myStartDragY;
             int myStopDragX;
