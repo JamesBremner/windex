@@ -447,6 +447,28 @@ void PanelDemo()
 
     form.show();
 }
+void ModalDemo()
+{
+    // construct top level window
+    gui &form = wex::maker::make();
+    form.move({50, 50, 600, 600});
+    form.text("Modal demo");
+
+    // construct panel
+    groupbox &pnl = wex::maker::make<groupbox>(form);
+    pnl.move({100, 100, 400, 400});
+    pnl.text("Prevents interaction with other windows until closed");
+
+    // display labels
+    label &lbA = wex::maker::make<label>(pnl);
+    lbA.move({20, 20, 50, 30});
+    lbA.text("A:");
+    label &lbB = wex::maker::make<label>(pnl);
+    lbB.move({20, 60, 50, 30});
+    lbB.text("B:");
+
+    form.showModal();
+}
 
 void ScrollDemo()
 {
@@ -815,7 +837,6 @@ int main()
     form.fontHeight(20);
 
     // construct layout to arrange buttons in a grid
-    // layout& l = wex::make<layout>( form );
     layout &l = maker::make<layout>(form);
     l.move({20, 20, 400, 400});
     l.grid(2);
@@ -939,6 +960,12 @@ int main()
     btntable.text("Table");
     btntable.events().click([&]
                             { TableDemo(); });
+
+    button &btnModal = wex::maker::make<button>(l);
+    btntable.size(150, 30);
+    btntable.text("Modal");
+    btntable.events().click([&]
+                            { ModalDemo(); });
 
     // show the application
     form.show();
