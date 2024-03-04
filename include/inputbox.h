@@ -7,7 +7,7 @@ namespace wex
 
 Usage:
 <pre>
-    wex::inputbox ib;
+    wex::inputbox ib( form );
     ib.add("A","72");
     ib.add("B","4600");
     ib.choice("Choose", { "X", "Y"} );
@@ -25,9 +25,13 @@ Usage:
 class inputbox : public gui
 {
 public:
-    inputbox()
+    /// @brief Construct input box modal dialog
+    /// @param AppWindow the main application window
+
+    inputbox( gui& AppWindow )
         : myGrid( propertyGrid( this ))
         , myOKButton( maker::make<button>(*this) )
+        , myAppWindow( AppWindow )
     {
         windex::get().Add( this );
         text("inputbox");
@@ -87,7 +91,7 @@ public:
         myOKButton.move( { 100,wh[1]+80, 50, 40 } );
 
         // base class showModal
-        gui::showModal();
+        gui::showModal(myAppWindow);
     }
     /** @brief  Redirect calls to ShowModal to Show instead
      Inputbox is a popup handling the modal dialog itself
@@ -124,6 +128,7 @@ public:
 private:
     propertyGrid myGrid;
     button& myOKButton;
+    gui& myAppWindow;
 
     void ExpandForAdditionalProperty()
     {

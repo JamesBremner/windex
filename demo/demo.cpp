@@ -236,7 +236,7 @@ void PGDemo()
 
 void InputboxDemo(gui &form)
 {
-    wex::inputbox ib;
+    wex::inputbox ib( form );
     ib.gridWidth(200);
     ib.add("A", "72");
     ib.add("B", "4600");
@@ -433,9 +433,8 @@ void PanelDemo()
     form.text("Panel demo");
 
     // construct panel
-    groupbox &pnl = wex::maker::make<groupbox>(form);
+    panel &pnl = wex::maker::make<panel>(form);
     pnl.move({100, 100, 200, 200});
-    pnl.text("test");
 
     // display labels
     label &lbA = wex::maker::make<label>(pnl);
@@ -447,27 +446,28 @@ void PanelDemo()
 
     form.show();
 }
-void ModalDemo()
+void ModalDemo(gui & mainform )
 {
     // construct top level window
-    gui &form = wex::maker::make();
-    form.move({50, 50, 600, 600});
-    form.text("Modal demo");
-
-    // construct panel
-    groupbox &pnl = wex::maker::make<groupbox>(form);
-    pnl.move({100, 100, 400, 400});
-    pnl.text("Prevents interaction with other windows until closed");
+    gui &dlg = wex::maker::make();
+    dlg.move({50, 50, 600, 300});
+    dlg.text("Modal demo");
 
     // display labels
-    label &lbA = wex::maker::make<label>(pnl);
-    lbA.move({20, 20, 50, 30});
-    lbA.text("A:");
-    label &lbB = wex::maker::make<label>(pnl);
-    lbB.move({20, 60, 50, 30});
-    lbB.text("B:");
+    label &lbA = wex::maker::make<label>(dlg);
+    lbA.move({20, 20, 400, 30});
+    lbA.text("Prevents interaction with other windows until closed");
 
-    form.showModal();
+    button &bn = wex::maker::make<button>(dlg);
+    bn.move({20,50,100,30});
+    bn.text("SAVE");
+    bn.events().click(
+        [&]
+        {
+            dlg.endModal();
+        });
+
+    dlg.showModal(mainform);
 }
 
 void ScrollDemo()
@@ -965,7 +965,7 @@ int main()
     btntable.size(150, 30);
     btntable.text("Modal");
     btntable.events().click([&]
-                            { ModalDemo(); });
+                            { ModalDemo(form); });
 
     // show the application
     form.show();
