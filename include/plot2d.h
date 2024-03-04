@@ -223,6 +223,8 @@ namespace wex
                 case eEvent::fit:
                     switch (myState)
                     {
+                    case eState::fit:
+                        break;
                     case eState::fix:
                         myState = eState::fit;
                         break;
@@ -406,20 +408,19 @@ namespace wex
             }
         };
 
- 
         /// @brief Manage connversions between data values and y pixels
         ///
         /// Note: pixels run from 0 at top of window towards bottom
         class YScale
         {
             scaleStateMachine::eState &theState;
-            double yvmin;  // smallest value in data currently displayed
-            double yvmax;  // largest value in data currently displayed
-            int ypmin;     // y pixel showing smallest data value
-            int ypmax;     // y pixel showing largest data value
-            double syv2yp; // scale from data value to y pixel
-            double yvminZoom;  // smallest value in data when zoomed
-            double yvmaxZoom;  // largest value in data when zoomed
+            double yvmin;     // smallest value in data currently displayed
+            double yvmax;     // largest value in data currently displayed
+            int ypmin;        // y pixel showing smallest data value
+            int ypmax;        // y pixel showing largest data value
+            double syv2yp;    // scale from data value to y pixel
+            double yvminZoom; // smallest value in data when zoomed
+            double yvmaxZoom; // largest value in data when zoomed
             double yvminFit;  // smallest value in data when fitted
             double yvmaxFit;  // largest value in data when fitted
             double yvminFix;  // smallest value in data when fixed
@@ -461,10 +462,10 @@ namespace wex
             }
 
             void fixSet(double min, double max)
-        {
+            {
                 yvminFix = min;
                 yvmaxFix = max;
-        }
+            }
 
             double YP2YV(int pixel) const
             {
@@ -492,23 +493,23 @@ namespace wex
 
             void calculate()
             {
-                switch( theState )
+                switch (theState)
                 {
-                    case scaleStateMachine::eState::fit:
-                        yvmin = yvminFit;
-                        yvmax = yvmaxFit;
-                        break;
+                case scaleStateMachine::eState::fit:
+                    yvmin = yvminFit;
+                    yvmax = yvmaxFit;
+                    break;
 
-                    case scaleStateMachine::eState::fix:
-                        yvmin = yvminFix;
-                        yvmax = yvmaxFix;
-                        break;
+                case scaleStateMachine::eState::fix:
+                    yvmin = yvminFix;
+                    yvmax = yvmaxFix;
+                    break;
 
-                    case scaleStateMachine::eState::fitzoom:
-                    case scaleStateMachine::eState::fixzoom:
-                        yvmin = yvminZoom;
-                        yvmax = yvmaxZoom;
-                        break;
+                case scaleStateMachine::eState::fitzoom:
+                case scaleStateMachine::eState::fixzoom:
+                    yvmin = yvminZoom;
+                    yvmax = yvmaxZoom;
+                    break;
                 }
                 double yvrange = yvmax - yvmin;
                 if (fabs(yvrange) < 0.00001)
@@ -522,7 +523,7 @@ namespace wex
             }
         };
 
-    // @endcond
+        // @endcond
 
         /** \brief Single trace to be plotted
 
@@ -808,7 +809,6 @@ namespace wex
             }
         };
 
-
         /** \brief Draw a 2D plot
 
         The plot contains one or more traces.
@@ -962,7 +962,7 @@ namespace wex
                                 myXScale.zoom(myZoomXMin, myZoomXMax);
                                 myYScale.zoom(myZoomYMin, myZoomYMax);
 
-                                //myfZoom = true;
+                                // myfZoom = true;
 
                                 // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
                                 // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
@@ -1068,12 +1068,21 @@ namespace wex
                 // myXScale.text();
             }
 
+            void setFitScale()
+            {
+                if (
+                    myScaleStateMachine.event(
+                        scaleStateMachine::eEvent::fit) == scaleStateMachine::eState::none)
+                    throw std::runtime_error(
+                        "wex plot cannot return to fit scale");
+            }
+
             int traceCount() const
             {
                 return (int)myTrace.size();
             }
 
-             /// Remove all traces from plot
+            /// Remove all traces from plot
             void clear()
             {
                 myTrace.clear();
@@ -1216,9 +1225,9 @@ namespace wex
             XScale myXScale;
             YScale myYScale;
 
-            bool myfGrid;   // true if tick and grid marks reuired
-            bool myfXset;   // true if the x user range has been set
-            bool myfDrag;   // drag in progress
+            bool myfGrid; // true if tick and grid marks reuired
+            bool myfXset; // true if the x user range has been set
+            bool myfDrag; // drag in progress
 
             int myStartDragX;
             int myStartDragY;
