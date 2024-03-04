@@ -1502,7 +1502,7 @@ namespace wex
         /// @brief Show this window and suspend all other windows interactions until this is closed
         /// @param appWindow application window to disable while modal runs
 
-        void show( gui& appWindow )
+        void showModal( gui& appWindow )
         {
             myfModal = true;
             if (!modalMgr::get().set(myID, myHandle))
