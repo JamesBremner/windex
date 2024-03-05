@@ -231,18 +231,19 @@ void PGDemo()
     pg.events().click([&]
                       { msgbox mb("pg click"); });
 
-    form.showModal();
+    form.show();
 }
 
 void InputboxDemo(gui &form)
 {
-    wex::inputbox ib;
-    ib.gridWidth(800);
+    wex::inputbox ib( form );
+    ib.gridWidth(200);
     ib.add("A", "72");
     ib.add("B", "4600");
     ib.choice("Choose", {"X", "Y"});
     std::cout << "showing modal " << ib.id() << "\n";
-    ib.showModal();
+
+    ib.show();
 
     std::string msg =
         "A is " + ib.value("A") +
@@ -432,9 +433,8 @@ void PanelDemo()
     form.text("Panel demo");
 
     // construct panel
-    groupbox &pnl = wex::maker::make<groupbox>(form);
+    panel &pnl = wex::maker::make<panel>(form);
     pnl.move({100, 100, 200, 200});
-    pnl.text("test");
 
     // display labels
     label &lbA = wex::maker::make<label>(pnl);
@@ -445,6 +445,29 @@ void PanelDemo()
     lbB.text("B:");
 
     form.show();
+}
+void ModalDemo(gui & mainform )
+{
+    // construct top level window
+    gui &dlg = wex::maker::make();
+    dlg.move({50, 50, 600, 300});
+    dlg.text("Modal demo");
+
+    // display labels
+    label &lbA = wex::maker::make<label>(dlg);
+    lbA.move({20, 20, 400, 30});
+    lbA.text("Prevents interaction with other windows until closed");
+
+    button &bn = wex::maker::make<button>(dlg);
+    bn.move({20,50,100,30});
+    bn.text("SAVE");
+    bn.events().click(
+        [&]
+        {
+            dlg.endModal();
+        });
+
+    dlg.showModal(mainform);
 }
 
 void ScrollDemo()
@@ -621,18 +644,20 @@ void PlotDemo()
     // construct plot to be drawn on form
     wex::plot::plot &thePlot = wex::maker::make<wex::plot::plot>(fm);
     thePlot.bgcolor(0);
-    thePlot.XValues(0, 5);
+    thePlot.XUValues(100, 5);
     thePlot.grid(true);
 
     //  resize plot when form resizes
-    fm.events().resize([&](int w, int h)
+    fm.events().resize(
+        [&](int w, int h)
                        {
         thePlot.size( w-100, h-200 );
         thePlot.move( 30, 100 );
-        thePlot.update(); });
+        thePlot.update();
+         });
 
     wex::label &plotLabel = wex::maker::make<wex::label>(thePlot);
-    plotLabel.move(100, 100, 130, 20);
+    plotLabel.move(100, 100, 250, 20);
     plotLabel.bgcolor(0xFFFFFF);
     plotLabel.textColor(0x0000FF);
     plotLabel.text("this is a plot label");
@@ -649,8 +674,6 @@ void PlotDemo()
 
         // provide some data for first trace
         std::vector< double > d1 { 10, 15, 20, 25, 30, 25, 20, 15, 10 };
-//        for( double& d : d1 )
-//            d = d / 1000;
         t1.set( d1 );
 
         // plot in blue
@@ -658,12 +681,25 @@ void PlotDemo()
 
         // provide data for second trace
         std::vector< double > d2 { 20, 59, 60, 59, 20 };
-//        for( double& d : d2 )
-//            d = d / 1000;
         t2.set( d2 );
 
         // plot in red
         t2.color( 0xFF0000 );
+
+        // update label with mouse cursor position, pixels and user units
+        thePlot.events().mouseMove(
+        [&](wex::sMouse &m)
+        {        
+            std::stringstream ss;
+            ss << m.x <<", "<< m.y <<" = user: "<<  thePlot.pixel2Xuser(m.x) <<", "<< thePlot.pixel2Yuser(m.y);
+            plotLabel.text(ss.str());
+            plotLabel.update();
+
+            // since we have consumed the mouse move event
+            // let the plot zoom function know what the mouse is doing
+            thePlot.dragExtend(m);
+
+        });
 
         thePlot.update(); });
 
@@ -801,7 +837,6 @@ int main()
     form.fontHeight(20);
 
     // construct layout to arrange buttons in a grid
-    // layout& l = wex::make<layout>( form );
     layout &l = maker::make<layout>(form);
     l.move({20, 20, 400, 400});
     l.grid(2);
@@ -925,6 +960,12 @@ int main()
     btntable.text("Table");
     btntable.events().click([&]
                             { TableDemo(); });
+
+    button &btnModal = wex::maker::make<button>(l);
+    btntable.size(150, 30);
+    btntable.text("Modal");
+    btntable.events().click([&]
+                            { ModalDemo(form); });
 
     // show the application
     form.show();

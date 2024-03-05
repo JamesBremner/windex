@@ -963,6 +963,8 @@ namespace wex
         void enable(bool f = true)
         {
             myfEnabled = f;
+            EnableWindow( myHandle, myfEnabled);
+            update();
         }
         bool isEnabled() const
         {
@@ -1497,17 +1499,26 @@ namespace wex
                 w->show(f);
         }
 
-        /// Show this window and suspend all other windows interactions until this is closed
-        void showModal()
+        /// @brief Show this window and suspend all other windows interactions until this is closed
+        /// @param appWindow application window to disable while modal runs
+
+        void showModal( gui& appWindow )
         {
             myfModal = true;
             if (!modalMgr::get().set(myID, myHandle))
+            {
+                // problem, abandon
+                myfModal = false;
                 return;
+            }
+
+            appWindow.enable( false );
+
             show();
 
             // prevent other windows from interaction
             // by running our own message loop
-            // std::cout << "-> modal msg loop\n";
+            //std::cout << "-> modal msg loop\n";
             MSG msg = {};
             while (GetMessage(&msg, NULL, 0, 0))
             {
@@ -1535,7 +1546,13 @@ namespace wex
                 if (!myfModal)
                     break;
             }
-            // std::cout << "<- modal msg loop\n";
+             //std::cout << "<- modal msg loop\n";
+
+            // restore rest of application
+             appWindow.enable( true );
+             appWindow.focus();
+             appWindow.update();
+
         }
         /// Stop modal interaction and close window
         void endModal()

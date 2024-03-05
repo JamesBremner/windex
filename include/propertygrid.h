@@ -659,7 +659,7 @@ Add boost to the compiler include search list
         /// get value in editbox of property with name
         const std::string value(const std::string &name)
         {
-            std::cout << "PG value " << name << "\n";
+            //std::cout << "PG value " << name << "\n";
             property *p = find(name);
             if (!p)
             {
