@@ -1171,8 +1171,6 @@ namespace wex
                     break;
 
                 case scaleStateMachine::eState::fix:
-                    calcDataBounds(ximin, ximax, ymin, ymax);
-                    myXScale.xiSet(ximin, ximax);
                     break;
 
                 case scaleStateMachine::eState::fitzoom:

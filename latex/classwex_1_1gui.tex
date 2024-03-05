@@ -89,8 +89,7 @@ virtual LRESULT {\bfseries Window\+Message\+Handler} (HWND hwnd, UINT u\+Msg, WP
 \mbox{\Hypertarget{classwex_1_1gui_add964f7355c605c970391784463fdb37}\label{classwex_1_1gui_add964f7355c605c970391784463fdb37}} 
 virtual void \mbox{\hyperlink{classwex_1_1gui_add964f7355c605c970391784463fdb37}{show}} (bool f=true)
 \begin{DoxyCompactList}\small\item\em Show window and all children. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classwex_1_1gui_a73d78d0c4a9dfc91560022389adefc62}\label{classwex_1_1gui_a73d78d0c4a9dfc91560022389adefc62}} 
-void \mbox{\hyperlink{classwex_1_1gui_a73d78d0c4a9dfc91560022389adefc62}{show\+Modal}} ()
+void \mbox{\hyperlink{classwex_1_1gui_a2e7eab5fc2c1c370f10b63f3e99c9452}{show\+Modal}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} \&app\+Window)
 \begin{DoxyCompactList}\small\item\em Show this window and suspend all other windows interactions until this is closed. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classwex_1_1gui_a372c21bf2add01bae8fd56966b92b959}\label{classwex_1_1gui_a372c21bf2add01bae8fd56966b92b959}} 
 void \mbox{\hyperlink{classwex_1_1gui_a372c21bf2add01bae8fd56966b92b959}{end\+Modal}} ()
@@ -404,7 +403,22 @@ Set the scrolling range.
 \end{DoxyParams}
 This sets how far scrolling can move horixonatally and vertically. The width and height should be set to the maximum locations to be shown when scrolled to the limits.
 
-This should be called again if the window size changes. \mbox{\Hypertarget{classwex_1_1gui_a20ff38a971725a989545936c199ab9d2}\label{classwex_1_1gui_a20ff38a971725a989545936c199ab9d2}} 
+This should be called again if the window size changes. \mbox{\Hypertarget{classwex_1_1gui_a2e7eab5fc2c1c370f10b63f3e99c9452}\label{classwex_1_1gui_a2e7eab5fc2c1c370f10b63f3e99c9452}} 
+\index{wex::gui@{wex::gui}!showModal@{showModal}}
+\index{showModal@{showModal}!wex::gui@{wex::gui}}
+\doxysubsubsection{\texorpdfstring{showModal()}{showModal()}}
+{\footnotesize\ttfamily void wex\+::gui\+::show\+Modal (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classwex_1_1gui}{gui}} \&}]{app\+Window }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Show this window and suspend all other windows interactions until this is closed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em app\+Window} & application window to disable while modal runs \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1gui_a20ff38a971725a989545936c199ab9d2}\label{classwex_1_1gui_a20ff38a971725a989545936c199ab9d2}} 
 \index{wex::gui@{wex::gui}!size@{size}}
 \index{size@{size}!wex::gui@{wex::gui}}
 \doxysubsubsection{\texorpdfstring{size()}{size()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}

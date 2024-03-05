@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['xinc_178',['xinc',['../classwex_1_1plot_1_1plot.html#af2a3fc587dae5c6a4be454203d01f53e',1,'wex::plot::plot']]],
-  ['xvalues_179',['XValues',['../classwex_1_1plot_1_1plot.html#ae8aa737cb576eb4f71f68fabb6233434',1,'wex::plot::plot']]]
+  ['xuvalues_177',['XUValues',['../classwex_1_1plot_1_1plot.html#a634509902b75e67f95f3c5e73f467f05',1,'wex::plot::plot']]],
+  ['xvalues_178',['XValues',['../classwex_1_1plot_1_1plot.html#ae0d6d2348ed278dd8e2c0f0a89d3fd1e',1,'wex::plot::plot']]]
 ];

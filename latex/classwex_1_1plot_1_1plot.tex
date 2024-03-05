@@ -29,46 +29,37 @@ Inheritance diagram for wex\+::plot\+::plot\+:\begin{figure}[H]
 \mbox{\Hypertarget{classwex_1_1plot_1_1plot_a70b248f875aaff62944052109e8d09f4}\label{classwex_1_1plot_1_1plot_a70b248f875aaff62944052109e8d09f4}} 
 void \mbox{\hyperlink{classwex_1_1plot_1_1plot_a70b248f875aaff62944052109e8d09f4}{grid}} (bool \mbox{\hyperlink{classwex_1_1gui_aa9d4d5a1d38d66755b53d8104e4c2f40}{enable}})
 \begin{DoxyCompactList}\small\item\em Enable display of grid markings. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_ac1178ee08443f09100fcdffc21ecde46}\label{classwex_1_1plot_1_1plot_ac1178ee08443f09100fcdffc21ecde46}} 
-void {\bfseries set\+Fixed\+Scale} (double minX, double minY, double maxX, double maxY)
+void \mbox{\hyperlink{classwex_1_1plot_1_1plot_af0f3766e3905a5bdceff6679db428f75}{set\+Fixed\+Scale}} (double minX, double maxX, double minY, double maxY)
+\begin{DoxyCompactList}\small\item\em Set fixed scale. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a1eb5776701ac04006308d7222883a5c6}\label{classwex_1_1plot_1_1plot_a1eb5776701ac04006308d7222883a5c6}} 
+void {\bfseries set\+Fit\+Scale} ()
 \item 
 \mbox{\Hypertarget{classwex_1_1plot_1_1plot_a6beaad70af8a71ff608de66fda5c8340}\label{classwex_1_1plot_1_1plot_a6beaad70af8a71ff608de66fda5c8340}} 
 int {\bfseries trace\+Count} () const
 \item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_af2a3fc587dae5c6a4be454203d01f53e}\label{classwex_1_1plot_1_1plot_af2a3fc587dae5c6a4be454203d01f53e}} 
-float \mbox{\hyperlink{classwex_1_1plot_1_1plot_af2a3fc587dae5c6a4be454203d01f53e}{xinc}} () const
-\begin{DoxyCompactList}\small\item\em get step size along x-\/axis \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a201a1da3d0d6eb09c21040f927ba5c94}\label{classwex_1_1plot_1_1plot_a201a1da3d0d6eb09c21040f927ba5c94}} 
-std\+::vector$<$ double $>$ {\bfseries bounds} () const
-\item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a9ae6c888f994d6cb98654c5083d71388}\label{classwex_1_1plot_1_1plot_a9ae6c888f994d6cb98654c5083d71388}} 
-void {\bfseries debug} ()
-\item 
 \mbox{\Hypertarget{classwex_1_1plot_1_1plot_aa61fd692569eb9969aaea1ce826e11a0}\label{classwex_1_1plot_1_1plot_aa61fd692569eb9969aaea1ce826e11a0}} 
 void \mbox{\hyperlink{classwex_1_1plot_1_1plot_aa61fd692569eb9969aaea1ce826e11a0}{clear}} ()
 \begin{DoxyCompactList}\small\item\em Remove all traces from plot. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{classwex_1_1plot_1_1plot_a0a7a02cc57bf429ed8901b870271144b}{axis\+Yminmax}} (double min, double max)
+void \mbox{\hyperlink{classwex_1_1plot_1_1plot_a23a292f590f2f356b08b7edbb01f8c6a}{drag\+Extend}} (\mbox{\hyperlink{structwex_1_1s_mouse}{s\+Mouse}} \&m)
 \begin{DoxyCompactList}\small\item\em Disable auto-\/fit scaling and set Y minumum, maximum. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a539190338937475c073c7fbfe816ab0b}\label{classwex_1_1plot_1_1plot_a539190338937475c073c7fbfe816ab0b}} 
-void \mbox{\hyperlink{classwex_1_1plot_1_1plot_a539190338937475c073c7fbfe816ab0b}{auto\+Fit}} ()
-\begin{DoxyCompactList}\small\item\em Enable auto-\/fit scaling and remove any zoom setting. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a15bc9f35b910c035ee788223e6dce32b}\label{classwex_1_1plot_1_1plot_a15bc9f35b910c035ee788223e6dce32b}} 
-void {\bfseries XLabels} (const std\+::string min, const std\+::string max)
-\item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a1142ed9c355ce0ea4b033ef3d69b67c2}\label{classwex_1_1plot_1_1plot_a1142ed9c355ce0ea4b033ef3d69b67c2}} 
-void {\bfseries YLabels} (const std\+::string min, const std\+::string max)
-\item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a23a292f590f2f356b08b7edbb01f8c6a}\label{classwex_1_1plot_1_1plot_a23a292f590f2f356b08b7edbb01f8c6a}} 
-void {\bfseries drag\+Extend} (\mbox{\hyperlink{structwex_1_1s_mouse}{s\+Mouse}} \&m)
-\item 
-void \mbox{\hyperlink{classwex_1_1plot_1_1plot_ae8aa737cb576eb4f71f68fabb6233434}{XValues}} (float start, float scale)
-\begin{DoxyCompactList}\small\item\em Set conversion from y value index to x user units. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1plot_1_1plot_a634509902b75e67f95f3c5e73f467f05}{XUValues}} (float start\+\_\+xu, float scale\+\_\+xi2xu)
+\begin{DoxyCompactList}\small\item\em Set conversion from index of x value buffer to x user units. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classwex_1_1plot_1_1plot_ae0d6d2348ed278dd8e2c0f0a89d3fd1e}{XValues}} (float start\+\_\+xu, float scale\+\_\+xi2xu)
+\begin{DoxyCompactList}\small\item\em for backward compatability \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classwex_1_1plot_1_1plot_a44e876aee623fb2e31f52ca285e9c0c8}{Calc\+Scale}} (int w, int h)
+\begin{DoxyCompactList}\small\item\em calculate scaling factors so plot will fit in window client area \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classwex_1_1plot_1_1plot_a3990e8eb9e5c531c53ad6560f5f664d8}\label{classwex_1_1plot_1_1plot_a3990e8eb9e5c531c53ad6560f5f664d8}} 
 std\+::vector$<$ \mbox{\hyperlink{classwex_1_1plot_1_1trace}{trace}} $\ast$ $>$ \& {\bfseries traces} ()
 \item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a0807a9882be294c565ef12893fbb8221}\label{classwex_1_1plot_1_1plot_a0807a9882be294c565ef12893fbb8221}} 
-bool {\bfseries is\+Zoomed} ()
-\end{DoxyCompactItemize}
+\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a475964e7a6b6c2afd122cdf6fc61e7ae}\label{classwex_1_1plot_1_1plot_a475964e7a6b6c2afd122cdf6fc61e7ae}} 
+double \mbox{\hyperlink{classwex_1_1plot_1_1plot_a475964e7a6b6c2afd122cdf6fc61e7ae}{pixel2\+Xuser}} (int xpixel) const
+\begin{DoxyCompactList}\small\item\em get X user value from x pixel \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1plot_ad3f989e3fc333ce504ff2590d6bc08ac}\label{classwex_1_1plot_1_1plot_ad3f989e3fc333ce504ff2590d6bc08ac}} 
+int {\bfseries xuser2pixel} (double xu) const
+\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a0a7498cbbf0558f722dc7506ef10d6ed}\label{classwex_1_1plot_1_1plot_a0a7498cbbf0558f722dc7506ef10d6ed}} 
+double \mbox{\hyperlink{classwex_1_1plot_1_1plot_a0a7498cbbf0558f722dc7506ef10d6ed}{pixel2\+Yuser}} (int ypixel) const
+\begin{DoxyCompactList}\small\item\em get Y user value from y pixel \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Additional Inherited Members}
 
 
@@ -214,11 +205,24 @@ Add static trace.
 \begin{DoxyReturn}{Returns}
 reference to new trace
 \end{DoxyReturn}
-The data in a static trace does not change A line is drawn between successive points Specify y location only for each point. The points will be evenly distributed along the x-\/axis \mbox{\Hypertarget{classwex_1_1plot_1_1plot_a0a7a02cc57bf429ed8901b870271144b}\label{classwex_1_1plot_1_1plot_a0a7a02cc57bf429ed8901b870271144b}} 
-\index{wex::plot::plot@{wex::plot::plot}!axisYminmax@{axisYminmax}}
-\index{axisYminmax@{axisYminmax}!wex::plot::plot@{wex::plot::plot}}
-\doxysubsubsection{\texorpdfstring{axisYminmax()}{axisYminmax()}}
-{\footnotesize\ttfamily void wex\+::plot\+::plot\+::axis\+Yminmax (\begin{DoxyParamCaption}\item[{double}]{min,  }\item[{double}]{max }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+The data in a static trace does not change A line is drawn between successive points Specify y location only for each point. The points will be evenly distributed along the x-\/axis \mbox{\Hypertarget{classwex_1_1plot_1_1plot_a44e876aee623fb2e31f52ca285e9c0c8}\label{classwex_1_1plot_1_1plot_a44e876aee623fb2e31f52ca285e9c0c8}} 
+\index{wex::plot::plot@{wex::plot::plot}!CalcScale@{CalcScale}}
+\index{CalcScale@{CalcScale}!wex::plot::plot@{wex::plot::plot}}
+\doxysubsubsection{\texorpdfstring{CalcScale()}{CalcScale()}}
+{\footnotesize\ttfamily bool wex\+::plot\+::plot\+::\+Calc\+Scale (\begin{DoxyParamCaption}\item[{int}]{w,  }\item[{int}]{h }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+calculate scaling factors so plot will fit in window client area 
+
+\begin{DoxyReturn}{Returns}
+true if succesful 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a23a292f590f2f356b08b7edbb01f8c6a}\label{classwex_1_1plot_1_1plot_a23a292f590f2f356b08b7edbb01f8c6a}} 
+\index{wex::plot::plot@{wex::plot::plot}!dragExtend@{dragExtend}}
+\index{dragExtend@{dragExtend}!wex::plot::plot@{wex::plot::plot}}
+\doxysubsubsection{\texorpdfstring{dragExtend()}{dragExtend()}}
+{\footnotesize\ttfamily void wex\+::plot\+::plot\+::drag\+Extend (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structwex_1_1s_mouse}{s\+Mouse}} \&}]{m }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 
 
@@ -228,27 +232,65 @@ Disable auto-\/fit scaling and set Y minumum, maximum.
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em min} & enforced min Y \\
 \hline
-\mbox{\texttt{ in}}  & {\em max} & enforced max Y \\
+\mbox{\texttt{ in}}  & {\em max} & enforced max Y Enable auto-\/fit scaling and remove any zoom setting \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{classwex_1_1plot_1_1plot_ae8aa737cb576eb4f71f68fabb6233434}\label{classwex_1_1plot_1_1plot_ae8aa737cb576eb4f71f68fabb6233434}} 
-\index{wex::plot::plot@{wex::plot::plot}!XValues@{XValues}}
-\index{XValues@{XValues}!wex::plot::plot@{wex::plot::plot}}
-\doxysubsubsection{\texorpdfstring{XValues()}{XValues()}}
-{\footnotesize\ttfamily void wex\+::plot\+::plot\+::\+XValues (\begin{DoxyParamCaption}\item[{float}]{start,  }\item[{float}]{scale }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+\mbox{\Hypertarget{classwex_1_1plot_1_1plot_af0f3766e3905a5bdceff6679db428f75}\label{classwex_1_1plot_1_1plot_af0f3766e3905a5bdceff6679db428f75}} 
+\index{wex::plot::plot@{wex::plot::plot}!setFixedScale@{setFixedScale}}
+\index{setFixedScale@{setFixedScale}!wex::plot::plot@{wex::plot::plot}}
+\doxysubsubsection{\texorpdfstring{setFixedScale()}{setFixedScale()}}
+{\footnotesize\ttfamily void wex\+::plot\+::plot\+::set\+Fixed\+Scale (\begin{DoxyParamCaption}\item[{double}]{minX,  }\item[{double}]{maxX,  }\item[{double}]{minY,  }\item[{double}]{maxY }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 
 
-Set conversion from y value index to x user units. 
+Set fixed scale. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em minX} & minimum user x \\
+\hline
+{\em maxX} & maximum user X \\
+\hline
+{\em minY} & minimum Y \\
+\hline
+{\em maxY} & maximum Y \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classwex_1_1plot_1_1plot_a634509902b75e67f95f3c5e73f467f05}\label{classwex_1_1plot_1_1plot_a634509902b75e67f95f3c5e73f467f05}} 
+\index{wex::plot::plot@{wex::plot::plot}!XUValues@{XUValues}}
+\index{XUValues@{XUValues}!wex::plot::plot@{wex::plot::plot}}
+\doxysubsubsection{\texorpdfstring{XUValues()}{XUValues()}}
+{\footnotesize\ttfamily void wex\+::plot\+::plot\+::\+XUValues (\begin{DoxyParamCaption}\item[{float}]{start\+\_\+xu,  }\item[{float}]{scale\+\_\+xi2xu }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set conversion from index of x value buffer to x user units. 
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em start} & x user value of first y-\/value \\
+\mbox{\texttt{ in}}  & {\em start} & x user value of first data point \\
 \hline
 \mbox{\texttt{ in}}  & {\em scale} & to convert from index to user value\\
 \hline
 \end{DoxyParams}
-Used to label the x-\/axis 
+Used to label the x-\/axis and draw grid lines if enabled \mbox{\Hypertarget{classwex_1_1plot_1_1plot_ae0d6d2348ed278dd8e2c0f0a89d3fd1e}\label{classwex_1_1plot_1_1plot_ae0d6d2348ed278dd8e2c0f0a89d3fd1e}} 
+\index{wex::plot::plot@{wex::plot::plot}!XValues@{XValues}}
+\index{XValues@{XValues}!wex::plot::plot@{wex::plot::plot}}
+\doxysubsubsection{\texorpdfstring{XValues()}{XValues()}}
+{\footnotesize\ttfamily void wex\+::plot\+::plot\+::\+XValues (\begin{DoxyParamCaption}\item[{float}]{start\+\_\+xu,  }\item[{float}]{scale\+\_\+xi2xu }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+for backward compatability 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start\+\_\+xu} & \\
+\hline
+{\em scale\+\_\+xi2xu} & \\
+\hline
+\end{DoxyParams}
+
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 

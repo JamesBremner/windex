@@ -18,6 +18,8 @@ Inheritance diagram for wex\+::inputbox\+:\begin{figure}[H]
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
+\mbox{\hyperlink{classwex_1_1inputbox_a9cf48cd4af38ac4c2c9b5e9f4f34e5cd}{inputbox}} (\mbox{\hyperlink{classwex_1_1gui}{gui}} \&App\+Window)
+\begin{DoxyCompactList}\small\item\em Construct input box modal dialog. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classwex_1_1inputbox_af76113b027e2f3e2246018452fb9f827}\label{classwex_1_1inputbox_af76113b027e2f3e2246018452fb9f827}} 
 void {\bfseries clear} ()
 \item 
@@ -30,8 +32,11 @@ void {\bfseries clear} ()
 \mbox{\Hypertarget{classwex_1_1inputbox_ab4ed484f141f25b1a6d7f70f260b5d66}\label{classwex_1_1inputbox_ab4ed484f141f25b1a6d7f70f260b5d66}} 
 \mbox{\hyperlink{classwex_1_1property}{wex\+::property}} \& {\bfseries check} (const std\+::string \&name, bool def)
 \item 
-void \mbox{\hyperlink{classwex_1_1inputbox_a05e7d610bce1d0824c5f5c655368a8be}{show\+Modal}} ()
+void \mbox{\hyperlink{classwex_1_1inputbox_ade7cf6e159965ac527025d56fdaf3ca3}{show}} ()
 \begin{DoxyCompactList}\small\item\em Show inputbox and suspend all other windows interactions until this is closed. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1inputbox_a05e7d610bce1d0824c5f5c655368a8be}\label{classwex_1_1inputbox_a05e7d610bce1d0824c5f5c655368a8be}} 
+void \mbox{\hyperlink{classwex_1_1inputbox_a05e7d610bce1d0824c5f5c655368a8be}{show\+Modal}} ()
+\begin{DoxyCompactList}\small\item\em Redirect calls to Show\+Modal to Show instead Inputbox is a popup handling the modal dialog itself This should not be called for backwards compatibility, it redirects to Show() \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{classwex_1_1inputbox_a201a609f944da62b0f26c5b40037ecbf}{value}} (const std\+::string \&name)
 \begin{DoxyCompactList}\small\item\em get value saved in property attribute \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classwex_1_1inputbox_aff5a83696005e17775c3570c862bb537}\label{classwex_1_1inputbox_aff5a83696005e17775c3570c862bb537}} 
@@ -51,7 +56,7 @@ A popup window where user can edit a set of values.
 
 Usage\+: 
 \begin{DoxyPre}
-    \mbox{\hyperlink{classwex_1_1inputbox}{wex::inputbox}} ib;
+    \mbox{\hyperlink{classwex_1_1inputbox}{wex::inputbox}} ib( form );
     ib.add("{}A"{},"{}72"{});
     ib.add("{}B"{},"{}4600"{});
     ib.choice("{}Choose"{}, \{ "{}X"{}, "{}Y"{}\} );
@@ -67,12 +72,30 @@ Usage\+:
 \end{DoxyPre}
  
 
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classwex_1_1inputbox_a9cf48cd4af38ac4c2c9b5e9f4f34e5cd}\label{classwex_1_1inputbox_a9cf48cd4af38ac4c2c9b5e9f4f34e5cd}} 
+\index{wex::inputbox@{wex::inputbox}!inputbox@{inputbox}}
+\index{inputbox@{inputbox}!wex::inputbox@{wex::inputbox}}
+\doxysubsubsection{\texorpdfstring{inputbox()}{inputbox()}}
+{\footnotesize\ttfamily wex\+::inputbox\+::inputbox (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classwex_1_1gui}{gui}} \&}]{App\+Window }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct input box modal dialog. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em App\+Window} & the main application window \\
+\hline
+\end{DoxyParams}
+
+
 \doxysubsection{Member Function Documentation}
-\mbox{\Hypertarget{classwex_1_1inputbox_a05e7d610bce1d0824c5f5c655368a8be}\label{classwex_1_1inputbox_a05e7d610bce1d0824c5f5c655368a8be}} 
-\index{wex::inputbox@{wex::inputbox}!showModal@{showModal}}
-\index{showModal@{showModal}!wex::inputbox@{wex::inputbox}}
-\doxysubsubsection{\texorpdfstring{showModal()}{showModal()}}
-{\footnotesize\ttfamily void wex\+::inputbox\+::show\+Modal (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+\mbox{\Hypertarget{classwex_1_1inputbox_ade7cf6e159965ac527025d56fdaf3ca3}\label{classwex_1_1inputbox_ade7cf6e159965ac527025d56fdaf3ca3}} 
+\index{wex::inputbox@{wex::inputbox}!show@{show}}
+\index{show@{show}!wex::inputbox@{wex::inputbox}}
+\doxysubsubsection{\texorpdfstring{show()}{show()}}
+{\footnotesize\ttfamily void wex\+::inputbox\+::show (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 
 

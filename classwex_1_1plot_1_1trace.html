@@ -66,7 +66,9 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classwex_1_1plot_1_1trace-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">wex::plot::trace Class Reference</div>  </div>
@@ -78,6 +80,14 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="plot2d_8h_source.html">plot2d.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a1f607be07bcfcb9b5cd5c8cde87c354c"><td class="memItemLeft" align="right" valign="top"><a id="a1f607be07bcfcb9b5cd5c8cde87c354c"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>eType</b> { <b>plot</b>
+, <b>realtime</b>
+, <b>scatter</b>
+ }</td></tr>
+<tr class="separator:a1f607be07bcfcb9b5cd5c8cde87c354c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa94bc7ee5d49169d4e63ad07dd319ffe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#aa94bc7ee5d49169d4e63ad07dd319ffe">set</a> (const std::vector&lt; double &gt; &amp;y)</td></tr>
@@ -103,17 +113,32 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#a06b45af76cde6bc1ab02c153a4061d41">color</a> (int clr)</td></tr>
 <tr class="memdesc:a06b45af76cde6bc1ab02c153a4061d41"><td class="mdescLeft">&#160;</td><td class="mdescRight">set color <br /></td></tr>
 <tr class="separator:a06b45af76cde6bc1ab02c153a4061d41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c1cb84cf1494c8c9bb38f5e0fea6498"><td class="memItemLeft" align="right" valign="top"><a id="a0c1cb84cf1494c8c9bb38f5e0fea6498"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>color</b> () const</td></tr>
+<tr class="separator:a0c1cb84cf1494c8c9bb38f5e0fea6498"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4ba6ab70e4c6fc5cf8a2531ee2721f9"><td class="memItemLeft" align="right" valign="top"><a id="ab4ba6ab70e4c6fc5cf8a2531ee2721f9"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#ab4ba6ab70e4c6fc5cf8a2531ee2721f9">thick</a> (int t)</td></tr>
 <tr class="memdesc:ab4ba6ab70e4c6fc5cf8a2531ee2721f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">set trace thickness in pixels <br /></td></tr>
 <tr class="separator:ab4ba6ab70e4c6fc5cf8a2531ee2721f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5046d44833527f00a8db17c9b27395bb"><td class="memItemLeft" align="right" valign="top"><a id="a5046d44833527f00a8db17c9b27395bb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#a5046d44833527f00a8db17c9b27395bb">size</a> ()</td></tr>
-<tr class="memdesc:a5046d44833527f00a8db17c9b27395bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">get number of points <br /></td></tr>
-<tr class="separator:a5046d44833527f00a8db17c9b27395bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43d5f1745b668f3bdcb453f7396cef39"><td class="memItemLeft" align="right" valign="top"><a id="a43d5f1745b668f3bdcb453f7396cef39"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>thick</b> () const</td></tr>
+<tr class="separator:a43d5f1745b668f3bdcb453f7396cef39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac305c2bd448071d40774d00939f1a543"><td class="memItemLeft" align="right" valign="top"><a id="ac305c2bd448071d40774d00939f1a543"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#ac305c2bd448071d40774d00939f1a543">size</a> () const</td></tr>
+<tr class="memdesc:ac305c2bd448071d40774d00939f1a543"><td class="mdescLeft">&#160;</td><td class="mdescRight">get number of points <br /></td></tr>
+<tr class="separator:ac305c2bd448071d40774d00939f1a543"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a204fdfcd6814dfbc71b8a745a5447e72"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwex_1_1plot_1_1trace.html#a204fdfcd6814dfbc71b8a745a5447e72">value</a> (double xfraction)</td></tr>
 <tr class="memdesc:a204fdfcd6814dfbc71b8a745a5447e72"><td class="mdescLeft">&#160;</td><td class="mdescRight">y value at fractional position along x-axis  <a href="classwex_1_1plot_1_1trace.html#a204fdfcd6814dfbc71b8a745a5447e72">More...</a><br /></td></tr>
 <tr class="separator:a204fdfcd6814dfbc71b8a745a5447e72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae76b16ee27ddbb7f25360650e40ff435"><td class="memItemLeft" align="right" valign="top"><a id="ae76b16ee27ddbb7f25360650e40ff435"></a>
+const std::vector&lt; double &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getY</b> ()</td></tr>
+<tr class="separator:ae76b16ee27ddbb7f25360650e40ff435"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:ab9be0fadf6cb62dc5544d30a00467ff6"><td class="memItemLeft" align="right" valign="top"><a id="ab9be0fadf6cb62dc5544d30a00467ff6"></a>
+enum wex::plot::trace::eType&#160;</td><td class="memItemRight" valign="bottom"><b>myType</b></td></tr>
+<tr class="separator:ab9be0fadf6cb62dc5544d30a00467ff6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Single trace to be plotted. </p>

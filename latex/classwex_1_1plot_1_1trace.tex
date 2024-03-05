@@ -9,6 +9,15 @@ Single trace to be plotted.
 
 {\ttfamily \#include $<$plot2d.\+h$>$}
 
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a1f607be07bcfcb9b5cd5c8cde87c354c}\label{classwex_1_1plot_1_1trace_a1f607be07bcfcb9b5cd5c8cde87c354c}} 
+enum class {\bfseries e\+Type} \{ {\bfseries plot}
+, {\bfseries realtime}
+, {\bfseries scatter}
+ \}
+\end{DoxyCompactItemize}
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -30,14 +39,29 @@ void \mbox{\hyperlink{classwex_1_1plot_1_1trace_acce8ac1e1cd332011813408dd055219
 \mbox{\Hypertarget{classwex_1_1plot_1_1trace_a06b45af76cde6bc1ab02c153a4061d41}\label{classwex_1_1plot_1_1trace_a06b45af76cde6bc1ab02c153a4061d41}} 
 void \mbox{\hyperlink{classwex_1_1plot_1_1trace_a06b45af76cde6bc1ab02c153a4061d41}{color}} (int clr)
 \begin{DoxyCompactList}\small\item\em set color \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a0c1cb84cf1494c8c9bb38f5e0fea6498}\label{classwex_1_1plot_1_1trace_a0c1cb84cf1494c8c9bb38f5e0fea6498}} 
+int {\bfseries color} () const
+\item 
 \mbox{\Hypertarget{classwex_1_1plot_1_1trace_ab4ba6ab70e4c6fc5cf8a2531ee2721f9}\label{classwex_1_1plot_1_1trace_ab4ba6ab70e4c6fc5cf8a2531ee2721f9}} 
 void \mbox{\hyperlink{classwex_1_1plot_1_1trace_ab4ba6ab70e4c6fc5cf8a2531ee2721f9}{thick}} (int t)
 \begin{DoxyCompactList}\small\item\em set trace thickness in pixels \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a5046d44833527f00a8db17c9b27395bb}\label{classwex_1_1plot_1_1trace_a5046d44833527f00a8db17c9b27395bb}} 
-int \mbox{\hyperlink{classwex_1_1plot_1_1trace_a5046d44833527f00a8db17c9b27395bb}{size}} ()
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_a43d5f1745b668f3bdcb453f7396cef39}\label{classwex_1_1plot_1_1trace_a43d5f1745b668f3bdcb453f7396cef39}} 
+int {\bfseries thick} () const
+\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_ac305c2bd448071d40774d00939f1a543}\label{classwex_1_1plot_1_1trace_ac305c2bd448071d40774d00939f1a543}} 
+int \mbox{\hyperlink{classwex_1_1plot_1_1trace_ac305c2bd448071d40774d00939f1a543}{size}} () const
 \begin{DoxyCompactList}\small\item\em get number of points \end{DoxyCompactList}\item 
 double \mbox{\hyperlink{classwex_1_1plot_1_1trace_a204fdfcd6814dfbc71b8a745a5447e72}{value}} (double xfraction)
-\begin{DoxyCompactList}\small\item\em y value at fractional position along x-\/axis \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em y value at fractional position along x-\/axis \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_ae76b16ee27ddbb7f25360650e40ff435}\label{classwex_1_1plot_1_1trace_ae76b16ee27ddbb7f25360650e40ff435}} 
+const std\+::vector$<$ double $>$ \& {\bfseries getY} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classwex_1_1plot_1_1trace_ab9be0fadf6cb62dc5544d30a00467ff6}\label{classwex_1_1plot_1_1trace_ab9be0fadf6cb62dc5544d30a00467ff6}} 
+enum wex\+::plot\+::trace\+::e\+Type {\bfseries my\+Type}
+\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
