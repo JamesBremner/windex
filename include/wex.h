@@ -1486,7 +1486,11 @@ namespace wex
             return false;
         }
 
-        /// Show window and all children
+        /** Show window and all children
+         * 
+         * This returns immediatly.
+         * 
+         */
         virtual void show(bool f = true)
         {
             int cmd = SW_SHOWDEFAULT;
@@ -1499,8 +1503,13 @@ namespace wex
                 w->show(f);
         }
 
-        /// @brief Show this window and suspend all other windows interactions until this is closed
-        /// @param appWindow application window to disable while modal runs
+        /** @brief Show this window and suspend all other windows interactions until this is closed
+         @param appWindow application window to disable while modal runs
+
+        This blocks, returning when the windows is closed or endModel() is called.  
+        Therefore it is safe to store references to the child widgets in local variables
+        so long as they not needed after the winow closes
+         */
 
         void showModal( gui& appWindow )
         {

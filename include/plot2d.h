@@ -582,6 +582,21 @@ namespace wex
 
                 myY = y;
             }
+            /** \brief set plot data from raw buffer of doubles
+                @param[in] begin pointer to first double in buffer
+                @param[in] end pointer one double beyond last double in buffer
+
+                Replaces any existing data.  Plot is NOT refreshed.
+                An exception is thrown when this is called
+                for a trace that is not plot or scatter type
+            */
+            void set(double *begin, double* end )
+            {
+                if ((myType != eType::plot) && (myType != eType::scatter))
+                    throw std::runtime_error("plot2d error: plot data added to non plot/scatter trace");
+
+                myY = std::vector( begin, end );
+            }
             void setScatterX(const std::vector<double> &x)
             {
                 if (myType != eType::scatter)
