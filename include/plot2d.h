@@ -434,8 +434,17 @@ namespace wex
 
             void YVrange(double min, double max)
             {
+                switch (theState)
+                {
+                case scaleStateMachine::eState::fit:
                 yvminFit = min;
                 yvmaxFit = max;
+                break;
+                case scaleStateMachine::eState::fix:
+                yvminFix = min;
+                yvminFix = max;
+                break;
+                }
             }
 
             double YVrange() const
@@ -474,6 +483,14 @@ namespace wex
             int YV2YP(double v) const
             {
                 return ypmin + syv2yp * (v - yvmin);
+            }
+            double YVmin() const
+            {
+                return yvmin;
+            }
+            double YVmax() const
+            {
+                return yvmax;
             }
             int YPmin() const
             {
@@ -1276,32 +1293,34 @@ namespace wex
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
             }
 
+            /// @brief values where the Y grid lines should be drawn
+            /// @return vector of Y values
+
             std::vector<double> ytickValues()
             {
                 std::vector<double> vl;
-                double mn = myYScale.YPmax();
-                double mx = myYScale.YPmin();
-                double range = mx - mn;
-                if (range < minDataRange)
+                double mnV = myYScale.YVmin();
+                double mxV = myYScale.YVmax();
+                double rangeV = mxV - mnV;
+                if (rangeV < minDataRange)
                 {
                     // plot is single valued
                     // display just one tick
-                    vl.push_back(mn);
+                    vl.push_back(mnV);
                     return vl;
                 }
-                double inc = myYScale.YVrange() / 4;
+                double incV = rangeV / 4;
                 double tickValue;
-                if (inc > 1)
+                if (incV > 1)
                 {
-                    inc = (int)inc;
-                    tickValue = myYScale.YP2YV(myYScale.YPmin());
+                    incV = (int)incV;
+                    // tickValue = myYScale.YP2YV(myYScale.YPmin());
+                    tickValue = mnV;
                 }
                 else
                 {
-                    tickValue = mn;
+                    tickValue = mnV;
                 }
-                // if (tick < 0)
-                //     return vl;
 
                 while (true)
                 {
@@ -1311,11 +1330,11 @@ namespace wex
                     else if (v > 10)
                         v = ((int)v / 10) * 10;
                     vl.push_back(v);
-                    tickValue += inc;
-                    if (tickValue >= mx)
+                    tickValue += incV;
+                    if (tickValue >= mxV)
                         break;
                 }
-                vl.push_back(mx);
+                //vl.push_back(mx);
                 return vl;
             }
             /** format number with 2 significant digits
