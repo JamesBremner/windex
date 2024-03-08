@@ -646,8 +646,9 @@ void PlotDemo()
     thePlot.bgcolor(0);
     thePlot.XUValues(100, 5);
     thePlot.grid(true);
-    thePlot.setFixedScale(
-        0, 200, 0, 200 );
+    // thePlot.setFixedScale(
+    //     0, 200, 0, 200 );
+    thePlot.setMarginWidths( 200, 400 );
 
     //  resize plot when form resizes
     fm.events().resize(

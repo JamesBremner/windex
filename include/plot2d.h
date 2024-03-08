@@ -539,13 +539,13 @@ namespace wex
                 syv2yp = -(ypmin - ypmax) / yvrange;
             }
 
-                      /// @brief values where the Y grid lines should be drawn
+            /// @brief values where the Y grid lines should be drawn
             /// @return vector of Y values
 
             std::vector<double> tickValues() const
             {
                 std::vector<double> vl;
-                double rangeV = fabs( yvmax - yvmin );
+                double rangeV = fabs(yvmax - yvmin);
                 if (rangeV < minDataRange)
                 {
                     // plot is single valued
@@ -575,7 +575,6 @@ namespace wex
                 // vl.push_back(mx);
                 return vl;
             }
-
         };
 
         // @endcond
@@ -968,7 +967,9 @@ namespace wex
             plot(gui *parent)
                 : gui(parent), myfDrag(false),
                   myXScale(myScaleStateMachine),
-                  myYScale(myScaleStateMachine)
+                  myYScale(myScaleStateMachine),
+                  mypBottomMarginWidth(50),
+                  mypLeftMarginWidth(70)
             {
                 text("Plot");
 
@@ -1128,6 +1129,17 @@ namespace wex
                         "wex plot cannot return to fit scale");
             }
 
+            /// @brief Set margin widths in pixels
+            /// @param pBottomMarginWidth 
+            /// @param pLeftMarginWidth 
+            /// if not called, defaults are 50,70
+            
+            void setMarginWidths(int pBottomMarginWidth, int pLeftMarginWidth)
+            {
+                mypBottomMarginWidth = pBottomMarginWidth;
+                mypLeftMarginWidth = pLeftMarginWidth;
+            }
+
             int traceCount() const
             {
                 return (int)myTrace.size();
@@ -1197,11 +1209,10 @@ namespace wex
                 return myTrace;
             }
 
-            const YScale& yscale() const
+            const YScale &yscale() const
             {
                 return myYScale;
             }
-
 
             /// get X user value from x pixel
             double pixel2Xuser(int xpixel) const
@@ -1220,7 +1231,7 @@ namespace wex
 
 // methods that need to be unit tested, and therefore need to be public
 #ifndef UNIT_TEST
-private:
+        private:
 #endif
 
             /// @brief calculate scaling factors so plot will fit in window client area
@@ -1238,8 +1249,8 @@ private:
                     return false;
 
                 // set pixel ranges for the axis
-                myYScale.YPrange(h - 40, 10);
-                myXScale.xpSet(50, w - 70);
+                myYScale.YPrange(h - mypBottomMarginWidth, 10);
+                myXScale.xpSet(mypLeftMarginWidth, w - 50);
 
                 int ximin, ximax;
                 double ymin, ymax;
@@ -1269,7 +1280,7 @@ private:
                 // myXScale.text();
 
                 return true;
-            }         
+            }
 
         private:
             /// plot traces
@@ -1279,6 +1290,8 @@ private:
             scaleStateMachine myScaleStateMachine;
             XScale myXScale;
             YScale myYScale;
+
+            int mypBottomMarginWidth, mypLeftMarginWidth;
 
             bool myfGrid; // true if tick and grid marks reuired
             bool myfXset; // true if the x user range has been set
@@ -1320,9 +1333,9 @@ private:
                     return;
 
                 // change scale state
-                if ( myScaleStateMachine.event(
+                if (myScaleStateMachine.event(
                         scaleStateMachine::eEvent::zoom) ==
-                        scaleStateMachine::eState::none )
+                    scaleStateMachine::eState::none)
                 {
                     // scale state change failed
                     // probably zoom attempt on already zoomed plot
@@ -1342,7 +1355,6 @@ private:
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
             }
 
-
             /** format number with 2 significant digits
             https://stackoverflow.com/a/17211620/16582
             */
@@ -1361,23 +1373,24 @@ private:
             }
             void drawYAxis(wex::shapes &S)
             {
+
                 S.color(0xFFFFFF - bgcolor());
                 S.textHeight(15);
 
-                S.line({50, myYScale.YPmin(),
-                        50, myYScale.YPmax()});
+                S.line({mypLeftMarginWidth, myYScale.YPmin(),
+                        mypLeftMarginWidth, myYScale.YPmax()});
 
                 for (double y : myYScale.tickValues())
                 {
                     int yp = myYScale.YV2YP(y);
                     S.text(numberformat(y),
-                           {0, yp - 8, 50, 15});
-                    S.line({50, yp,
-                            60, yp});
+                           {mypLeftMarginWidth-30, yp - 8, 50, 15});
+                    S.line({mypLeftMarginWidth, yp,
+                            mypLeftMarginWidth+10, yp});
                     if (myfGrid)
                     {
                         auto kpmax = myXScale.XPmax();
-                        for (int kp = 65;
+                        for (int kp = mypLeftMarginWidth;
                              kp < kpmax;
                              kp += 25)
                         {
@@ -1389,9 +1402,12 @@ private:
             }
             void drawXAxis(wex::shapes &S, int ypos)
             {
+                int ypAxisLine = myYScale.YPmin();
                 S.color(0xFFFFFF - bgcolor());
                 S.textHeight(15);
-                S.line({myXScale.XPmin(), ypos, myXScale.XPmax(), ypos});
+                S.line(
+                    {myXScale.XPmin(), ypAxisLine,
+                     myXScale.XPmax(), ypAxisLine});
                 if (!myfGrid)
                 {
                     // there is no grid
@@ -1433,7 +1449,7 @@ private:
 
                     S.text(
                         std::to_string(tickXU).substr(0, 4),
-                        {xPixel, ypos + 1, 50, 15});
+                        {xPixel, ypAxisLine + 1, 50, 15});
 
                     for (
                         int k = myYScale.YPmax();
