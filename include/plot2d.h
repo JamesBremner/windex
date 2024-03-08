@@ -538,6 +538,44 @@ namespace wex
 
                 syv2yp = -(ypmin - ypmax) / yvrange;
             }
+
+                      /// @brief values where the Y grid lines should be drawn
+            /// @return vector of Y values
+
+            std::vector<double> tickValues() const
+            {
+                std::vector<double> vl;
+                double rangeV = fabs( yvmax - yvmin );
+                if (rangeV < minDataRange)
+                {
+                    // plot is single valued
+                    // display just one tick
+                    vl.push_back(yvmin);
+                    return vl;
+                }
+                double incV = rangeV / 4;
+                double tickValue;
+                if (incV > 1)
+                    incV = (int)incV;
+
+                tickValue = yvmin;
+
+                while (true)
+                {
+                    double v = tickValue;
+                    if (v > 100)
+                        v = ((int)v / 100) * 100;
+                    else if (v > 10)
+                        v = ((int)v / 10) * 10;
+                    vl.push_back(v);
+                    tickValue += incV;
+                    if (tickValue >= yvmax)
+                        break;
+                }
+                // vl.push_back(mx);
+                return vl;
+            }
+
         };
 
         // @endcond
@@ -1159,10 +1197,11 @@ namespace wex
                 return myTrace;
             }
 
-            // bool isZoomed() const
-            // {
-            //     return myfZoom;
-            // }
+            const YScale& yscale() const
+            {
+                return myYScale;
+            }
+
 
             /// get X user value from x pixel
             double pixel2Xuser(int xpixel) const
@@ -1230,53 +1269,7 @@ private:
                 // myXScale.text();
 
                 return true;
-            }
-
-            /// @brief values where the Y grid lines should be drawn
-            /// @return vector of Y values
-
-            std::vector<double> ytickValues()
-            {
-                std::vector<double> vl;
-                double mnV = myYScale.YVmin();
-                double mxV = myYScale.YVmax();
-                double rangeV = mxV - mnV;
-                if (rangeV < minDataRange)
-                {
-                    // plot is single valued
-                    // display just one tick
-                    vl.push_back(mnV);
-                    return vl;
-                }
-                double incV = rangeV / 4;
-                double tickValue;
-                if (incV > 1)
-                {
-                    incV = (int)incV;
-                    // tickValue = myYScale.YP2YV(myYScale.YPmin());
-                    tickValue = mnV;
-                }
-                else
-                {
-                    tickValue = mnV;
-                }
-
-                while (true)
-                {
-                    double v = tickValue;
-                    if (v > 100)
-                        v = ((int)v / 100) * 100;
-                    else if (v > 10)
-                        v = ((int)v / 10) * 10;
-                    vl.push_back(v);
-                    tickValue += incV;
-                    if (tickValue >= mxV)
-                        break;
-                }
-                // vl.push_back(mx);
-                return vl;
-            }
-            
+            }         
 
         private:
             /// plot traces
@@ -1374,7 +1367,7 @@ private:
                 S.line({50, myYScale.YPmin(),
                         50, myYScale.YPmax()});
 
-                for (double y : ytickValues())
+                for (double y : myYScale.tickValues())
                 {
                     int yp = myYScale.YV2YP(y);
                     S.text(numberformat(y),
@@ -1393,9 +1386,6 @@ private:
                         }
                     }
                 }
-                // int yp = scale::get().Y2Pixel(mx);
-                //  S.text(myMaxYLabel,
-                //         {0, yp + 10, 50, 15});
             }
             void drawXAxis(wex::shapes &S, int ypos)
             {

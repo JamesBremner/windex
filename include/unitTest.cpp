@@ -21,7 +21,7 @@ TEST( ytickValues )
 
     thePlot.CalcScale(500, 200);
 
-    auto vt = thePlot.ytickValues();
+    auto vt = thePlot.yscale().tickValues();
 
     CHECK_EQUAL(4,vt.size());
     CHECK_EQUAL(10,vt[1]);
@@ -43,7 +43,7 @@ TEST( ytickValues2 )
 
     thePlot.CalcScale(500, 200);
 
-    auto vt = thePlot.ytickValues();
+    auto vt = thePlot.yscale().tickValues();
 
     CHECK_EQUAL(4,vt.size());
     CHECK_EQUAL(0.15,vt[1]);
