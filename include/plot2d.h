@@ -437,13 +437,13 @@ namespace wex
                 switch (theState)
                 {
                 case scaleStateMachine::eState::fit:
-                yvminFit = min;
-                yvmaxFit = max;
-                break;
+                    yvminFit = min;
+                    yvmaxFit = max;
+                    break;
                 case scaleStateMachine::eState::fix:
-                yvminFix = min;
-                yvminFix = max;
-                break;
+                    yvminFix = min;
+                    yvminFix = max;
+                    break;
                 }
             }
 
@@ -607,12 +607,12 @@ namespace wex
                 An exception is thrown when this is called
                 for a trace that is not plot or scatter type
             */
-            void set(double *begin, double* end )
+            void set(double *begin, double *end)
             {
                 if ((myType != eType::plot) && (myType != eType::scatter))
                     throw std::runtime_error("plot2d error: plot data added to non plot/scatter trace");
 
-                myY = std::vector( begin, end );
+                myY = std::vector(begin, end);
             }
             void setScatterX(const std::vector<double> &x)
             {
@@ -980,26 +980,7 @@ namespace wex
                 events().mouseUp(
                     [&]
                     {
-                        // check if user has completed a good drag operation
-                        if (isGoodDrag())
-                        {
-                            // check for valid event
-                            if (myScaleStateMachine.event(scaleStateMachine::eEvent::zoom) != scaleStateMachine::eState::none)
-                            {
-                                double myZoomXMin = myXScale.XP2XU(myStartDragX);
-                                double myZoomXMax = myXScale.XP2XU(myStopDragX);
-                                double myZoomYMax = myYScale.YP2YV(myStartDragY);
-                                double myZoomYMin = myYScale.YP2YV(myStopDragY);
-
-                                myXScale.zoom(myZoomXMin, myZoomXMax);
-                                myYScale.zoom(myZoomYMin, myZoomYMax);
-
-                                // myfZoom = true;
-
-                                // std::cout << myStartDragX <<" "<< myStopDragX <<" "<< myStartDragY <<" "<< myStopDragY << "\n";
-                                // std::cout << myZoomXMin <<" "<< myZoomXMax <<" "<< myZoomYMin <<" "<< myZoomYMax << "\n";
-                            }
-                        }
+                        zoomHandler();
                         myfDrag = false;
                         update();
                     });
@@ -1288,6 +1269,30 @@ namespace wex
                         ymax = tymax;
                 }
             }
+            void zoomHandler()
+            {
+                // check if user has completed a good drag operation
+                if (!isGoodDrag())
+                    return;
+
+                // change scale state
+                if ( myScaleStateMachine.event(
+                        scaleStateMachine::eEvent::zoom) ==
+                        scaleStateMachine::eState::none )
+                {
+                    // scale state change failed
+                    // probably zoom attempt on already zoomed plot
+                    return;
+                }
+
+                /* set the zoom scale values
+
+                The scale calculation, and plot redrawing will be done in the next update() call
+                */
+
+                myXScale.zoom(myXScale.XP2XU(myStartDragX), myXScale.XP2XU(myStopDragX));
+                myYScale.zoom(myYScale.YP2YV(myStopDragY), myYScale.YP2YV(myStartDragY));
+            }
             bool isGoodDrag()
             {
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
@@ -1334,7 +1339,7 @@ namespace wex
                     if (tickValue >= mxV)
                         break;
                 }
-                //vl.push_back(mx);
+                // vl.push_back(mx);
                 return vl;
             }
             /** format number with 2 significant digits
