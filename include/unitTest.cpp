@@ -4,6 +4,51 @@
 #include "wex.h"
 #include "plot2d.h"
 
+TEST( ytickValues )
+{
+      wex::gui &fm = wex::maker::make();
+    fm.move(50, 50, 1200, 600);
+    wex::plot::plot &thePlot = wex::maker::make<wex::plot::plot>(fm);
+    thePlot.bgcolor(0);
+    thePlot.XUValues(100, 5);
+    thePlot.grid(true);
+    thePlot.size(500, 200);
+    thePlot.move(30, 100);
+
+    wex::plot::trace &t1 = thePlot.AddStaticTrace();
+    std::vector<double> d1{10, 15, 20, 25, 30, 25, 20, 15, 10};
+    t1.set(d1);
+
+    thePlot.CalcScale(500, 200);
+
+    auto vt = thePlot.ytickValues();
+
+    CHECK_EQUAL(4,vt.size());
+    CHECK_EQUAL(10,vt[1]);
+}
+TEST( ytickValues2 )
+{
+      wex::gui &fm = wex::maker::make();
+    fm.move(50, 50, 1200, 600);
+    wex::plot::plot &thePlot = wex::maker::make<wex::plot::plot>(fm);
+    thePlot.bgcolor(0);
+    thePlot.XUValues(100, 5);
+    thePlot.grid(true);
+    thePlot.size(500, 200);
+    thePlot.move(30, 100);
+
+    wex::plot::trace &t1 = thePlot.AddStaticTrace();
+    std::vector<double> d1{.10, .15, .20, .25, .30, .25, .20, .15, .10};
+    t1.set(d1);
+
+    thePlot.CalcScale(500, 200);
+
+    auto vt = thePlot.ytickValues();
+
+    CHECK_EQUAL(4,vt.size());
+    CHECK_EQUAL(0.15,vt[1]);
+}
+
 TEST(setFitScale)
 {
     wex::gui &fm = wex::maker::make();

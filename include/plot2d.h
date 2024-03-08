@@ -1154,6 +1154,36 @@ namespace wex
                 XUValues(start_xu, scale_xi2xu);
             }
 
+            std::vector<trace *> &traces()
+            {
+                return myTrace;
+            }
+
+            // bool isZoomed() const
+            // {
+            //     return myfZoom;
+            // }
+
+            /// get X user value from x pixel
+            double pixel2Xuser(int xpixel) const
+            {
+                return myXScale.XP2XU(xpixel);
+            }
+            int xuser2pixel(double xu) const
+            {
+                return myXScale.XU2XP(xu);
+            }
+            /// get Y user value from y pixel
+            double pixel2Yuser(int ypixel) const
+            {
+                return myYScale.YP2YV(ypixel);
+            }
+
+// methods that need to be unit tested, and therefore need to be public
+#ifndef UNIT_TEST
+private:
+#endif
+
             /// @brief calculate scaling factors so plot will fit in window client area
             /// @return true if succesful
             bool CalcScale(int w, int h)
@@ -1202,30 +1232,51 @@ namespace wex
                 return true;
             }
 
-            std::vector<trace *> &traces()
-            {
-                return myTrace;
-            }
+            /// @brief values where the Y grid lines should be drawn
+            /// @return vector of Y values
 
-            // bool isZoomed() const
-            // {
-            //     return myfZoom;
-            // }
+            std::vector<double> ytickValues()
+            {
+                std::vector<double> vl;
+                double mnV = myYScale.YVmin();
+                double mxV = myYScale.YVmax();
+                double rangeV = mxV - mnV;
+                if (rangeV < minDataRange)
+                {
+                    // plot is single valued
+                    // display just one tick
+                    vl.push_back(mnV);
+                    return vl;
+                }
+                double incV = rangeV / 4;
+                double tickValue;
+                if (incV > 1)
+                {
+                    incV = (int)incV;
+                    // tickValue = myYScale.YP2YV(myYScale.YPmin());
+                    tickValue = mnV;
+                }
+                else
+                {
+                    tickValue = mnV;
+                }
 
-            /// get X user value from x pixel
-            double pixel2Xuser(int xpixel) const
-            {
-                return myXScale.XP2XU(xpixel);
+                while (true)
+                {
+                    double v = tickValue;
+                    if (v > 100)
+                        v = ((int)v / 100) * 100;
+                    else if (v > 10)
+                        v = ((int)v / 10) * 10;
+                    vl.push_back(v);
+                    tickValue += incV;
+                    if (tickValue >= mxV)
+                        break;
+                }
+                // vl.push_back(mx);
+                return vl;
             }
-            int xuser2pixel(double xu) const
-            {
-                return myXScale.XU2XP(xu);
-            }
-            /// get Y user value from y pixel
-            double pixel2Yuser(int ypixel) const
-            {
-                return myYScale.YP2YV(ypixel);
-            }
+            
 
         private:
             /// plot traces
@@ -1298,50 +1349,7 @@ namespace wex
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
             }
 
-            /// @brief values where the Y grid lines should be drawn
-            /// @return vector of Y values
 
-            std::vector<double> ytickValues()
-            {
-                std::vector<double> vl;
-                double mnV = myYScale.YVmin();
-                double mxV = myYScale.YVmax();
-                double rangeV = mxV - mnV;
-                if (rangeV < minDataRange)
-                {
-                    // plot is single valued
-                    // display just one tick
-                    vl.push_back(mnV);
-                    return vl;
-                }
-                double incV = rangeV / 4;
-                double tickValue;
-                if (incV > 1)
-                {
-                    incV = (int)incV;
-                    // tickValue = myYScale.YP2YV(myYScale.YPmin());
-                    tickValue = mnV;
-                }
-                else
-                {
-                    tickValue = mnV;
-                }
-
-                while (true)
-                {
-                    double v = tickValue;
-                    if (v > 100)
-                        v = ((int)v / 100) * 100;
-                    else if (v > 10)
-                        v = ((int)v / 10) * 10;
-                    vl.push_back(v);
-                    tickValue += incV;
-                    if (tickValue >= mxV)
-                        break;
-                }
-                // vl.push_back(mx);
-                return vl;
-            }
             /** format number with 2 significant digits
             https://stackoverflow.com/a/17211620/16582
             */
