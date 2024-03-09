@@ -21,6 +21,23 @@ namespace wex
 
         /// @cond
 
+                    /** format number with 2 significant digits
+            https://stackoverflow.com/a/17211620/16582
+            */
+            std::string numberformat(double f)
+            {
+                if (f == 0)
+                {
+                    return "0";
+                }
+                int n = 2;                                         // number of significant digits
+                int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
+                double order = ::pow(10., n - d);
+                std::stringstream ss;
+                ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
+                return ss.str();
+            }
+
         /** @brief Maintain indices of circular buffer
          *
          * When the buffer is full, new data over-writes the oldest ( wraps around )
@@ -878,6 +895,57 @@ namespace wex
             }
         };
 
+        class rightAxis
+        {
+            bool myfEnable;
+            double myValueMin;
+            double myValueMax;
+            //int mypMarginWidth;
+
+        public:
+            rightAxis()
+                : myfEnable(false)
+            {
+            }
+            void enable(
+                double minValue,
+                double maxValue)
+            {
+                myfEnable = true;
+                myValueMin = minValue;
+                myValueMax = maxValue;
+            }
+            void draw(
+                wex::shapes &S,
+                const YScale &yscale,
+                int xpos)
+            {
+                if (!myfEnable)
+                    return;
+
+                S.line({xpos, yscale.YPmin(),
+                        xpos, yscale.YPmax()});
+
+                double s = (yscale.YPmax() - yscale.YPmin()) /
+                           (myValueMax - myValueMin);
+                double tickValueInc = (myValueMax - myValueMin) / 4;
+                if (tickValueInc > 1)
+                    tickValueInc = floor(tickValueInc);
+                for (
+                    double tickValue = myValueMin;
+                    tickValue < myValueMax;
+                    tickValue += tickValueInc)
+                {
+                    int tickPixel = yscale.YPmin() + s * tickValue;
+                    S.line({xpos, tickPixel,
+                            xpos - 10, tickPixel});
+                    S.text(
+                        numberformat(tickValue),
+                        {xpos + 2, tickPixel, xpos + 50, tickPixel + 15});
+                }
+            }
+        };
+
         /** \brief Draw a 2D plot
 
         The plot contains one or more traces.
@@ -1130,14 +1198,27 @@ namespace wex
             }
 
             /// @brief Set margin widths in pixels
-            /// @param pBottomMarginWidth 
-            /// @param pLeftMarginWidth 
+            /// @param pBottomMarginWidth
+            /// @param pLeftMarginWidth
             /// if not called, defaults are 50,70
-            
+
             void setMarginWidths(int pBottomMarginWidth, int pLeftMarginWidth)
             {
                 mypBottomMarginWidth = pBottomMarginWidth;
                 mypLeftMarginWidth = pLeftMarginWidth;
+            }
+
+            /// @brief Enable drawing a right Y-axis with its own scaling
+            /// @param minValue 
+            /// @param maxValue 
+            
+            void setRightAxis(
+                double minValue,
+                double maxValue)
+            {
+                myRightAxis.enable(
+                    minValue,
+                    maxValue);
             }
 
             int traceCount() const
@@ -1290,6 +1371,7 @@ namespace wex
             scaleStateMachine myScaleStateMachine;
             XScale myXScale;
             YScale myYScale;
+            rightAxis myRightAxis;
 
             int mypBottomMarginWidth, mypLeftMarginWidth;
 
@@ -1355,23 +1437,7 @@ namespace wex
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
             }
 
-            /** format number with 2 significant digits
-            https://stackoverflow.com/a/17211620/16582
-            */
-            std::string numberformat(double f)
-            {
-                if (f == 0)
-                {
-                    return "0";
-                }
-                int n = 2;                                         // number of significant digits
-                int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
-                double order = ::pow(10., n - d);
-                std::stringstream ss;
-                ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
-                return ss.str();
-            }
-            void drawYAxis(wex::shapes &S)
+           void drawYAxis(wex::shapes &S)
             {
 
                 S.color(0xFFFFFF - bgcolor());
@@ -1384,9 +1450,9 @@ namespace wex
                 {
                     int yp = myYScale.YV2YP(y);
                     S.text(numberformat(y),
-                           {mypLeftMarginWidth-30, yp - 8, 50, 15});
+                           {mypLeftMarginWidth - 30, yp - 8, 50, 15});
                     S.line({mypLeftMarginWidth, yp,
-                            mypLeftMarginWidth+10, yp});
+                            mypLeftMarginWidth + 10, yp});
                     if (myfGrid)
                     {
                         auto kpmax = myXScale.XPmax();
@@ -1399,6 +1465,11 @@ namespace wex
                         }
                     }
                 }
+
+                myRightAxis.draw(
+                    S,
+                    myYScale,
+                    myXScale.XPmax());
             }
             void drawXAxis(wex::shapes &S, int ypos)
             {

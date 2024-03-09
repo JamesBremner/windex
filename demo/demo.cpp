@@ -670,7 +670,9 @@ void PlotDemo()
     thePlot.grid(true);
     // thePlot.setFixedScale(
     //     0, 200, 0, 200 );
-    thePlot.setMarginWidths(200, 400);
+    //thePlot.setMarginWidths(200, 400);
+    thePlot.setRightAxis(
+        0,5000 );
 
     //  resize plot when form resizes
     fm.events().resize(
