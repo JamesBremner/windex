@@ -236,7 +236,7 @@ void PGDemo()
 
 void InputboxDemo(gui &form)
 {
-    wex::inputbox ib( form );
+    wex::inputbox ib(form);
     ib.gridWidth(200);
     ib.add("A", "72");
     ib.add("B", "4600");
@@ -432,21 +432,43 @@ void PanelDemo()
     form.move({50, 50, 400, 400});
     form.text("Panel demo");
 
-    // construct panel
-    panel &pnl = wex::maker::make<panel>(form);
-    pnl.move({100, 100, 200, 200});
+    // construct layout panel
+    wex::layout &L = wex::maker::make<wex::layout>(form);
+    L.grid(4);       // layout buttons in a row of 4
+    L.move(20, 10, 400, 60);
 
-    // display labels
-    label &lbA = wex::maker::make<label>(pnl);
-    lbA.move({20, 20, 50, 30});
-    lbA.text("A:");
-    label &lbB = wex::maker::make<label>(pnl);
-    lbB.move({20, 60, 50, 30});
-    lbB.text("B:");
+    // create buttons as children of layout panel
+    wex::button &b1 = wex::maker::make<wex::button>(L);
+    wex::button &b2 = wex::maker::make<wex::button>(L);
+    wex::button &b3 = wex::maker::make<wex::button>(L);
+    wex::button &b4 = wex::maker::make<wex::button>(L);
+
+    // set button sizes
+    // ( no need to specify locations - looked after by layout )
+    b1.size(35, 35);
+    b2.size(35, 35);
+    b3.size(35, 35);
+    b4.size(35, 35);
+
+    b1.text("B1");
+    b2.text("B2");
+    b3.text("B3");
+    b4.text("B4");
+
+    //  resize handler
+    form.events().resize(
+        [&](int w, int h)
+        {
+            // arrange buttons halfway down the form
+            // and along almost the full width
+            L.move(10 , h/2, w - 20, 60);
+
+            form.update();
+        });
 
     form.show();
 }
-void ModalDemo(gui & mainform )
+void ModalDemo(gui &mainform)
 {
     // construct top level window
     gui &dlg = wex::maker::make();
@@ -459,7 +481,7 @@ void ModalDemo(gui & mainform )
     lbA.text("Prevents interaction with other windows until closed");
 
     button &bn = wex::maker::make<button>(dlg);
-    bn.move({20,50,100,30});
+    bn.move({20, 50, 100, 30});
     bn.text("SAVE");
     bn.events().click(
         [&]
@@ -648,16 +670,16 @@ void PlotDemo()
     thePlot.grid(true);
     // thePlot.setFixedScale(
     //     0, 200, 0, 200 );
-    thePlot.setMarginWidths( 200, 400 );
+    thePlot.setMarginWidths(200, 400);
 
     //  resize plot when form resizes
     fm.events().resize(
         [&](int w, int h)
-                       {
-        thePlot.size( w-100, h-200 );
-        thePlot.move( 30, 100 );
-        thePlot.update();
-         });
+        {
+            thePlot.size(w - 100, h - 200);
+            thePlot.move(30, 100);
+            thePlot.update();
+        });
 
     wex::label &plotLabel = wex::maker::make<wex::label>(thePlot);
     plotLabel.move(100, 100, 250, 20);
