@@ -21,23 +21,6 @@ namespace wex
 
         /// @cond
 
-                    /** format number with 2 significant digits
-            https://stackoverflow.com/a/17211620/16582
-            */
-            std::string numberformat(double f)
-            {
-                if (f == 0)
-                {
-                    return "0";
-                }
-                int n = 2;                                         // number of significant digits
-                int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
-                double order = ::pow(10., n - d);
-                std::stringstream ss;
-                ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
-                return ss.str();
-            }
-
         /** @brief Maintain indices of circular buffer
          *
          * When the buffer is full, new data over-writes the oldest ( wraps around )
@@ -895,54 +878,123 @@ namespace wex
             }
         };
 
-        class rightAxis
+        class axis
+        {
+        public:
+            enum class eOrient
+            {
+                none,
+                horz,
+                vert,
+            };
+
+            void set(
+                eOrient o)
+            {
+                myOrient = o;
+            }
+
+            void setValueRange(
+                double min,
+                double max)
+            {
+                myvmin = min;
+                myvmax = max;
+            }
+
+            void draw(
+                wex::shapes &S,
+                int pos,
+                int pmin,
+                int pmax)
+            {
+                if (pmin > pmax)
+                {
+                    int tmp = pmax;
+                    pmax = pmin;
+                    pmin = tmp;
+                }
+                int pvmin = pmin;
+                double scale = (pmax - pmin) / (myvmax - myvmin);
+                if (myOrient == eOrient::horz)
+                    S.line({pmin, pos,
+                            pmax, pos});
+                else
+                {
+                    // y pixels are indexed from top of screen
+                    pvmin = pmax;
+                    scale *= -1;
+
+                    S.line({pos, pmin,
+                            pos, pmax});
+                }
+
+                for (double tickValue : tickValues(4, myvmin, myvmax))
+                {
+                    int tickPixel = pvmin + scale * tickValue;
+                    S.line({pos-5, tickPixel,
+                            pos+5, tickPixel});
+                    S.text(
+                        axis::numberformat(tickValue),
+                        {pos + 5, tickPixel, pos + 50, tickPixel + 15});
+                }
+            }
+
+            /** format number with 2 significant digits
+             *    https://stackoverflow.com/a/17211620/16582
+             */
+            static std::string numberformat(double f)
+            {
+                if (f == 0)
+                {
+                    return "0";
+                }
+                int n = 2;                                         // number of significant digits
+                int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
+                double order = ::pow(10., n - d);
+                std::stringstream ss;
+                ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
+                return ss.str();
+            }
+
+        protected:
+            eOrient myOrient;
+            double myvmin;
+            double myvmax;
+
+            std::vector<double> tickValues(
+                int count,
+                double min,
+                double max)
+            {
+                std::vector<double> ret;
+                double tickinc = (max - min) / count;
+                if (tickinc > 1)
+                    tickinc = floor(tickinc);
+                for (
+                    double v = min;
+                    v < max;
+                    v += tickinc)
+                {
+                    ret.push_back(v);
+                }
+                return ret;
+            }
+        };
+
+        class rightAxis : public axis
         {
             bool myfEnable;
-            double myValueMin;
-            double myValueMax;
-            //int mypMarginWidth;
 
         public:
             rightAxis()
                 : myfEnable(false)
             {
             }
-            void enable(
-                double minValue,
-                double maxValue)
+            void enable()
             {
                 myfEnable = true;
-                myValueMin = minValue;
-                myValueMax = maxValue;
-            }
-            void draw(
-                wex::shapes &S,
-                const YScale &yscale,
-                int xpos)
-            {
-                if (!myfEnable)
-                    return;
-
-                S.line({xpos, yscale.YPmin(),
-                        xpos, yscale.YPmax()});
-
-                double s = (yscale.YPmax() - yscale.YPmin()) /
-                           (myValueMax - myValueMin);
-                double tickValueInc = (myValueMax - myValueMin) / 4;
-                if (tickValueInc > 1)
-                    tickValueInc = floor(tickValueInc);
-                for (
-                    double tickValue = myValueMin;
-                    tickValue < myValueMax;
-                    tickValue += tickValueInc)
-                {
-                    int tickPixel = yscale.YPmin() + s * tickValue;
-                    S.line({xpos, tickPixel,
-                            xpos - 10, tickPixel});
-                    S.text(
-                        numberformat(tickValue),
-                        {xpos + 2, tickPixel, xpos + 50, tickPixel + 15});
-                }
+                set( eOrient::vert );
             }
         };
 
@@ -1209,14 +1261,15 @@ namespace wex
             }
 
             /// @brief Enable drawing a right Y-axis with its own scaling
-            /// @param minValue 
-            /// @param maxValue 
-            
+            /// @param minValue
+            /// @param maxValue
+
             void setRightAxis(
                 double minValue,
                 double maxValue)
             {
-                myRightAxis.enable(
+                myRightAxis.enable();
+                myRightAxis.setValueRange(
                     minValue,
                     maxValue);
             }
@@ -1437,7 +1490,7 @@ namespace wex
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
             }
 
-           void drawYAxis(wex::shapes &S)
+            void drawYAxis(wex::shapes &S)
             {
 
                 S.color(0xFFFFFF - bgcolor());
@@ -1449,7 +1502,7 @@ namespace wex
                 for (double y : myYScale.tickValues())
                 {
                     int yp = myYScale.YV2YP(y);
-                    S.text(numberformat(y),
+                    S.text(axis::numberformat(y),
                            {mypLeftMarginWidth - 30, yp - 8, 50, 15});
                     S.line({mypLeftMarginWidth, yp,
                             mypLeftMarginWidth + 10, yp});
@@ -1468,8 +1521,9 @@ namespace wex
 
                 myRightAxis.draw(
                     S,
-                    myYScale,
-                    myXScale.XPmax());
+                    myXScale.XPmax(),
+                    myYScale.YPmax(),
+                    myYScale.YPmin());
             }
             void drawXAxis(wex::shapes &S, int ypos)
             {
