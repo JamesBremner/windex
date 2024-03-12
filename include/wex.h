@@ -728,6 +728,16 @@ namespace wex
             const std::string &t,
             const std::vector<int> &v)
         {
+            if( myLogfont.lfEscapement ) {
+                // rotated text
+                    TextOut(
+                    myHDC,
+                    v[0],
+                    v[1],
+                    t.c_str(),
+                    t.length());
+                    return;
+            }
             RECT rect;
             switch ((int)v.size())
             {
@@ -767,7 +777,9 @@ namespace wex
             vc[0] += pad;
             text(t, vc);
         }
-        /// Enable / disable drawing text in vertical orientation
+        /** Enable / disable drawing text in vertical orientation
+         * Note: rotated text will NOT be clipped
+         */
         void textVertical(bool f = true)
         {
             if (f)

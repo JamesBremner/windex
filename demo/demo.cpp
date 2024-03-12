@@ -667,12 +667,13 @@ void PlotDemo()
     wex::plot::plot &thePlot = wex::maker::make<wex::plot::plot>(fm);
     thePlot.bgcolor(0);
     thePlot.XUValues(100, 5);
+    thePlot.setYAxisLabel("Vertical Label");
     thePlot.grid(true);
     // thePlot.setFixedScale(
     //     0, 200, 0, 200 );
     //thePlot.setMarginWidths(200, 400);
-    thePlot.setRightAxis(
-        0,5000 );
+    // thePlot.setRightAxis(
+    //     0,5000 );
 
     //  resize plot when form resizes
     fm.events().resize(

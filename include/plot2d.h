@@ -21,22 +21,22 @@ namespace wex
 
         /// @cond
 
-                    /** format number with 2 significant digits
-            https://stackoverflow.com/a/17211620/16582
-            */
-            std::string numberformat(double f)
+        /** format number with 2 significant digits
+https://stackoverflow.com/a/17211620/16582
+*/
+        std::string numberformat(double f)
+        {
+            if (f == 0)
             {
-                if (f == 0)
-                {
-                    return "0";
-                }
-                int n = 2;                                         // number of significant digits
-                int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
-                double order = ::pow(10., n - d);
-                std::stringstream ss;
-                ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
-                return ss.str();
+                return "0";
             }
+            int n = 2;                                         // number of significant digits
+            int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
+            double order = ::pow(10., n - d);
+            std::stringstream ss;
+            ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
+            return ss.str();
+        }
 
         /** @brief Maintain indices of circular buffer
          *
@@ -900,7 +900,7 @@ namespace wex
             bool myfEnable;
             double myValueMin;
             double myValueMax;
-            //int mypMarginWidth;
+            // int mypMarginWidth;
 
         public:
             rightAxis()
@@ -1208,10 +1208,15 @@ namespace wex
                 mypLeftMarginWidth = pLeftMarginWidth;
             }
 
+            void setYAxisLabel( const std::string& label )
+            {
+                myYAxisLabel = label;
+            }
+
             /// @brief Enable drawing a right Y-axis with its own scaling
-            /// @param minValue 
-            /// @param maxValue 
-            
+            /// @param minValue
+            /// @param maxValue
+
             void setRightAxis(
                 double minValue,
                 double maxValue)
@@ -1372,6 +1377,7 @@ namespace wex
             XScale myXScale;
             YScale myYScale;
             rightAxis myRightAxis;
+            std::string myYAxisLabel;
 
             int mypBottomMarginWidth, mypLeftMarginWidth;
 
@@ -1437,7 +1443,7 @@ namespace wex
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
             }
 
-           void drawYAxis(wex::shapes &S)
+            void drawYAxis(wex::shapes &S)
             {
 
                 S.color(0xFFFFFF - bgcolor());
@@ -1445,6 +1451,11 @@ namespace wex
 
                 S.line({mypLeftMarginWidth, myYScale.YPmin(),
                         mypLeftMarginWidth, myYScale.YPmax()});
+
+                S.textVertical();
+                S.text(myYAxisLabel,
+                       {mypLeftMarginWidth - 50, myYScale.YPmax() + 30});
+                S.textVertical(false);
 
                 for (double y : myYScale.tickValues())
                 {
