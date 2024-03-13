@@ -24,7 +24,7 @@ namespace wex
         /** format number with 2 significant digits
 https://stackoverflow.com/a/17211620/16582
 */
-        std::string numberformat(double f)
+        static std::string numberformat(double f)
         {
             if (f == 0)
             {
