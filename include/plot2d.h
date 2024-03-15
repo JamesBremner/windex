@@ -888,10 +888,21 @@ namespace wex
                 vert,
             };
 
+            axis()
+                : myfEnable(true),
+                  myfGrid(false)
+            {
+            }
+
             void set(
                 eOrient o)
             {
                 myOrient = o;
+            }
+
+            void enable(bool f = true)
+            {
+                myfEnable = f;
             }
 
             void setValueRange(
@@ -902,65 +913,98 @@ namespace wex
                 myvmax = max;
             }
 
+            void setGrid(bool f = true)
+            {
+                myfGrid = f;
+            }
+
             void draw(
                 wex::shapes &S,
-                int pos,
-                int pmin,
-                int pmax)
+                const XScale &xs,
+                const YScale &ys)
             {
-                if (pmin > pmax)
-                {
-                    int tmp = pmax;
-                    pmax = pmin;
-                    pmin = tmp;
-                }
-                int pvmin = pmin;
-                double scale = (pmax - pmin) / (myvmax - myvmin);
+                if (!myfEnable)
+                    return;
+
+                double scale;
+                int tickCount = 8;
+                int paxis;
+                int tickPixel;
                 if (myOrient == eOrient::horz)
-                    S.line({pmin, pos,
-                            pmax, pos});
+                {
+                    paxis = ys.YPmin();
+                    S.line({xs.XPmin(), paxis,
+                            xs.XPmax(), paxis});
+                    scale = (xs.XPmax() - xs.XPmin()) / (xs.XUmax() - xs.XUmin());
+                }
                 else
                 {
-                    // y pixels are indexed from top of screen
-                    pvmin = pmax;
-                    scale *= -1;
+                    // // y pixels are indexed from top of screen
+                    paxis = xs.XPmin();
+                    tickCount = 4;
 
-                    S.line({pos, pmin,
-                            pos, pmax});
+                    S.line({paxis, ys.YPmin(),
+                            paxis, ys.YPmax()});
+
+                    scale = (ys.YPmax() - ys.YPmin()) / ys.YVrange();
                 }
 
-                for (double tickValue : tickValues(4, myvmin, myvmax))
+                for (double tickValue : tickValues(tickCount, myvmin, myvmax))
                 {
-                    int tickPixel = pvmin + scale * tickValue;
-                    S.line({pos-5, tickPixel,
-                            pos+5, tickPixel});
-                    S.text(
-                        axis::numberformat(tickValue),
-                        {pos + 5, tickPixel, pos + 50, tickPixel + 15});
+                    switch (myOrient)
+                    {
+                    case eOrient::horz:
+
+                        tickPixel = xs.XPmin() + scale * (tickValue - xs.XUmin());
+                        S.line(
+                            {tickPixel, paxis - 5,
+                             tickPixel, paxis + 5});
+                        S.text(
+                            numberformat(tickValue),
+                            {tickPixel, paxis + 5,
+                             tickPixel + 50, paxis + 15});
+                        if (myfGrid)
+                        {
+                            for (int kp = paxis;
+                                 kp >= ys.YPmax();
+                                 kp -= 25)
+                            {
+                                S.pixel(tickPixel, kp);
+                                S.pixel(tickPixel, kp + 1);
+                            }
+                        }
+                        break;
+
+                    case eOrient::vert:
+
+                        tickPixel = ys.YPmin() + scale * (tickValue - ys.YVmin());
+                        S.line({paxis - 5, tickPixel,
+                                paxis + 5, tickPixel});
+                        S.text(
+                            numberformat(tickValue),
+                            {paxis - 50, tickPixel, paxis - 5, tickPixel + 15});
+                        if (myfGrid)
+                        {
+                            for (int kp = paxis;
+                                 kp < xs.XPmax();
+                                 kp += 25)
+                            {
+                                S.pixel(kp,tickPixel);
+                                S.pixel(kp+1,tickPixel);
+                            }
+                        }
+                        break;
+                    }
                 }
             }
 
-            /** format number with 2 significant digits
-             *    https://stackoverflow.com/a/17211620/16582
-             */
-            static std::string numberformat(double f)
-            {
-                if (f == 0)
-                {
-                    return "0";
-                }
-                int n = 2;                                         // number of significant digits
-                int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
-                double order = ::pow(10., n - d);
-                std::stringstream ss;
-                ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
-                return ss.str();
-            }
 
-        protected:
+        private:
             eOrient myOrient;
             double myvmin;
             double myvmax;
+            bool myfEnable;
+            bool myfGrid;
 
             std::vector<double> tickValues(
                 int count,
@@ -980,23 +1024,40 @@ namespace wex
                 }
                 return ret;
             }
+            
+            /** format number with 2 significant digits
+             *    https://stackoverflow.com/a/17211620/16582
+             */
+            std::string numberformat(double f)
+            {
+                if (f == 0)
+                {
+                    return "0";
+                }
+                int n = 2;                                         // number of significant digits
+                int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
+                double order = ::pow(10., n - d);
+                std::stringstream ss;
+                ss << std::fixed << std::setprecision(std::max(n - d, 0)) << round(f * order) / order;
+                return ss.str();
+            }
         };
 
-        class rightAxis : public axis
-        {
-            bool myfEnable;
+        // class rightAxis : public axis
+        // {
+        //     bool myfEnable;
 
-        public:
-            rightAxis()
-                : myfEnable(false)
-            {
-            }
-            void enable()
-            {
-                myfEnable = true;
-                set( eOrient::vert );
-            }
-        };
+        // public:
+        //     rightAxis()
+        //         : myfEnable(false)
+        //     {
+        //     }
+        //     void enable()
+        //     {
+        //         myfEnable = true;
+        //         set( eOrient::vert );
+        //     }
+        // };
 
         /** \brief Draw a 2D plot
 
@@ -1092,6 +1153,10 @@ namespace wex
                   mypLeftMarginWidth(70)
             {
                 text("Plot");
+                myRightAxis.enable(false);
+                myRightAxis.set(axis::eOrient::vert);
+                myLeftAxis.set(axis::eOrient::vert);
+                myBottomAxis.set(axis::eOrient::horz);
 
                 events().draw(
                     [this](PAINTSTRUCT &ps)
@@ -1108,10 +1173,7 @@ namespace wex
                         wex::shapes S(ps);
 
                         // draw axis
-                        drawYAxis(S);
-                        drawXAxis(
-                            S,
-                            ps.rcPaint.bottom - 20);
+                        drawAxis(S);
 
                         // loop over traces
                         for (auto t : myTrace)
@@ -1210,6 +1272,8 @@ namespace wex
             void grid(bool enable)
             {
                 myfGrid = enable;
+                myLeftAxis.setGrid(enable);
+                myBottomAxis.setGrid(enable);
             }
 
             /// @brief Set fixed scale
@@ -1395,6 +1459,8 @@ namespace wex
                     calcDataBounds(ximin, ximax, ymin, ymax);
                     myXScale.xiSet(ximin, ximax);
                     myYScale.YVrange(ymin, ymax);
+                    myLeftAxis.setValueRange(ymin, ymax);
+
                     break;
 
                 case scaleStateMachine::eState::fix:
@@ -1411,6 +1477,8 @@ namespace wex
                 myXScale.calculate();
                 myYScale.calculate();
 
+                myBottomAxis.setValueRange(myXScale.XUmin(), myXScale.XUmax());
+
                 // myXScale.text();
 
                 return true;
@@ -1424,7 +1492,10 @@ namespace wex
             scaleStateMachine myScaleStateMachine;
             XScale myXScale;
             YScale myYScale;
-            rightAxis myRightAxis;
+
+            axis myLeftAxis;
+            axis myRightAxis;
+            axis myBottomAxis;
 
             int mypBottomMarginWidth, mypLeftMarginWidth;
 
@@ -1490,102 +1561,87 @@ namespace wex
                 return (myfDrag && myStopDragX > 0 && myStopDragX > myStartDragX && myStopDragY > myStartDragY);
             }
 
-            void drawYAxis(wex::shapes &S)
+            void drawAxis(wex::shapes &S)
             {
-
                 S.color(0xFFFFFF - bgcolor());
                 S.textHeight(15);
 
-                S.line({mypLeftMarginWidth, myYScale.YPmin(),
-                        mypLeftMarginWidth, myYScale.YPmax()});
-
-                for (double y : myYScale.tickValues())
-                {
-                    int yp = myYScale.YV2YP(y);
-                    S.text(axis::numberformat(y),
-                           {mypLeftMarginWidth - 30, yp - 8, 50, 15});
-                    S.line({mypLeftMarginWidth, yp,
-                            mypLeftMarginWidth + 10, yp});
-                    if (myfGrid)
-                    {
-                        auto kpmax = myXScale.XPmax();
-                        for (int kp = mypLeftMarginWidth;
-                             kp < kpmax;
-                             kp += 25)
-                        {
-                            S.pixel(kp, yp);
-                            S.pixel(kp + 1, yp);
-                        }
-                    }
-                }
-
-                myRightAxis.draw(
+                myLeftAxis.draw(
                     S,
-                    myXScale.XPmax(),
-                    myYScale.YPmax(),
-                    myYScale.YPmin());
+                    myXScale,
+                    myYScale);
+                // myRightAxis.draw(
+                //     S,
+                //     myXScale.XPmax(),
+                //     myXScale.XPmax(),
+                //     myYScale.YPmax(),
+                //     myYScale.YPmin());
+                myBottomAxis.draw(
+                    S,
+                    myXScale,
+                    myYScale);
             }
-            void drawXAxis(wex::shapes &S, int ypos)
-            {
-                int ypAxisLine = myYScale.YPmin();
-                S.color(0xFFFFFF - bgcolor());
-                S.textHeight(15);
-                S.line(
-                    {myXScale.XPmin(), ypAxisLine,
-                     myXScale.XPmax(), ypAxisLine});
-                if (!myfGrid)
-                {
-                    // there is no grid
-                    // so just label the minimum, maximum x points
-                    float xmin_label_value = 0;
-                    float xmax_label_value = 100;
-                    if (myfXset)
-                    {
-                        xmin_label_value = myXScale.XUmin();
-                        xmax_label_value = myXScale.XUmax();
-                    }
-                    S.text(std::to_string((int)xmin_label_value), {myXScale.XPmin(), ypos + 3, 50, 15});
-                    S.text(std::to_string((int)xmax_label_value), {myXScale.XPmax() - 25, ypos + 3, 50, 15});
-                    return;
-                }
-                // there is a grid
+            // void drawXAxis(wex::shapes &S, int ypos)
+            // {
+                // int ypAxisLine = myYScale.YPmin();
+                // S.color(0xFFFFFF - bgcolor());
+                // S.textHeight(15);
+                // S.line(
+                //     {myXScale.XPmin(), ypAxisLine,
+                //      myXScale.XPmax(), ypAxisLine});
+                // if (!myfGrid)
+                // {
+                //     // there is no grid
+                //     // so just label the minimum, maximum x points
+                //     float xmin_label_value = 0;
+                //     float xmax_label_value = 100;
+                //     if (myfXset)
+                //     {
+                //         xmin_label_value = myXScale.XUmin();
+                //         xmax_label_value = myXScale.XUmax();
+                //     }
+                //     S.text(std::to_string((int)xmin_label_value), {myXScale.XPmin(), ypos + 3, 50, 15});
+                //     S.text(std::to_string((int)xmax_label_value), {myXScale.XPmax() - 25, ypos + 3, 50, 15});
+                //     return;
+                // }
+                // // there is a grid
 
-                int tickCount = 8;
-                float xutickinc = (myXScale.XUmax() - myXScale.XUmin()) / tickCount;
+                // int tickCount = 8;
+                // float xutickinc = (myXScale.XUmax() - myXScale.XUmin()) / tickCount;
 
-                // std::cout << "X ticks ";
-                // myXScale.text();
-                // std::cout
-                //     << " xutickinc " << xutickinc
-                //     << "\n";
+                // // std::cout << "X ticks ";
+                // // myXScale.text();
+                // // std::cout
+                // //     << " xutickinc " << xutickinc
+                // //     << "\n";
 
-                // if possible, place tick marks at integer values of x index
-                if (xutickinc > 1)
-                    xutickinc = floor(xutickinc);
+                // // if possible, place tick marks at integer values of x index
+                // if (xutickinc > 1)
+                //     xutickinc = floor(xutickinc);
 
-                for (int kxtick = 0; kxtick <= tickCount; kxtick++)
-                {
-                    float tickXU = myXScale.XUmin() + kxtick * xutickinc;
-                    // float tick_label_value = myXScale.XI2XU(tickXU);
-                    int xPixel = myXScale.XU2XP(tickXU);
+                // for (int kxtick = 0; kxtick <= tickCount; kxtick++)
+                // {
+                //     float tickXU = myXScale.XUmin() + kxtick * xutickinc;
+                //     // float tick_label_value = myXScale.XI2XU(tickXU);
+                //     int xPixel = myXScale.XU2XP(tickXU);
 
-                    // std::cout << "tick " << kxtick << " xu " << tickXU
-                    //           << " " << xPixel << "\n";
+                //     // std::cout << "tick " << kxtick << " xu " << tickXU
+                //     //           << " " << xPixel << "\n";
 
-                    S.text(
-                        std::to_string(tickXU).substr(0, 4),
-                        {xPixel, ypAxisLine + 1, 50, 15});
+                //     S.text(
+                //         std::to_string(tickXU).substr(0, 4),
+                //         {xPixel, ypAxisLine + 1, 50, 15});
 
-                    for (
-                        int k = myYScale.YPmax();
-                        k < myYScale.YPmin();
-                        k = k + 25)
-                    {
-                        S.pixel(xPixel, k);
-                        S.pixel(xPixel, k + 1);
-                    }
-                }
-            }
+                //     for (
+                //         int k = myYScale.YPmax();
+                //         k < myYScale.YPmin();
+                //         k = k + 25)
+                //     {
+                //         S.pixel(xPixel, k);
+                //         S.pixel(xPixel, k + 1);
+                //     }
+                // }
+            //}
             void drawTrace(trace *t, shapes &S)
             {
                 S.penThick(t->thick());
