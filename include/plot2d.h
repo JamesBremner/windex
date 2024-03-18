@@ -1034,7 +1034,7 @@ namespace wex
                 {
                     return "0";
                 }
-                int n = 2;                                         // number of significant digits
+                int n = 3;                                         // number of significant digits
                 int d = (int)::floor(::log10(f < 0 ? -f : f)) + 1; /*digits before decimal point*/
                 double order = ::pow(10., n - d);
                 std::stringstream ss;
