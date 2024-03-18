@@ -989,15 +989,14 @@ namespace wex
                                  kp < xs.XPmax();
                                  kp += 25)
                             {
-                                S.pixel(kp,tickPixel);
-                                S.pixel(kp+1,tickPixel);
+                                S.pixel(kp, tickPixel);
+                                S.pixel(kp + 1, tickPixel);
                             }
                         }
                         break;
                     }
                 }
             }
-
 
         private:
             eOrient myOrient;
@@ -1024,7 +1023,7 @@ namespace wex
                 }
                 return ret;
             }
-            
+
             /** format number with 2 significant digits
              *    https://stackoverflow.com/a/17211620/16582
              */
@@ -1324,7 +1323,7 @@ namespace wex
                 mypLeftMarginWidth = pLeftMarginWidth;
             }
 
-            void setYAxisLabel( const std::string& label )
+            void setYAxisLabel(const std::string &label)
             {
                 myYAxisLabel = label;
             }
@@ -1503,6 +1502,7 @@ namespace wex
             axis myBottomAxis;
 
             int mypBottomMarginWidth, mypLeftMarginWidth;
+            std::string myYAxisLabel;
 
             bool myfGrid; // true if tick and grid marks reuired
             bool myfXset; // true if the x user range has been set
@@ -1575,6 +1575,15 @@ namespace wex
                     S,
                     myXScale,
                     myYScale);
+
+                if (myYAxisLabel.length())
+                {
+                    S.textVertical();
+                    S.text(myYAxisLabel,
+                           {mypLeftMarginWidth - 50, myYScale.YPmax() + 30});
+                    S.textVertical(false);
+                }
+
                 // myRightAxis.draw(
                 //     S,
                 //     myXScale.XPmax(),
@@ -1586,67 +1595,7 @@ namespace wex
                     myXScale,
                     myYScale);
             }
-            // void drawXAxis(wex::shapes &S, int ypos)
-            // {
-                // int ypAxisLine = myYScale.YPmin();
-                // S.color(0xFFFFFF - bgcolor());
-                // S.textHeight(15);
-                // S.line(
-                //     {myXScale.XPmin(), ypAxisLine,
-                //      myXScale.XPmax(), ypAxisLine});
-                // if (!myfGrid)
-                // {
-                //     // there is no grid
-                //     // so just label the minimum, maximum x points
-                //     float xmin_label_value = 0;
-                //     float xmax_label_value = 100;
-                //     if (myfXset)
-                //     {
-                //         xmin_label_value = myXScale.XUmin();
-                //         xmax_label_value = myXScale.XUmax();
-                //     }
-                //     S.text(std::to_string((int)xmin_label_value), {myXScale.XPmin(), ypos + 3, 50, 15});
-                //     S.text(std::to_string((int)xmax_label_value), {myXScale.XPmax() - 25, ypos + 3, 50, 15});
-                //     return;
-                // }
-                // // there is a grid
 
-                // int tickCount = 8;
-                // float xutickinc = (myXScale.XUmax() - myXScale.XUmin()) / tickCount;
-
-                // // std::cout << "X ticks ";
-                // // myXScale.text();
-                // // std::cout
-                // //     << " xutickinc " << xutickinc
-                // //     << "\n";
-
-                // // if possible, place tick marks at integer values of x index
-                // if (xutickinc > 1)
-                //     xutickinc = floor(xutickinc);
-
-                // for (int kxtick = 0; kxtick <= tickCount; kxtick++)
-                // {
-                //     float tickXU = myXScale.XUmin() + kxtick * xutickinc;
-                //     // float tick_label_value = myXScale.XI2XU(tickXU);
-                //     int xPixel = myXScale.XU2XP(tickXU);
-
-                //     // std::cout << "tick " << kxtick << " xu " << tickXU
-                //     //           << " " << xPixel << "\n";
-
-                //     S.text(
-                //         std::to_string(tickXU).substr(0, 4),
-                //         {xPixel, ypAxisLine + 1, 50, 15});
-
-                //     for (
-                //         int k = myYScale.YPmax();
-                //         k < myYScale.YPmin();
-                //         k = k + 25)
-                //     {
-                //         S.pixel(xPixel, k);
-                //         S.pixel(xPixel, k + 1);
-                //     }
-                // }
-            //}
             void drawTrace(trace *t, shapes &S)
             {
                 S.penThick(t->thick());
