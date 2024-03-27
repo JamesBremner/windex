@@ -378,11 +378,11 @@ namespace wex
                 return round(xpmin + sxu2xp * (xu - xumin));
             }
 
-            int XUmin() const
+            double XUmin() const
             {
                 return xumin;
             }
-            int XUmax() const
+            double XUmax() const
             {
                 return xumax;
             }
@@ -1482,6 +1482,7 @@ namespace wex
                 myYScale.calculate();
 
                 myBottomAxis.setValueRange(myXScale.XUmin(), myXScale.XUmax());
+                myLeftAxis.setValueRange(myYScale.YVmin(),myYScale.YVmax());
 
                 // myXScale.text();
 
@@ -1590,6 +1591,7 @@ namespace wex
                 //     myXScale.XPmax(),
                 //     myYScale.YPmax(),
                 //     myYScale.YPmin());
+                
                 myBottomAxis.draw(
                     S,
                     myXScale,

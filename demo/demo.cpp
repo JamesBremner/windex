@@ -669,8 +669,8 @@ void PlotDemo()
     thePlot.XUValues(100, 5);
     thePlot.setYAxisLabel("Vertical Label");
     thePlot.grid(true);
-    // thePlot.setFixedScale(
-    //     0, 200, 0, 200 );
+    thePlot.setFixedScale(
+        0, 200, 0, 200 );
     //thePlot.setMarginWidths(200, 400);
     // thePlot.setRightAxis(
     //     0,5000 );

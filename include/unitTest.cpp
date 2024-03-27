@@ -75,8 +75,14 @@ TEST(setFitScale)
     // fit -> fix
     thePlot.setFixedScale(0, 200, 0, 200);
     thePlot.CalcScale(500, 200);
-    CHECK_CLOSE(26, thePlot.pixel2Xuser(100),2);
-    CHECK_CLOSE(80, thePlot.pixel2Yuser(100),2);
+    CHECK_CLOSE(0, thePlot.pixel2Xuser(70),2);
+    CHECK_CLOSE(200, thePlot.pixel2Xuser(450),2);
+    CHECK_CLOSE(100, thePlot.pixel2Xuser(260),2);
+    CHECK_CLOSE(16, thePlot.pixel2Xuser(100),2);
+
+    CHECK_CLOSE(0, thePlot.pixel2Yuser(150),2);
+    CHECK_CLOSE(200, thePlot.pixel2Yuser(10),2);
+    CHECK_CLOSE(71, thePlot.pixel2Yuser(100),2);
 
     // fix -> fit
     thePlot.setFitScale();
@@ -163,8 +169,8 @@ TEST(plot_Xscale)
 
     thePlot.CalcScale(500, 200);
 
-    CHECK_CLOSE(100, thePlot.pixel2Xuser(50), 1);
-    CHECK_CLOSE(140, thePlot.pixel2Xuser(430), 1);
+    CHECK_CLOSE(98, thePlot.pixel2Xuser(50), 1);
+    CHECK_CLOSE(138, thePlot.pixel2Xuser(430), 1);
 }
 
 TEST(plot_Yscale)
@@ -207,8 +213,10 @@ TEST(plot_setFixedScale)
     thePlot.setFixedScale(0, 200, -100, 100);
     thePlot.CalcScale(500, 200);
 
-    CHECK_CLOSE(100, thePlot.pixel2Yuser(50), 0.5);
-    CHECK_CLOSE(140, thePlot.pixel2Yuser(386), 0.5);
+    CHECK_CLOSE(100, thePlot.pixel2Yuser(10), 0.5);
+    CHECK_CLOSE(-100, thePlot.pixel2Yuser(150), 0.5);
+    CHECK_CLOSE(43, thePlot.pixel2Yuser(50), 0.5);
+    CHECK_CLOSE(0, thePlot.pixel2Yuser(80), 0.5);
 }
 main()
 {
