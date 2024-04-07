@@ -480,6 +480,7 @@ namespace wex
             {
                 return yvmin - (ypmin - pixel) / syv2yp;
             }
+
             int YV2YP(double v) const
             {
                 return ypmin + syv2yp * (v - yvmin);
@@ -1421,14 +1422,23 @@ namespace wex
             {
                 return myXScale.XP2XU(xpixel);
             }
+
+            /// get x pixel value from y user
             int xuser2pixel(double xu) const
             {
                 return myXScale.XU2XP(xu);
             }
+
             /// get Y user value from y pixel
             double pixel2Yuser(int ypixel) const
             {
                 return myYScale.YP2YV(ypixel);
+            }
+
+            /// get y pixel value from y user
+            int yuser2pixel( double yu ) const
+            {
+                return myYScale.YV2YP( yu );
             }
 
 // methods that need to be unit tested, and therefore need to be public
