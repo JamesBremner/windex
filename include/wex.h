@@ -3120,6 +3120,14 @@ namespace wex
                 (UINT_PTR)submenu.handle(),
                 title.c_str());
         }
+        void appendSeparator()
+        {
+            AppendMenu(
+                myM,
+                MF_SEPARATOR,
+                0,"");
+        }
+
         /** Popup menu and run user selection.
         @param[in] x location
         @param[in] y location
