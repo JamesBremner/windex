@@ -716,7 +716,7 @@ namespace wex
             //  'empty' circles are filled with a black brush
             HGDIOBJ oldBrush;
             if( !myFill )
-                oldBrush = SelectObject(myHDC, GetStockObject(BLACK_BRUSH)); 
+                oldBrush = SelectObject(myHDC, GetStockObject(NULL_BRUSH)); 
             int ir = r;
             Ellipse(
                 myHDC,
