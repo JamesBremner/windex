@@ -713,11 +713,17 @@ namespace wex
     */
         void circle(int x0, int y0, double r)
         {
+            //  'empty' circles are filled with a black brush
+            HGDIOBJ oldBrush;
+            if( !myFill )
+                oldBrush = SelectObject(myHDC, GetStockObject(BLACK_BRUSH)); 
             int ir = r;
             Ellipse(
                 myHDC,
                 x0 - ir, y0 - ir,
                 x0 + ir, y0 + ir);
+            if( !myFill )
+                SelectObject(myHDC, oldBrush); 
         }
         /** Draw text.
     @param[in] t the text
@@ -828,7 +834,7 @@ namespace wex
         HGDIOBJ hPenOld;
         bool myFill;
         LOGFONT myLogfont;
-        int myColor;
+        int myColor;            // foreground color
     };
 
     /// The base class for all windex gui elements
