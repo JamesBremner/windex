@@ -3585,11 +3585,13 @@ Usage:
         /** Start a command in its own process
          * @param[in] command line, same as would be used from a command window running in working directory
          * @param[out] error details, if any
+         * @param[in] fBlock true if wait for process to finish, default: false
          * @return 0 if no errors
          */
         static int startProcess(
             const std::string &command,
-            std::string &error)
+            std::string &error,
+            bool fBlock = false)
         {
             STARTUPINFO si;
             PROCESS_INFORMATION pi;
@@ -3637,6 +3639,8 @@ Usage:
                 LocalFree(lpMsgBuf);
                 return 1;
             }
+
+            WaitForSingleObject(pi.hProcess,10000);
 
             // Close process and thread handles.
             CloseHandle(pi.hProcess);
