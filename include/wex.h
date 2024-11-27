@@ -193,7 +193,10 @@ namespace wex
             sMouse m;
             m.x = LOWORD(lParam);
             m.y = HIWORD(lParam);
+
+            // left button or shift key ( never both )
             m.left = (wParam == MK_LBUTTON);
+            m.shift = (wParam == MK_SHIFT);
 
             myMouseMoveFunction(m);
         }
