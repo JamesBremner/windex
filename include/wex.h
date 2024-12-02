@@ -636,6 +636,14 @@ namespace wex
                 pp,
                 n);
         }
+#ifdef RAVEN_SET_CXY
+        void line(const cxy &p1, const cxy &p2)
+        {
+            line({
+                (int)p1.x, (int)p1.y,
+                (int)p2.x, (int)p2.y});
+        }
+#endif
         /** Draw rectangle
         @param[in] v vector with left, top, width, height
     */
@@ -718,15 +726,15 @@ namespace wex
         {
             //  'empty' circles are filled with a black brush
             HGDIOBJ oldBrush;
-            if( !myFill )
-                oldBrush = SelectObject(myHDC, GetStockObject(NULL_BRUSH)); 
+            if (!myFill)
+                oldBrush = SelectObject(myHDC, GetStockObject(NULL_BRUSH));
             int ir = r;
             Ellipse(
                 myHDC,
                 x0 - ir, y0 - ir,
                 x0 + ir, y0 + ir);
-            if( !myFill )
-                SelectObject(myHDC, oldBrush); 
+            if (!myFill)
+                SelectObject(myHDC, oldBrush);
         }
         /** Draw text.
     @param[in] t the text
@@ -737,15 +745,16 @@ namespace wex
             const std::string &t,
             const std::vector<int> &v)
         {
-            if( myLogfont.lfEscapement ) {
+            if (myLogfont.lfEscapement)
+            {
                 // rotated text
-                    TextOut(
+                TextOut(
                     myHDC,
                     v[0],
                     v[1],
                     t.c_str(),
                     t.length());
-                    return;
+                return;
             }
             RECT rect;
             switch ((int)v.size())
@@ -837,7 +846,7 @@ namespace wex
         HGDIOBJ hPenOld;
         bool myFill;
         LOGFONT myLogfont;
-        int myColor;            // foreground color
+        int myColor; // foreground color
     };
 
     /// The base class for all windex gui elements
@@ -851,7 +860,7 @@ namespace wex
     */
         gui()
             : myParent(NULL), myBGColor(0xC8C8C8), myBGBrush(CreateSolidBrush(myBGColor)), myTextColor(0),
-            myDeleteList(0), myfModal(false), myfEnabled(true), myfnobgerase(false), myToolTip(NULL), myAsyncReadCompleteMsgID(0), myCursorID(0)
+              myDeleteList(0), myfModal(false), myfEnabled(true), myfnobgerase(false), myToolTip(NULL), myAsyncReadCompleteMsgID(0), myCursorID(0)
         {
             myID = NewID();
             Create(
@@ -984,7 +993,7 @@ namespace wex
         void enable(bool f = true)
         {
             myfEnabled = f;
-            EnableWindow( myHandle, myfEnabled);
+            EnableWindow(myHandle, myfEnabled);
             update();
         }
         bool isEnabled() const
@@ -1043,7 +1052,7 @@ namespace wex
         /// @param c color 0xBBGGRR e.g. 0x0000FF for red
         /// If not called, defaults to black
         /// children do not inherit this
-        void textColor( int c )
+        void textColor(int c)
         {
             myTextColor = c;
         }
@@ -1508,9 +1517,9 @@ namespace wex
         }
 
         /** Show window and all children
-         * 
+         *
          * This returns immediatly.
-         * 
+         *
          */
         virtual void show(bool f = true)
         {
@@ -1527,12 +1536,12 @@ namespace wex
         /** @brief Show this window and suspend all other windows interactions until this is closed
          @param appWindow application window to disable while modal runs
 
-        This blocks, returning when the windows is closed or endModel() is called.  
+        This blocks, returning when the windows is closed or endModel() is called.
         Therefore it is safe to store references to the child widgets in local variables
         so long as they not needed after the winow closes
          */
 
-        void showModal( gui& appWindow )
+        void showModal(gui &appWindow)
         {
             myfModal = true;
             if (!modalMgr::get().set(myID, myHandle))
@@ -1542,13 +1551,13 @@ namespace wex
                 return;
             }
 
-            appWindow.enable( false );
+            appWindow.enable(false);
 
             show();
 
             // prevent other windows from interaction
             // by running our own message loop
-            //std::cout << "-> modal msg loop\n";
+            // std::cout << "-> modal msg loop\n";
             MSG msg = {};
             while (GetMessage(&msg, NULL, 0, 0))
             {
@@ -1576,13 +1585,12 @@ namespace wex
                 if (!myfModal)
                     break;
             }
-             //std::cout << "<- modal msg loop\n";
+            // std::cout << "<- modal msg loop\n";
 
             // restore rest of application
-             appWindow.enable( true );
-             appWindow.focus();
-             appWindow.update();
-
+            appWindow.enable(true);
+            appWindow.focus();
+            appWindow.update();
         }
         /// Stop modal interaction and close window
         void endModal()
@@ -3134,7 +3142,7 @@ namespace wex
             AppendMenu(
                 myM,
                 MF_SEPARATOR,
-                0,"");
+                0, "");
         }
 
         /** Popup menu and run user selection.
@@ -3643,7 +3651,7 @@ Usage:
                 return 1;
             }
 
-            WaitForSingleObject(pi.hProcess,10000);
+            WaitForSingleObject(pi.hProcess, 10000);
 
             // Close process and thread handles.
             CloseHandle(pi.hProcess);
