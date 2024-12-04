@@ -738,8 +738,8 @@ namespace wex
         }
         /** Draw text.
     @param[in] t the text
-    @param[in] v vector of left, top ( unclipped )
-    @param[in] v vector of left, top, width, height ( clipping )
+    @param[in] v vector of left, top ( unclipped, one line )
+    @param[in] v vector of left, top, width, height ( clipping, auto line breaks )
     */
         void text(
             const std::string &t,
@@ -777,7 +777,7 @@ namespace wex
                     t.c_str(),
                     -1,
                     &rect,
-                    0);
+                    DT_WORDBREAK);
                 break;
             }
             return;
