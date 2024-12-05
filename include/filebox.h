@@ -34,7 +34,13 @@ namespace wex
         }
         void initFile(const std::string &fname)
         {
-            ofn.lpstrFileTitle = (LPSTR)fname.c_str();
+            if( fname.length()>255)
+                throw std::runtime_error(
+                    "wex::filebox fname too long");
+            memcpy(
+                ofn.lpstrFile,
+                fname.c_str(),
+                fname.length() + 1);
         }
 
         /** Set file filters
@@ -89,7 +95,7 @@ namespace wex
         }
         /**
          * @brief prompt user for one or multiple files
-         * 
+         *
          * @return std::vector<std::string> filenames
          */
         std::vector<std::string> openMulti()
@@ -109,7 +115,7 @@ namespace wex
                     while (1)
                     {
                         myfname = &ofn.lpstrFile[p];
-                        if( myfname.empty())
+                        if (myfname.empty())
                             break;
                         ret.push_back(dir + "\\" + myfname);
                         p += myfname.length() + 1;
