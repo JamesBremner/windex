@@ -639,9 +639,8 @@ namespace wex
 #ifdef RAVEN_SET_CXY
         void line(const cxy &p1, const cxy &p2)
         {
-            line({
-                (int)p1.x, (int)p1.y,
-                (int)p2.x, (int)p2.y});
+            line({(int)p1.x, (int)p1.y,
+                  (int)p2.x, (int)p2.y});
         }
 #endif
         /** Draw rectangle
@@ -782,6 +781,34 @@ namespace wex
             }
             return;
         }
+#ifdef RAVEN_SET_CXY
+        void textxy(
+            const std::string &t,
+            const cxy &xy)
+        {
+            text(
+                t,
+                {(int)xy.x, (int)xy.y});
+        }
+        void textxy(
+            const std::string &t,
+            const cxy &topleft,
+            const cxy &widthHeight)
+        {
+            text(
+                t,
+                {(int)topleft.x, (int)topleft.y,
+                 (int)widthHeight.x, (int)widthHeight.y});
+        }
+        void rectangle(
+            const cxy &topleft,
+            const cxy &widthHeight)
+        {
+            rectangle(
+                {(int)topleft.x, (int)topleft.y,
+                 (int)widthHeight.x, (int)widthHeight.y});
+        }
+#endif
 
         void textCenterHz(
             const std::string &t,
