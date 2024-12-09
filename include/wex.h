@@ -10,6 +10,7 @@
 #include <windows.h>
 #include <CommCtrl.h>
 #include <Shellapi.h>
+#include "cxy.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -636,13 +637,11 @@ namespace wex
                 pp,
                 n);
         }
-#ifdef RAVEN_SET_CXY
         void line(const cxy &p1, const cxy &p2)
         {
             line({(int)p1.x, (int)p1.y,
                   (int)p2.x, (int)p2.y});
         }
-#endif
         /** Draw rectangle
         @param[in] v vector with left, top, width, height
     */
@@ -781,7 +780,7 @@ namespace wex
             }
             return;
         }
-#ifdef RAVEN_SET_CXY
+
         void textxy(
             const std::string &t,
             const cxy &xy)
@@ -808,7 +807,6 @@ namespace wex
                 {(int)topleft.x, (int)topleft.y,
                  (int)widthHeight.x, (int)widthHeight.y});
         }
-#endif
 
         void textCenterHz(
             const std::string &t,
