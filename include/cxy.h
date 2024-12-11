@@ -1,6 +1,7 @@
 
 #pragma once
 #include <cfloat>
+#include <cmath>
 
 /// @brief 2D point or vector
 class cxy
