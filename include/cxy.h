@@ -128,6 +128,19 @@ public:
         return ret;
     }
 
+    static double polygonArea(const std::vector<cxy> &polygon)
+    {
+        double area = 0; // Accumulates area
+        int j = polygon.size() - 1;
+
+        for (int i = 0; i < polygon.size(); i++)
+        {
+            area += (polygon[j].x + polygon[i].x) * (polygon[j].y - polygon[i].y);
+            j = i; // j is previous vertex to i
+        }
+        return abs(area / 2);
+    }
+
     /** true if line segments intersect
         @param[out] p point of intersection
         @param[in] a,b line segment
@@ -228,6 +241,31 @@ public:
         if (ang < 0)
             ang += 6.28;
         return ang;
+    }
+    /// @brief clockwise rotation around an origin
+    /// @param angle radians
+    /// @param origin
+    /// @return rotated point
+    /// https://stackoverflow.com/a/2259502/16582
+    cxy rotate(double angle, const cxy &origin)
+    {
+        const double s = sin(angle);
+        const double c = cos(angle);
+
+        // translate point back to origin:
+        cxy p = *this;
+        p.x -= origin.x;
+        p.y -= origin.y;
+
+        // rotate point
+        cxy r(
+            p.x * c + p.y * s,
+            -p.x * s + p.y * c);
+
+        // translate point back:
+        r += origin;
+
+        return r;
     }
 
     bool isValid() const
